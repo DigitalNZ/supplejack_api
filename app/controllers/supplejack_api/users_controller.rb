@@ -7,8 +7,8 @@ module SupplejackApi
     before_filter :authenticate_admin!, except: :show
     
     def show
-      # @user = User.custom_find(params[:id])
-      # respond_with @user, serializer: UserSerializer
+      @user = User.custom_find(params[:id])
+      respond_with @user, serializer: UserSerializer
     end
     
     # def create

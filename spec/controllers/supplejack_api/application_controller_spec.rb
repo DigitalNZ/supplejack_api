@@ -17,5 +17,5 @@ module SupplejackApi
     #     @user.stub(:update_daily_activity) { nil }
     #     @controller.stub(:current_user) { @user }
     #   end
-    # end
+    end
 end

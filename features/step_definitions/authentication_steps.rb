@@ -18,12 +18,12 @@ Then /^(?:it|he|she) should see the error: "(.*)"$/ do |error_message|
   page.should have_content error_message
 end
 
-# Given /^the user has reached its daily requests limit$/ do
-#   @user.update_attributes(daily_requests: 101, max_requests: 100)
-#   @user.reload
-# end
+Given /^the user has reached its daily requests limit$/ do
+  @user.update_attributes(daily_requests: 101, max_requests: 100)
+  @user.reload
+end
 
-# Then /^(?:it|he|she) should have incremented its daily requests by one$/ do
-#   @user.reload
-#   @user.daily_requests.should eq 1
-# end
+Then /^(?:it|he|she) should have incremented its daily requests by one$/ do
+  @user.reload
+  @user.daily_requests.should eq 1
+end

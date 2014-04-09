@@ -1,0 +1,57 @@
+# Sample localization file for English. Add more files in this directory for other locales.
+# See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
+
+en:
+  hello: "Hello world"
+
+  users:
+    reached_limit: "You have reached your maximum number of api requests today"
+    invalid_token: "Invalid API Key"
+    blank_token: "Please provide a API Key"
+
+    title: "Users"
+    username: "Username"
+    name: "Name"
+    authentication_token: "API Key"
+    role: "Role"
+    daily_requests: "API requests today"
+    monthly_requests: "API requests last 30 days"
+
+    log_out: "Log out"
+
+    edit: Edit
+
+  site_activities:
+    title: "Usage by date"
+    
+  admin:
+    title: "Supplejack API"
+    download_csv: "Download as CSV"
+    not_a_admin: "This area is restricted to Administrators"
+
+
+  mongoid:
+    models:
+      user_set: Set
+    attributes:
+      user_set:
+        name: Name
+        description: Description
+        privacy: Privacy
+    errors:
+      messages:
+        blank: "%{attribute} field can't be blank."
+        inclusion: "%{value} is not a valid %{attribute} value"
+      
+  time:
+    formats:
+      default: "%Y-%m-%d %H:%M:%S %Z"
+      harvester: "%Y-%m-%dT%H:%M:%SZ"
+      date: "%d %b %Y"
+      long: "%d %b %Y at %H"
+      medium: "%d %b %Y"
+
+  date:
+    formats:
+      default: "%d %b %Y"
+  

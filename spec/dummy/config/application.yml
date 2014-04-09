@@ -1,0 +1,14 @@
+defaults: &defaults
+  REQUEST_LIMIT_MAILER: 'develop@digitalnz.org'
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+
+staging:
+  <<: *defaults
+
+production:
+  <<: *defaults

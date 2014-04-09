@@ -1,0 +1,31 @@
+development:
+  sessions:
+    default:
+      database: supplejack_api_development
+      hosts:
+        - localhost:27017
+      options:
+        consistency: :strong
+
+    strong:
+      database: supplejack_api_development
+      hosts:
+        - localhost:27017
+      options:
+        consistency: :strong
+
+test:
+  sessions:
+    default:
+      database: supplejack_api_test
+      hosts:
+        - localhost:27017
+      options:
+        consistency: :strong
+
+    strong:
+      database: supplejack_api_test
+      hosts:
+        - localhost:27017
+      options:
+        consistency: :strong

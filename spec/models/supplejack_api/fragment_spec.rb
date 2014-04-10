@@ -1,8 +1,6 @@
-require "spec_helper"
+require 'spec_helper'
 
 module SupplejackApi
-  require "spec_helper"
-  
   describe Fragment do
   
     let!(:record) { FactoryGirl.build(:record, record_id: 1234) }
@@ -10,8 +8,8 @@ module SupplejackApi
   
     before { record.save }
   
-    context "default scope" do
-      it "should order the fragments from lower to higher priority" do
+    context 'default scope' do
+      it 'should order the fragments from lower to higher priority' do
         fragment3 = record.fragments.create(priority: 3)
         fragment1 = record.fragments.create(priority: 1)
         fragment_1 = record.fragments.create(priority: -1)
@@ -20,7 +18,7 @@ module SupplejackApi
       end
     end
   
-    describe "build_mongoid_schema" do
+    describe 'build_mongoid_schema' do
       before do
         Schema.stub(:fields) do
           {
@@ -39,68 +37,68 @@ module SupplejackApi
         Fragment.build_mongoid_schema
       end
   
-      it "defines a string field" do
+      it 'defines a string field' do
         Fragment.should_receive(:field).with(:title, type: String)
       end
   
-      it "defines a integer field" do
+      it 'defines a integer field' do
         Fragment.should_receive(:field).with(:count, type: Integer)
       end
   
-      it "defines a datetime field" do
+      it 'defines a datetime field' do
         Fragment.should_receive(:field).with(:date, type: DateTime)
       end
   
-      it "defines a boolean field" do
+      it 'defines a boolean field' do
         Fragment.should_receive(:field).with(:is_active, type: Boolean)
       end
   
-      it "defines a multivalue field" do
+      it 'defines a multivalue field' do
         Fragment.should_receive(:field).with(:subject, type: Array)
       end
   
-      it "does not define a field with stored false" do
+      it 'does not define a field with stored false' do
         Fragment.should_not_receive(:field).with(:sort_date, anything)
       end
     end
   
-    describe ".mutable_fields" do    
+    describe '.mutable_fields' do    
       {name: String, email: Array, nz_citizen: Boolean}.each do |name, type|
-        it "should return a hash that includes the key #{name} and value #{type}" do
+        it 'should return a hash that includes the key #{name} and value #{type}' do
           Fragment.mutable_fields[name.to_s].should eq type
         end
       end
   
-      it "should not include the source_id" do
-        Fragment.mutable_fields.should_not have_key("source_id")
+      it 'should not include the source_id' do
+        Fragment.mutable_fields.should_not have_key('source_id')
       end
   
-      it "should memoize the mutable_fields" do
-        Fragment.class_variable_set("@@mutable_fields", nil)
+      it 'should memoize the mutable_fields' do
+        Fragment.class_variable_set('@@mutable_fields', nil)
         Fragment.should_receive(:fields).once.and_return({})
         Fragment.mutable_fields
         Fragment.mutable_fields
-        Fragment.class_variable_set("@@mutable_fields", nil)
+        Fragment.class_variable_set('@@mutable_fields', nil)
       end
     end
   
-    describe "#primary?" do
-      it "returns true when priority is 0" do
+    describe '#primary?' do
+      it 'returns true when priority is 0' do
         fragment.priority = 0
         fragment.primary?.should be_true
       end
   
-      it "returns false when priority is 1" do
+      it 'returns false when priority is 1' do
         fragment.priority = 1
         fragment.primary?.should be_false
       end
     end
   
-    describe "#clear_attributes" do
+    describe '#clear_attributes' do
       let(:record) { FactoryGirl.create(:record) }
       let!(:fragment) { record.fragments.create(nz_citizen: true) }
   
-      it "clears the existing nz_citizen" do
+      it 'clears the existing nz_citizen' do
         fragment.clear_attributes
         fragment.nz_citizen.should be_nil
       end

@@ -1,5 +1,4 @@
 module SupplejackApi
-#   # **category**: *core*
   module ApiRecord
     module FragmentHelpers
   
@@ -33,7 +32,6 @@ module SupplejackApi
               deletions = []
               sorted_fragments.each do |s| 
                 values += (Array(s.public_send(name)) - deletions) 
-                # deletions += Array(s.deletion_list[name]) unless s.deletion_list.nil? 
               end
               self.merged_fragment.public_send("#{name}=", values.to_a)
             else

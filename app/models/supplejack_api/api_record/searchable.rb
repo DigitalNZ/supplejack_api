@@ -94,10 +94,10 @@ module SupplejackApi
       end #included
       
       SUNSPOT_TYPE_NAMES = {
-        :string => :string, 
-        :integer => :integer, 
-        :datetime => :time, 
-        :boolean => :boolean
+        string: :string, 
+        integer: :integer, 
+        datetime: :time, 
+        boolean: :boolean
       }
   
       module ClassMethods

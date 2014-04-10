@@ -19,7 +19,7 @@ module SupplejackApi
       user_activity = new
       daily_activity ||= {}
   
-      ["user_sets", "search", "records", "custom_searches"].each do |group|
+      ['user_sets', 'search', 'records', 'custom_searches'].each do |group|
         group_activity = daily_activity[group]
   
         if group_activity
@@ -41,15 +41,15 @@ module SupplejackApi
         activities = {}
       end
   
-      activities["total"] = total
+      activities['total'] = total
       self[field] = activities
     end
   
     def calculate_total
       count = 0
-      ["user_sets", "search", "records", "custom_searches"].each do |group|
+      ['user_sets', 'search', 'records', 'custom_searches'].each do |group|
         values = self.send(group)
-        count += values["total"].to_i if values && values.is_a?(Hash)
+        count += values['total'].to_i if values && values.is_a?(Hash)
       end
       self.total = count
     end

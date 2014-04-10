@@ -3,7 +3,6 @@ module SupplejackApi
     include Mongoid::Document
     include Mongoid::Timestamps
     include ActiveModel::ForbiddenAttributesProtection
-    # include Sortable::Query
 
     store_in collection: 'users'
 
@@ -95,12 +94,12 @@ module SupplejackApi
       controller = request.params[:controller].to_s
       action = request.params[:action].to_s
   
-      if controller == "records" && action == "index"
-        controller, action = "search", "records"
-      elsif controller == "custom_searches" && action == "records"
-        controller, action = "search", "custom_search"
-      elsif controller == "set_items"
-        controller = "user_sets"
+      if controller == 'records' && action == 'index'
+        controller, action = 'search', 'records'
+      elsif controller == 'custom_searches' && action == 'records'
+        controller, action = 'search', 'custom_search'
+      elsif controller == 'set_items'
+        controller = 'user_sets'
         action = "#{action}_item"
       end
   

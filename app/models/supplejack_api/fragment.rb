@@ -6,10 +6,10 @@ module SupplejackApi
     delegate :record_id, to: :record
   
     embedded_in :record
-  	
+    
     default_scope asc(:priority)
   
-    field :source_id,               type: String
+    field :source_id, type: String
   
     # The priority is a integer value that can range from negative to positive values
     # the sources will be merged from positive to negative, which means that for single
@@ -19,16 +19,16 @@ module SupplejackApi
     # the thumbnails data in the thumbnail enrichment source is chosen over the 
     # primary_source (priority 0).
     #
-    field :priority,                type: Integer, default: 1
+    field :priority,  type: Integer, default: 1
 
     # Job ID uniquely identifies all sources that were written by one harvest or enrichment job
-    field :job_id,                  type: String
+    field :job_id,  type: String
   
     MONGOID_TYPE_NAMES = {
-      :string => String, 
-      :integer => Integer, 
-      :datetime => DateTime, 
-      :boolean => Boolean
+      string: String, 
+      integer: Integer, 
+      datetime: DateTime, 
+      boolean: Boolean
     }
   
     def self.build_mongoid_schema
@@ -43,7 +43,7 @@ module SupplejackApi
   
     def self.mutable_fields
       @@mutable_fields ||= begin
-        immutable_fields = ["_id", "_type", "source_id", "created_at", "updated_at"]
+        immutable_fields = ['_id', '_type', 'source_id', 'created_at', 'updated_at']
         mutable_fields = self.fields.keys - immutable_fields
         Hash[mutable_fields.map {|name| [name, self.fields[name].type] }]
       end.freeze
@@ -54,12 +54,11 @@ module SupplejackApi
     end
   
     def clear_attributes
-     	mutable_fields = self.class.mutable_fields.dup
+      mutable_fields = self.class.mutable_fields.dup
       mutable_fields.delete("priority") if self.primary?
       self.raw_attributes.each do |name, value|
         self[name] = nil if mutable_fields.has_key?(name)
       end
     end
-  
   end
 end

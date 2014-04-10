@@ -26,7 +26,7 @@ module SupplejackApi
       format = request.format.to_sym if [:xml, :json, :rss].include?(request.format.try(:to_sym))
   
       if error_message
-        render format => {:errors => error_message}, :status => :forbidden
+        render format: { errors: error_message }, status: :forbidden
       end
     end
   

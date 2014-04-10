@@ -34,5 +34,4 @@ module SupplejackApi
     #   params.require(:user).permit(:name, :username, :email, :encrypted_password, :sets, :authentication_token)
     # end
   end
-
 end

@@ -156,71 +156,71 @@ module SupplejackApi
       end
     end
 
-    describe "#reset_daily_activity" do
-      it "nullifies the daily_activity" do
+    describe '#reset_daily_activity' do
+      it 'nullifies the daily_activity' do
         user.reset_daily_activity
         user.daily_activity.should be_nil
       end
   
-      it "sets the daily_activity_stored flag to true" do
+      it 'sets the daily_activity_stored flag to true' do
         user.daily_activity_stored = false
         user.reset_daily_activity
         user.daily_activity_stored.should be_true
       end
   
-      it "resets the daily requests count" do
+      it 'resets the daily requests count' do
         user.daily_requests = 100
         user.reset_daily_activity
         user.daily_requests.should eq 0
       end
     end
 
-    describe "#over_limit?" do
-      context "user was updated today" do
+    describe '#over_limit?' do
+      context 'user was updated today' do
         before(:each) do
           user.updated_at = Time.now
         end
         
-        it "should return true when daily requests is greater than max requests" do
+        it 'should return true when daily requests is greater than max requests' do
           user.attributes = {daily_requests: 100, max_requests: 99}
           user.over_limit?.should be_true
         end
         
-        it "should return false when daily requests is less than max requests" do
+        it 'should return false when daily requests is less than max requests' do
           user.attributes = {daily_requests: 100, max_requests: 110}
           user.over_limit?.should be_false
         end
       end
       
-      context "user wasn't updated today" do
-        it "should always return false" do
+      context 'user wasn\'t updated today' do
+        it 'should always return false' do
           user.attributes = {updated_at: Time.now-1.day, daily_requests: 100, max_requests: 99}
           user.over_limit?.should be_false
         end
       end
     end
   
-    describe "#calculate_last_30_days_requests" do
+    describe '#calculate_last_30_days_requests' do
       let!(:user) { FactoryGirl.create(:user) }
       let!(:user_activity) { FactoryGirl.create(:user_activity, user_id: user.id, total: 5, created_at: Time.now) }
   
-      it "adds up the totals of the last 30 days" do
+      it 'adds up the totals of the last 30 days' do
         FactoryGirl.create(:user_activity, user_id: user.id, total: 2, created_at: Time.now - 5.days)
         user.calculate_last_30_days_requests.should eq 7
       end
   
-      it "ignores requests older than 30 days" do
+      it 'ignores requests older than 30 days' do
         FactoryGirl.create(:user_activity, user_id: user.id, total: 2, created_at: Time.now - 31.days)
         user.calculate_last_30_days_requests.should eq 5
       end
   
-      it "stores the requests in monthly_requests field" do
+      it 'stores the requests in monthly_requests field' do
         user.calculate_last_30_days_requests
         user.monthly_requests.should eq 5
       end
     end
   
-    describe "#requests_per_day" do
+    describe '#requests_per_day' do
       let!(:user) { FactoryGirl.create(:user) }
   
       before do
@@ -228,64 +228,64 @@ module SupplejackApi
         FactoryGirl.create(:user_activity, user_id: user.id, total: 2, created_at: Time.now)
       end
   
-      it "returns an array with the total requests per day" do
+      it 'returns an array with the total requests per day' do
         user.requests_per_day(2).should eq [5,2]
       end
   
-      it "returns 0 for days when there isn't any activity" do
+      it 'returns 0 for days when there isn\'t any activity' do
         FactoryGirl.create(:user_activity, user_id: user.id, total: 1, created_at: Time.now-3.day)
         user.requests_per_day(4).should eq [1,0,5,2]
       end
     end
   
-    describe "#name_or_user" do
-      it "should return the name" do
-        user.name = "Federico"
-        user.name_or_user.should eq("Federico")
+    describe '#name_or_user' do
+      it 'should return the name' do
+        user.name = 'Federico'
+        user.name_or_user.should eq('Federico')
       end
   
-      it "should return the username" do
-        user.name = ""
-        user.username = "fedegl"
-        user.name_or_user.should eq("fedegl")
+      it 'should return the username' do
+        user.name = ''
+        user.username = 'fedegl'
+        user.name_or_user.should eq('fedegl')
       end
     
-      it "should return the first part of the email address from name if email" do
-        user.name = "chris.mcdowall@dia.govt.nz"
-        user.name_or_user.should eq("chris.mcdowall")
+      it 'should return the first part of the email address from name if email' do
+        user.name = 'chris.mcdowall@dia.govt.nz'
+        user.name_or_user.should eq('chris.mcdowall')
       end
     
-      it "should return the first part of the email address from username if email" do
-        user.name = ""
-        user.username = "chris.mcdowall@dia.govt.nz"
-        user.name_or_user.should eq("chris.mcdowall")
+      it 'should return the first part of the email address from username if email' do
+        user.name = ''
+        user.username = 'chris.mcdowall@dia.govt.nz'
+        user.name_or_user.should eq('chris.mcdowall')
       end    
     end
 
-    describe "#find_by_api_key" do
-      it "searches for a user by its api key" do
-        User.should_receive(:where).with(authentication_token: "1234").and_return([double(:record)])
-        User.find_by_api_key("1234")
+    describe '#find_by_api_key' do
+      it 'searches for a user by its api key' do
+        User.should_receive(:where).with(authentication_token: '1234').and_return([double(:record)])
+        User.find_by_api_key('1234')
       end
       
-      it "returns nil when user not found" do
+      it 'returns nil when user not found' do
         User.stub(:where).and_return([])
-        User.find_by_api_key("1234").should be_nil
+        User.find_by_api_key('1234').should be_nil
       end
     end
     
-    describe "#custom_find" do
+    describe '#custom_find' do
       let(:user) { FactoryGirl.create(:user) }
   
-      it "finds the user by the api_key" do
+      it 'finds the user by the api_key' do
         User.custom_find(user.api_key).should eq user
       end
   
-      it "should raise a error when a record is not found" do
-        expect { User.custom_find("sfsdfsdf") }.to raise_error(Mongoid::Errors::DocumentNotFound)
+      it 'should raise a error when a record is not found' do
+        expect { User.custom_find('sfsdfsdf') }.to raise_error(Mongoid::Errors::DocumentNotFound)
       end
   
-      it "finds the user by the id" do
+      it 'finds the user by the id' do
         User.custom_find(user.id).should eq user
       end
     end

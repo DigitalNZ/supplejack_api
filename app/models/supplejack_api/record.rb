@@ -18,7 +18,7 @@ module SupplejackApi
       record_scope = record_scope.active unless options.delete(:status) == :all
   
       if id.to_s.match(/^\d+$/)
-        record = record_scope.where(:record_id => id).first
+        record = record_scope.where(record_id: id).first
       elsif id.to_s.match(/^[0-9a-f]{24}$/i)
         record = record_scope.find(id)
       end
@@ -95,7 +95,7 @@ module SupplejackApi
     end
   
     def active?
-      self.status == "active"
+      self.status == 'active'
     end
   
     def should_index?

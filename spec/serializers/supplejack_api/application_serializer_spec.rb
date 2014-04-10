@@ -1,4 +1,4 @@
-require "spec_helper"
+require 'spec_helper'
 
 module SupplejackApi
   describe ApplicationSerializer do 
@@ -9,16 +9,16 @@ module SupplejackApi
       @serializer = ApplicationSerializer.new(@user, options)
     end
   
-    describe "#default?" do
-      it "should return true when default is part of the groups" do
+    describe '#default?' do
+      it 'should return true when default is part of the groups' do
         serializer(groups: [:default]).default?.should be_true
       end
       
-      it "should return false when the group is verbose" do
+      it 'should return false when the group is verbose' do
         serializer(groups: [:verbose]).default?.should be_false
       end
       
-      it "should return false" do
+      it 'should return false' do
         serializer(groups: nil).default?.should be_false
         serializer(groups: []).default?.should be_false
       end

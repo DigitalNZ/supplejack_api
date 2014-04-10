@@ -13,7 +13,7 @@ module SupplejackApi
 	    string field, store: false
 	  end
 
-	  group :supplejack_fields do
+	  group :internal_fields do
 	    fields [
 	      :record_id,  
 		    :status, 

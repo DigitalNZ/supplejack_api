@@ -1,0 +1,14 @@
+defaults: &defaults
+  solr:
+    port: 8983
+    path: /solr
+    hostname: localhost
+
+development:
+  <<: *defaults
+
+test:
+  <<: *defaults
+  solr:
+    log_level: DEBUG
+

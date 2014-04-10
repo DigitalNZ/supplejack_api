@@ -7,6 +7,7 @@ require 'mongoid/tree'
 require 'strong_parameters'
 require 'active_model_serializers'
 require 'figaro'
+require 'unicode_utils'
 require 'rest_client'
 
 module SupplejackApi

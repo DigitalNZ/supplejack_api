@@ -56,7 +56,7 @@ module SupplejackApi
   
           # **category**: *interface*
           boost do
-            calculate_boost
+            # calculate_boost
           end
         end
   
@@ -160,11 +160,11 @@ module SupplejackApi
       end
   
       # **category**: *interface*
-      def calculate_boost
-        unboostable = self.content_partner & self.class.problematic_partners
-        return 0.05 if unboostable.present?
-        is_catalog_record ? 1 : 1.1
-      end
+      # def calculate_boost
+      #   unboostable = self.content_partner & self.class.problematic_partners
+      #   return 0.05 if unboostable.present?
+      #   is_catalog_record ? 1 : 1.1
+      # end
       
       # **category**: *dnz*
       # def sort_title

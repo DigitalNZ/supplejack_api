@@ -7,16 +7,16 @@ module SupplejackApi
       landing_url            'http://google.com/landing.html'
   
       factory :record_with_fragment do
-        fragments  {[FactoryGirl.build(:fragment)]}
+        fragments  { [FactoryGirl.build(:fragment)] }
       end
     end
   
     factory :fragment, class: SupplejackApi::Fragment do
-      source_id     'source_name'
-      priority      0
-      name        'John Doe'
-      email			['jdoe@example.com']
-      nz_citizen	true
+      source_id       'source_name'
+      priority        0
+      name            'John Doe'
+      email			      ['jdoe@example.com']
+      nz_citizen	    true
     end
   end
 

@@ -6,12 +6,9 @@ module SupplejackApi
       max_requests          1000
       role                  'developer'
     end
-  end
-  
-  FactoryGirl.define do
+
     factory :user_activity, class: SupplejackApi::UserActivity do
       total 10
     end
   end
-
 end

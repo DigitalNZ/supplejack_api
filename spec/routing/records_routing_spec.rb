@@ -9,11 +9,11 @@ module SupplejackApi
     end
 
     it 'routes /records.format to records#index' do
-    	expect(get '/records.json').should route_to(controller: 'supplejack_api/records', action: 'index', format: 'json')
+    	expect(get '/records.json').to route_to(controller: 'supplejack_api/records', action: 'index', format: 'json')
     end
 
     it 'routes /records/1.format to records#index' do
-    	expect(get '/records/99.json').should route_to(controller: 'supplejack_api/records', action: 'show', id: '99', format: 'json')
+    	expect(get '/records/99.json').to route_to(controller: 'supplejack_api/records', action: 'show', id: '99', format: 'json')
     end
   end
 end

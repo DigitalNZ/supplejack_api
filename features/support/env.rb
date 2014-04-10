@@ -11,12 +11,16 @@ ENV["RAILS_ROOT"] ||= File.dirname(__FILE__) + '../../../spec/dummy'
 # files.
 
 require 'cucumber/rails'
+require 'sunspot_test/cucumber'
+require "json_spec/cucumber"
+require 'xml_spec/cucumber'
 require 'factory_girl_rails'
+require 'timecop'
 
 # Capybara defaults to CSS3 selectors rather than XPath.
 # If you'd prefer to use XPath, just uncomment this line and adjust any
 # selectors in your step definitions to use the XPath syntax.
-# Capybara.default_selector = :xpath
+Capybara.default_selector = :css
 
 # By default, any exception happening in your Rails application will bubble up
 # to Cucumber so that your scenario will fail. This is a different from how 

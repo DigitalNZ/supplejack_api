@@ -11,7 +11,7 @@ Then /^the request is successful$/ do
 end
 
 When /^the user requests an API resource with an invalid API key$/ do
-  visit(user_path(@user, format: :json, api_key: "WrongKEY"))
+  visit(user_path(@user, format: :json, api_key: 'invalidkey'))
 end
 
 Then /^(?:it|he|she) should see the error: "(.*)"$/ do |error_message|

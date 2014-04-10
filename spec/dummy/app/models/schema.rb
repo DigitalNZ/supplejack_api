@@ -1,17 +1,5 @@
-class Schema
-  include SupplejackApi::SchemaDefinition
+class Schema < SupplejackApi::SupplejackSchema
 
-  # Fields
-  [
-    :record_id,  
-    :status, 
-    :internal_identifier, 
-    :created_at, 
-    :updated_at,
-  ].each do |field|
-    string field, store: false
-  end
-  
   string :name,         search_boost: 10,     search_as: [:fulltext]
   string :address,      search_boost: 2,      search_as: [:fulltext]
   string :email,        multi_value: true

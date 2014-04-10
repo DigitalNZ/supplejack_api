@@ -18,7 +18,6 @@ module SupplejackApi
       email			['jdoe@example.com']
       nz_citizen	true
     end
-  
   end
 
 end

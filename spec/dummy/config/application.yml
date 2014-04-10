@@ -1,5 +1,6 @@
 defaults: &defaults
   REQUEST_LIMIT_MAILER: 'develop@digitalnz.org'
+  HTTP_HOST: 'http://test.host'
 
 development:
   <<: *defaults

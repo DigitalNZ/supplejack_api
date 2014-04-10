@@ -38,7 +38,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'therubyracer', '~> 0.12.0'
   s.add_dependency 'gabba', '~> 0.3.0'
 
-  # s.add_dependency 'sunspot_rails', '= 2.0.0.pre.120417'
+  s.add_dependency 'sunspot_rails', '= 2.0.0.pre.120417'
   s.add_dependency 'mongoid', '~> 3.1.2'
   s.add_dependency 'mongoid_auto_inc'
   s.add_dependency 'mongoid-tree', '~> 1.0.0'
@@ -64,9 +64,9 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'binding_of_caller', '~> 0.7.1'
   s.add_development_dependency 'rb-fsevent', '~> 0.9.1'
   s.add_development_dependency 'simplecov', '~> 0.6.4'
-  # s.add_development_dependency 'sunspot_matchers', '~> 1.3.0.2'
-  # s.add_development_dependency 'sunspot_solr', '~> 1.3.3'
-  # s.add_development_dependency 'sunspot_test', '~> 0.4.0'
+  s.add_development_dependency 'sunspot_matchers', '~> 1.3.0.2'
+  s.add_development_dependency 'sunspot_solr', '~> 1.3.3'
+  s.add_development_dependency 'sunspot_test', '~> 0.4.0'
 
   if RUBY_VERSION =~ /1.9/
     Encoding.default_external = Encoding::UTF_8

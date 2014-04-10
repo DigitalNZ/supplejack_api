@@ -1,12 +1,14 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV['RAILS_ENV'] ||= 'test'
+
 require File.expand_path("../dummy/config/environment.rb",  __FILE__)
 require 'rails/application'
+require 'rails/mongoid'
 require 'rspec/rails'
-require 'rspec/autorun'
 require 'factory_girl_rails'
 
 require 'timecop'
+require 'sunspot_matchers'
 
 Rails.backtrace_cleaner.remove_silencers!
 
@@ -29,12 +31,12 @@ RSpec.configure do |config|
 
   config.before(:each) do
     DatabaseCleaner.clean
-    # Sunspot.session = Sunspot::Rails::StubSessionProxy.new(Sunspot.session)
+    Sunspot.session = Sunspot::Rails::StubSessionProxy.new(Sunspot.session)
     Timecop.return
     
     Schema.stub(:default_role) { double(:role, name: :developer) }
     Schema.stub_chain(:roles, :keys) { [:developer] }
   end
 
-  # config.include SunspotMatchers
+  config.include SunspotMatchers
 end

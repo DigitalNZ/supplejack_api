@@ -1,6 +1,13 @@
 require 'rails'
 require 'devise'
+require 'sunspot'
+require 'mongoid'
+require 'mongoid_auto_inc'
+require 'mongoid/tree'
 require 'strong_parameters'
+require 'active_model_serializers'
+require 'figaro'
+require 'rest_client'
 
 module SupplejackApi
   class Engine < ::Rails::Engine

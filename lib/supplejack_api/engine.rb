@@ -1,15 +1,18 @@
 require 'rails'
 require 'devise'
+require 'kaminari'
+require 'simple_form'
+require 'state_machine'
 require 'sunspot'
+require 'active_model_serializers'
 require 'mongoid'
 require 'mongoid_auto_inc'
 require 'mongoid/tree'
 require 'strong_parameters'
-require 'active_model_serializers'
 require 'figaro'
 require 'unicode_utils'
 require 'rest_client'
-require 'better_errors'
+require 'lazy_high_charts'
 
 module SupplejackApi
   class Engine < ::Rails::Engine

@@ -1,0 +1,11 @@
+development:
+  solr_index: 1
+  'user_activity,flush_records': 1
+
+staging:
+  solr_index: 6
+  'user_activity,flush_records,index_source': 1
+  'flush_records,index_source': 1
+
+production:
+  solr_index: 1

@@ -1,0 +1,35 @@
+development:
+  SOLR_PING: 'http://localhost:8982/solr/admin/ping'
+  HTTP_HOST: 'http://localhost:3000'
+  WORKER_API_URL: 'http://localhost:3002'
+  WWW_DOMAIN: 'dnz-www.dev'
+  HOST: 'http://localhost:3000'
+  DEVISE_MAILER: 'mailer@example.com'
+  RESQUE_USER: "admin"
+  RESQUE_PASS: "password"
+  SECRET_TOKEN: '30 char hash'
+  HARVESTER_IPS: '127.0.0.1'
+  MONGOID_HOSTS: '192.168.0.70:27017'
+  BLACKLIST_MAILER_TO: 'blacklist@mailer.com'
+  BLACKLIST_MAILER_FROM: 'mailer@blacklist.org'
+  REQUEST_LIMIT_MAILER: 'develop@blacklist.org'
+  THUMBNAIL_PROVIDER: "http://thumbnail-provider.library.govt/thumnail_flag/get?dps_pid="
+  LARGE_THUMBNAIL_PROVIDER: "http://large-thumbnail-provider.library.govt/thumnail_flag/get?dps_pid="
+
+test:
+  SOLR_PING: 'http://test.host'
+  HTTP_HOST: 'http://test.host'
+  WORKER_API_URL: 'http://localhost:3002'
+  WWW_DOMAIN: 'test.host'
+  HOST: 'http://test.host'
+  DEVISE_MAILER: 'mailer@example.com'
+  RESQUE_USER: "admin"
+  RESQUE_PASS: "password"
+  SECRET_TOKEN: '30 char hash'
+  HARVESTER_IPS: '127.0.0.1'
+  MONGOID_HOSTS: 'localhost:27017'
+  BLACKLIST_MAILER_TO: 'blacklist@mailer.com'
+  BLACKLIST_MAILER_FROM: 'mailer@blacklist.org'
+  REQUEST_LIMIT_MAILER: 'develop@blacklist.org'
+  THUMBNAIL_PROVIDER: "http://thumbnail-provider.library.govt/thumnail_flag/get?dps_pid="
+  LARGE_THUMBNAIL_PROVIDER: "http://large-thumbnail-provider.library.govt/thumnail_flag/get?dps_pid="

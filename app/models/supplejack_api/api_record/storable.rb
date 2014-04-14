@@ -15,7 +15,7 @@ module SupplejackApi
         index landing_url: 1
         index updated_at: 1
         
-        auto_increment :record_id, session: 'strong'
+        auto_increment :record_id, session: 'strong', collection: 'records'
   
         field :internal_identifier,         type: String
         field :landing_url,                 type: String

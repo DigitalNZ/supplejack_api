@@ -1,4 +1,5 @@
 module Utils
+
   extend self
 
   def load_yaml(file_name)

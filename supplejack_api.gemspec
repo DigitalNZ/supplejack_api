@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.description = 'Supplejack API'
   s.license     = 'MIT'
 
-  s.files = Dir["{app,config,db,lib}/**/*"] + ['MIT-LICENSE', 'Rakefile', 'README.rdoc']
+  s.files = Dir["{app,config,db,lib}/**/*"] + ['Rakefile', 'README.md']
   s.test_files = Dir['spec/**/*']
 
   s.add_dependency 'rails', '~> 3.2.12'
@@ -32,22 +32,33 @@ Gem::Specification.new do |s|
   s.add_dependency 'dimensions', '~> 1.2.0'
   s.add_dependency 'mimemagic', '~> 0.1.8'
   s.add_dependency 'dalli', '~> 1.1.2'
+  s.add_dependency 'simple_form', '~> 2.1.1'
+  s.add_dependency 'lazy_high_charts', '~> 1.3.2'
   s.add_dependency 'figaro', '~> 0.7.0'
 
-  s.add_dependency 'uglifier', '~> 1.3.0'
+  s.add_dependency 'jquery-rails', '~> 3.1.0'
+  s.add_dependency 'sass-rails', '~> 3.2.5'
+  s.add_dependency 'coffee-rails','~> 3.2.2'
+  s.add_dependency 'uglifier', '~> 2.5.0'
   s.add_dependency 'therubyracer', '~> 0.12.0'
+  s.add_dependency 'compass-rails', '~> 1.0.3'
+  s.add_dependency 'zurb-foundation', '~> 3.2.2'
   s.add_dependency 'gabba', '~> 0.3.0'
 
   s.add_dependency 'sunspot_rails', '= 2.0.0.pre.120417'
-  s.add_dependency 'mongoid', '~> 3.1.2'
-  s.add_dependency 'mongoid_auto_inc'
+  s.add_dependency 'mongoid'
+  s.add_dependency 'mongoid_auto_inc', '~> 0.1.0'
   s.add_dependency 'mongoid-tree', '~> 1.0.0'
 
   s.add_dependency 'resque', '~> 1.22.0'
   s.add_dependency 'resque-scheduler', '~> 2.0.0'
   s.add_dependency 'resque-pool', '~> 0.3.0'
 
+  # Adding sunspot_solr so app has access to sunspot:solr rake tasks
+  s.add_dependency 'sunspot_solr', '~> 1.3.3'
+
   ## Development dependancies
+  
   s.add_development_dependency 'rspec-rails', '~> 2.14.0'
   s.add_development_dependency 'cucumber-rails', '~> 1.3.0'
   s.add_development_dependency 'capybara', '~> 1.1.2'
@@ -57,6 +68,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'mongoid-rspec', '~> 1.5.4'
   s.add_development_dependency 'json_spec', '~> 1.0.3'
   s.add_development_dependency 'xml_spec', '~> 0.1.0' # This is a gem created by fedegl to test the XML responses, its part of the Boost github organization account
+  s.add_development_dependency 'sunspot_matchers', '~> 1.3.0.2'
   s.add_development_dependency 'timecop', '~> 0.4.6'
   s.add_development_dependency 'pry', '~> 0.9.12'
   s.add_development_dependency 'pry-rails', '~> 0.2.2'
@@ -64,12 +76,13 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'binding_of_caller', '~> 0.7.1'
   s.add_development_dependency 'rb-fsevent', '~> 0.9.1'
   s.add_development_dependency 'simplecov', '~> 0.6.4'
-  s.add_development_dependency 'sunspot_matchers', '~> 1.3.0.2'
-  s.add_development_dependency 'sunspot_solr', '~> 1.3.3'
   s.add_development_dependency 'sunspot_test', '~> 0.4.0'
+  
+  # s.add_development_dependency 'zeus' # TODO SEE my_plan.rb FOR MORE INFO
 
   if RUBY_VERSION =~ /1.9/
     Encoding.default_external = Encoding::UTF_8
     Encoding.default_internal = Encoding::UTF_8
   end
+
 end

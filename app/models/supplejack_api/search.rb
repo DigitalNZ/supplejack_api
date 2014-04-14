@@ -11,18 +11,6 @@ module SupplejackApi
   
     def initialize(options={})
       @options = options.dup
-  
-      # **category**: *dnz*
-      @options = Search::BackwardsCompatible.new(@options).params if v1? || v2?
-      
-      # **category**: *dnz*
-      if @options.any?
-        [:and, :or, :without].each do |operator|
-          filter_value = @options[operator].try(:delete, :display_collection)
-          @options[operator][:primary_collection] = filter_value if filter_value
-        end
-      end
-  
       @options.reverse_merge!(facets: "", and: {}, or: {}, without: {}, page: 1, per_page: 20, record_type: 0, facets_per_page: 10, facets_page: 1, sort: nil, direction: "desc", fields: "default", facet_query: {}, debug: nil)
     end
   
@@ -33,13 +21,6 @@ module SupplejackApi
       return @facet_list if @facet_list
   
       @facet_list = options[:facets].split(",").map {|f| f.strip.to_sym}
-  
-      # **category**: *dnz*
-      if pos = @facet_list.index(:display_collection)
-        @display_collection = true
-        @facet_list[pos] = :primary_collection
-      end
-  
       @facet_list.keep_if {|f| Record.valid_facets.include?(f) }
       @facet_list
     end
@@ -47,13 +28,9 @@ module SupplejackApi
     def field_list
       return @field_list if @field_list
 
-      valid_fields = Schema.fields.keys.dup + [:thumbnail_url, :large_thumbnail_url, :thumbnail, :large_thumbnail, :id]
-      # **category**: *dnz*
-      valid_fields << [:source_url, :collection]
-      valid_attachment_fields = Attachment.fields.keys.dup
+      valid_fields = Schema.fields.keys.dup
 
       @field_list = options[:fields].split(",").map {|f| f.strip.gsub(':', '_').to_sym}
-
       @field_list.delete_if do |f|
         attachment_match = f.to_s.match(/attachment\.(.*)/)
         (attachment_match && !valid_attachment_fields.include?(attachment_match[1])) || (!attachment_match && !valid_fields.include?(f))
@@ -64,9 +41,6 @@ module SupplejackApi
   
     # Returns all valid groups of fields
     # The groups are extracted from the "fields" parameter
-    #
-    # Valid fields are:
-    # default, verbose
     #
     def group_list
       return @group_list if @group_list
@@ -100,34 +74,10 @@ module SupplejackApi
       self.solr_search_object.results
     end
   
-    # **category**: *dnz*
-    def v2?
-      @options[:version] == "v2"
-    end
-  
-    # **category**: *dnz*
-    def v1?
-      @options[:version] == "v1"
-    end
-  
-    # **category**: *dnz*
-    def backwards?
-      v1? || v2?
-    end
-  
-    def api_version
-      options[:version].last.to_i rescue 3
-    end
-  
     def jsonp
       @options[:jsonp].present? ? @options[:jsonp] : nil
     end
-  
-    # **category**: *dnz*
-    def display_collection?
-      @display_collection
-    end
-  
+    
     # It's currently required to make the active_model_serializers gem to work with XML
     # The XML Serialization is handled by the respective serializer
     #
@@ -147,10 +97,7 @@ module SupplejackApi
   
     def sort
       value = @options[:sort].to_sym
-      # **category**: *dnz*
-      mapping = {date: :sort_date, title: :sort_title}
-      value = mapping[value] || value
-  
+      
       begin
         field = Sunspot::Setup.for(Record).field(value)
         return value
@@ -209,11 +156,6 @@ module SupplejackApi
       return true if value == "true"
       return nil if ["nil", "null"].include?(value)
   
-      # **category**: *dnz*
-      if name.to_s == "year" or name.to_s == "ndha_rights"
-        value = self.extract_range(value)
-      end
-  
       value = value.strip if value.is_a?(String)
       value
     end
@@ -266,10 +208,6 @@ module SupplejackApi
   
     def search_builder
       @search_builder ||= Sunspot.new_search(Record) do
-        unless options[:record_type] == "all"
-          with(:record_type, record_type)
-        end
-  
         facet_list.each do |facet_name|
           facet(facet_name, :limit => facets_per_page, :offset => facets_offset)
         end
@@ -291,11 +229,6 @@ module SupplejackApi
             params['q.alt'] = options[:solr_query]
             params[:defType] = 'dismax'
           end
-        end
-  
-        if options[:geo_bbox]
-          coords = options[:geo_bbox].split(',').map(&:to_f)
-          with(:lat_lng).in_bounding_box([coords[2], coords[1]], [coords[0], coords[3]])
         end
   
         # Facet Queries
@@ -433,7 +366,5 @@ module SupplejackApi
       end
     end
   
-  
   end
-
 end

@@ -9,6 +9,7 @@ require 'active_model_serializers'
 require 'figaro'
 require 'unicode_utils'
 require 'rest_client'
+require 'better_errors'
 
 module SupplejackApi
   class Engine < ::Rails::Engine

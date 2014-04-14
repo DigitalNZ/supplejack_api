@@ -13,7 +13,7 @@ module SupplejackApi
           #   attachment_names
           # end
   
-          # string  :internal_identifier
+          string  :internal_identifier
           
           string :source_id do
             primary_fragment.source_id
@@ -24,7 +24,7 @@ module SupplejackApi
           # boolean :available_large_thumbnail
   
           # string  :object_name,       multiple: true
-  
+
           # string  :placename,         multiple: true
           # text    :placename do
           #   placename
@@ -55,9 +55,9 @@ module SupplejackApi
           Record.build_sunspot_schema(self)
   
           # **category**: *interface*
-          boost do
+          # boost do
             # calculate_boost
-          end
+          # end
         end
   
   
@@ -132,25 +132,19 @@ module SupplejackApi
         end
       
         # **category**: *interface*
-        # def valid_facets
-        #   facets = [
-        #     :content_partner, :display_content_partner, :contributing_partner, :collection, :primary_collection, :category, 
-        #     :creator, :contributor, :language, :publisher, :rights, :usage, :tag, :dc_type, :dnz_type, :format, :is_catalog_record,
-        #     :is_natlib_record, :date, :published_date, :year, :decade, :century, :subject, :marsden_code, :anzsrc_code,
-        #     :library_collection, :internal_identifier, :thesis_level, :eprints_type, :ndha_rights, :is_commercial_use,
-        #     :atl_free_download, :atl_purchasable_download
-        #   ]
-          
-        #   Record.authority_fields.each do |field|
-        #     facets += ["#{field}_id".to_sym, "#{field}_text".to_sym]
-        #   end
-          
-        #   facets += Record.lom_fields.map {|f| "lom_#{f}".to_sym }
-        #   facets
-        # end
+        def valid_facets
+          facets = []
+
+          Schema.fields.each do |name,field|
+            search_as = field.search_as || []
+            facets << name.to_sym if search_as.include? :filter  
+          end
+
+          facets
+        end
         
         def valid_groups
-          Schema.groups.keys # + [:attachments, :locations, :authorities]
+          Schema.groups.keys
         end
   
         # **category**: *dnz*
@@ -161,9 +155,9 @@ module SupplejackApi
   
       # **category**: *interface*
       # def calculate_boost
-      #   unboostable = self.content_partner & self.class.problematic_partners
-      #   return 0.05 if unboostable.present?
-      #   is_catalog_record ? 1 : 1.1
+        # unboostable = self.content_partner & self.class.problematic_partners
+        # return 0.05 if unboostable.present?
+        # is_catalog_record ? 1 : 1.1
       # end
       
       # **category**: *dnz*
@@ -205,10 +199,10 @@ module SupplejackApi
       # end
       
       # **category**: *interface*
-      def solr_dates
-        return [] unless date
-        date.map {|d| Date.parse(d).to_time rescue nil}.compact
-      end
+      # def solr_dates
+      #   return [] unless date
+      #   date.map {|d| Date.parse(d).to_time rescue nil}.compact
+      # end
       
       # **category**: *dnz*
       # def copy_text_fields(*args)

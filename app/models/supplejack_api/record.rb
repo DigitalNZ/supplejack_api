@@ -3,6 +3,7 @@ module SupplejackApi
   	include ApiRecord::Storable
     include ApiRecord::Searchable
     include ApiRecord::FragmentHelpers
+    include ActiveModel::SerializerSupport
 
     attr_accessor :next_record, :previous_record, :next_page, :previous_page
     attr_accessor :should_index_flag

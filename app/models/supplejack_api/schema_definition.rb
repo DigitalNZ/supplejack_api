@@ -11,9 +11,9 @@ module SupplejackApi
     included do
       cattr_accessor :fields, :groups, :roles, :default_role
     end
-
+  
     module ClassMethods
-    	[:string, :integer, :datetime, :boolean].each do |type|
+      [:string, :integer, :datetime, :boolean].each do |type|
         define_method(type) do |*args, &block|
           field(type, *args, &block)
         end

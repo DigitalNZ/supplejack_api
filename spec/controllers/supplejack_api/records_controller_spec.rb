@@ -52,6 +52,49 @@ module SupplejackApi
         response.body.should eq({errors: ['The page parameter can not exceed 100,000']}.to_json)
       end
     end
+
+    describe "GET 'show'" do
+      before(:each) do
+        @record = double(:record)
+        controller.stub(:current_user) { @user }
+      end
+      
+      it "should find the record and assign it" do
+        Record.should_receive(:custom_find).with("123", @user, {}).and_return(@record)
+        get :show, id: 123, search: {}, api_key: "abc123"
+        assigns(:record).should eq(@record)
+      end
+      
+      it "renders a error when records is not found" do
+        Record.stub(:custom_find).and_raise(Mongoid::Errors::DocumentNotFound.new(Record, ["123"], ["123"]))
+        get :show, id: 123, search: {}, api_key: "abc123", :format => "json"
+        response.body.should eq({:errors => "Record with ID 123 was not found"}.to_json)
+      end
+      
+      it "merges the scope in the options" do
+        Record.should_receive(:custom_find).with("123", @user, {"and" => {"category" => "Books"}}).and_return(@record)
+        get :show, id: 123, search: {and: {category: "Books"}}, api_key: "abc123"
+        assigns(:record).should eq(@record)
+      end
+    end
+
+     describe "#default_serializer_options" do
+      before(:each) do
+        @search = Search.new
+        Search.stub(:new) { @search }
+      end
+      
+      it "should return a hash with info for serialization" do
+        controller.default_serializer_options
+        assigns(:search).should eq(@search)
+      end
+      
+      it "should merge in the search fields" do
+        @search.stub(:field_list).and_return([:title, :description])
+        @search.stub(:group_list).and_return([:verbose])
+        controller.default_serializer_options.should eq({fields: [:title, :description], groups: [:verbose]})
+      end
+    end
   end
 
 end

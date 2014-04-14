@@ -1,0 +1,5 @@
+clear_index_buffer:
+  every: 5m
+  class: ClearIndexBuffer
+  queue: solr_index
+  description: "This job will clear and index/remove any records ids that remain in Redis"

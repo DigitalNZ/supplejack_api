@@ -1,18 +1,13 @@
 class Schema < SupplejackApi::SupplejackSchema
 
-  string :name,         search_boost: 10,     search_as: [:fulltext]
-  string :address,      search_boost: 2,      search_as: [:fulltext]
-  string :email,        multi_value: true
-  string :children,      multi_value: true
-  boolean :nz_citizen,                        search_as: [:filter]
-  datetime :birthdate
-  integer :age
-
-  # Roles
-  role :developer do
-  	default true
-  end
-  role :admin
+  # Fields
+  string    :name,         search_boost: 10,      search_as: [:filter, :fulltext]
+  string    :address,      search_boost: 2,       search_as: [:filter, :fulltext]
+  string    :email,        multi_value: true,     search_as: [:filter]
+  string    :children,     multi_value: true
+  boolean   :nz_citizen,                          search_as: [:filter]
+  datetime  :birthdate,                           search_as: [:filter]
+  integer   :age
 
   # Groups
   group :default do
@@ -22,13 +17,20 @@ class Schema < SupplejackApi::SupplejackSchema
     ]
   end
   group :all do
+    includes [:default]
     fields [
-      :name,
-      :address,
+      :email,
+      :children,
       :nz_citizen,
       :birthdate,
-      :age,
+      :age
     ]
   end
+
+   # Roles
+  role :developer do
+    default true
+  end
+  role :admin
 
 end

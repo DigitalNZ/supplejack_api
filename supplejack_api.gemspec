@@ -19,7 +19,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'rails', '~> 3.2.12'
 
-  s.add_dependency 'thin', '~> 1.4.1'
+  s.add_dependency 'thin', '~> 1.6.2'
   s.add_dependency 'kaminari', '~> 0.14.0'
   s.add_dependency 'strong_parameters', '~> 0.1.5'
   s.add_dependency 'unicode_utils', '~> 1.4.0'

@@ -1,6 +1,7 @@
 defaults: &defaults
   REQUEST_LIMIT_MAILER: 'develop@digitalnz.org'
   HTTP_HOST: 'http://test.host'
+  MONGOID_HOSTS: 'localhost:27017'
 
 development:
   <<: *defaults

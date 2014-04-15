@@ -19,7 +19,7 @@ Feature: Get Record
 		And the JSON should have "record/email"
 		And the JSON should have "record/children"
 		And the JSON should have "record/nz_citizen"
-		And the JSON should have "record/birthdate"
+		And the JSON should have "record/birth_date"
 		And the JSON should have "record/age"
 
 

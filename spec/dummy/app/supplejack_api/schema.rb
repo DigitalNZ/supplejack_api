@@ -5,9 +5,9 @@ class Schema < SupplejackApi::SupplejackSchema
   string    :address,      search_boost: 2,       search_as: [:filter, :fulltext]
   string    :email,        multi_value: true,     search_as: [:filter]
   string    :children,     multi_value: true
-  boolean   :nz_citizen,                          search_as: [:filter]
-  datetime  :birthdate,                           search_as: [:filter]
   integer   :age
+  datetime  :birth_date
+  boolean   :nz_citizen,                          search_as: [:filter]
 
   # Groups
   group :default do
@@ -22,7 +22,7 @@ class Schema < SupplejackApi::SupplejackSchema
       :email,
       :children,
       :nz_citizen,
-      :birthdate,
+      :birth_date,
       :age
     ]
   end

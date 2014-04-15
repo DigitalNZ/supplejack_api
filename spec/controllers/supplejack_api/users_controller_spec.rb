@@ -1,4 +1,4 @@
-require "spec_helper"
+require 'spec_helper'
 
 module SupplejackApi
   describe UsersController do
@@ -7,7 +7,7 @@ module SupplejackApi
     let(:user) { FactoryGirl.create(:user, authentication_token: "abc123", role: "admin") }
   
     describe 'GET show' do
-      it "should assign @user" do
+      it 'should assign @user' do
         get :show, id: user.id, api_key: user.authentication_token
         assigns(:user).should eq(user)
       end

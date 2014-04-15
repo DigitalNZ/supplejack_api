@@ -6,9 +6,8 @@ The API is configured via the `schema.rb` file which exposes a [DSL](http://en.w
 
 ## Usage
 
-1. Create a new rails app (without active_record) `rails _3.2.12_ new <name> --skip-active-record --skip-javascript --skip-test-unit --skip-sprockets`
 1. Create a new rails app `rails _3.2.12_ new <name>`
-1. Add `gem 'supplejack_api', git: 'git@scm.digitalnz.org:supplejack/api'` to Gemfile
+1. Add `gem 'supplejack_api', git: 'https://github.com/DigitalNZ/supplejack_api.git'` to Gemfile
 1. Install the supplejack_api gem `bundle install`
 1. Run the Supplejack API installer `rails generate supplejack_api:install`
 1. Install dependencies `bundle install`

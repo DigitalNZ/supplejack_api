@@ -1,4 +1,4 @@
-Given(/^these Records:$/) do |table|
+Given(/^these records:$/) do |table|
   table.hashes.each do |hash|
   	record = FactoryGirl.create(:record, internal_identifier: "abc:#{rand(1000..10000)}")
     fragment = FactoryGirl.build(:fragment, hash)

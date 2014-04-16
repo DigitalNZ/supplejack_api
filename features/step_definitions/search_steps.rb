@@ -15,3 +15,7 @@ end
 When /^I search for a field "(.*)"$/ do |search_text|
   execute_search(search_text.gsub('\\', ''), nil, @format)
 end
+
+When /^I search for "(.*?)" with suggest$/ do |search_text|
+  execute_search(search_text, nil, @format, {suggest: true})
+end

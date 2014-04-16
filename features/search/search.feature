@@ -3,7 +3,7 @@ Feature: Search
 
 	Background:
 		Given a user with a API Key
-		And these Records:
+		And these records:
 			| name        | address    | email                 | age | children  | nz_citizen |
 			| John Doe    | Wellington | ["john@example.com"]  | 30  | ["Sally"] | true       |
 			| Sally Smith | Auckland   | ["sally@example.com"] | 22  | ["James"] | true       |

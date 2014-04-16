@@ -1,5 +1,4 @@
 module SupplejackApi
-  # **category**: *core*
   class Search
     include ActiveModel::SerializerSupport
   

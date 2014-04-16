@@ -16,7 +16,9 @@ The API is configured via the `schema.rb` file which exposes a [DSL](http://en.w
 
 ## Supplejack Stack
 
-This API is part of the Supplejack stack - comprised of the "Worker":https://github.com/DigitalNZ/supplejack_worker and the "Manager":https://github.com/DigitalNZ/supplejack_manager. See the "Setting up Supplejack Stack guide":https://github.com/DigitalNZ/supplejack_api/blob/master/Setting-up-Supplejack-stack.md for details.
+This API is part of the Supplejack stack - comprised of the [Worker](https://github.com/DigitalNZ/supplejack_worker) and the [Manager](https://github.com/DigitalNZ/supplejack_manager). 
+
+See the [Setting up Supplejack Stack guide](https://github.com/DigitalNZ/supplejack_api/blob/master/Setting-up-Supplejack-stack.md) for details.
 
 
 ## Engine Development

@@ -5,6 +5,7 @@ class Schema < SupplejackApi::SupplejackSchema
   string    :address,      search_boost: 2,       search_as: [:filter, :fulltext]
   string    :email,        multi_value: true,     search_as: [:filter]
   string    :children,     multi_value: true
+  string    :contact,      multi_value: true
   integer   :age
   datetime  :birth_date
   boolean   :nz_citizen,                          search_as: [:filter]

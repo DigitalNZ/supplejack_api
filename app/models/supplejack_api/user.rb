@@ -130,7 +130,7 @@ module SupplejackApi
   
     def requests_per_day(days=30)
       user_activities = self.user_activities.gt(created_at: Time.now-days.days).asc(:created_at).to_a
-  
+
       requests = []
       date = Date.today - days.days
       while date < Date.today

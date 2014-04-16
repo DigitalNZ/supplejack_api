@@ -1,37 +1,24 @@
-def last_json
-  page.source
-end
-
-def last_xml
-  page.source
-end
-
 Given(/^these Records:$/) do |table|
   table.hashes.each do |hash|
-  	record = FactoryGirl.build(:record, internal_identifier: "abc:#{rand(1000..10000)}")
-  	fragment = record.fragments.build
-  	[:address, :email, :age, :children, :nz_citizen].each do |field|
-      if SupplejackApi::Fragment.fields[field.to_s].try(:type) == Array
-        value = hash[field].try(:split, ', ')
-      else
-        value = hash[field]
-      end
-      fragment.send("#{field}=", value) if value.present?
-    end
-
+  	record = FactoryGirl.create(:record, internal_identifier: "abc:#{rand(1000..10000)}")
+    fragment = FactoryGirl.build(:fragment, hash)
+    record.fragments.build
+    record.fragments << fragment
     record.save
   end
 end
 
 Given /^a record$/ do
   @record = FactoryGirl.create(:record)
+  @record.fragments << FactoryGirl.build(:fragment)
+  @record.save
 end
 
 When(/^I get a record$/) do
-  visit(record_path(@record, format: 'json', api_key: @user.authentication_token, fields: 'all'))
+  visit(record_url(@record, format: 'json', api_key: @user.api_key, fields: 'all'))
 end
 
 When(/^I visit index page for the record$/) do
-  visit(records_path(api_key: @user.authentication_token))
-  p page.body
+  @request_url = records_url({ format: 'json', api_key: @user.api_key })
+  visit(@request_url)
 end

@@ -224,17 +224,17 @@ module SupplejackApi
       let!(:user) { FactoryGirl.create(:user) }
   
       before do
-        FactoryGirl.create(:user_activity, user_id: user.id, total: 5, created_at: Time.now-1.day)
+        FactoryGirl.create(:user_activity, user_id: user.id, total: 5, created_at: Time.now - 1.day)
         FactoryGirl.create(:user_activity, user_id: user.id, total: 2, created_at: Time.now)
       end
   
       it 'returns an array with the total requests per day' do
-        user.requests_per_day(2).should eq [5,2]
+        user.requests_per_day(2).should eq [5, 2]
       end
   
       it 'returns 0 for days when there isn\'t any activity' do
-        FactoryGirl.create(:user_activity, user_id: user.id, total: 1, created_at: Time.now-3.day)
-        user.requests_per_day(4).should eq [1,0,5,2]
+        FactoryGirl.create(:user_activity, user_id: user.id, total: 1, created_at: Time.now - 3.day)
+        user.requests_per_day(4).should eq [1, 0, 5, 2]
       end
     end
   

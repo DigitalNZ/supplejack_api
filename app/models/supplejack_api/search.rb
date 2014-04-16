@@ -11,7 +11,7 @@ module SupplejackApi
   
     def initialize(options={})
       @options = options.dup
-      @options.reverse_merge!(facets: "", and: {}, or: {}, without: {}, page: 1, per_page: 20, record_type: 0, facets_per_page: 10, facets_page: 1, sort: nil, direction: "desc", fields: "default", facet_query: {}, debug: nil)
+      @options.reverse_merge!(facets: '', and: {}, or: {}, without: {}, page: 1, per_page: 20, record_type: 0, facets_per_page: 10, facets_page: 1, sort: nil, direction: "desc", fields: "default", facet_query: {}, debug: nil)
     end
   
     # Return an array of valid facets
@@ -286,7 +286,7 @@ module SupplejackApi
       return @solr_search_object if @solr_search_object
       @solr_search_object = execute_solr_search
   
-      if options[:debug] == "true" && @solr_search_object.respond_to?(:query)
+      if options[:debug] == 'true' && @solr_search_object.respond_to?(:query)
         self.solr_request_params = @solr_search_object.query.to_params
       end
   

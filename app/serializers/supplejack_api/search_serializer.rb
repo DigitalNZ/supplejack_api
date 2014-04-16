@@ -54,7 +54,7 @@ module SupplejackApi
       facets = []
       object.facets.map do |facet|
         values = facet.rows.map do |row|
-          {name: row.value, count: row.count}
+          { name: row.value, count: row.count }
         end
         facets << {name: facet_name(facet.name).to_s, values: values}
       end
@@ -68,7 +68,7 @@ module SupplejackApi
     end
     
     def as_json(options={})
-      hash = {:search => serializable_hash}
+      hash = { search: serializable_hash }
       hash[:search][:facets] = json_facets
       hash
     end

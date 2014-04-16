@@ -12,7 +12,7 @@ ENV["RAILS_ROOT"] ||= File.dirname(__FILE__) + '../../../spec/dummy'
 
 require 'cucumber/rails'
 require 'sunspot_test/cucumber'
-require "json_spec/cucumber"
+require 'json_spec/cucumber'
 require 'xml_spec/cucumber'
 require 'factory_girl_rails'
 require 'timecop'

@@ -1,16 +1,14 @@
-production:
-  solr:
-    hostname: localhost
-    port: 8180
-    path: /solr4
-    auto_commit_after_request: false
-
 development:
   solr:
-    # hostname: 192.168.0.70
+    hostname: localhost
     port: 8983
     path: /solr
+
+test:
+  solr:
     hostname: localhost
+    port: 8983
+    log_level: DEBUG
 
 staging:
   solr:
@@ -21,8 +19,9 @@ staging:
     pid_dir: '/var/run/tomcat'
     auto_commit_after_request: false
 
-test:
+production:
   solr:
     hostname: localhost
-    port: 8983
-    log_level: DEBUG
+    port: 8180
+    path: /solr4
+    auto_commit_after_request: false

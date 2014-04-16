@@ -1,3 +1,11 @@
+def last_json
+  page.source
+end
+
+def last_xml
+  page.source
+end
+
 Then /^the JSON at "([^"]*)" should be the requested url$/ do |path|
   last_json.should be_json_eql("\"#{@request_url}\"").at_path(path)
 end

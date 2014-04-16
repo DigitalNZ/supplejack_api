@@ -31,7 +31,7 @@ module SupplejackApi
   
       context 'multiple fragments' do
         before(:each) do
-          record.fragments << FactoryGirl.build(:fragment, name: 'James Smith', email: ['js@google.com'])
+          record.fragments << FactoryGirl.build(:fragment, name: 'James Smith', email: ['jamessmith@example.com'])
           record.save!
         end
   
@@ -45,19 +45,19 @@ module SupplejackApi
   
         context 'multi-value fields' do
           it 'should store the merged values of the field' do
-            record.merged_fragment.email.should eq ['jdoe@example.com', 'js@google.com']
+            record.merged_fragment.email.should eq ['johndoe@example.com', 'jamessmith@example.com']
           end
   
           it 'should not return duplicate values' do
-            primary.email = ['jdoe@example.com', 'js@google.com']
+            primary.email = ['johndoe@example.com', 'jamessmith@example.com']
             record.save
-            record.merged_fragment.email.should eq ['jdoe@example.com', 'js@google.com']
+            record.merged_fragment.email.should eq ['johndoe@example.com', 'jamessmith@example.com']
           end
   
           it 'should not return nil values' do
             secondary.email = nil
             record.save
-            record.merged_fragment.email.should eq ['jdoe@example.com']
+            record.merged_fragment.email.should eq ['johndoe@example.com']
           end
         end
       end
@@ -79,14 +79,14 @@ module SupplejackApi
           record.name.should eq 'John Doe'
         end
   
-        its 'returns an array for an empty mutli-value field' do
-          record.children.should eq []
+        it 'returns an array for an empty mutli-value field' do
+          record.contact.should eq []
         end
       end
   
       context 'multiple fragments' do
         before(:each) do
-          record.fragments << FactoryGirl.build(:fragment, email: ['joe@gmail.com'])
+          record.fragments << FactoryGirl.build(:fragment, email: ['jamessmith@example.com'])
           record.save!
         end
   
@@ -95,7 +95,7 @@ module SupplejackApi
         end
   
         it 'should return the multi-value field values from merged_fragment' do
-          record.email.should eq ['jdoe@example.com', 'joe@gmail.com']
+          record.email.should eq ['johndoe@example.com', 'jamessmith@example.com']
         end
       end
     end

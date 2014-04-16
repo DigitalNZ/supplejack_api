@@ -2,7 +2,7 @@ Sunspot.session = Sunspot::ResqueSessionProxy.new(Sunspot.session) unless Rails.
 
 OriginalDismax = Sunspot::Query::Dismax
 
-require_relative "../../lib/sunspot/sunspot_spellcheck"
+require_relative '../../../../lib/sunspot/sunspot_spellcheck'
 
 class PatchedDismax < OriginalDismax
 

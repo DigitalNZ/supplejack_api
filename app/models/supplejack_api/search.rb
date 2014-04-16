@@ -102,12 +102,12 @@ module SupplejackApi
         field = Sunspot::Setup.for(Record).field(value)
         return value
       rescue Sunspot::UnrecognizedFieldError => e
-        return "score"
+        return 'score'
       end
     end
   
     def direction
-      if ["asc", "desc"].include?(@options[:direction])
+      if ['asc', 'desc'].include?(@options[:direction])
         @options[:direction].to_sym
       else
         :desc
@@ -152,9 +152,9 @@ module SupplejackApi
     end
   
     def to_proper_value(name, value)
-      return false if value == "false"
-      return true if value == "true"
-      return nil if ["nil", "null"].include?(value)
+      return false if value == 'false'
+      return true if value == 'true'
+      return nil if ['nil', 'null'].include?(value)
   
       value = value.strip if value.is_a?(String)
       value
@@ -191,7 +191,7 @@ module SupplejackApi
         Rails.logger.info e.message
         sunspot = {}
       rescue Timeout::Error, Errno::ECONNREFUSED, Errno::ECONNRESET => e
-        self.errors << "Solr is temporarily unavailable please try again in a few seconds."
+        self.errors << 'Solr is temporarily unavailable please try again in a few seconds.'
         Rails.logger.info e.message
         sunspot = {}
       ensure
@@ -209,7 +209,7 @@ module SupplejackApi
     def search_builder
       @search_builder ||= Sunspot.new_search(Record) do
         facet_list.each do |facet_name|
-          facet(facet_name, :limit => facets_per_page, :offset => facets_offset)
+          facet(facet_name, limit: facets_per_page, offset: facets_offset)
         end
   
         if options[:suggest]

@@ -7,51 +7,12 @@ module SupplejackApi
         include Sunspot::Mongoid
   
         searchable if: :should_index? do
-          # **category**: *core*
-  
-          # text    :attachment_name do
-          #   attachment_names
-          # end
-  
           string  :internal_identifier
           
           string :source_id do
             primary_fragment.source_id
           end
   
-          # string  :has_large_thumbnail_url
-          # boolean :available_thumbnail
-          # boolean :available_large_thumbnail
-  
-          # string  :object_name,       multiple: true
-
-          # string  :placename,         multiple: true
-          # text    :placename do
-          #   placename
-          # end
-          # string  :country,           multiple: true
-          # string  :region,            multiple: true
-          # location :geo_co_ords do
-          #   locations.keep_if do |l|
-          #     l.lat.present? and l.lng.present? 
-          #   end.first
-          # end
-          # latlon  :lat_lng,           multiple: true do
-          #   locations.keep_if do |l|
-          #     l.lat.present? and l.lng.present? 
-          #   end
-          # end
-          # boolean :has_lat_lng do
-          #   lat.present? && lng.present?
-          # end
-          # integer :record_type
-  
-          # Sets
-          # string  :set_id,            multiple: true do
-          #   set_ids
-          # end
-          
-          # **category**: *interface*
           Record.build_sunspot_schema(self)
   
           # **category**: *interface*
@@ -59,39 +20,7 @@ module SupplejackApi
             # calculate_boost
           # end
         end
-  
-  
-        # Defines the methods *_id and *_text where the Star (*) is replaced by
-        # every field in the Authorities, Terms and Other relationships.
-        #
-        # @example Return a array of values collected from the Authority subcollection
-        #   record.name_authority_id => [123, 124]
-        #   record.name_authority_text => ["New Zealand", "Wellington"]
-        #
-        # **category**: *dnz*
-        # (Record.authority_fields + Record.relationship_fields).each do |field|
-        #   define_method("#{field}_id") do
-        #     self.authorities.select{|a| a.name == field.to_s}.map {|auth| auth.authority_id}
-        #   end
-          
-        #   define_method("#{field}_text") do
-        #     self.authorities.select{|a| a.name == field.to_s}.map {|auth| auth.text}
-        #   end
-        # end
-        
-        # Defines methods to retrieve lom values from the User Contributed Metadata
-        # subcollection
-        #
-        # @example Return a array of values collected from the UcmRecord subcollection
-        #
-        # **category**: *dnz*
-        # Record.lom_fields.each do |field|
-        #   define_method("lom_#{field}") do
-        #     self.ucm_records.where(name: field).map {|ucm| ucm.value }
-        #   end
-        # end
-  
-      end #included
+      end
       
       SUNSPOT_TYPE_NAMES = {
         string: :string, 
@@ -101,7 +30,6 @@ module SupplejackApi
       }
   
       module ClassMethods
-  
         def build_sunspot_schema(builder)
           Schema.fields.each do |name,field|
             options = {}
@@ -131,7 +59,6 @@ module SupplejackApi
           end
         end
       
-        # **category**: *interface*
         def valid_facets
           facets = []
 
@@ -146,11 +73,6 @@ module SupplejackApi
         def valid_groups
           Schema.groups.keys
         end
-  
-        # **category**: *dnz*
-        # def problematic_partners
-        #   ["mychillybin", "PhotoSales"]
-        # end
       end
   
       # **category**: *interface*
@@ -159,93 +81,6 @@ module SupplejackApi
         # return 0.05 if unboostable.present?
         # is_catalog_record ? 1 : 1.1
       # end
-      
-      # **category**: *dnz*
-      # def sort_title
-      #   title.gsub(/[^A-Za-z0-9 ]/i, "").strip if title.present?
-      # end
-      
-      # ### Location helpers
-      #
-      # **category**: *core*
-      # def placename
-      #   locations.map {|l| l.placename}
-      # end
-      
-      # def country
-      #   locations.map {|l| l.country}
-      # end
-      
-      # def region
-      #   locations.map {|l| l.region}
-      # end
-      
-      # def lat
-      #   latitudes = locations.map {|l| l.lat}.compact
-      #   latitudes.first
-      # end
-      
-      # def lng
-      #   longitudes = locations.map {|l| l.lng}.compact
-      #   longitudes.first
-      # end
-  
-      # def set_ids
-      #   UserSet.where(:privacy.in => ["public","hidden"], :"set_items.record_id" => self.record_id).map(&:id)
-      # end
-      
-      # def object_name
-      #   attachments.map {|a| a.name}
-      # end
-      
-      # **category**: *interface*
-      # def solr_dates
-      #   return [] unless date
-      #   date.map {|d| Date.parse(d).to_time rescue nil}.compact
-      # end
-      
-      # **category**: *dnz*
-      # def copy_text_fields(*args)
-      #   text = []
-      #   args.each do |attribute|
-      #     value = self.send(attribute.to_sym)
-      #     text << value if value.present?
-      #   end
-      #   text.flatten.join(" ")
-      # end
-      
-      # **category**: *core*
-      # def has_large_thumbnail_url
-      #   "Y" if large_thumbnail_url.present?
-      # end
-  
-      # **category**: *core*
-      # def available_thumbnail
-      #   !!self.thumbnail.try(:available)
-      # end
-  
-      # **category**: *core*
-      # def available_large_thumbnail
-      #   !!self.large_thumbnail.try(:available)
-      # end
-      
-      # **category**: *dnz*
-      # def collection_any_id
-      #   collection_parent_id + collection_root_id + collection_mid_id
-      # end
-      
-      # **category**: *core*
-      # def attachment_names
-      #   attachments.map do |attachment|
-      #     attachment.name
-      #   end.join " "
-      # end
-      
-      # **category**: *dnz?* *core?* *needs_work*
-      # def ndha_rights
-      #   attachments.find_all { |a| !a.ndha_rights.nil? }.map(&:ndha_rights).uniq
-      # end
-      
     end
   end
 

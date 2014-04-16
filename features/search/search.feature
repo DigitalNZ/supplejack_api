@@ -29,18 +29,46 @@ Feature: Search
 
 	Scenario: Search for a record using the OR operator
 		# When I search for "Wellington OR Auckland"
-  #   Then the JSON at "search/result_count" should be 2
-  #   And the JSON at "search/results/0/name" should be "John Doe"
-  #   And the JSON at "search/results/1/name" should be "Sally Smith"
+	  # Then the JSON at "search/result_count" should be 2
+	  # And the JSON at "search/results/0/name" should be "John Doe"
+	  # And the JSON at "search/results/1/name" should be "Sally Smith"
 
 	Scenario: Scenario: Search for a record using the NOT operator
 
 	Scenario: Search for a record targeting a specific field
 		# When I search for a field "email_sm:\"sally@example.com\""
-  #   Then the JSON at "search/result_count" should be 1
-  #   And the JSON at "search/results/0/email" should be "sally@example.com"
+  	# Then the JSON at "search/result_count" should be 1
+  	# And the JSON at "search/results/0/email" should be "sally@example.com"
 
 	Scenario: Should not search for the term in other fields
+
 	Scenario: Return facets in JSON format
+		When I search for "John" with facet "name"
+    Then the JSON at "search/facets" should be:
+    """
+      {
+        "name": {
+          "John Doe": 1
+        }
+      }
+    """
 	Scenario: Return facets in XML format
+		When I request a XML format
+    And I search for "Auckland" with facet "address"
+    Then the response should include the following XML
+    """
+      <search>
+        <facets type="array">
+          <facet>
+            <name>address</name>
+            <values type="array">
+              <value>
+                <name>Auckland</name>
+                <count type="integer">1</count>
+              </value>
+            </values>
+          </facet>
+        </facet>
+      </search>
+    """
 

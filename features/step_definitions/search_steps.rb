@@ -4,7 +4,6 @@ def execute_search(text, facet, format, filters={})
   options[:format] = @format.to_s if @format.present?
   options.merge!(filters)
   @request_url = records_url(options)
-  p @request_url
   visit(@request_url)
 end
 

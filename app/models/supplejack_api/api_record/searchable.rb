@@ -7,7 +7,7 @@ module SupplejackApi
         include Sunspot::Mongoid
   
         searchable if: :should_index? do
-          string  :internal_identifier
+          string :internal_identifier
           
           string :source_id do
             primary_fragment.source_id

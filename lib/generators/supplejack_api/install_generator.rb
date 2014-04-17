@@ -56,7 +56,7 @@ module SupplejackApi
 
         inject_into_file('Gemfile', after: /^gem.*supplejack_api.*/) do
           string = [""]
-          string << "gem 'active_model_serializers', git: 'https://github.com/fedegl/active_model_serializers.git'"
+          string << "gem 'active_model_serializers', git: 'https://github.com/boost/active_model_serializers.git'"
           string << "gem 'mongoid_auto_inc', git: 'https://github.com/boost/mongoid_auto_inc.git'"
 
           string.join("\n")

@@ -26,16 +26,14 @@ module SupplejackApi
   
     def field_list
       return @field_list if @field_list
-
       valid_fields = Schema.fields.keys.dup
 
       @field_list = options[:fields].split(",").map {|f| f.strip.gsub(':', '_').to_sym}
+      @field_list.delete_if do |f|
+        !valid_fields.include?(f)
+      end
       
-      # @field_list.delete_if do |f|
-      #   attachment_match = f.to_s.match(/attachment\.(.*)/)
-      #   (attachment_match && !valid_attachment_fields.include?(attachment_match[1])) || (!attachment_match && !valid_fields.include?(f))
-      # end
-      # @field_list
+      @field_list
     end
   
     # Returns all valid groups of fields

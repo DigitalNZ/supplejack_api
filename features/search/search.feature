@@ -28,16 +28,16 @@ Feature: Search
     And the JSON at "search/request_url" should be the requested url
 
 	Scenario: Search for a record using the OR operator
-		# When I search for "Wellington OR Auckland"
-	  # Then the JSON at "search/result_count" should be 2
-	  # And the JSON at "search/results/0/name" should be "John Doe"
-	  # And the JSON at "search/results/1/name" should be "Sally Smith"
+		When I search for "Wellington OR Auckland"
+	  Then the JSON at "search/result_count" should be 2
+	  And the JSON at "search/results/0/name" should be "John Doe"
+	  And the JSON at "search/results/1/name" should be "Sally Smith"
 
 	Scenario: Scenario: Search for a record using the NOT operator
 
 	Scenario: Search for a record targeting a specific field
-		# When I search for a field "email_sm:\"sally@example.com\""
-  	# Then the JSON at "search/result_count" should be 1
+		# When I search for a field "name_sm:\"John Doe\""
+  # 	Then the JSON at "search/result_count" should be 1
   	# And the JSON at "search/results/0/email" should be "sally@example.com"
 
 	Scenario: Should not search for the term in other fields

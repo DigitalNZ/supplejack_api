@@ -1,5 +1,5 @@
 defaults: &defaults
-  SOLR_PING: 'http://localhost:8983/solr/admin/ping'
+  SOLR_PING: 'http://localhost:8982/solr/admin/ping'
   HTTP_HOST: 'http://localhost:3000'
   WORKER_API_URL: 'http://localhost:3002'
   WWW_DOMAIN: 'www.dev'

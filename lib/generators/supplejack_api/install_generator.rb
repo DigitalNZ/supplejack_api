@@ -30,6 +30,12 @@ module SupplejackApi
         copy_file 'config/resque-pool.yml'
         copy_file 'config/resque_schedule.yml'
         copy_file 'config/sunspot.yml'
+
+        puts "\nGenerating secret token"
+
+        inject_into_file('config/application.yml', before: /^\sdevelopment:/) do
+          "  SECRET_TOKEN: '#{Digest::SHA1.hexdigest([Time.now, rand].join)}'\n"
+        end
       end
 
       def environment_files

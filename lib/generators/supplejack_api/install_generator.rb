@@ -45,12 +45,6 @@ module SupplejackApi
         gsub_file('config/environments/production.rb', 'Dummy::Application', Rails.application.class.to_s)
       end
 
-      def solr_config_files
-        puts "\nInstalling Solr config files into solr/"
-
-        directory 'solr'
-      end
-
       def mount_engine
         puts "\nMounting SupplejackApi::Engine at / in config/routes.rb"
 

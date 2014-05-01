@@ -2,15 +2,9 @@ defaults: &defaults
   SOLR_PING: 'http://localhost:8983/solr/admin/ping'
   HTTP_HOST: 'http://localhost:3000'
   WORKER_API_URL: 'http://localhost:3002'
-  WWW_DOMAIN: 'www.dev'
   DEVISE_MAILER: 'mailer@example.com'
-  RESQUE_USER: 'admin'
-  RESQUE_PASS: 'password'
   HARVESTER_IPS: '127.0.0.1'
-  REQUEST_LIMIT_MAILER: 'develop@digitalnz.org'
-  BLACKLIST_MAILER_TO: 'blacklist@mailer.com'
-  BLACKLIST_MAILER_FROM: 'mailer@blacklist.org'
-  HTTP_HOST: 'http://test.host'
+  REQUEST_LIMIT_MAILER: 'develop@example.com'
   MONGOID_HOSTS: 'localhost:27017'
 
 development:
@@ -20,7 +14,6 @@ test:
   <<: *defaults
   SOLR_PING: 'http://test.host'
   HTTP_HOST: 'http://test.host'
-  WWW_DOMAIN: 'test.host'
 
 staging:
   <<: *defaults

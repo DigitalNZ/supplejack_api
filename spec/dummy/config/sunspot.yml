@@ -1,28 +1,30 @@
-development:
-  solr:
+defaults: &defaults
+  solr: &solr
     hostname: localhost
     port: 8983
     path: /solr
     log_level: DEBUG
 
+development:
+  <<: *defaults
+    
 test:
-  solr:
-    hostname: localhost
-    port: 8983
-    log_level: DEBUG
+  <<: *defaults
 
-staging:
-  solr:
-    hostname: localhost
-    port: 8080
-    path: '/solr4'
-    log_level: WARNING 
-    pid_dir: '/var/run/tomcat'
-    auto_commit_after_request: false
+# Uncomment this to configure staging environment
+# staging:
+#   <<: *defaults
+#   solr:
+#     port: 8080
+#     path: '/solr4'
+#     log_level: WARNING 
+#     pid_dir: '/var/run/tomcat'
+#     auto_commit_after_request: false
 
-production:
-  solr:
-    hostname: localhost
-    port: 8180
-    path: /solr4
-    auto_commit_after_request: false
+# Uncomment this to configure production environment
+# production:
+#   <<: *defaults
+#   solr:
+#     port: 8180
+#     path: /solr4
+#     auto_commit_after_request: false

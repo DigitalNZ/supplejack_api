@@ -29,9 +29,8 @@ module SupplejackApi
           Fragment.mutable_fields.each do |name, field_type|
             if field_type == Array
               values = Set.new
-              deletions = []
               sorted_fragments.each do |s| 
-                values += (Array(s.public_send(name)) - deletions) 
+                values += Array(s.public_send(name))
               end
               self.merged_fragment.public_send("#{name}=", values.to_a)
             else
@@ -42,6 +41,10 @@ module SupplejackApi
         end
       end
   
+      # Fetch the attribute from the underlying 
+      # merged_fragment or only fragment.
+      # Means that record.{attribute} (ie. record.name) works for convenience
+      # and abstracts away the fact that fragments exist
       def method_missing(symbol, *args, &block)
         type = Fragment.mutable_fields[symbol.to_s]
         if self.merged_fragment
@@ -52,33 +55,8 @@ module SupplejackApi
         (type == Array) ? Array(value) : value
       end
   
-      def fragment_many_relations(name)
-        if name == :authorities
-          merge_authorities
-        else
-          objects = []
-          sorted_fragments.each {|s| objects += s.public_send(name) }
-          objects
-        end
-      end
-  
-      def fragment_one_relations(name)
-        values = sorted_fragments.to_a.map {|f| f.public_send(name) }
-        values.compact.first
-      end
-  
       def sorted_fragments
         self.fragments.sort_by {|s| s.priority || Integer::INT32_MAX }
-      end
-  
-      def merge_authorities
-        authorities = {}
-        sorted_fragments.each do |fragment|
-          fragment.authorities.each do |authority|
-            authorities["#{authority.authority_id}-#{authority.name}"] ||= authority
-          end
-        end
-        authorities.values
       end
   
       def find_fragment(source_id)

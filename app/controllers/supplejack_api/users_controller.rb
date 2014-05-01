@@ -1,5 +1,3 @@
-require_dependency 'supplejack_api/application_controller'
-
 module SupplejackApi
   class UsersController < ApplicationController
     

@@ -6,6 +6,7 @@ defaults: &defaults
   HARVESTER_IPS: '127.0.0.1'
   REQUEST_LIMIT_MAILER: 'develop@example.com'
   MONGOID_HOSTS: 'localhost:27017'
+  HARVESTER_IPS: '127.0.0.1'
 
 development:
   <<: *defaults

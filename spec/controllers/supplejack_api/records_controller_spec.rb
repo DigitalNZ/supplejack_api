@@ -39,7 +39,7 @@ module SupplejackApi
         response.body.should eq({errors: 'Error'}.to_json)
       end
       
-      it 'renders a error when the requested field doesn\'t exist' do
+      it "renders a error when the requested field doesn't exist" do
         SearchSerializer.stub(:new).and_raise(Sunspot::UnrecognizedFieldError.new('No field configured for Record with name "something"'))
         get :index, api_key: 'apikey', format: 'json', and: {:something => true}
         response.body.should eq({:errors => 'No field configured for Record with name "something"'}.to_json)

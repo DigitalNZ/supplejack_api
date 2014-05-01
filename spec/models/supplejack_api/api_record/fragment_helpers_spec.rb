@@ -109,7 +109,7 @@ module SupplejackApi
         record.find_fragment('thumbnails_enrichment').should eq fragment
       end
   
-      it 'should return nil when it doesn\'t find a fragment' do
+      it "should return nil when it doesn't find a fragment" do
         record.find_fragment('nlnzcat').should be_nil
       end
     end

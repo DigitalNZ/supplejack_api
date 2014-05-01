@@ -103,5 +103,55 @@ module SupplejackApi
         fragment.nz_citizen.should be_nil
       end
     end
+
+    describe "#update_from_harvest" do
+      it "updates the name with the value" do
+        fragment.update_from_harvest({name: 'John Smith'})
+        fragment.name.should eq 'John Smith'
+      end
+
+      it "handles nil values" do
+        fragment.update_from_harvest(nil)
+      end
+
+      it "ignores invalid fields" do
+        fragment.update_from_harvest({invalid_field: 'http://yahoo.com'})
+        fragment['invalid_field'].should be_nil
+      end
+
+      it "stores uniq values for each field" do
+        fragment.update_from_harvest({children: ['Jim', 'Bob', 'Jim']})
+        fragment.children.should eq ['Jim', 'Bob']
+      end
+      
+      it "updates the updated_at even if the attributes didn't change'" do
+        new_time = Time.now + 1.day
+        Timecop.freeze(new_time) do
+          fragment.update_from_harvest({})
+          fragment.updated_at.to_i.should eq(new_time.to_i)
+        end
+      end
+
+      it "uses the attribute setters for strings" do
+        fragment.should_receive('name=').with('John Smith')
+        fragment.update_from_harvest({:name => 'John Smith'})
+      end
+
+      it "uses the attribute setters for Arrays" do
+        fragment.should_receive('children=').with(['Jim', 'Bob'])
+        fragment.update_from_harvest({:children => ['Jim', 'Bob']})
+      end
+
+      it "stores the first element in the array for non array fields" do
+        fragment.update_from_harvest({name: ['John Smith', 'Jim Bob']})
+        fragment.name.should eq 'John Smith'
+      end
+
+      it "should set the source_id" do
+        fragment.update_from_harvest({source_id: ['census']})
+        fragment.source_id.should eq 'census'
+      end
+    end
+
   end
 end

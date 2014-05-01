@@ -22,7 +22,7 @@ module SupplejackApi
         expect { Record.custom_find(111) }.to raise_error(Mongoid::Errors::DocumentNotFound)
       end
   
-      it 'shouldn\'t call find when the mongo id is invalid' do
+      it "shouldn't call find when the mongo id is invalid" do
         Record.should_not_receive(:find)
         expect { Record.custom_find('1234567abc') }.to raise_error(Mongoid::Errors::DocumentNotFound)
       end
@@ -61,13 +61,13 @@ module SupplejackApi
           Record.custom_find(54321, nil, {status: :all}).should eq @record
         end
   
-        it 'doesn\'t find next and previous record without any search options' do
+        it "doesn't find next and previous record without any search options" do
           Record.stub_chain(:unscoped, :where, :first) { @record }
           @record.should_not_receive(:find_next_and_previous_records)
           Record.custom_find(54321, nil, {status: :all})
         end
   
-        it 'doesn\'t break with nil options' do
+        it "doesn't break with nil options" do
           Record.custom_find(54321, nil, nil).should eq @record
         end
       end
@@ -92,7 +92,7 @@ module SupplejackApi
         Record.find_multiple([r1.id, r2.id]).should have(2).items
       end
   
-      it 'should find multiple records with ObjectId\'s and numeric id\'s' do
+      it "should find multiple records with ObjectId's and numeric id's" do
         r1 = FactoryGirl.create(:record, record_id: 997)
         r2 = FactoryGirl.create(:record)
         Record.find_multiple([997, r2.id]).should include(r1, r2)

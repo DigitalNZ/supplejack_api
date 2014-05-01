@@ -124,7 +124,7 @@ module SupplejackApi
   
     def calculate_last_30_days_requests
       count = 0
-      self.user_activities.gt(created_at: Time.now-30.days).each {|activity| count += activity.total.to_i }
+      self.user_activities.gt(created_at: Time.now-30.days).each {|activity| count += activity.total.to_i}
       self.monthly_requests = count
     end
   

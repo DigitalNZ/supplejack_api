@@ -122,19 +122,19 @@ module SupplejackApi
         @session.should have_search_params(:keywords, 'dog')
       end
   
-      it 'doesn\'t downcase SOLR operators' do
+      it "doesn't downcase SOLR operators" do
         @search.options[:text] = 'dog NOT beach'
         @search.execute_solr_search
         @session.should have_search_params(:keywords, 'dog NOT beach')
       end
   
-      it 'doesn\'t upcase words containing solr operators' do
+      it "doesn't upcase words containing solr operators" do
         @search.options[:text] = 'New Zealand'
         @search.execute_solr_search
         @session.should have_search_params(:keywords, 'new zealand')
       end
   
-      it 'doesn\'t downcase when targeting a specific field' do
+      it "doesn't downcase when targeting a specific field" do
         @search.options[:text] = "name_sm:\"John Doe\""
         @search.execute_solr_search
         @session.should have_search_params(:keywords, "name_sm:\"John Doe\"")
@@ -160,7 +160,7 @@ module SupplejackApi
         query_fields_for_search.split(' ').sort.should include('address_text', 'name_text')
       end
   
-      it 'should not use the query fields if text isn\'t present' do
+      it "should not use the query fields if text isn't present" do
         @search.options[:query_fields] = [:name, :address]
         @search.execute_solr_search
         query_fields_for_search.should be_nil
@@ -478,7 +478,7 @@ module SupplejackApi
         @search.solr_request_params.should eq({:param1 => 1})
       end
   
-      it 'doesn\'t set the solr request parameters' do
+      it "doesn't set the solr request parameters" do
         @search.stub(:execute_solr_search) { double(:solr_request, query: double(:query, to_params: {param1: 1})) }
         @search.solr_search_object
         @search.solr_request_params.should be_nil

@@ -1,5 +1,3 @@
-require_dependency 'supplejack_api/application_controller'
-
 module SupplejackApi
   class RecordsController < ApplicationController
     
@@ -32,7 +30,7 @@ module SupplejackApi
 
         respond_with @record, serializer: RecordSerializer
       rescue Mongoid::Errors::DocumentNotFound
-        render request.format.to_sym => {:errors => "Record with ID #{params[:id]} was not found" }, :status => :not_found 
+        render request.format.to_sym => {:errors => "Record with ID #{params[:id]} was not found"}, :status => :not_found 
       end
     end
 

@@ -2,6 +2,7 @@ module SupplejackApi
   class Record
   	include ApiRecord::Storable
     include ApiRecord::Searchable
+    include ApiRecord::Harvestable
     include ApiRecord::FragmentHelpers
     include ActiveModel::SerializerSupport
 

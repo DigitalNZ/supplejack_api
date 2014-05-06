@@ -55,7 +55,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'resque-pool', '~> 0.3.0'
 
   # Adding sunspot_solr so app has access to sunspot:solr rake tasks
-  s.add_dependency 'sunspot_solr', '~> 1.3.3'
+  s.add_dependency 'sunspot_solr', '~> 2.1.0'
 
   ## Development dependancies
   

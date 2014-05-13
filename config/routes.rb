@@ -32,5 +32,5 @@ SupplejackApi::Engine.routes.draw do
   get '/status', to: 'records#status', as: 'status'
 
 
-  mount Resque::Server.new, at: '/resque'
+  mount ::Resque::Server.new, at: '/resque'
 end

@@ -1,9 +1,10 @@
 module SupplejackApi
   class HarvesterConstraint
       
-    def initialize
-      @ips = ENV['HARVESTER_IPS'].gsub(/\s+/, "").split(',')
-      rescue Exception => e
+    def initialize1
+      begin
+       @ips = ENV['HARVESTER_IPS'].gsub(/\s+/, "").split(',')
+      rescue
         # Allow supplejack:install generator to work without application.yml file
         @ips = ['127.0.0.1']
       end

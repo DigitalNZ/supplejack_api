@@ -1,3 +1,11 @@
+# The majority of the Supplejack code is Crown copyright (C) 2014, New Zealand Government, 
+# and is licensed under the GNU General Public License, version 3.
+# Some components are third party components licensed under the GPL or MIT licenses 
+# or otherwise publicly available. See https://github.com/DigitalNZ/supplejack_api for details. 
+# 
+# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# the Department of Internal Affairs. http://digitalnz.org/supplejack
+
 # Sample localization file for English. Add more files in this directory for other locales.
 # See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 

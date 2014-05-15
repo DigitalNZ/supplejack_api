@@ -1,7 +1,7 @@
 module SupplejackApi
   class HarvesterConstraint
       
-    def initialize1
+    def initialize
       begin
        @ips = ENV['HARVESTER_IPS'].gsub(/\s+/, "").split(',')
       rescue

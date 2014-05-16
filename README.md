@@ -4,7 +4,7 @@ The Supplejack API is a [mountable engine](http://guides.rubyonrails.org/engines
 
 For more information on how to configure and use this application refer to the [documentation](http://digitalnz.github.io/supplejack)
 
-## Usage
+## Installation
 
 [Install & Setup instructions](http://digitalnz.github.io/supplejack/start/install-setup.html)
 

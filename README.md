@@ -1,24 +1,12 @@
 # SupplejackApi
 
-This is a [mountable engine](http://guides.rubyonrails.org/engines.html) which provides functionality to store, index and retrieve metadata via an API.
+The Supplejack API is a [mountable engine](http://guides.rubyonrails.org/engines.html) which provides functionality to store, index and retrieve metadata via an API.
 
-The API is configured via the `schema.rb` file which exposes a [DSL](http://digitalnz.github.io/supplejack/api/schema-dsl-domain-specific-language.html) for defining various aspects of your API.
+For more information on how to configure and use this application refer to the [documentation](http://digitalnz.github.io/supplejack)
 
 ## Usage
 
-1. Create a new rails app `rails _3.2.12_ new <name>`
-1. Add `gem 'supplejack_api', git: 'git@github.com:DigitalNZ/supplejack_api.git'` to Gemfile
-1. Install the supplejack_api gem `bundle install`
-1. Run the Supplejack API installer `bundle exec rails generate supplejack_api:install`
-1. Install dependencies `bundle install`
-1. See `app/supplejack_api/schema.rb` for the Schema definition
-1. Start/stop Solr `rake sunspot:solr:start|stop`
-
-## Supplejack Stack
-
-This API is part of the Supplejack stack - comprised of the [Worker](https://github.com/DigitalNZ/supplejack_worker) and the [Manager](https://github.com/DigitalNZ/supplejack_manager). 
-
-See the [Setting up Supplejack Stack guide](https://github.com/DigitalNZ/supplejack_api/blob/master/Setting-up-Supplejack-stack.md) for details.
+[Install & Setup instructions](http://digitalnz.github.io/supplejack/start/install-setup.html)
 
 
 ## Engine Development

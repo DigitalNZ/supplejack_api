@@ -1,3 +1,5 @@
+# This was authored by HeyZap (http://www.heyzap.com/) and is available at http://stdout.heyzap.com/2011/08/17/sunspot-resque-session-proxy/
+
 module Sunspot
   class ResqueSessionProxy < Sunspot::SessionProxy::AbstractSessionProxy
 

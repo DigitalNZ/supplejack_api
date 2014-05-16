@@ -1,4 +1,4 @@
-# Supplejack Api
+# Supplejack API
 
 The Supplejack API is a [mountable engine](http://guides.rubyonrails.org/engines.html) which provides functionality to store, index and retrieve metadata via an API.
 

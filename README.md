@@ -2,7 +2,7 @@
 
 This is a [mountable engine](http://guides.rubyonrails.org/engines.html) which provides functionality to store, index and retrieve metadata via an API.
 
-The API is configured via the `schema.rb` file which exposes a [DSL](http://en.wikipedia.org/wiki/Domain-specific_language) for defining various aspects of your API.
+The API is configured via the `schema.rb` file which exposes a [DSL](http://digitalnz.github.io/supplejack/api/schema-dsl-domain-specific-language.html) for defining various aspects of your API.
 
 ## Usage
 

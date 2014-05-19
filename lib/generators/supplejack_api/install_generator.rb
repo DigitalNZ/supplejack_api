@@ -84,6 +84,11 @@ module SupplejackApi
         copy_file 'app/supplejack_api/schema.rb'
       end
 
+      def add_assets
+        insert_into_file "app/assets/javascripts/application.js", "//= require highcharts\n", :after => "jquery_ujs\n"
+        insert_into_file "app/assets/stylesheets/application.css", "\n *= require supplejack_api/application", :after => "require_self"
+      end
+
       def documentation
         if options.documentation?
           string = []

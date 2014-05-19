@@ -13,7 +13,6 @@ require 'rails/application'
 require 'rails/mongoid'
 require 'rspec/rails'
 require 'factory_girl_rails'
-
 require 'timecop'
 require 'sunspot_matchers'
 

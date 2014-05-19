@@ -49,7 +49,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'uglifier', '~> 2.5.0'
   s.add_dependency 'therubyracer', '~> 0.12.0'
   s.add_dependency 'compass-rails', '~> 1.0.3'
-  s.add_dependency 'zurb-foundation', '~> 3.2.2'
+  s.add_dependency 'zurb-foundation', '~> 4.3.2'
   s.add_dependency 'gabba', '~> 0.3.0'
 
   s.add_dependency 'sunspot_rails', '= 2.0.0.pre.120417'

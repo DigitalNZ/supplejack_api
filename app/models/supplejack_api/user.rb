@@ -10,6 +10,7 @@ module SupplejackApi
     include Mongoid::Document
     include Mongoid::Timestamps
     include ActiveModel::ForbiddenAttributesProtection
+    include Sortable::Query
 
     store_in collection: 'users'
 
@@ -172,6 +173,10 @@ module SupplejackApi
   
       raise Mongoid::Errors::DocumentNotFound.new(self, id, id) unless user
       user
+    end
+
+    def admin?
+      role == 'admin'
     end
     
   end

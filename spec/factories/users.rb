@@ -12,6 +12,12 @@ module SupplejackApi
       daily_requests        0
       max_requests          1000
       role                  'developer'
+
+      factory :admin_user do
+        role                'admin'
+        email               'admin@example.com'
+        password            'p@ssw0rd'
+      end
     end
 
     factory :user_activity, class: SupplejackApi::UserActivity do

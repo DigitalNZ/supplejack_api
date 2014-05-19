@@ -21,6 +21,7 @@ require 'figaro'
 require 'unicode_utils'
 require 'rest_client'
 require 'lazy_high_charts'
+require 'zurb-foundation'
 require 'resque/server'
 
 module SupplejackApi
@@ -33,6 +34,10 @@ module SupplejackApi
       g.fixture_replacement :factory_girl, dir: 'spec/factories'
       g.assets false
       g.helper false
+    end
+
+    config.to_prepare do
+      ApplicationController.helper(ActionView::Helpers::ApplicationHelper)
     end
   end
 end

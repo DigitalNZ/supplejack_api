@@ -32,8 +32,16 @@ SupplejackApi::Engine.routes.draw do
   resources :sources, only: [:index, :update], constraints: SupplejackApi::HarvesterConstraint.new
   
 
+  # User level authentication
   resources :users, only: [:show]
   devise_for :users, class_name: 'SupplejackApi::User'
+
+  # Admin level authentication
+  namespace :admin do
+    devise_for :users, class_name: 'SupplejackApi::User'
+    resources :users, only: [:index, :show, :edit, :update]
+    resources :site_activities, only: [:index]
+  end
 
 
   get '/status', to: 'records#status', as: 'status'

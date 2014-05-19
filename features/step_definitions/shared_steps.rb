@@ -24,3 +24,39 @@ end
 When /^I request a XML format$/ do
   @format = :xml
 end
+
+When(/^I visit "(.*?)"$/) do |url|
+  visit(url)
+end
+
+Then(/^I should be on "(.*?)"$/) do |path|
+  expect(current_path).to eq(path)
+end
+
+Then(/^I should see "(.*?)"$/) do |text|
+  expect(page).to have_content(text)
+end
+
+Then(/^I should not see "(.*?)"$/) do |text|
+  expect(page).to have_no_content(text)
+end
+
+Then(/^I should see "(.*?)" link$/) do |link|
+  expect(find_link(link)).to_not be_nil
+end
+
+When(/^I click "(.*?)" link$/) do |link|
+  begin
+    click_link(link)
+  rescue Capybara::Ambiguous => e
+    first(:link, link).click
+  end
+end
+
+When(/^I click "(.*?)" button$/) do |button|
+  begin
+    click_button(button)
+  rescue Capybara::Ambiguous => e
+    first(:button, button).click    
+  end
+end

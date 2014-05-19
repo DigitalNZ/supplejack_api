@@ -1,0 +1,25 @@
+<%#   
+The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+and is licensed under the GNU General Public License, version 3.
+One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
+
+Supplejack was created by DigitalNZ at the National Library of NZ and 
+the Department of Internal Affairs. http://digitalnz.org/supplejack 
+%>
+
+<div class="row">
+	<h2>Sign in</h2>
+
+	<%= simple_form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f| %>
+	  <div class="form-inputs">
+	    <%= f.input :email, :required => false, :autofocus => true %>
+	    <%= f.input :password, :required => false %>
+	  </div>
+
+	  <div class="form-actions">
+	    <%= f.button :submit, 'Sign in', class: 'button' %>
+	  </div>
+	<% end %>
+
+	<%= render 'supplejack_api/admin/shared/links' %>
+</div>

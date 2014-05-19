@@ -1,0 +1,33 @@
+<%#   
+The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+and is licensed under the GNU General Public License, version 3.
+One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
+
+Supplejack was created by DigitalNZ at the National Library of NZ and 
+the Department of Internal Affairs. http://digitalnz.org/supplejack 
+%>
+
+<div class="top-bar" data-topbar>
+	<div class="row">
+	  <ul class="title-area">
+	    <li class="name">
+	      <h1><%= link_to t('admin.title'), '#' %></h1>
+	    </li>
+	  </ul>
+
+	  <% if admin_user_signed_in? %>
+	  	<section class="top-bar-section">
+	  		<!-- Right Nav Section -->
+		    <ul class="right">
+		      <li><%= link_to t('users.log_out'), destroy_admin_user_session_path, method: :delete %></li>
+		    </ul>
+
+		    <!-- Left Nav Section -->
+		    <ul class="left">
+		      <li><%= link_to t('users.title'), admin_users_path %></li>
+	        <li><%= link_to t('site_activities.title'), admin_site_activities_path %></li>
+		    </ul>
+		  </section>
+	  <% end %>
+  </div>
+</div>

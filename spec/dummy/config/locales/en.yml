@@ -36,7 +36,7 @@ en:
       uniqueness: "is already taken, please choose a different one"
 
   admin:
-    title: "DigitalNZ API"
+    title: "Supplejack API"
     download_csv: "Download as CSV"
     not_a_admin: "This area is restricted to Administrators"
 

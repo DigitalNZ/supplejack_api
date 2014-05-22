@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
 # and is licensed under the GNU General Public License, version 3.
@@ -7,7 +8,6 @@
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 -->
 
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
  contributor license agreements.  See the NOTICE file distributed with

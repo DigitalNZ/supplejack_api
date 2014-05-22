@@ -74,7 +74,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'launchy', '~> 2.1.2'
   s.add_development_dependency 'factory_girl_rails', '~> 4.0.0'
   s.add_development_dependency 'database_cleaner', '~> 0.8.0'
-  s.add_development_dependency 'mongoid-rspec', '~> 1.5.4'
+  s.add_development_dependency 'mongoid-rspec', '~> 1.11.0'
   s.add_development_dependency 'json_spec', '~> 1.0.3'
   s.add_development_dependency 'xml_spec', '~> 0.1.0' # This is a gem created by fedegl to test the XML responses, its part of the Boost github organization account
   s.add_development_dependency 'sunspot_matchers', '~> 1.3.0.2'

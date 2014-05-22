@@ -15,6 +15,7 @@ require 'rspec/rails'
 require 'factory_girl_rails'
 require 'timecop'
 require 'sunspot_matchers'
+require 'mongoid-rspec'
 
 Rails.backtrace_cleaner.remove_silencers!
 
@@ -45,4 +46,6 @@ RSpec.configure do |config|
   end
 
   config.include SunspotMatchers
+  config.include Mongoid::Matchers
+  config.include FactoryGirl::Syntax::Methods
 end

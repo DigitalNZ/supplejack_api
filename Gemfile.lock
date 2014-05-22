@@ -192,10 +192,10 @@ GEM
       moped (~> 1.4)
       origin (~> 1.0)
       tzinfo (~> 0.3.29)
-    mongoid-rspec (1.5.6)
-      mongoid (>= 3.0.1)
+    mongoid-rspec (1.11.0)
+      mongoid (~> 3.1.6)
       rake
-      rspec (>= 2.9)
+      rspec (>= 2.14)
     mongoid-tree (1.0.4)
       mongoid (>= 3.0, <= 4.0)
     moped (1.5.2)
@@ -380,7 +380,7 @@ DEPENDENCIES
   json_spec (~> 1.0.3)
   launchy (~> 2.1.2)
   mimemagic
-  mongoid-rspec (~> 1.5.4)
+  mongoid-rspec (~> 1.11.0)
   mongoid-tree
   mongoid_auto_inc!
   pry (~> 0.9.12)

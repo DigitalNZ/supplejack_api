@@ -23,6 +23,7 @@ require 'rest_client'
 require 'lazy_high_charts'
 require 'zurb-foundation'
 require 'resque/server'
+require 'json/ld'
 
 module SupplejackApi
   class Engine < ::Rails::Engine

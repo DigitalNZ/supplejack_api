@@ -63,6 +63,8 @@ Gem::Specification.new do |s|
 
   # Adding sunspot_solr so app has access to sunspot:solr rake tasks
   s.add_dependency 'sunspot_solr', '~> 2.1.0'
+  
+  s.add_dependency 'json-ld', '~> 1.1.4'
 
   ## Development dependancies
   

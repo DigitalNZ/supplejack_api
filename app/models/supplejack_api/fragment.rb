@@ -12,7 +12,7 @@ module SupplejackApi
   
     delegate :record_id, to: :record
   
-    embedded_in :record
+    embedded_in :fragmentable, polymorphic: true
     
     default_scope asc(:priority)
   

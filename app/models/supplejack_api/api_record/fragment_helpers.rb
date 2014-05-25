@@ -12,8 +12,8 @@ module SupplejackApi
       extend ActiveSupport::Concern
   
       included do
-        embeds_many :fragments, class_name: 'SupplejackApi::Fragment', cascade_callbacks: true
-        embeds_one :merged_fragment, class_name: 'SupplejackApi::Fragment'
+        embeds_many :fragments, as: :fragmentable, cascade_callbacks: true
+        embeds_one :merged_fragment, as: :fragmentable
   
         before_save :merge_fragments
       end

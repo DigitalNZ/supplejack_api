@@ -14,11 +14,11 @@ module SupplejackApi
       landing_url            'http://google.com/landing.html'
   
       factory :record_with_fragment do
-        fragments            { [FactoryGirl.build(:fragment)] }
+        fragments            { [FactoryGirl.build(:record_fragment)] }
       end
     end
   
-    factory :fragment, class: SupplejackApi::ApiRecord::RecordFragment do
+    factory :record_fragment, class: SupplejackApi::ApiRecord::RecordFragment do
       source_id       'source_name'
       priority        0
       name            'John Doe'

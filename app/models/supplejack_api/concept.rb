@@ -11,9 +11,42 @@ module SupplejackApi
     include Mongoid::Timestamps
 
     # TODO: Update namespace
-    # include ApiRecord::FragmentHelpers
+    # include ApiConcept::FragmentHelpers
 
     store_in collection: 'concepts'
+
+    embeds_many :fragments, cascade_callbacks: true, class_name: 'SupplejackApi::ApiConcept::ConceptFragment'
+    embeds_one :merged_fragment, class_name: 'SupplejackApi::ApiConcept::ConceptFragment'
+
+    before_save :merge_fragments
+
+    auto_increment :concept_id, session: 'strong', collection: 'concepts'
+
+    field :internal_identifier,         type: String
+    field :landing_url,                 type: String
+    field :status,                      type: String
+
+    # TODO: Abstracted into shared
+    def merge_fragments
+      self.merged_fragment = nil
+
+      if self.fragments.size > 1
+        self.merged_fragment = ConceptFragment.new
+
+        ConceptFragment.mutable_fields.each do |name, field_type|
+          if field_type == Array
+            values = Set.new
+            sorted_fragments.each do |s| 
+              values += Array(s.public_send(name))
+            end
+            self.merged_fragment.public_send("#{name}=", values.to_a)
+          else
+            values = sorted_fragments.to_a.map {|s| s.public_send(name) }
+            self.merged_fragment.public_send("#{name}=", values.compact.first)
+          end
+        end
+      end
+    end
 
   end
 end

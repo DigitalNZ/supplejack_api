@@ -25,7 +25,7 @@ module SupplejackApi
         let(:secondary) { record.fragments.last }
     
         it 'should delete any existing merged fragment' do
-          record.merged_fragment = FactoryGirl.build(:fragment)
+          record.merged_fragment = FactoryGirl.build(:record_fragment)
           record.save
           record.merged_fragment.should be_nil
         end
@@ -39,7 +39,7 @@ module SupplejackApi
     
         context 'multiple fragments' do
           before(:each) do
-            record.fragments << FactoryGirl.build(:fragment, name: 'James Smith', email: ['jamessmith@example.com'])
+            record.fragments << FactoryGirl.build(:record_fragment, name: 'James Smith', email: ['jamessmith@example.com'])
             record.save!
           end
     
@@ -94,7 +94,7 @@ module SupplejackApi
     
         context 'multiple fragments' do
           before(:each) do
-            record.fragments << FactoryGirl.build(:fragment, email: ['jamessmith@example.com'])
+            record.fragments << FactoryGirl.build(:record_fragment, email: ['jamessmith@example.com'])
             record.save!
           end
     

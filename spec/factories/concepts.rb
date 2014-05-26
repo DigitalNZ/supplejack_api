@@ -8,7 +8,27 @@
 module SupplejackApi
   FactoryGirl.define do
     factory :concept, class: SupplejackApi::Concept do
-      
+      internal_identifier   'nlnz:1234'
+      concept_id			         54321
+      status			           'active'
+      landing_url            'http://google.com/landing.html'
+  
+      factory :concept_with_fragment do
+        fragments            { [FactoryGirl.build(:concept_fragment)] }
+      end
+    end
+
+    factory :concept_fragment, class: SupplejackApi::ApiConcept::ConceptFragment do
+      source_id       'source_name'
+      priority        0
+      name            'John Doe'
+      address         'Wellington'
+      email           ['johndoe@example.com']
+      children			  ['Sally Doe', 'James Doe']
+      contact         nil
+      age             30
+      birth_date      DateTime.now
+      nz_citizen	    true
     end
     
   end

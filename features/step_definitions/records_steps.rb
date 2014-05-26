@@ -8,7 +8,7 @@
 Given(/^these records:$/) do |table|
   table.hashes.each do |hash|
   	record = FactoryGirl.create(:record, internal_identifier: "abc:#{rand(1000..10000)}")
-    fragment = FactoryGirl.build(:fragment, hash)
+    fragment = FactoryGirl.build(:record_fragment, hash)
     record.fragments << fragment
     record.save
   end
@@ -16,7 +16,7 @@ end
 
 Given /^a record$/ do
   @record = FactoryGirl.create(:record)
-  @record.fragments << FactoryGirl.build(:fragment)
+  @record.fragments << FactoryGirl.build(:record_fragment)
   @record.save
 end
 

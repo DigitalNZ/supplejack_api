@@ -18,5 +18,6 @@ module SupplejackApi
     it { should be_timestamped_document.with(:created) }
     it { should be_timestamped_document.with(:updated) }
     
+    it { should embed_many(:fragments) }
   end
 end

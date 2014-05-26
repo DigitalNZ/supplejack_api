@@ -10,6 +10,9 @@ module SupplejackApi
     include Mongoid::Document
     include Mongoid::Timestamps
 
+    # TODO: Update namespace
+    # include ApiRecord::FragmentHelpers
+
     store_in collection: 'concepts'
 
   end

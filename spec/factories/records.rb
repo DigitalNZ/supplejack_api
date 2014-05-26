@@ -18,7 +18,7 @@ module SupplejackApi
       end
     end
   
-    factory :fragment, class: SupplejackApi::Fragment do
+    factory :fragment, class: SupplejackApi::ApiRecord::RecordFragment do
       source_id       'source_name'
       priority        0
       name            'John Doe'

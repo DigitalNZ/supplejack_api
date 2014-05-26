@@ -15,6 +15,11 @@ module SupplejackApi
 
     attr_accessor :next_record, :previous_record, :next_page, :previous_page
     attr_accessor :should_index_flag
+
+    embeds_many :fragments, cascade_callbacks: true, class_name: 'SupplejackApi::ApiRecord::RecordFragment'
+    embeds_one :merged_fragment, class_name: 'SupplejackApi::ApiRecord::RecordFragment'
+
+    before_save :merge_fragments
   
     scope :active, where(status: 'active')
     scope :deleted, where(status: 'deleted')

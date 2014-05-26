@@ -8,7 +8,7 @@
 require 'spec_helper'
 
 module SupplejackApi
-  module ApiRecord
+  module Support
     describe FragmentHelpers do
       let(:record) { FactoryGirl.build(:record_with_fragment, record_id: 1234) }
     
@@ -133,7 +133,7 @@ module SupplejackApi
         end
     
         it 'returns a new fragment with priority 0' do
-          record.primary_fragment.should be_a RecordFragment
+          record.primary_fragment.should be_a ApiRecord::RecordFragment
           record.primary_fragment.priority.should eq 0
         end
     

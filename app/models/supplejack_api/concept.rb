@@ -7,45 +7,39 @@
 
 module SupplejackApi
   class Concept
-    include Mongoid::Document
-    include Mongoid::Timestamps
+    include Support::Storable
+    include Support::Searchable
+    include Support::Harvestable
+    include Support::FragmentHelpers
+    include ActiveModel::SerializerSupport
 
-    # TODO: Update namespace
-    # include ApiConcept::FragmentHelpers
+    attr_accessor :next_record, :previous_record, :next_page, :previous_page
+    attr_accessor :should_index_flag
 
-    store_in collection: 'concepts'
-
+    # Associations
     embeds_many :fragments, cascade_callbacks: true, class_name: 'SupplejackApi::ApiConcept::ConceptFragment'
     embeds_one :merged_fragment, class_name: 'SupplejackApi::ApiConcept::ConceptFragment'
 
-    before_save :merge_fragments
-
+    # From storable
+    store_in collection: 'concepts'
+    index({concept_id: 1}, {unique: true})
     auto_increment :concept_id, session: 'strong', collection: 'concepts'
 
+    # Callbacks
+    before_save :merge_fragments
+
+    # Fields
     field :internal_identifier,         type: String
     field :landing_url,                 type: String
     field :status,                      type: String
 
-    # TODO: Abstracted into shared
-    def merge_fragments
-      self.merged_fragment = nil
-
-      if self.fragments.size > 1
-        self.merged_fragment = ConceptFragment.new
-
-        ConceptFragment.mutable_fields.each do |name, field_type|
-          if field_type == Array
-            values = Set.new
-            sorted_fragments.each do |s| 
-              values += Array(s.public_send(name))
-            end
-            self.merged_fragment.public_send("#{name}=", values.to_a)
-          else
-            values = sorted_fragments.to_a.map {|s| s.public_send(name) }
-            self.merged_fragment.public_send("#{name}=", values.compact.first)
-          end
-        end
-      end
+    def active?
+      self.status == 'active'
+    end
+  
+    def should_index?
+      return should_index_flag if !should_index_flag.nil?
+      active?
     end
 
   end

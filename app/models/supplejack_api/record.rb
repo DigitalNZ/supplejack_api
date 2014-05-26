@@ -7,20 +7,28 @@
 
 module SupplejackApi
   class Record
-  	include ApiRecord::Storable
-    include ApiRecord::Searchable
-    include ApiRecord::Harvestable
-    include ApiRecord::FragmentHelpers
+    include Support::Storable
+  	include Support::Searchable
+    include Support::Harvestable
+    include Support::FragmentHelpers
     include ActiveModel::SerializerSupport
 
     attr_accessor :next_record, :previous_record, :next_page, :previous_page
     attr_accessor :should_index_flag
 
+    # Associations
     embeds_many :fragments, cascade_callbacks: true, class_name: 'SupplejackApi::ApiRecord::RecordFragment'
     embeds_one :merged_fragment, class_name: 'SupplejackApi::ApiRecord::RecordFragment'
 
+    # From storable
+    store_in collection: 'records'
+    index({record_id: 1}, {unique: true})
+    auto_increment :record_id, session: 'strong', collection: 'records'
+
+    # Callbacks
     before_save :merge_fragments
   
+    # Scopes
     scope :active, where(status: 'active')
     scope :deleted, where(status: 'deleted')
     scope :suppressed, where(status: 'suppressed')

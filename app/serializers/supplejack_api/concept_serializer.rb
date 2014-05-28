@@ -7,7 +7,7 @@
 
 module SupplejackApi
   class ConceptSerializer < ActiveModel::Serializer
-    attributes :@id, :@type, :label
+    attributes :@id, :@type, :label, :status, :concept_type
     has_many :fragments
   end
 

@@ -32,6 +32,7 @@ module SupplejackApi
     field :internal_identifier,         type: String
     field :landing_url,                 type: String
     field :status,                      type: String
+    field :concept_type,                type: String
 
     # Scopes
     scope :active, where(status: 'active')

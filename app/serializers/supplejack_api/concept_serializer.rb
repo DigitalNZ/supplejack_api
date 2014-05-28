@@ -7,8 +7,31 @@
 
 module SupplejackApi
   class ConceptSerializer < ActiveModel::Serializer
-    attributes :@id, :@type, :label, :status, :concept_type
-    has_many :fragments
+  	attributes :@id, :@type, :label, :status, :concept_type
+
+  	private
+
+    def attributes
+	  	data = {}
+	  	data['@context'] = {
+	  		label: 'http://www.w3.org/2004/02/skos/core#prefLabel',
+		    foaf: 'http://xmlns.com/foaf/0.1/',
+		    name: 'foaf:name',
+		    rdaGr2: 'http://rdvocab.info/ElementsGr2/',
+		    dateOfBirth: 'rdaGr2:dateOfBirth',
+		    dateOfDeath: 'rdaGr2:dateOfDeath',
+		    placeOfBirth: 'rdaGr2:placeOfBirth',
+		    placeOfDeath: 'rdaGr2:placeOfDeath',
+		    description: 'rdaGr2:biographicalInformation',
+		    gender: 'rdaGr2:gender',
+		    edm: 'http://www.europeana.eu/schemas/edm/',
+		    hasMet: 'edm:hasMet',
+		    isRelatedTo: 'edm:isRelatedTo',
+		    sameAs: 'http://www.w3.org/2002/07/owl#sameA',
+	  	}
+
+	  	data.merge(super)
+	  end
   end
 
 end

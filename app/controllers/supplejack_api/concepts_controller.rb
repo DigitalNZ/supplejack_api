@@ -16,10 +16,14 @@ module SupplejackApi
     def show
       begin
         @concept = Concept.custom_find(params[:id], current_user, params[:search])
-        respond_with @concept, serializer: ConceptSerializer
+        respond_with @concept
       rescue Mongoid::Errors::DocumentNotFound
         render request.format.to_sym => {errors: "Concept with ID #{params[:id]} was not found"}, status: :not_found 
       end
+    end
+
+    def default_serializer_options
+      { root: false }
     end
 
   end

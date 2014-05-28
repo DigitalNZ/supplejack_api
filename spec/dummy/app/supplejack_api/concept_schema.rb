@@ -8,30 +8,36 @@
 class ConceptSchema < SupplejackApi::SupplejackSchema
 
   # Fields
-  string    :name,         search_boost: 10,      search_as: [:filter, :fulltext]
-  string    :address,      search_boost: 2,       search_as: [:filter, :fulltext]
-  string    :email,        multi_value: true,     search_as: [:filter]
-  string    :children,     multi_value: true
-  string    :contact,      multi_value: true
-  integer   :age
-  datetime  :birth_date
-  boolean   :nz_citizen,                          search_as: [:filter]
+  
+  string    :@id
+  string    :@type
+  string    :label
+  string    :description
+  datetime  :dateOfBirth
+  datetime  :dateOfDeath
+  string    :placeOfBirth
+  string    :placeOfDeath
+  string    :gender
+  string    :isRelatedTo,   multi_value: true
+  string    :hasMet,        multi_value: true
+  string    :sameAs,        multi_value: true
+  string    :name
+
 
   # Groups
   group :default do
     fields [
-      :name,
-      :address
+      :@id,
+      :@type,
+      :label
     ]
   end
   group :all do
     includes [:default]
     fields [
-      :email,
-      :children,
-      :nz_citizen,
-      :birth_date,
-      :age
+      :@id,
+      :@type,
+      :label
     ]
   end
 

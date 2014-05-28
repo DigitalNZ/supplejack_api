@@ -25,20 +25,6 @@ module SupplejackApi
       boolean: Boolean
     }
 
-    def self.schema_class
-    	'Schema'.constantize
-    end
-
-    def self.build_mongoid_schema
-      self.schema_class.fields.each do |name, field|
-        next if field.store == false
-        type = field.multi_value.presence ? Array : MONGOID_TYPE_NAMES[field.type]
-        self.field name, type: type
-      end
-    end
-
-    build_mongoid_schema
-
     def self.mutable_fields
       @@mutable_fields ||= begin
         immutable_fields = ['_id', '_type', 'source_id', 'created_at', 'updated_at']

@@ -20,6 +20,47 @@ module SupplejackApi
     
     it { should embed_many(:fragments) }
 
+    describe '#custom_find' do
+      before(:each) do
+        @concept = FactoryGirl.create(:concept, concept_id: 54321)
+      end
+  
+      it 'should search for a concept via its concept_id' do
+        Concept.custom_find(54321).should eq(@concept)
+      end
+  
+      it 'should search for a concept via its ObjectId (MongoDB auto assigned id)' do
+        Concept.custom_find(@concept.id).should eq(@concept)
+      end
+  
+      it 'should raise a error when a concept is not found' do
+        expect { Concept.custom_find(111) }.to raise_error(Mongoid::Errors::DocumentNotFound)
+      end
+  
+      it "shouldn't call find when the mongo id is invalid" do
+        Concept.should_not_receive(:find)
+        expect { Concept.custom_find('1234567abc') }.to raise_error(Mongoid::Errors::DocumentNotFound)
+      end
+  
+      context 'restricting inactive concepts' do
+        it 'finds only active concepts' do
+          @concept.update_attribute(:status, 'deleted')
+          @concept.reload
+          expect { Concept.custom_find(54321) }.to raise_error(Mongoid::Errors::DocumentNotFound)
+        end
+  
+        it 'finds also inactive records when :status => :all' do
+          @concept.update_attribute(:status, 'deleted')
+          @concept.reload
+          Concept.custom_find(54321, nil, {status: :all}).should eq @concept
+        end
+  
+        it "doesn't break with nil options" do
+          Concept.custom_find(54321, nil, nil).should eq @concept
+        end
+      end
+    end
+
     describe '#active?' do
     	before { @record = build(:record) }
 

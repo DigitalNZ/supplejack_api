@@ -53,12 +53,6 @@ module SupplejackApi
   
       raise Mongoid::Errors::DocumentNotFound.new(self, [id], [id]) unless concept
   
-      # begin
-      #   concept.find_next_and_previous_concepts(scope, options) if options.any?
-      # rescue Sunspot::UnrecognizedFieldError, RSolr::Error::Http, Timeout::Error, Errno::ECONNREFUSED, Errno::ECONNRESET => e
-      #   Rails.logger.error e.inspect
-      # end
-      
       concept
     end
 

@@ -11,12 +11,12 @@ module SupplejackApi
   describe 'Concepts route' do
     routes { SupplejackApi::Engine.routes }
 
-    it 'routes /concepts.format to concepts#index' do
-      expect(get '/concepts.json').to route_to(controller: 'supplejack_api/concepts', action: 'index', format: 'json')
-    end
-
-    # it 'routes /records/1.format to records#index' do
-    #   expect(get '/records/99.json').to route_to(controller: 'supplejack_api/records', action: 'show', id: '99', format: 'json')
+    # it 'routes /concepts.format to concepts#index' do
+    #   expect(get '/concepts.json').to route_to(controller: 'supplejack_api/concepts', action: 'index', format: 'json')
     # end
+
+    it 'routes /concepts/1.format to concepts#index' do
+      expect(get '/concepts/99.json').to route_to(controller: 'supplejack_api/concepts', action: 'show', id: '99', format: 'json')
+    end
   end
 end

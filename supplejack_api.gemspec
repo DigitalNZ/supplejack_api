@@ -86,6 +86,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rb-fsevent', '~> 0.9.1'
   s.add_development_dependency 'simplecov', '~> 0.6.4'
   s.add_development_dependency 'sunspot_test', '~> 0.4.0'
+  s.add_development_dependency 'debugger', '~> 1.6.8'
   
   # s.add_development_dependency 'zeus' # TODO SEE my_plan.rb FOR MORE INFO
 

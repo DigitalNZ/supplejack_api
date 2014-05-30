@@ -8,18 +8,17 @@
 module SupplejackApi
 	module ApiConcept
 	  class ConceptFragment < SupplejackApi::Fragment
-	  
+	  	
+	  	embedded_in :concept
+	  	
 	    delegate :concept_id, to: :concept
 
-	    def self.build_mongoid_schema
-        ConceptSchema.fields.each do |name, field|
-          next if field.store == false
-          type = field.multi_value.presence ? Array : MONGOID_TYPE_NAMES[field.type]
-          self.field name, type: type
-        end
-      end
+	    def self.schema_class
+	    	'ConceptSchema'.constantize
+	    end
+	    
+	    build_mongoid_schema
 
-      build_mongoid_schema
 	  end
 	end
 end

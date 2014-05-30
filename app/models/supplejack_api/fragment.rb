@@ -10,7 +10,7 @@ module SupplejackApi
 		include Mongoid::Document
 	  include Mongoid::Timestamps
 
-	  embedded_in :fragmentable, polymorphic: true
+	  # embedded_in :fragmentable, polymorphic: true
 
 	  default_scope asc(:priority)
 	  
@@ -24,6 +24,18 @@ module SupplejackApi
       datetime: DateTime, 
       boolean: Boolean
     }
+
+    def self.schema_class
+      raise NotImplementedError.new("All subclasses of SupplejackApi::Fragment must define a #schema_class method.")
+    end
+
+    def self.build_mongoid_schema
+      self.schema_class.fields.each do |name, field|
+        next if field.store == false
+        type = field.multi_value.presence ? Array : MONGOID_TYPE_NAMES[field.type]
+        self.field name, type: type
+      end
+    end
 
     def self.mutable_fields
       @@mutable_fields ||= begin

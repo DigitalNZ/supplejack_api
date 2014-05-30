@@ -9,18 +9,15 @@ module SupplejackApi
 	module ApiRecord
 	  class RecordFragment < SupplejackApi::Fragment
 
-	    delegate :record_id, to: :record
-	  
-       def self.build_mongoid_schema
-        RecordSchema.fields.each do |name, field|
-          next if field.store == false
-          type = field.multi_value.presence ? Array : MONGOID_TYPE_NAMES[field.type]
-          self.field name, type: type
-        end
+	    embedded_in :record
+
+      delegate :record_id, to: :record
+
+      def self.schema_class
+        'RecordSchema'.constantize
       end
 
       build_mongoid_schema
-
 	  end
 	end
 end

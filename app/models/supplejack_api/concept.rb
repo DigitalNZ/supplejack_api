@@ -13,9 +13,8 @@ module SupplejackApi
     include Support::FragmentHelpers
     include ActiveModel::SerializerSupport
 
-    attr_accessor :next_record, :previous_record, :next_page, :previous_page
     attr_accessor :should_index_flag
-
+    
     # Associations
     embeds_many :fragments, cascade_callbacks: true, class_name: 'SupplejackApi::ApiConcept::ConceptFragment'
     embeds_one :merged_fragment, class_name: 'SupplejackApi::ApiConcept::ConceptFragment'

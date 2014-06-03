@@ -9,7 +9,7 @@ require 'spec_helper'
 
 module SupplejackApi
   module Support
-    describe ApiRecord::Harvestable do
+    describe Harvestable do
       let(:record) { FactoryGirl.build(:record, record_id: 1234) }
 
       describe "#create_or_update_fragment" do

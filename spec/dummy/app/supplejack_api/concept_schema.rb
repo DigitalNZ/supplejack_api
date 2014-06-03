@@ -8,7 +8,6 @@
 class ConceptSchema < SupplejackApi::SupplejackSchema
 
   # Fields
-  
   string    :@id
   string    :@type
   string    :label
@@ -22,29 +21,5 @@ class ConceptSchema < SupplejackApi::SupplejackSchema
   string    :hasMet,        multi_value: true
   string    :sameAs,        multi_value: true
   string    :name
-
-
-  # Groups
-  group :default do
-    fields [
-      :@id,
-      :@type,
-      :label
-    ]
-  end
-  group :all do
-    includes [:default]
-    fields [
-      :@id,
-      :@type,
-      :label
-    ]
-  end
-
-   # Roles
-  role :developer do
-    default true
-  end
-  role :admin
 
 end

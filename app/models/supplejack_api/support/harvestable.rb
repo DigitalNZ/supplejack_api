@@ -11,7 +11,7 @@ module SupplejackApi
       extend ActiveSupport::Concern
       
       def create_or_update_fragment(attributes)
-        if fragment = find_fragment(attributes["source_id"])
+        if fragment = find_fragment(attributes['source_id'])
           fragment.clear_attributes
         elsif self.fragments.count == 0
           fragment = self.primary_fragment
@@ -41,8 +41,8 @@ module SupplejackApi
         raw_json.each do |key, value|
           unset_hash.merge!({key => true}) if value.nil?
         end
-        if raw_json["fragments"].present?
-          raw_json["fragments"].each_with_index do |fragment, index|
+        if raw_json['fragments'].present?
+          raw_json['fragments'].each_with_index do |fragment, index|
             next if fragment.nil?
             fragment.each do |key,value|
               unset_hash.merge!({"fragments.#{index}.#{key}" => true}) if value.nil?
@@ -61,7 +61,7 @@ module SupplejackApi
         end
 
         def flush_old_records(source_id, job_id)
-          self.where(:'fragments.source_id' => source_id, :'fragments.job_id'.ne => job_id, :'status'.in => ["active", "supressed"]).update_all(status: 'deleted', updated_at: Time.now)
+          self.where(:'fragments.source_id' => source_id, :'fragments.job_id'.ne => job_id, :'status'.in => ['active', 'supressed']).update_all(status: 'deleted', updated_at: Time.now)
 
           cursor = self.deleted.where(:'fragments.source_id' => source_id)
           total = cursor.count

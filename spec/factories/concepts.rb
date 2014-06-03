@@ -20,7 +20,7 @@ module SupplejackApi
 
     factory :concept_fragment, class: SupplejackApi::ApiConcept::ConceptFragment do
       source_id     'dnz'
-      priority       1
+      priority       0
       job_id        'job1234'
       '@id'           'http://digitalnz.org/person/colin-mccahon'
       '@type'         'foaf:person'

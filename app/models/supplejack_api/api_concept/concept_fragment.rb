@@ -19,6 +19,14 @@ module SupplejackApi
 	    
 	    build_mongoid_schema
 
+	    def self.mutable_fields
+	      @@mutable_fields ||= begin
+	        immutable_fields = ['_id', '_type', 'source_id', 'created_at', 'updated_at']
+	        mutable_fields = self.fields.keys - immutable_fields
+	        Hash[mutable_fields.map {|name| [name, self.fields[name].type] }]
+	      end.freeze
+	    end
+
 	  end
 	end
 end

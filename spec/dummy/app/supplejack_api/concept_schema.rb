@@ -5,7 +5,25 @@
 # Supplejack was created by DigitalNZ at the National Library of NZ and 
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
-class ConceptSchema < SupplejackApi::SupplejackSchema
+class ConceptSchema
+  include SupplejackApi::SchemaDefinition
+
+  CORE_FIELDS = [
+    :concept_id,  
+    :internal_identifier, 
+    :status, 
+    :landing_url,
+    :created_at, 
+    :updated_at
+  ]
+
+  CORE_FIELDS.each do |field|
+    string field, store: false
+  end
+
+  group :internal_fields do
+    fields CORE_FIELDS
+  end
 
   # Fields
   string    :@id

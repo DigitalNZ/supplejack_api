@@ -9,8 +9,8 @@ module SupplejackApi
   class PreviewRecord
     # These records are used for previewing in squirrel, expire after 60 seconds
 
-    include ApiRecord::Storable
-    include ApiRecord::FragmentHelpers
-    include ApiRecord::Harvestable
+    include Support::Storable
+    include Support::FragmentHelpers
+    include Support::Harvestable
   end
 end

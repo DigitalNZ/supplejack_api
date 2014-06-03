@@ -8,7 +8,6 @@
 class ConceptSchema < SupplejackApi::SupplejackSchema
 
   # Fields
-  string    :concept_id,    store: false
   string    :@id
   string    :@type
   string    :label
@@ -23,8 +22,6 @@ class ConceptSchema < SupplejackApi::SupplejackSchema
   string    :sameAs,        multi_value: true
   string    :name
 
-  group :core do
-    fields [:concept_id]
-  end
+  build_object_id
 
 end

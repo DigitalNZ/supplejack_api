@@ -8,7 +8,6 @@
 class RecordSchema < SupplejackApi::SupplejackSchema
 
   # Fields
-  string    :record_id,    store: false
   string    :name,         search_boost: 10,      search_as: [:filter, :fulltext]
   string    :address,      search_boost: 2,       search_as: [:filter, :fulltext]
   string    :email,        multi_value: true,     search_as: [:filter]
@@ -17,11 +16,6 @@ class RecordSchema < SupplejackApi::SupplejackSchema
   integer   :age
   datetime  :birth_date
   boolean   :nz_citizen,                          search_as: [:filter]
-
-  # Groups
-  group :core do
-    fields [:record_id]
-  end
 
   group :default do
     fields [
@@ -46,5 +40,7 @@ class RecordSchema < SupplejackApi::SupplejackSchema
     default true
   end
   role :admin
+
+  build_object_id
 
 end

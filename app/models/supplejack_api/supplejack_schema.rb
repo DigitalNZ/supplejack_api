@@ -17,9 +17,18 @@ module SupplejackApi
 	    :updated_at
 	  ]
 
-	  # Make core fields available in Schema
-	  CORE_FIELDS.each do |field|
-	    string field, store: false
+	  def self.build_object_id
+	  	object_id = "#{self.name.to_s.gsub(/Schema/, '').downcase}_id".to_sym
+	  	
+			# Make core fields available in Schema
+	  	CORE_FIELDS.push object_id
+	  	CORE_FIELDS.each do |field|
+		    string field, store: false
+		  end
+
+	  	group :core do
+		    fields [object_id]
+		  end
 	  end
 
 	  group :internal_fields do

@@ -20,24 +20,23 @@ module SupplejackApi
       
       begin
         if @search.valid?
-          respond_with @search, serializer: SearchSerializer
+          respond_with @search, serializer: RecordSearchSerializer
         else
-          render request.format.to_sym => {errors: @search.errors}, status: :bad_request
+          render request.format.to_sym => { errors: @search.errors }, status: :bad_request
         end
       rescue RSolr::Error::Http => e
-        render request.format.to_sym => {:errors => solr_error_message(e) }, :status => :bad_request 
+        render request.format.to_sym => { errors: solr_error_message(e) }, status: :bad_request 
       rescue Sunspot::UnrecognizedFieldError => e
-        render request.format.to_sym => {:errors => e.to_s }, :status => :bad_request 
+        render request.format.to_sym => { errors: e.to_s }, status: :bad_request 
       end
     end
 
     def show
       begin
         @record = Record.custom_find(params[:id], current_user, params[:search])
-
         respond_with @record, serializer: RecordSerializer
       rescue Mongoid::Errors::DocumentNotFound
-        render request.format.to_sym => {:errors => "Record with ID #{params[:id]} was not found"}, :status => :not_found 
+        render request.format.to_sym => { errors: "Record with ID #{params[:id]} was not found" }, status: :not_found 
       end
     end
 

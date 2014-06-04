@@ -13,15 +13,6 @@ module SupplejackApi
 
     respond_to :json, :xml, :rss
 
-    def show
-      begin
-        @concept = Concept.custom_find(params[:id], current_user, params[:search])
-        respond_with @concept, root: false, serializer: ConceptSerializer
-      rescue Mongoid::Errors::DocumentNotFound
-        render request.format.to_sym => { errors: "Concept with ID #{params[:id]} was not found" }, status: :not_found 
-      end
-    end
-
     def index
       @search = ConceptSearch.new(params)
       @search.request_url = request.original_url
@@ -37,6 +28,15 @@ module SupplejackApi
         render request.format.to_sym => { errors: solr_error_message(e) }, status: :bad_request 
       rescue Sunspot::UnrecognizedFieldError => e
         render request.format.to_sym => { errors: e.to_s }, status: :bad_request 
+      end
+    end
+
+    def show
+      begin
+        @concept = Concept.custom_find(params[:id], current_user, params[:search])
+        respond_with @concept, root: false, serializer: ConceptSerializer
+      rescue Mongoid::Errors::DocumentNotFound
+        render request.format.to_sym => { errors: "Concept with ID #{params[:id]} was not found" }, status: :not_found 
       end
     end
 

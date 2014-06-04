@@ -6,7 +6,7 @@
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
-  class SearchSerializer < ApplicationSerializer
+  class SearchSerializer < ActiveModel::Serializer
     
     def serializable_hash    
       hash = {}
@@ -21,49 +21,27 @@ module SupplejackApi
       hash
     end
     
-    # Returns a hash of facets in the following format:
-    # 
-    #    "content_partner": {
-    #      "Matapihi": 182101,
-    #      "Alexander Turnbull Library": 67766,
-    #    },
-    #    "category": {
-    #      "Images": 186111,
-    #    }
-    #
     def json_facets
       facets = {}
+
       object.facets.map do |facet|
         rows = {}
         facet.rows.each do |row|
           rows[row.value] = row.count
         end
-          
-        facets.merge!({facet_name(facet.name) => rows})
+
+        facets.merge!({facet.name => rows})
       end
       facets
     end
-    
-    # Returns an array of facets in the following format:
-    #
-    #   [
-    #     { 
-    #       name: "content_partner", 
-    #       values: [{name: "Matapihi", count: 182101}, {name: "Alexander Turnbull Library", count: 67766}]
-    #     },
-    #     { 
-    #       name: "category", 
-    #       values: [{name: "Images", count: 186111}]
-    #     }
-    #   ]
-    #
+
     def xml_facets
       facets = []
       object.facets.map do |facet|
         values = facet.rows.map do |row|
           { name: row.value, count: row.count }
         end
-        facets << {name: facet_name(facet.name).to_s, values: values}
+        facets << {name: facet.name.to_s, values: values}
       end
       facets
     end
@@ -79,7 +57,7 @@ module SupplejackApi
       hash[:search][:facets] = json_facets
       hash
     end
-    
+        
     def to_xml(*args)
       hash = serializable_hash
       hash[:facets] = xml_facets
@@ -93,16 +71,9 @@ module SupplejackApi
     def records_serialized_array
       ActiveModel::ArraySerializer.new(object.results, {fields: object.field_list, groups: object.group_list, scope: object.scope})
     end
-  
-    private
-  
-    # **category**: *dnz*
-    def facet_name(name)
-      if name.to_s == 'primary_collection' and object.display_collection?
-        'display_collection'
-      else
-        name
-      end
+    
+    def records_serialized_array
+      ActiveModel::ArraySerializer.new(object.results, {fields: object.field_list, groups: object.group_list, scope: object.scope})
     end
   end
 

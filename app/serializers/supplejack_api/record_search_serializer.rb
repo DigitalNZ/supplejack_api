@@ -6,9 +6,14 @@
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
-  class UserSerializer < ActiveModel::Serializer
+  class RecordSearchSerializer < SearchSerializer
     
-    attributes :id, :name, :username, :email, :api_key
+    RecordSchema.groups.keys.each do |group|
+      define_method("#{group}?") do
+        return false unless options[:groups].try(:any?)
+        self.options[:groups].include?(group)  
+      end
+    end
   end
 
 end

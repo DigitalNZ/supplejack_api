@@ -6,7 +6,14 @@
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
-  class RecordSerializer < ApplicationSerializer
+  class RecordSerializer < ActiveModel::Serializer
+
+    RecordSchema.groups.keys.each do |group|
+      define_method("#{group}?") do
+        return false unless options[:groups].try(:any?)
+        self.options[:groups].include?(group)  
+      end
+    end
     
     # Returns a hash including all desirable record attributes and its associations
     def serializable_hash

@@ -10,8 +10,9 @@ class ConceptSchema < SupplejackApi::SupplejackSchema
   # Fields
   string    :@id
   string    :@type
-  string    :label
-  string    :description
+  string    :name,          search_boost: 10,   search_as: [:filter, :fulltext]
+  string    :label,         search_boost: 5,    search_as: [:filter, :fulltext]
+  string    :description,   search_boost: 2,    search_as: [:filter, :fulltext]
   datetime  :dateOfBirth
   datetime  :dateOfDeath
   string    :placeOfBirth
@@ -20,7 +21,6 @@ class ConceptSchema < SupplejackApi::SupplejackSchema
   string    :isRelatedTo,   multi_value: true
   string    :hasMet,        multi_value: true
   string    :sameAs,        multi_value: true
-  string    :name
 
   build_object_id
 

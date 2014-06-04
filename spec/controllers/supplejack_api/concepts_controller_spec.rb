@@ -30,12 +30,51 @@ module SupplejackApi
         get :show, id: 123, search: {}, api_key: 'abc123', :format => 'json'
         response.body.should eq({:errors => 'Concept with ID 123 was not found'}.to_json)
       end
-      
-      # it 'merges the scope in the options' do
-      #   Record.should_receive(:custom_find).with('123', @user, {'and' => {'category' => 'Books'}}).and_return(@record)
-      #   get :show, id: 123, search: {and: {category: 'Books'}}, api_key: 'abc123'
-      #   assigns(:record).should eq(@record)
-      # end
+    end
+
+    describe 'GET index' do
+      before {
+        @search = ConceptSearch.new
+        @search.stub(:valid?) { true }
+        @search.stub(:new) { @search }
+      }
+
+      it 'initializes a new search instance' do
+        ConceptSearch.should_receive(:new).with(hash_including(text: 'dogs')).and_return(@search)
+        get :index, api_key: 'apikey', text: 'dogs'
+        assigns(:search).should eq(@search)
+      end
+
+      it 'sets the request url on search object' do
+        controller.request.stub(:original_url).and_return('http://foo.com/blah')
+        get :index, api_key: 'apikey'
+        expect(assigns(:search).request_url).to eq 'http://foo.com/blah'
+      end
+
+      it 'should set the current_user on the search' do
+        get :index, api_key: 'apikey'
+        expect(assigns(:search).scope).to eq @user
+      end
+
+      it 'renders a the solr error when the query is invalid' do
+        ConceptSearchSerializer.stub(:new).and_raise(RSolr::Error::Http.new({}, {}))
+        controller.stub(:solr_error_message).and_return('Error')
+        get :index, api_key: 'apikey', format: 'json'
+        expect(response.body).to eq({errors: 'Error'}.to_json)
+      end
+
+      it 'renders a error when the requested field doesn\'t exist' do
+        ConceptSearchSerializer.stub(:new).and_raise(Sunspot::UnrecognizedFieldError.new('No field configured for Concept with name "something"'))
+        get :index, api_key: 'apikey', format: 'json', and: { something: true }
+        expect(response.body).to eq({ errors: 'No field configured for Concept with name "something"' }.to_json)
+      end
+
+      it 'should return an error if the search request is invalid' do
+        ConceptSearch.any_instance.stub(:valid?) { false }
+        ConceptSearch.any_instance.stub(:errors) { ['The page parameter can not exceed 100,000'] }
+        get :index, api_key: 'apikey', page: 100001, format: 'json'
+        expect(response.body).to eq({ errors: ['The page parameter can not exceed 100,000'] }.to_json)
+      end
     end
 
   end

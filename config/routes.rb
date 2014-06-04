@@ -12,7 +12,7 @@ SupplejackApi::Engine.routes.draw do
   resources :records, only: [:index, :show]
 
   # Concepts
-  resources :concepts, only: [:show]
+  resources :concepts, only: [:index, :show]
   
   # Harvester
   namespace :harvester, constraints: SupplejackApi::HarvesterConstraint.new do

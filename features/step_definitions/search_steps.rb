@@ -5,23 +5,44 @@
 # Supplejack was created by DigitalNZ at the National Library of NZ and 
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
-def execute_search(text, facet, format, filters={})
-  options = { format: 'json', api_key: '12345', text: text }
+def search_options(text, facet, format, filters={})
+	options = { format: 'json', api_key: '12345', text: text }
   options[:facets] = "#{facet.to_s}" if facet.present?
   options[:format] = @format.to_s if @format.present?
   options.merge!(filters)
+  options
+end
+
+def execute_concept_search(text, facet, format, filters={})
+  options = search_options(text, facet, format, filters={})
+  @request_url = concepts_url(options)
+  visit(@request_url)
+end
+
+def execute_record_search(text, facet, format, filters={})
+  options = search_options(text, facet, format, filters={})
   @request_url = records_url(options)
   visit(@request_url)
 end
 
-When /^I search for "([^"]*)"(?: with facet "(.*)")?$/ do |search_text, facet|
-  execute_search(search_text, facet, @format)
+# Record search
+When /^I search record for "([^"]*)"(?: with facet "(.*)")?$/ do |search_text, facet|
+  execute_record_search(search_text, facet, @format)
 end
 
-When /^I search for a field "(.*)"$/ do |search_text|
-  execute_search(search_text.gsub('\\', ''), nil, @format)
+When /^I search record for a field "(.*)"$/ do |search_text|
+  execute_record_search(search_text.gsub('\\', ''), nil, @format)
 end
 
-When /^I search for "(.*?)" with suggest$/ do |search_text|
-  execute_search(search_text, nil, @format, {suggest: true})
+When /^I search record for "(.*?)" with suggest$/ do |search_text|
+  execute_record_search(search_text, nil, @format, {suggest: true})
+end
+
+# Concept search
+When /^I search concept for "([^"]*)"(?: with facet "(.*)")?$/ do |search_text, facet|
+  execute_concept_search(search_text, facet, @format)
+end
+
+When /^I search concept for a field "(.*)"$/ do |search_text|
+  execute_concept_search(search_text.gsub('\\', ''), nil, @format)
 end

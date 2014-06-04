@@ -8,13 +8,13 @@
 module SupplejackApi
   class RecordsController < ApplicationController
     
-    skip_before_filter :authenticate_user!, :only => [:source, :status]
-    skip_before_filter :verify_limits!,     :only => [:source, :status]
+    skip_before_filter :authenticate_user!, only: [:source, :status]
+    skip_before_filter :verify_limits!,     only: [:source, :status]
 
   	respond_to :json, :xml, :rss
 
     def index
-      @search = Search.new(params)
+      @search = RecordSearch.new(params)
       @search.request_url = request.original_url
       @search.scope = current_user
       
@@ -50,7 +50,7 @@ module SupplejackApi
     #
     def default_serializer_options
       default_options = {}
-      @search ||= Search.new(params)
+      @search ||= RecordSearch.new(params)
       default_options.merge!({:fields => @search.field_list}) if @search.field_list.present?
       default_options.merge!({:groups => @search.group_list}) if @search.group_list.present?
       default_options

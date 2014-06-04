@@ -17,6 +17,7 @@ class RecordSchema < SupplejackApi::SupplejackSchema
   datetime  :birth_date
   boolean   :nz_citizen,                          search_as: [:filter]
 
+  # Groups
   group :default do
     fields [
       :name,

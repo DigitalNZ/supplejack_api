@@ -6,7 +6,7 @@
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 @search
-Feature: Search
+Feature: Search Record
 
   Background:
     Given a user with a API Key
@@ -18,7 +18,7 @@ Feature: Search
       | Peter Parker | Christchruch       | ["peterparker@example.com"] | 42  | ["Lily"]   | false      |
   
   Scenario Outline: Find records by term and return JSON
-    When I search for "<name>"
+    When I search record for "<name>"
     Then the JSON at "search/results/0/name" should be "<name>"
     And the JSON at "search/results" should have <num results> entries
     
@@ -38,7 +38,7 @@ Feature: Search
     And the JSON at "search/request_url" should be the requested url
 
   Scenario: Search for a record
-    When I search for "Auckland"
+    When I search record for "Auckland"
     Then the JSON at "search/results" should be an array
     And the JSON at "search/facets" should be an hash
     And the JSON at "search/result_count" should be 1
@@ -47,27 +47,27 @@ Feature: Search
     And the JSON at "search/request_url" should be the requested url
 
   Scenario: Search for a record using the OR operator
-    When I search for "Wellington OR Auckland"
+    When I search record for "Wellington OR Auckland"
     Then the JSON at "search/result_count" should be 2
     And the JSON at "search/results/0/name" should be "John Doe"
     And the JSON at "search/results/1/name" should be "Sally Smith"
 
   Scenario: Scenario: Search for a record using the NOT operator
-    When I search for "parker NOT steve"
+    When I search record for "parker NOT steve"
     Then the JSON at "search/result_count" should be 1
     And the JSON at "search/results/0/name" should be "Peter Parker"
 
   Scenario: Search for a record targeting a specific field
-    # When I search for a field "email_sm:\"sally@example.com\""
+    # When I search record for a field "email_sm:\"sally@example.com\""
     # Then the JSON at "search/result_count" should be 1
     # And the JSON at "search/results/0/email" should be "sally@example.com"
 
-  Scenario: Should not search for the term in other fields
-    When I search for a field "email_sm:\"Sally\""
+  Scenario: Should not search record for the term in other fields
+    When I search record for a field "email_sm:\"Sally\""
     Then the JSON at "search/result_count" should be 0
 
   Scenario: Return facets in JSON format
-    When I search for "John" with facet "name"
+    When I search record for "John" with facet "name"
     Then the JSON at "search/facets" should be:
     """
       {
@@ -76,9 +76,10 @@ Feature: Search
         }
       }
     """
+  
   Scenario: Return facets in XML format
     When I request a XML format
-    And I search for "Auckland" with facet "address"
+    And I search record for "Auckland" with facet "address"
     Then the response should include the following XML
     """
       <search>

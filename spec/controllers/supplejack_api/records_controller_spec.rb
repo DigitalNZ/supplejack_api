@@ -17,13 +17,13 @@ module SupplejackApi
   
     describe 'GET index' do
       before(:each) do
-        @search = Search.new
+        @search = RecordSearch.new
         @search.stub(:valid?) { true }
-        Search.stub(:new) {@search}
+        RecordSearch.stub(:new) {@search}
       end
       
       it 'should initialize a new search instance' do
-        Search.should_receive(:new).with(hash_including(text: 'dogs')).and_return(@search)
+        RecordSearch.should_receive(:new).with(hash_including(text: 'dogs')).and_return(@search)
         get :index, api_key: 'apikey', text: "dogs"
         assigns(:search).should eq(@search)
       end
@@ -87,8 +87,8 @@ module SupplejackApi
 
      describe '#default_serializer_options' do
       before(:each) do
-        @search = Search.new
-        Search.stub(:new) { @search }
+        @search = RecordSearch.new
+        RecordSearch.stub(:new) { @search }
       end
       
       it 'should return a hash with info for serialization' do

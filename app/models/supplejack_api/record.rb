@@ -72,7 +72,7 @@ module SupplejackApi
 
     def find_next_and_previous_records(scope, options={})
       if options.try(:any?)
-        search = Search.new(options)
+        search = RecordSearch.new(options)
         search.scope = scope
   
         return nil unless search.valid?
@@ -87,7 +87,7 @@ module SupplejackApi
         if record_index
           if record_index == 0
             unless search.page == 1
-              previous_page_search = Search.new(options.merge(:page => search.page - 1))
+              previous_page_search = RecordSearch.new(options.merge(:page => search.page - 1))
               previous_primary_key = previous_page_search.hits[-1].try(:primary_key)
               self.previous_page = search.page - 1
             end
@@ -101,7 +101,7 @@ module SupplejackApi
   
           if record_index == search.hits.size-1
             unless search.page >= total_pages
-              next_page_search = Search.new(options.merge(:page => search.page + 1))
+              next_page_search = RecordSearch.new(options.merge(:page => search.page + 1))
               next_primary_key = next_page_search.hits[0].try(:primary_key)
               self.next_page = search.page + 1
             end

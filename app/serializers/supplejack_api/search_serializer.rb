@@ -71,10 +71,6 @@ module SupplejackApi
     def records_serialized_array
       ActiveModel::ArraySerializer.new(object.results, {fields: object.field_list, groups: object.group_list, scope: object.scope})
     end
-    
-    def records_serialized_array
-      ActiveModel::ArraySerializer.new(object.results, {fields: object.field_list, groups: object.group_list, scope: object.scope})
-    end
   end
 
 end

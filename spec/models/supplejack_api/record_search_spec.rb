@@ -41,54 +41,10 @@ module SupplejackApi
       end
     end
 
-    describe '#query_fields' do
-      it 'returns nil when no query fields were specified' do
-        @search = RecordSearch.new
-        @search.query_fields.should be_nil
-      end
-  
-      it 'returns the query fields from the params' do
-        @search = RecordSearch.new(query_fields: [:collection])
-        @search.query_fields.should eq([:collection])
-      end
-  
-      it 'supports the query_fields as comma separated string' do
-        @search = RecordSearch.new(query_fields: 'collection, creator, publisher')
-        @search.query_fields.should eq([:collection, :creator, :publisher])
-      end
-  
-      it 'converts an array of strings to symbols' do
-        @search = RecordSearch.new(query_fields: ['collection','creator'])
-        @search.query_fields.should eq([:collection, :creator])
-      end
-  
-      it 'returns nil when query_fields is an empty string' do
-        @search = RecordSearch.new(query_fields: '')
-        @search.query_fields.should be_nil
-      end
-  
-      it 'returns nil when query_fields is an empty array' do
-        @search = RecordSearch.new(query_fields: [])
-        @search.query_fields.should be_nil
-      end
-    end
-
-    describe '#text' do
-      it 'downcases the text string' do
-        RecordSearch.new(text: 'McDowall').text.should eq 'mcdowall'
-      end
-      
-      ['AND', 'OR', 'NOT'].each do |operator|
-        it "downcases everything except the #{operator} operators" do
-          RecordSearch.new(text: "McDowall #{operator} Dogs").text.should eq "mcdowall #{operator} dogs"
-        end
-      end
-    end
-
     def query_fields_for_search
       @session.searches.last.last.instance_variable_get(:@query).to_params[:qf]
     end
-  
+
     describe '#execute_solr_search' do
       context 'solr errors' do
         before do
@@ -117,7 +73,7 @@ module SupplejackApi
         end
       end
   
-      it 'should call keyworks method with user input' do
+      it 'should call keywords method with user input' do
         @search.options[:text] = 'dog'
         @search.execute_solr_search
         @session.should have_search_params(:keywords, 'dog')
@@ -459,68 +415,6 @@ module SupplejackApi
       end
     end
 
-    describe '#solr_error_message' do
-      before(:each) do
-        @error = double(:error, response: {status: 400, body: 'Solr error'})
-        @error.stub(:parse_solr_error_response) { 'Solr error' }
-      end
-  
-      it 'returns a hash with the solr error title and description' do
-        @search.solr_error_message(@error).should eq({:title => '400 Bad Request', :body => 'Solr error'})
-      end
-    end
-
-    describe '#solr_search_object' do
-      it 'memoizes the solr search object' do
-        sunspot_mock = double(:solr).as_null_object
-        @search.should_receive(:execute_solr_search).once.and_return(sunspot_mock)
-        @search.solr_search_object
-        @search.solr_search_object.should eq(sunspot_mock)
-      end
-  
-      it 'sets the solr request parameters when debug=true' do
-        @search.options[:debug] = 'true'
-        @search.stub(:execute_solr_search) { double(:solr_request, query: double(:query, to_params: {param1: 1})) }
-        @search.solr_search_object
-        @search.solr_request_params.should eq({:param1 => 1})
-      end
-  
-      it "doesn't set the solr request parameters" do
-        @search.stub(:execute_solr_search) { double(:solr_request, query: double(:query, to_params: {param1: 1})) }
-        @search.solr_search_object
-        @search.solr_request_params.should be_nil
-      end
-  
-      it 'returns a empty hash when solr request fails' do
-        @search.options[:debug] = 'true'
-        @search.stub(:execute_solr_search) { {} }
-        @search.solr_search_object.should eq({})
-      end
-    end
-
-    describe '#facet_list' do
-      it 'should return a array of facets' do
-        @search.options[:facets] = 'name, address'
-        @search.facet_list.should eq [:name, :address]
-      end
-  
-      it 'should discard any fields not configured as facets' do
-        @search.options[:facets] = 'name, address, other_facet'
-        @search.facet_list.should eq [:name, :address]
-      end
-    end
-
-    describe '#field_list' do
-      it 'should return a array of fields' do
-        @search.options[:fields] = 'name, address'
-        @search.field_list.should eq [:name, :address]
-      end
-
-      it 'should only return valid fields' do
-        @search.options[:fields] = 'name, something_else'
-        @search.field_list.should eq [:name]
-      end
-    end
   end
 
 end

@@ -28,9 +28,6 @@ module SupplejackApi
     before_save :merge_fragments
 
     # Fields
-    field :internal_identifier,         type: String
-    field :landing_url,                 type: String
-    field :status,                      type: String
     field :concept_type,                type: String
 
     # Scopes

@@ -24,6 +24,7 @@ SupplejackApi::Engine.routes.draw do
       end
       resources :fragments, only: [:create]
     end
+    resources :concepts, only: [:create, :update]
     resources :fragments, only: [:destroy]
   end
 

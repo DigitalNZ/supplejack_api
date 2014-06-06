@@ -10,8 +10,6 @@ module SupplejackApi
 		include Mongoid::Document
 	  include Mongoid::Timestamps
 
-	  # embedded_in :fragmentable, polymorphic: true
-
 	  default_scope asc(:priority)
 	  
 	  field :source_id, type: String

@@ -1,14 +1,14 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
   class Record
     include Support::Storable
-  	include Support::Searchable
+  	# include Support::Searchable
     include Support::Harvestable
     include Support::FragmentHelpers
     include ActiveModel::SerializerSupport
@@ -27,7 +27,7 @@ module SupplejackApi
 
     # Callbacks
     before_save :merge_fragments
-  
+
     # Scopes
     scope :active, where(status: 'active')
     scope :deleted, where(status: 'deleted')
@@ -38,15 +38,15 @@ module SupplejackApi
       options ||= {}
       record_scope = self.unscoped
       record_scope = record_scope.active unless options.delete(:status) == :all
-  
+
       if id.to_s.match(/^\d+$/)
         record = record_scope.where(record_id: id).first
       elsif id.to_s.match(/^[0-9a-f]{24}$/i)
         record = record_scope.find(id)
       end
-  
+
       raise Mongoid::Errors::DocumentNotFound.new(self, [id], [id]) unless record
-  
+
       begin
         record.find_next_and_previous_records(scope, options) if options.any?
       rescue Sunspot::UnrecognizedFieldError, RSolr::Error::Http, Timeout::Error, Errno::ECONNREFUSED, Errno::ECONNRESET => e
@@ -59,7 +59,7 @@ module SupplejackApi
       return [] unless ids.try(:any?)
       string_ids = ids.find_all {|id| id.to_s.length > 10 }
       integer_ids = ids.find_all {|id| id.to_s.length <= 10 }
-  
+
       records =[]
       records += self.active.find(string_ids) if string_ids.present?
       records += self.active.where(:record_id.in => integer_ids)
@@ -74,16 +74,16 @@ module SupplejackApi
       if options.try(:any?)
         search = RecordSearch.new(options)
         search.scope = scope
-  
+
         return nil unless search.valid?
-  
+
         # Find the index in the array for the current record
         record_index = search.hits.find_index {|i| i.primary_key == self.id.to_s}
         total_pages = (search.total.to_f / search.per_page).ceil
-  
+
         self.next_page = search.page
         self.previous_page = search.page
-  
+
         if record_index
           if record_index == 0
             unless search.page == 1
@@ -94,11 +94,11 @@ module SupplejackApi
           else
             previous_primary_key = search.hits[record_index-1].try(:primary_key)
           end
-  
+
           if previous_primary_key.present?
             self.previous_record = Record.find(previous_primary_key).try(:record_id) rescue nil
           end
-  
+
           if record_index == search.hits.size-1
             unless search.page >= total_pages
               next_page_search = RecordSearch.new(options.merge(:page => search.page + 1))
@@ -108,18 +108,18 @@ module SupplejackApi
           else
             next_primary_key = search.hits[record_index+1].try(:primary_key)
           end
-  
+
           if next_primary_key.present?
             self.next_record = Record.find(next_primary_key).try(:record_id) rescue nil
           end
         end
       end
     end
-  
+
     def active?
       self.status == 'active'
     end
-  
+
     def should_index?
       return should_index_flag if !should_index_flag.nil?
       active?

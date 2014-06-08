@@ -41,7 +41,7 @@ module SupplejackApi
     field :daily_requests,    type: Integer,  default: 0
     field :monthly_requests,  type: Integer,  default: 0
     field :max_requests,      type: Integer,  default: 10000
-    field :role,              type: String,   default: -> { Schema.default_role.name }
+    field :role,              type: String,   default: 'developer'
 
     field :daily_activity,        type: Hash
     field :daily_activity_stored, type: Boolean, default: true

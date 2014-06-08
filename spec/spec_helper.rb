@@ -41,8 +41,12 @@ RSpec.configure do |config|
     Sunspot.session = Sunspot::Rails::StubSessionProxy.new(Sunspot.session)
     Timecop.return
     
-    Schema.stub(:default_role) { double(:role, name: :developer) }
-    Schema.stub_chain(:roles, :keys) { [:developer] }
+    %w(record concept).each do |model|
+      klass = "#{model.capitalize}Schema".constantize
+
+      klass.stub(:default_role) { double(:role, name: :developer) }
+      klass.stub_chain(:roles, :keys) { [:developer] }
+    end
   end
 
   config.include SunspotMatchers

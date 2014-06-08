@@ -46,7 +46,7 @@ Feature: Search Concept
     And the JSON at "search/results/0/name" should be "Rita Angus"
     And the JSON at "search/results/1/name" should be "Robert Muldoon"
 
-  Scenario: Scenario: Search for a concept using the NOT operator
+  Scenario: Search for a concept using the NOT operator
     When I search concept for "david NOT hill"
     Then the JSON at "search/result_count" should be 1
     And the JSON at "search/results/0/name" should be "David Lange"

@@ -5,6 +5,20 @@
 # Supplejack was created by DigitalNZ at the National Library of NZ and 
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
-class Schema < SupplejackApi::SupplejackSchema
+@search
+Feature: Get Concept
 
-end
+	Background:
+		Given a user with a API Key
+		And a concept
+		
+	Scenario: Show concept
+		When I get a concept
+		Then the JSON should be a hash
+		And the JSON at "name" should be "Colin McCahon"
+
+	Scenario: Get specific field
+		When I get a concept with "name" field
+		Then the JSON should have 2 keys
+		And the JSON at "name" should be "Colin McCahon"
+

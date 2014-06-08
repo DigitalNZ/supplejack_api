@@ -19,11 +19,11 @@ module SupplejackApi
     def serializable_hash
       hash = attributes
 
-      groups = (options[:groups] & Schema.groups.keys) || []
+      groups = (options[:groups] & RecordSchema.groups.keys) || []
 
       fields = Set.new
       groups.each do |group|
-        fields.merge(Schema.groups[group].try(:fields))
+        fields.merge(RecordSchema.groups[group].try(:fields))
       end
 
       # hash[:id] = field_value(:record_id, options) if fields.any?
@@ -67,8 +67,8 @@ module SupplejackApi
   
     def field_value(field, options={})
       value = nil
-      if Schema.fields[field].try(:search_value) && Schema.fields[field].try(:store) == false
-        value = Schema.fields[field].search_value.call(object)
+      if RecordSchema.fields[field].try(:search_value) && RecordSchema.fields[field].try(:store) == false
+        value = RecordSchema.fields[field].search_value.call(object)
       else
         value = object.public_send(field)
       end
@@ -85,8 +85,8 @@ module SupplejackApi
     def role_field_restrictions
       restrictions = []
   
-      if role && Schema.roles[role] && Schema.roles[role].field_restrictions.present?
-        restrictions = Schema.roles[role].field_restrictions
+      if role && RecordSchema.roles[role] && RecordSchema.roles[role].field_restrictions.present?
+        restrictions = RecordSchema.roles[role].field_restrictions
       end
   
       restrictions

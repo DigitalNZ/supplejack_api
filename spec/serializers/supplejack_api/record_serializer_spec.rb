@@ -5,13 +5,13 @@
 # Supplejack was created by DigitalNZ at the National Library of NZ and 
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
-require "spec_helper"
+require 'spec_helper'
 
 module SupplejackApi
   describe RecordSerializer do
 
     before(:each) do
-      Schema.stub(:roles) { double(:developer).as_null_object }
+      RecordSchema.stub(:roles) { double(:developer).as_null_object }
     end
 
     def record_hash(attributes={}, method=nil, options={})
@@ -40,7 +40,7 @@ module SupplejackApi
       @serializer = RecordSerializer.new(@record, options)
     end
     
-    describe "#as_json" do
+    describe '#as_json' do
       let(:record) { FactoryGirl.build(:record) }
       let(:serializer) { RecordSerializer.new(record) }
   
@@ -57,20 +57,17 @@ module SupplejackApi
       end
     end
     
-    describe "#include_individual_fields!" do
-    	pending 'Discuss if this method is still valid'
-      # before(:each) do
-      #   @hash = {}
-      # end
+    # describe '#include_individual_fields!' do
+    #   before { @hash = {} }
       
-      # it "should merge in the hash the requested fields" do
-      #   s = serializer({fields: [:atl_purchasable]}, {atl_purchasable: true})
-      #   s.include_individual_fields!(@hash)
-      #   @hash.should eq({atl_purchasable: true})
-      # end
-    end
+    #   it 'merges in the hash the requested fields' do
+    #     s = serializer({ fields: [:age] }, { age: 22 })
+    #     s.include_individual_fields!(@hash)
+    #     @hash.should eq({ age: 22 })
+    #   end
+    # end
     
-    describe "#remove_restricted_fields!" do
+    describe '#remove_restricted_fields!' do
       let(:hash) { {name: 'John Doe', address: "Wellington", email: ["johndoe@example.com"], age: 30} }
       let(:user) { User.new(role: "developer") }
       let(:restrictions) { { address: {"Wellington"=>["name"], "Auckland"=>["email"]}, 
@@ -79,7 +76,7 @@ module SupplejackApi
       let(:admin_role) { double(:admin_role, field_restrictions: nil) }
 
       before(:each) do
-        Schema.stub(:roles).and_return({ developer: developer_role, admin: admin_role })
+        RecordSchema.stub(:roles).and_return({ developer: developer_role, admin: admin_role })
       end
     
       context "string conditions" do
@@ -151,8 +148,8 @@ module SupplejackApi
       end
     end
     
-    describe "#serializable_hash" do
-      context "include groups of fields" do
+    describe '#serializable_hash' do
+      context 'include groups of fields' do
         let(:default_group) { double(:default_group, fields: [:name, :email]) }
         let(:details_group) { double(:details_group, fields: [:name, :email, :age]) }
         let(:s) { serializer({groups: [:default]}) }
@@ -160,24 +157,24 @@ module SupplejackApi
   
         before(:each) do
           @hash = {}
-          Schema.stub(:groups) { {default: default_group, details: details_group} }
+          RecordSchema.stub(:groups) { {default: default_group, details: details_group} }
           s.stub(:record) { record }
           s.stub(:field_value)
         end
         
-        context "handling groups" do
-          it "should include fields from given group" do
+        context 'handling groups' do
+          it 'should include fields from given group' do
             default_group.should_receive(:fields)
             details_group.should_not_receive(:fields)
             s.serializable_hash
           end
   
-          it "should handle non-existent groups" do
+          it 'should handle non-existent groups' do
             s.stub(:options) { { groups: [:dogs] } }
             s.serializable_hash.size.should eq 0
           end
   
-          it "should remove non-existent groups (or field names)" do
+          it 'should remove non-existent groups (or field names)' do
             s.stub(:options) { { groups: [:default, :description] } }
             s.stub(:field_value).with(:name, anything()) { 'John Doe' }
             s.serializable_hash[:name].should eq 'John Doe'
@@ -191,13 +188,13 @@ module SupplejackApi
           end
         end 
   
-        it "should remove restricted fields" do
+        it 'should remove restricted fields' do
           s.should_receive(:remove_restricted_fields!)
           s.serializable_hash
         end
   
-        context "field/group doesn't exist" do
-          it "returns an empty record hash" do
+        context 'field/group doesn\'t exist' do
+          it 'returns an empty record hash' do
             s.stub(:options) { { groups: [:dogs] } }
             s.serializable_hash.should be_empty
           end
@@ -244,17 +241,17 @@ module SupplejackApi
         s.field_value(:address).should be_nil
       end
   
-      context "search_value defined" do
-        context "field not stored in mongo" do
-          it "uses the value of the search_value block" do
-            Schema.stub(:fields) { {age: double(:field, store:false, search_value: Proc.new{21})} }
+      context 'search_value defined' do
+        context 'field not stored in mongo' do
+          it 'uses the value of the search_value block' do
+            RecordSchema.stub(:fields) { { age: double(:field, store: false, search_value: Proc.new{ 21 }) } }
             s.field_value(:age).should eq 21
           end
         end
   
-        context "field stored in mongo" do
+        context 'field stored in mongo' do
           it "uses the value from mongo" do
-            Schema.stub(:fields) { {children: double(:field, search_value: Proc.new{1}).as_null_object} }
+            RecordSchema.stub(:fields) { {children: double(:field, search_value: Proc.new{1}).as_null_object} }
             s.field_value(:children).should eq ['Sara', 'Bob']
           end
         end

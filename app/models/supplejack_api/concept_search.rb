@@ -24,6 +24,11 @@ module SupplejackApi
       restrictions
     end
 
+    def query_fields
+      query_fields_list = super
+      query_fields_list += [:name, :label] if (query_fields_list && [:name, :label]).present?
+    end
+
     def search_builder
       @search_builder ||= Sunspot.new_search(Concept) do
         facet_list.each do |facet_name|

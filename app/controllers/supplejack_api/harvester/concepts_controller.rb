@@ -13,7 +13,6 @@ module SupplejackApi
       def create
         @concept = Concept.find_or_initialize_by_identifier(params[:concept])
         @concept.landing_url = params[:concept].delete(:landing_url)
-        @concept.concept_type = params[:concept].delete(:concept_type)
         @concept.set_status(params[:required_fragments])
         @concept.create_or_update_fragment(params[:concept])
         @concept.save

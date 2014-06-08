@@ -19,3 +19,18 @@ When(/^I visit index page for the concepts$/) do
   @request_url = concepts_url({ format: 'json', api_key: @user.api_key })
   visit(@request_url)
 end
+
+Given(/^a concept$/) do
+  @concept = FactoryGirl.create(:concept)
+  @concept.fragments << FactoryGirl.build(:concept_fragment)
+  @concept.save
+end
+
+When(/^I get a concept$/) do
+  request_url = concept_url(@concept.concept_id, format: 'json', api_key: @user.api_key, fields: 'all')
+  visit(request_url)
+end
+
+When(/^I get a concept with "(.*?)" field$/) do |field|
+  visit(concept_url(@concept.concept_id, format: 'json', api_key: @user.api_key, fields: field))
+end

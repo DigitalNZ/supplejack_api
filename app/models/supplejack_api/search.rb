@@ -171,7 +171,7 @@ module SupplejackApi
       value = @options[:sort].to_sym
       
       begin
-        field = Sunspot::Setup.for(Record).field(value)
+        field = Sunspot::Setup.for(model_class).field(value)
         return value
       rescue Sunspot::UnrecognizedFieldError => e
         return 'score'
@@ -213,7 +213,7 @@ module SupplejackApi
       search = search_builder
   
       search.build do
-        keywords text, :fields => query_fields
+        keywords text, fields: query_fields
       end
   
       execute_solr_search_and_handle_errors(search)

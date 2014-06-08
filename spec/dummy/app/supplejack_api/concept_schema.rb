@@ -9,18 +9,43 @@ class ConceptSchema < SupplejackApi::SupplejackSchema
 
   # Fields
   string    :@id
-  string    :@type
+  string    :type,                              search_as: [:filter]
   string    :name,          search_boost: 10,   search_as: [:filter, :fulltext]
   string    :label,         search_boost: 5,    search_as: [:filter, :fulltext]
   string    :description,   search_boost: 2,    search_as: [:filter, :fulltext]
-  datetime  :dateOfBirth
-  datetime  :dateOfDeath
+  datetime  :dateOfBirth,                       search_as: [:filter]
+  datetime  :dateOfDeath,                       search_as: [:filter]
   string    :placeOfBirth
   string    :placeOfDeath
-  string    :gender
+  string    :gender,                            search_as: [:filter]
   string    :isRelatedTo,   multi_value: true
   string    :hasMet,        multi_value: true
   string    :sameAs,        multi_value: true
+
+  # Groups
+  group :default do
+    fields [
+      :@id,
+      :type,
+      :name,
+      :label
+    ]
+  end
+
+  group :all do
+    includes [:default]
+    fields [
+      :description,
+      :dateOfBirth,
+      :dateOfDeath,
+      :placeOfBirth,
+      :placeOfDeath,
+      :gender,
+      :isRelatedTo,
+      :hasMet,
+      :sameAs,
+    ]
+  end
 
   build_object_id
 

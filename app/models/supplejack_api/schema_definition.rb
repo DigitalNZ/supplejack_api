@@ -117,7 +117,7 @@ module SupplejackApi
     end
 
     class Namespace < SchemaObject
-    ,end  
+    end  
 
     class Group < SchemaObject
       def include_groups_from(existing_groups)

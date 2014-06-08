@@ -72,11 +72,18 @@ module SupplejackApi
 
 
     describe '#fields' do
-      it 'describes title' do
-        ExampleSchema.fields[:title].name.should eq :title
-        ExampleSchema.fields[:title].type.should eq :string
-        ExampleSchema.fields[:title].search_boost.should eq 10
-        ExampleSchema.fields[:title].search_as.should eq [:fulltext]
+
+      it "prefixes the field name with the namespace" do
+        ExampleSchema.fields[:dc_title].should_not be_nil
+        ExampleSchema.fields[:title].should be_nil
+      end
+
+      it "describes dc_title" do
+        ExampleSchema.fields[:dc_title].name.should eq :dc_title
+        ExampleSchema.fields[:dc_title].type.should eq :string
+        ExampleSchema.fields[:dc_title].search_boost.should eq 10
+        ExampleSchema.fields[:dc_title].search_as.should eq [:fulltext]
+        ExampleSchema.fields[:dc_title].namespace.should eq :dc
       end
 
       it 'describes display_collection' do

@@ -50,9 +50,11 @@ module SupplejackApi
       # Means that record.{attribute} (ie. record.name) works for convenience
       # and abstracts away the fact that fragments exist
       def method_missing(symbol, *args, &block)
-        if symbol.to_s.include?(':')
-          symbol = symbol.to_s.gsub(':', '_').to_sym
-        end
+
+        # TODO CHECK IF WE STILL WANT THIS
+        # if symbol.to_s.include?(':')
+        #   symbol = symbol.to_s.gsub(':', '_').to_sym
+        # end
 
         type = fragment_class.mutable_fields[symbol.to_s]
         if self.merged_fragment

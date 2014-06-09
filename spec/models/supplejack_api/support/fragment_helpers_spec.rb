@@ -107,12 +107,12 @@ module SupplejackApi
           end
         end
 
-        context "namespaced field names" do
-          it "should translate namespaced field names into their stored field name" do
-            record.fragments.first.stub(:dc_name) { 'Joe Bloggs' }
-            record.public_send(:'dc:name').should eq 'Joe Bloggs'
-          end
-        end
+        # context "namespaced field names" do
+        #   it "should translate namespaced field names into their stored field name" do
+        #     record.fragments.first.stub(:dc_name) { 'Joe Bloggs' }
+        #     record.public_send(:'dc:name').should eq 'Joe Bloggs'
+        #   end
+        # end
       end
 
       describe '#find_fragment' do

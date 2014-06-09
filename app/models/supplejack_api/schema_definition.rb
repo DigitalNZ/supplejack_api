@@ -10,7 +10,7 @@ module SupplejackApi
     extend ActiveSupport::Concern
 
     ALLOWED_ATTRIBUTES = {
-      field: [:type, :search_value, :search_boost, :multi_value, :search_as, :store, :solr_name, :namespace],
+      field: [:type, :search_value, :search_boost, :multi_value, :search_as, :store, :solr_name, :namespace, :namespace_field],
       group: [:fields, :includes],
       role: [:default, :field_restrictions, :record_restrictions],
       namespace: [:url]
@@ -32,17 +32,6 @@ module SupplejackApi
       def field(type, name, options={}, &block)
           self.fields ||= {}
           options.merge!(type: type)
-
-          # Add the namespace as a prefix to the field name
-          if options[:namespace].present?
-            namespace = options[:namespace]
-            unless self.namespaces.keys.include?(namespace)
-              Rails.logger.warn("Namespace [#{options[:namespace]}] is not defined. Available namespaces are [#{self.namespaces.keys}]")
-              puts "WARN: Namespace [#{options[:namespace]}] is not defined. Available namespaces are [#{self.namespaces.keys}]"
-            end
-
-            name = "#{namespace}_#{name}".to_sym
-          end
 
           field = Field.new(name, options, &block)
           self.fields[name] = field
@@ -114,10 +103,13 @@ module SupplejackApi
     end
 
     class Field < SchemaObject
+      def namespace_field
+        namespace_field = !!@options[:namespace_field] ? @options[:namespace_field] : @name
+      end
     end
 
     class Namespace < SchemaObject
-    end  
+    end
 
     class Group < SchemaObject
       def include_groups_from(existing_groups)

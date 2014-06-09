@@ -15,7 +15,7 @@ module SupplejackApi
 
       namespace :dc, url: 'http://purl.org/dc/elements/1.1/'
 
-      string :title,                  search_boost: 10, search_as: [:fulltext], namespace: :dc
+      string :title,                  search_boost: 10, search_as: [:fulltext], namespace: :dc, namespace_field: :creator
       string :display_collection
       string :primary_collection,     multi_value: true,  search_as: [:filter]
       boolean :is_natlib_record,                          search_as: [:filter]
@@ -73,17 +73,13 @@ module SupplejackApi
 
     describe '#fields' do
 
-      it "prefixes the field name with the namespace" do
-        ExampleSchema.fields[:dc_title].should_not be_nil
-        ExampleSchema.fields[:title].should be_nil
-      end
-
-      it "describes dc_title" do
-        ExampleSchema.fields[:dc_title].name.should eq :dc_title
-        ExampleSchema.fields[:dc_title].type.should eq :string
-        ExampleSchema.fields[:dc_title].search_boost.should eq 10
-        ExampleSchema.fields[:dc_title].search_as.should eq [:fulltext]
-        ExampleSchema.fields[:dc_title].namespace.should eq :dc
+      it "describes title" do
+        ExampleSchema.fields[:title].name.should eq :title
+        ExampleSchema.fields[:title].type.should eq :string
+        ExampleSchema.fields[:title].search_boost.should eq 10
+        ExampleSchema.fields[:title].search_as.should eq [:fulltext]
+        ExampleSchema.fields[:title].namespace.should eq :dc
+        ExampleSchema.fields[:title].namespace_field.should eq :creator
       end
 
       it 'describes display_collection' do
@@ -122,6 +118,16 @@ module SupplejackApi
         ExampleSchema.fields[:text].name.should eq :text
         ExampleSchema.fields[:text].type.should eq :string
         ExampleSchema.fields[:text].solr_name.should eq :text
+      end
+
+      context "namespace field" do
+        it 'returns the namespace field' do
+          ExampleSchema.fields[:title].namespace_field.should eq :creator
+        end
+
+        it 'returns the field name if a namespace_field is not defined' do
+          ExampleSchema.fields[:display_collection].namespace_field.should eq :display_collection
+        end
       end
     end
 
@@ -184,6 +190,12 @@ module SupplejackApi
         it 'should not set the admin role as default' do
           ExampleSchema.default_role.name.should_not eq :admin
         end
+      end
+    end
+
+    describe "#namespaces" do
+      it "should return all the defined namespaces" do
+        expect(ExampleSchema.namespaces.keys).to eq([:dc])
       end
     end
 

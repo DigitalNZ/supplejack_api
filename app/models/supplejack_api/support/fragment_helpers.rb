@@ -1,8 +1,8 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
@@ -33,7 +33,7 @@ module SupplejackApi
           fragment_class.mutable_fields.each do |name, field_type|
             if field_type == Array
               values = Set.new
-              sorted_fragments.each do |s| 
+              sorted_fragments.each do |s|
                 values += Array(s.public_send(name))
               end
               self.merged_fragment.public_send("#{name}=", values.to_a)
@@ -45,11 +45,15 @@ module SupplejackApi
         end
       end
 
-      # Fetch the attribute from the underlying 
+      # Fetch the attribute from the underlying
       # merged_fragment or only fragment.
       # Means that record.{attribute} (ie. record.name) works for convenience
       # and abstracts away the fact that fragments exist
       def method_missing(symbol, *args, &block)
+        if symbol.to_s.include?(':')
+          symbol = symbol.to_s.gsub(':', '_').to_sym
+        end
+
         type = fragment_class.mutable_fields[symbol.to_s]
         if self.merged_fragment
           value = self.merged_fragment.public_send(symbol)

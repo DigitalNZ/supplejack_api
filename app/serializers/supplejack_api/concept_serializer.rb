@@ -8,10 +8,11 @@
 module SupplejackApi
   class ConceptSerializer < ActiveModel::Serializer
 
-<<<<<<< HEAD
      def serializable_hash
       hash = attributes
-      include_context_fields!(hash)
+
+      # Create empty context block to add to once we know what fields we have.
+      hash['@context'] = {}
 
       groups = (options[:groups] & ConceptSchema.groups.keys) || []
 
@@ -25,11 +26,15 @@ module SupplejackApi
       end
 
       include_individual_fields!(hash)
+      include_context_fields!(hash)
       hash
     end
 
     def include_context_fields!(hash)
-      context = build_context
+      fields = hash.dup
+      fields.shift
+
+      context = build_context(fields.keys)
       hash['@context'] = context
       hash
     end
@@ -55,13 +60,19 @@ module SupplejackApi
       value
     end
 
-    def build_context
+    def build_context(fields)
       context = {}
 
-      ConceptSchema.namespaces.each do | key, namespace |
-        context[key] = "#{namespace.url}"
-        namespaced_fields(key).each do |name, field|
-          context[name] = "#{field.namespace}:#{field.namespace_field}" unless name == field.namespace
+      namespaces = []
+
+      fields.each do |field|
+        namespaces << ConceptSchema.fields[field].try(:namespace)
+      end
+
+      namespaces.compact.uniq.each do | namespace |
+        context[namespace] = ConceptSchema.namespaces[namespace].url
+        namespaced_fields(namespace).each do |name, field|
+          context[name] = "#{field.namespace}:#{field.namespace_field}" if fields.include?(name) && name != field.namespace
         end
       end
 

@@ -8,7 +8,7 @@
 module SupplejackApi
   class Record
     include Support::Storable
-  	# include Support::Searchable
+  	include Support::Searchable
     include Support::Harvestable
     include Support::FragmentHelpers
     include ActiveModel::SerializerSupport

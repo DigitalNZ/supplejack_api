@@ -85,15 +85,9 @@ module SupplejackApi
 
     def role_field_restrictions
       restrictions = []
-<<<<<<< HEAD
-  
+
       if role && RecordSchema.roles[role] && RecordSchema.roles[role].field_restrictions.present?
         restrictions = RecordSchema.roles[role].field_restrictions
-=======
-
-      if role && Schema.roles[role] && Schema.roles[role].field_restrictions.present?
-        restrictions = Schema.roles[role].field_restrictions
->>>>>>> Update concept serializer to use schema fields
       end
 
       restrictions

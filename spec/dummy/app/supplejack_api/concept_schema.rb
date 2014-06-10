@@ -8,7 +8,6 @@
 class ConceptSchema < SupplejackApi::SupplejackSchema
 
   # Fields
-  string    :@id
   string    :type,                              search_as: [:filter]
   string    :name,          search_boost: 10,   search_as: [:filter, :fulltext]
   string    :label,         search_boost: 5,    search_as: [:filter, :fulltext]
@@ -25,7 +24,6 @@ class ConceptSchema < SupplejackApi::SupplejackSchema
   # Groups
   group :default do
     fields [
-      :@id,
       :type,
       :name,
       :label

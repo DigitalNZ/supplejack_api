@@ -21,8 +21,15 @@ module SupplejackApi
 
     # From storable
     store_in collection: 'concepts'
-    index({concept_id: 1}, {unique: true})
+    index({ concept_id: 1 }, { unique: true })
     auto_increment :concept_id, session: 'strong', collection: 'concepts'
+
+    index label: 1
+    index name: 1
+    index gender: 1
+    index dateOfBirth: 1
+    index dateOfDeath: 1
+    index type: 1
 
     # Callbacks
     before_save :merge_fragments

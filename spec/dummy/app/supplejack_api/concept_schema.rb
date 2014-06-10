@@ -15,26 +15,27 @@ class ConceptSchema < SupplejackApi::SupplejackSchema
   namespace :owl,    url: 'http://www.w3.org/2002/07/owl'
 
   # Fields
-  string    :@type
-  string    :name,          search_boost: 10,   search_as: [:filter, :fulltext], namespace: :foaf
-  string    :label,         search_boost: 5,    search_as: [:filter, :fulltext], namespace: :skos, namespace_field: :prefLabel
-  string    :description,   search_boost: 2,    search_as: [:filter, :fulltext], namespace: :rdaGr2, namespace_field: :biographicalInformation
-  datetime  :dateOfBirth,   namespace: :rdaGr2
-  datetime  :dateOfDeath,   namespace: :rdaGr2
-  string    :placeOfBirth,  namespace: :rdaGr2
-  string    :placeOfDeath,  namespace: :rdaGr2
-  string    :role,          namespace: :rdaGr2, namespace_field: :professionOrOccupation
-  string    :gender,        namespace: :rdaGr2
-  string    :isRelatedTo,   multi_value: true, namespace: :edm
-  string    :hasMet,        multi_value: true, namespace: :edm
-  string    :sameAs,        multi_value: true, namespace: :owl
+  string    :type,                              search_as: [:filter]
+  string    :name,          search_boost: 10,   search_as: [:filter, :fulltext]
+  string    :label,         search_boost: 5,    search_as: [:filter, :fulltext]
+  string    :description,   search_boost: 2,    search_as: [:filter, :fulltext]
+  datetime  :dateOfBirth,                       search_as: [:filter]
+  datetime  :dateOfDeath,                       search_as: [:filter]
+  string    :placeOfBirth
+  string    :placeOfDeath
+  string    :gender,                            search_as: [:filter]
+  string    :isRelatedTo,   multi_value: true
+  string    :hasMet,        multi_value: true
+  string    :sameAs,        multi_value: true
+  string    :role
 
   # Groups
   group :default do
     fields [
       :type,
       :name,
-      :label
+      :label,
+      :role
     ]
   end
 

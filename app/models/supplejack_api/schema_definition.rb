@@ -13,11 +13,12 @@ module SupplejackApi
       field: [:type, :search_value, :search_boost, :multi_value, :search_as, :store, :solr_name, :namespace, :namespace_field],
       group: [:fields, :includes],
       role: [:default, :field_restrictions, :record_restrictions],
-      namespace: [:url]
+      namespace: [:url],
+      mongo_index: [:fields, :index_options]
     }
 
     included do
-      cattr_accessor :fields, :groups, :roles, :default_role, :namespaces
+      cattr_accessor :fields, :groups, :roles, :default_role, :namespaces, :mongo_indexes
     end
 
     module ClassMethods
@@ -62,6 +63,13 @@ module SupplejackApi
 
         namespace = Namespace.new(name, options)
         self.namespaces[name] = namespace
+      end
+
+      def mongo_index(name, options={}, &block)
+        self.mongo_indexes ||= {}
+
+        mongo_index = MongoIndex.new(name, options)
+        self.mongo_indexes[name] = mongo_index
       end
     end
 
@@ -121,6 +129,9 @@ module SupplejackApi
     end
 
     class Role < SchemaObject
+    end
+
+    class MongoIndex < SchemaObject
     end
 
   end

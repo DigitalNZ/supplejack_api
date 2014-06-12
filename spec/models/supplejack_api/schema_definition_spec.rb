@@ -30,6 +30,9 @@ module SupplejackApi
       datetime :syndication_date,                         search_as: [:filter]
       string :text, solr_name: :text
 
+      mongo_index :year, fields: [{year: 1}], index_options: [{background:true}]
+      mongo_index :title_is_natlib_record, fields: [{title: 1, is_natlib_record: 1}]
+
       group :default do
         fields [
           :title,
@@ -196,6 +199,20 @@ module SupplejackApi
     describe "#namespaces" do
       it "should return all the defined namespaces" do
         expect(ExampleSchema.namespaces.keys).to eq([:dc])
+      end
+    end
+
+    describe '#mongo_indexes' do
+      it "returns all the mongo indexes that are defined" do
+        ExampleSchema.mongo_indexes.keys.should eq [:year, :title_is_natlib_record]
+      end
+
+      it 'returns the fields for a given index' do
+        ExampleSchema.mongo_indexes[:year].fields.should eq [{year: 1}]
+      end
+
+      it 'returns the index_options for an index' do
+        ExampleSchema.mongo_indexes[:year].index_options.should eq [{background:true}]
       end
     end
 

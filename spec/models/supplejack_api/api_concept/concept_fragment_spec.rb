@@ -1,8 +1,8 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 require 'spec_helper'
@@ -10,14 +10,19 @@ require 'spec_helper'
 module SupplejackApi
   module ApiConcept
     describe ConceptFragment do
-  
+
       let!(:concept) { FactoryGirl.build(:concept, concept_id: 1234) }
       let!(:fragment) { concept.fragments.build(priority: 0) }
       let(:fragment_class) { ConceptFragment }
-    
-      before { 
+
+      before {
         concept.save
       }
+
+      it { should have_index_for(status: 1) }
+      it { should have_index_for(internal_identifier: 1) }
+      it { should have_index_for(landing_url: 1) }
+      it { should have_index_for(updated_at: 1) }
 
       describe 'schema_class' do
         it 'should return ConceptSchema' do
@@ -38,34 +43,49 @@ module SupplejackApi
             }
           end
           fragment_class.stub(:field)
+
+          ConceptSchema.stub(:mongo_indexes) do
+            {
+              count_date: double(:mongo_index, name: :count_date, fields: [{ count: 1, date: 1 }], index_options: {background: true}).as_null_object
+            }
+          end
+          fragment_class.stub(:mongo_indexes)
         end
-    
+
         after do
           fragment_class.build_mongoid_schema
         end
-    
-        it 'defines a string field' do
-          fragment_class.should_receive(:field).with(:title, type: String)
+
+        context 'creating fields' do
+          it 'defines a string field' do
+            fragment_class.should_receive(:field).with(:title, type: String)
+          end
+
+          it 'defines a integer field' do
+            fragment_class.should_receive(:field).with(:count, type: Integer)
+          end
+
+          it 'defines a datetime field' do
+            fragment_class.should_receive(:field).with(:date, type: DateTime)
+          end
+
+          it 'defines a boolean field' do
+            fragment_class.should_receive(:field).with(:is_active, type: Boolean)
+          end
+
+          it 'defines a multivalue field' do
+            fragment_class.should_receive(:field).with(:subject, type: Array)
+          end
+
+          it 'does not define a field with stored false' do
+            fragment_class.should_not_receive(:field).with(:sort_date, anything)
+          end
         end
-    
-        it 'defines a integer field' do
-          fragment_class.should_receive(:field).with(:count, type: Integer)
-        end
-    
-        it 'defines a datetime field' do
-          fragment_class.should_receive(:field).with(:date, type: DateTime)
-        end
-    
-        it 'defines a boolean field' do
-          fragment_class.should_receive(:field).with(:is_active, type: Boolean)
-        end
-    
-        it 'defines a multivalue field' do
-          fragment_class.should_receive(:field).with(:subject, type: Array)
-        end
-    
-        it 'does not define a field with stored false' do
-          fragment_class.should_not_receive(:field).with(:sort_date, anything)
+
+        context 'creating indexes' do
+          it 'should create a single field index' do
+            fragment_class.should_receive(:index).with({:count=>1, :date=>1}, {:background=>true})
+          end
         end
       end
 
@@ -75,11 +95,11 @@ module SupplejackApi
             fragment_class.mutable_fields[name.to_s].should eq type
           end
         end
-    
+
         it 'should not include the source_id' do
           fragment_class.mutable_fields.should_not have_key('source_id')
         end
-    
+
         it 'should memoize the mutable_fields' do
           fragment_class.class_variable_set('@@mutable_fields', nil)
           fragment_class.should_receive(:fields).once.and_return({})
@@ -104,7 +124,7 @@ module SupplejackApi
           fragment.priority = 0
           fragment.primary?.should be_true
         end
-    
+
         it 'returns false when priority is 1' do
           fragment.priority = 1
           fragment.primary?.should be_false
@@ -114,7 +134,7 @@ module SupplejackApi
       describe '#clear_attributes' do
         let(:concept) { FactoryGirl.create(:concept) }
         let(:fragment) { concept.fragments.create(gender: 'male') }
-    
+
         it 'clears the existing gender' do
           fragment.clear_attributes
           fragment.gender.should be_nil
@@ -140,7 +160,7 @@ module SupplejackApi
           fragment.update_from_harvest({isRelatedTo: ['Jim', 'Bob', 'Jim']})
           fragment.isRelatedTo.should eq ['Jim', 'Bob']
         end
-        
+
         it 'updates the updated_at even if the attributes didn\'t change' do
           new_time = Time.now + 1.day
           Timecop.freeze(new_time) do
@@ -170,7 +190,7 @@ module SupplejackApi
         end
       end
 
-      
+
     end
   end
 end

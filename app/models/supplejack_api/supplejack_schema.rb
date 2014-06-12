@@ -1,8 +1,8 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
@@ -10,16 +10,16 @@ module SupplejackApi
 		include SupplejackApi::SchemaDefinition
 
 		CORE_FIELDS = [
-	    :internal_identifier, 
-	    :status, 
+	    :internal_identifier,
+	    :status,
 	    :landing_url,
-	    :created_at, 
+	    :created_at,
 	    :updated_at
 	  ]
 
 	  def self.build_object_id
 	  	object_id = "#{self.name.to_s.gsub(/Schema/, '').downcase}_id".to_sym
-	  	
+
 			# Make core fields available in Schema
 	  	CORE_FIELDS.push object_id
 	  	CORE_FIELDS.each do |field|
@@ -34,5 +34,11 @@ module SupplejackApi
 	  group :internal_fields do
 	    fields CORE_FIELDS
 	  end
+
+		# Index core fields in mongo
+		mongo_index :status, 						 fields: [{status: 1}]
+		mongo_index :internal_identifier, fields: [{internal_identifier: 1}]
+		mongo_index :landing_url, 				fields: [{landing_url: 1}]
+		mongo_index :updated_at, 				 fields: [{updated_at: 1}]
 	end
 end

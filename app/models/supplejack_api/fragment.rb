@@ -1,8 +1,8 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
@@ -11,15 +11,15 @@ module SupplejackApi
 	  include Mongoid::Timestamps
 
 	  default_scope asc(:priority)
-	  
+
 	  field :source_id, type: String
 	  field :priority,  type: Integer, default: 1
 	  field :job_id,  type: String
 
 	  MONGOID_TYPE_NAMES = {
-      string: String, 
-      integer: Integer, 
-      datetime: DateTime, 
+      string: String,
+      integer: Integer,
+      datetime: DateTime,
       boolean: Boolean
     }
 
@@ -28,17 +28,24 @@ module SupplejackApi
     end
 
     def self.build_mongoid_schema
+			# Build fields
       self.schema_class.fields.each do |name, field|
         next if field.store == false
         type = field.multi_value.presence ? Array : MONGOID_TYPE_NAMES[field.type]
         self.field name, type: type
       end
+
+			# Build indexes
+			self.schema_class.mongo_indexes.each do |name, index|
+				index_options = !!index.index_options ? index.index_options : {}
+				self.index index.fields.first, index_options
+			end
     end
 
     def primary?
       self.priority == 0
     end
-  
+
     def clear_attributes
       mutable_fields = self.class.mutable_fields.dup
       mutable_fields.delete("priority") if self.primary?

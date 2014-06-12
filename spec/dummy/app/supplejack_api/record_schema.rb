@@ -11,6 +11,7 @@ class RecordSchema < SupplejackApi::SupplejackSchema
   namespace :dc, url: 'http://purl.org/dc/elements/1.1/'
 
   # Fields
+  string    :record_id,    store: false
   string    :name,         search_boost: 10,      search_as: [:filter, :fulltext], namespace: :dc
   string    :address,      search_boost: 2,       search_as: [:filter, :fulltext]
   string    :email,        multi_value: true,     search_as: [:filter]
@@ -39,12 +40,14 @@ class RecordSchema < SupplejackApi::SupplejackSchema
     ]
   end
 
+  group :core do
+    fields [:record_id]
+  end
+
    # Roles
   role :developer do
     default true
   end
   role :admin
-
-  build_object_id
 
 end

@@ -66,3 +66,41 @@ Feature: Search Concept
         }
       }
     """
+
+  Scenario: Search for a concept from a valid field
+    When I search concept for "politician" within "description" field
+    Then the JSON at "search/result_count" should be 1
+    And the JSON at "search/results/0/name" should be "David Lange"
+
+  Scenario: Search for a concept from an invalid field
+    When I search concept for "politician" within "name" field
+    Then the JSON at "search/result_count" should be 0
+
+  Scenario: Sort search results in ascending order
+    When I search concept with sort by "dateOfBirth" in "asc" order
+    Then the JSON at "search/results" should be an array
+    And the JSON at "search/result_count" should be 5
+    And the JSON at "search/results/0/name" should be "Colin McCahon"
+    And the JSON at "search/results/1/name" should be "Rita Angus"
+    And the JSON at "search/results/2/name" should be "David Hill"
+    And the JSON at "search/results/3/name" should be "David Lange"
+    And the JSON at "search/results/4/name" should be "Robert Muldoon"
+
+  Scenario: Sort search results in descending order
+    When I search concept with sort by "dateOfBirth" in "desc" order
+    Then the JSON at "search/results" should be an array
+    And the JSON at "search/result_count" should be 5
+    And the JSON at "search/results/0/name" should be "Robert Muldoon"
+    And the JSON at "search/results/1/name" should be "David Lange"
+    And the JSON at "search/results/2/name" should be "David Hill"
+    And the JSON at "search/results/3/name" should be "Rita Angus"
+    And the JSON at "search/results/4/name" should be "Colin McCahon"
+
+  Scenario: Display specific field
+    When I search concept for "politician" with "name,description" fields
+    Then the JSON at "search/results" should be an array
+    And the JSON at "search/result_count" should be 1
+    And the JSON at "search/results/0/name" should be "David Lange"
+    And the JSON at "search/results/0/description" should be "David Lange is a politician"
+    And the JSON at "search/results/0" should have 3 entries
+

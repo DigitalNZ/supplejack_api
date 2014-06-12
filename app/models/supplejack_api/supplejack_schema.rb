@@ -6,8 +6,8 @@
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
-	class SupplejackSchema
-		include SupplejackApi::SchemaDefinition
+  class SupplejackSchema
+    include SupplejackApi::SchemaDefinition
 
 		CORE_FIELDS = [
 	    :internal_identifier,
@@ -17,23 +17,13 @@ module SupplejackApi
 	    :updated_at
 	  ]
 
-	  def self.build_object_id
-	  	object_id = "#{self.name.to_s.gsub(/Schema/, '').downcase}_id".to_sym
+	  CORE_FIELDS.each do |field|
+      string field, store: false
+    end
 
-			# Make core fields available in Schema
-	  	CORE_FIELDS.push object_id
-	  	CORE_FIELDS.each do |field|
-		    string field, store: false
-		  end
-
-	  	group :core do
-		    fields [object_id]
-		  end
-	  end
-
-	  group :internal_fields do
-	    fields CORE_FIELDS
-	  end
+    group :internal_fields do
+      fields CORE_FIELDS
+    end
 
 		# Index core fields in mongo
 		mongo_index :status, 						 fields: [{status: 1}]
@@ -41,4 +31,5 @@ module SupplejackApi
 		mongo_index :landing_url, 				fields: [{landing_url: 1}]
 		mongo_index :updated_at, 				 fields: [{updated_at: 1}]
 	end
+
 end

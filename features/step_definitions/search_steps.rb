@@ -5,16 +5,16 @@
 # Supplejack was created by DigitalNZ at the National Library of NZ and 
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
-def search_options(text, facet, format, filters={})
+def search_options(text, facet, format, filters)
 	options = { format: 'json', api_key: '12345', text: text }
-  options[:facets] = "#{facet.to_s}" if facet.present?
+  options[:facets] = facet.to_s if facet.present?
   options[:format] = @format.to_s if @format.present?
   options.merge!(filters)
   options
 end
 
 def execute_concept_search(text, facet, format, filters={})
-  options = search_options(text, facet, format, filters={})
+  options = search_options(text, facet, format, filters)
   @request_url = concepts_url(options)
   visit(@request_url)
 end
@@ -45,4 +45,16 @@ end
 
 When /^I search concept for a field "(.*)"$/ do |search_text|
   execute_concept_search(search_text.gsub('\\', ''), nil, @format)
+end
+
+When(/^I search concept for "(.*?)" within "(.*?)" field$/) do |search_text, query_fields|
+  execute_concept_search(search_text, nil, @format, { query_fields: query_fields })
+end
+
+When(/^I search concept with sort by "(.*?)" in "(.*?)" order$/) do |field, order|
+  execute_concept_search('', nil, @format, { fields: 'all', sort: field, direction: order })
+end
+
+When(/^I search concept for "(.*?)" with "(.*?)" fields$/) do |search_text, fields|
+  execute_concept_search(search_text, nil, @format, { fields: 'all', fields: fields })
 end

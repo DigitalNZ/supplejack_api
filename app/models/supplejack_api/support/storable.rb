@@ -25,7 +25,12 @@ module SupplejackApi
 
         validates :internal_identifier,     presence: true
         validates :landing_url,             url: true
-      end
+
+        def landing_url=(url)
+          url = Array(url).first
+          self["landing_url"] = url.gsub(/replace_this/, self.send(:"#{self.class.name.demodulize.downcase}_id").to_s) if url.present?
+        end
+      end  
     end
   end
 end

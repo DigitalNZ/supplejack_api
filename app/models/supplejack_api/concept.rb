@@ -34,10 +34,6 @@ module SupplejackApi
     # Callbacks
     before_save :merge_fragments
 
-    # Fields
-    field :internal_identifier,         type: String
-    field :landing_url,                 type: String
-    field :status,                      type: String
 
     # Scopes
     scope :active, where(status: 'active')

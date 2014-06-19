@@ -28,12 +28,14 @@ bundle exec rails server
 ### Solr
 
 ```
+cd spec/dummy/
 bundle exec rake app:sunspot:solr:start
 ``` 
 
 This will start the server based on the configuration in `config/sunspot.yml`
 
 ```
+cd spec/dummy/
 bundle exec rake app:sunspot:solr:stop
 ```
 

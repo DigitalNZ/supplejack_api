@@ -14,7 +14,7 @@ module SupplejackApi
 	    delegate :concept_id, to: :concept
 
 	    def self.schema_class
-	    	'ConceptSchema'.constantize
+	    	ConceptSchema
 	    end
 
 	    build_mongoid_schema

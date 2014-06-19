@@ -11,13 +11,22 @@ module SupplejackApi
       respond_to :json
 
       def create
-        @concept = Concept.find_or_initialize_by_identifier(params[:concept])
+        if params[:preview]
+          klass = SupplejackApi::PreviewRecord
+          attribute = :record_id
+        else
+          klass = SupplejackApi::Concept
+          attribute = :concept_id
+        end
+        
+        @concept = klass.find_or_initialize_by_identifier(params[:concept])
         @concept.landing_url = params[:concept].delete(:landing_url)
         @concept.set_status(params[:required_fragments])
         @concept.create_or_update_fragment(params[:concept])
         @concept.save
         @concept.unset_null_fields
-        render json: {concept_id: @concept.concept_id}
+
+        render json: {attribute => @concept.concept_id}
       end
 
       def update

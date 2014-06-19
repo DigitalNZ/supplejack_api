@@ -14,7 +14,7 @@ module SupplejackApi
       delegate :record_id, to: :record
 
       def self.schema_class
-        'RecordSchema'.constantize
+        RecordSchema
       end
 
       build_mongoid_schema

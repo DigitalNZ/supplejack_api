@@ -10,11 +10,6 @@ module SupplejackApi
     module FragmentHelpers
       extend ActiveSupport::Concern
 
-      def fragment_class
-      	klass_name = self.class.to_s.demodulize
-      	"SupplejackApi::Api#{klass_name}::#{klass_name}Fragment".constantize
-      end
-
       def primary_fragment(attributes={})
         primary = self.fragments.where(priority: 0).first
         primary ? primary : self.fragments.build(attributes.merge(priority: 0))

@@ -13,7 +13,7 @@ module SupplejackApi
       let(:record) { FactoryGirl.build(:record_with_fragment, record_id: 1234) }
 
       describe '#before_save' do
-        its 'shouuld call merge_fragments' do
+        it 'should call merge_fragments' do
           record.should_receive(:merge_fragments)
           record.save
         end

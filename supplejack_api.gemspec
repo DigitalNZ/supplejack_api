@@ -53,7 +53,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'gabba', '~> 0.3.0'
 
   s.add_dependency 'sunspot_rails', '= 2.0.0.pre.120417'
-  s.add_dependency 'mongoid'
+  s.add_dependency 'mongoid', '~> 3.1.6'
   s.add_dependency 'mongoid_auto_inc', '~> 0.1.0'
   s.add_dependency 'mongoid-tree', '~> 1.0.0'
 

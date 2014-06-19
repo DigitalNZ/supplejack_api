@@ -18,10 +18,20 @@ module SupplejackApi
         Concept.stub(:find_or_initialize_by_identifier) { concept }
       end
 
-      it "finds or initializes a concept by identifier" do
-        Concept.should_receive(:find_or_initialize_by_identifier).with("internal_identifier" => "1234") { concept }
-        post :create, concept: {internal_identifier: "1234"}
-        assigns(:concept).should eq concept
+      context "preview is false" do
+        it "finds or initializes a concept by identifier" do
+          Concept.should_receive(:find_or_initialize_by_identifier).with("internal_identifier" => "1234") { concept }
+          post :create, concept: {internal_identifier: "1234"}
+          assigns(:concept).should eq concept
+        end
+      end
+      
+      context "preview is true" do
+        it "finds or initializes a preview record by identifier" do
+          PreviewRecord.should_receive(:find_or_initialize_by_identifier).with("internal_identifier" => "1234") { concept }
+          post :create, concept: {internal_identifier: "1234"}, preview: true
+          assigns(:concept).should eq concept
+        end
       end
     end
 

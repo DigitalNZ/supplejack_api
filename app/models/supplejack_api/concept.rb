@@ -22,8 +22,9 @@ module SupplejackApi
     # From storable
     store_in collection: 'concepts'
     index({ concept_id: 1 }, { unique: true })
-    auto_increment :concept_id, session: 'strong', collection: 'concepts'
+    auto_increment :concept_id, session: 'strong'
 
+    # TODO Move these indexes to ConceptFragment? 
     index label: 1
     index name: 1
     index gender: 1
@@ -47,6 +48,10 @@ module SupplejackApi
     def should_index?
       return should_index_flag if !should_index_flag.nil?
       active?
+    end
+
+    def fragment_class
+      SupplejackApi::ApiConcept::ConceptFragment
     end
 
   end

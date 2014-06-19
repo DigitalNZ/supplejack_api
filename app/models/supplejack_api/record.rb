@@ -24,7 +24,7 @@ module SupplejackApi
     store_in collection: 'records'
     index({ concept_ids: 1})
     index({ record_id: 1 }, { unique: true })
-    auto_increment :record_id, session: 'strong', collection: 'records'
+    auto_increment :record_id, session: 'strong'
 
     # Callbacks
     before_save :merge_fragments
@@ -103,6 +103,10 @@ module SupplejackApi
     def should_index?
       return should_index_flag if !should_index_flag.nil?
       active?
+    end
+
+    def fragment_class
+      SupplejackApi::ApiRecord::RecordFragment
     end
   end
 end

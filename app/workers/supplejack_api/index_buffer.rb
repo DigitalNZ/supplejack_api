@@ -8,41 +8,42 @@
 # Handles the logic for storing and retreiving record_ids from Redis
 # which should be indexed or removed from Solr.
 
-class IndexBuffer
+module SupplejackApi
+  class IndexBuffer
 
-  def initialize
-    @redis = Resque.redis
-  end
-
-  def pop_record_ids(method=:index, num=1000)
-    # get all the entries from the list. Need to check what happens if the list doesn't exist
-    num ||= 100000
-    ids = []
-    while ids.count < num and id = @redis.lpop("#{method}_buffer_record_ids")
-      ids << id
+    def initialize
+      @redis = Resque.redis
     end
-    ids
-  end
 
-  def records_to_index
-    @records_to_index ||= Record.where(:id.in => self.pop_record_ids(:index)).to_a
-    @records_to_index.keep_if {|r| r.should_index? }
-    @records_to_index
-  end
+    def pop_record_ids(method=:index, num=1000)
+      # get all the entries from the list. Need to check what happens if the list doesn't exist
+      num ||= 100000
+      ids = []
+      while ids.count < num and id = @redis.lpop("#{method}_buffer_record_ids")
+        ids << id
+      end
+      ids
+    end
 
-  def records_to_remove
-    @records_to_remove ||= Record.where(:id.in => self.pop_record_ids(:remove)).to_a
-    @records_to_remove.delete_if {|r| r.should_index?}
-    @records_to_remove
-  end
+    def records_to_index
+      @records_to_index ||= Record.where(:id.in => self.pop_record_ids(:index)).to_a
+      @records_to_index.keep_if {|r| r.should_index? }
+      @records_to_index
+    end
 
-  [:index, :remove].each do |method|
-    define_method("#{method}_record_ids=") do |ids|
-      ids.each do |id|
-        # push each id
-        @redis.rpush("#{method}_buffer_record_ids", id) 
+    def records_to_remove
+      @records_to_remove ||= Record.where(:id.in => self.pop_record_ids(:remove)).to_a
+      @records_to_remove.delete_if {|r| r.should_index?}
+      @records_to_remove
+    end
+
+    [:index, :remove].each do |method|
+      define_method("#{method}_record_ids=") do |ids|
+        ids.each do |id|
+          # push each id
+          @redis.rpush("#{method}_buffer_record_ids", id) 
+        end
       end
     end
   end
-
 end

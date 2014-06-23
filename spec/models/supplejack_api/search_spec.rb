@@ -18,7 +18,10 @@ module SupplejackApi
     }
 
   	describe '#facet_list' do
-  		before { @search.stub(:model_class) { Record } }
+  		before { 
+        @search = RecordSearch.new
+        @search.stub(:model_class) { Record } 
+      }
 
       it 'should return a array of facets' do
         @search.options[:facets] = 'name, address'
@@ -32,7 +35,10 @@ module SupplejackApi
     end
 
     describe '#field_list' do
-    	before { @search.stub(:schema_class) { RecordSchema } }
+    	before { 
+        @search = RecordSearch.new
+        @search.stub(:schema_class) { RecordSchema } 
+      }
 
       it 'should return a array of fields' do
         @search.options[:fields] = 'name, address'
@@ -46,7 +52,10 @@ module SupplejackApi
     end
 
     describe '#group_list' do
-    	before { @search.stub(:model_class) { Record } }
+    	before { 
+        @search = RecordSearch.new
+        @search.stub(:model_class) { Record } 
+      }
 
 	    it 'gets the groups from the fields list' do
 	      @search.options[:fields] = "content_partner, core"

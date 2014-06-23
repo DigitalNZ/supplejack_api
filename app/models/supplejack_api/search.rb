@@ -11,7 +11,7 @@ module SupplejackApi
   
     INTEGER_ATTRIBUTES ||= [:page, :per_page, :facets_per_page, :facets_page, :record_type]
     
-    attr_accessor :options, :request_url, :scope, :solr_request_params, :errors, :warnings, :schema_class, :model_class
+    attr_accessor :options, :request_url, :scope, :solr_request_params, :errors, :warnings
   
     class_attribute :max_values
     
@@ -40,10 +40,108 @@ module SupplejackApi
         facet_query: {}, 
         debug: nil
       )
+    end
 
-      klass = self.class.to_s.gsub(/Search/, '')
-      @schema_class = "#{klass.demodulize}Schema".constantize
-      @model_class = klass.constantize
+    def self.model_class
+      self.to_s.gsub(/Search/, '').constantize
+    end
+
+    def self.schema_class
+      "#{self.model_class.to_s.demodulize}Schema".constantize
+    end
+
+    # The records that match the criteria within each role will be removed
+    # from the search results
+    #
+    def self.role_collection_restrictions(scope)
+      restrictions = []
+      if scope
+        role = scope.role.try(:to_sym)
+  
+        if self.schema_class.roles[role].record_restrictions
+          restrictions = self.schema_class.roles[role].record_restrictions
+        end
+      end
+      
+      restrictions
+    end
+
+    def search_builder
+      scope = self
+
+      @search_builder ||= Sunspot.new_search(scope.class.model_class) do
+        facet_list.each do |facet_name|
+          facet(facet_name, limit: facets_per_page, offset: facets_offset)
+        end
+  
+        if options[:suggest]
+          spellcheck collate: true, only_more_popular: true
+        end
+  
+        options[:without].each do |name, values|
+          values = values.split(",")
+          values.each do |value|
+            without(name, self.to_proper_value(name, value))
+          end
+        end
+  
+        adjust_solr_params do |params|
+          if options[:solr_query].present?
+            params[:q] ||= ""
+            params['q.alt'] = options[:solr_query]
+            params[:defType] = 'dismax'
+          end
+        end
+  
+        # Facet Queries
+        #
+        # The facet query parameter should have the following format:
+        #
+        #   facet_query: {images: {"creator" => "all"}, headings: {"record_type" => 1}}
+        #
+        # - Each key in the top level hash will be the name of each facet row returned.
+        # - Each value in the top level hash is a hash similar with all the restrictions
+        #
+  
+        if options[:facet_query].any?
+          facet(:counts) do
+            options[:facet_query].each_pair do |row_name, filters_hash|
+              row(row_name.to_s) do
+                filters_hash.each_pair do |filter, value|
+                  if value == "all"
+                    without(filter.to_sym, nil)
+                  elsif filter.match(/-(.+)/)
+                    without($1.to_sym, to_proper_value(filter, value))
+                  else
+                    if value.is_a?(Array)
+                      with(filter.to_sym).all_of(value)
+                    else
+                      with(filter.to_sym, to_proper_value(filter, value))
+                    end
+                  end
+                end
+              end
+            end
+          end
+        end
+  
+        if options[:sort].present?
+          order_by(sort, direction)
+        end
+  
+        scope.class.role_collection_restrictions(options[:scope]).each do |field, values|
+          without(field, values)
+        end
+  
+        Source.suppressed.each do |source|
+          without(:source_id, source.source_id)
+        end
+  
+        paginate :page => page, :per_page => per_page
+      end
+  
+      @search_builder.build(&build_conditions)
+      @search_builder
     end
 
     # Return an array of valid facets
@@ -53,13 +151,13 @@ module SupplejackApi
       return @facet_list if @facet_list
   
       @facet_list = options[:facets].split(",").map {|f| f.strip.to_sym}
-      @facet_list.keep_if {|f| model_class.valid_facets.include?(f) }
+      @facet_list.keep_if {|f| self.class.model_class.valid_facets.include?(f) }
       @facet_list
     end
 
     def field_list
       return @field_list if @field_list
-      valid_fields = schema_class.fields.keys.dup
+      valid_fields = self.class.schema_class.fields.keys.dup
 
       @field_list = options[:fields].split(",").map {|f| f.strip.gsub(':', '_').to_sym}
       @field_list.delete_if do |f|
@@ -75,7 +173,7 @@ module SupplejackApi
     def group_list
       return @group_list if @group_list
       @group_list = options[:fields].split(',').map {|f| f.strip.to_sym}
-      @group_list.keep_if {|f| model_class.valid_groups.include?(f) }
+      @group_list.keep_if {|f| self.class.model_class.valid_groups.include?(f) }
       @group_list
     end
 
@@ -171,7 +269,7 @@ module SupplejackApi
       value = @options[:sort].to_sym
       
       begin
-        field = Sunspot::Setup.for(model_class).field(value)
+        field = Sunspot::Setup.for(self.class.model_class).field(value)
         return value
       rescue Sunspot::UnrecognizedFieldError => e
         return 'score'

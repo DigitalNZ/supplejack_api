@@ -34,27 +34,6 @@ module SupplejackApi
     scope :suppressed, where(status: 'suppressed')
     scope :solr_rejected, where(status: 'solr_rejected')
 
-    def self.custom_find(id, scope=nil, options={})
-      options ||= {}
-      record_scope = self.unscoped
-      record_scope = record_scope.active unless options.delete(:status) == :all
-
-      if id.to_s.match(/^\d+$/)
-        record = record_scope.where(record_id: id).first
-      elsif id.to_s.match(/^[0-9a-f]{24}$/i)
-        record = record_scope.find(id)
-      end
-
-      raise Mongoid::Errors::DocumentNotFound.new(self, [id], [id]) unless record
-
-      begin
-        record.find_next_and_previous_records(scope, options) if options.any?
-      rescue Sunspot::UnrecognizedFieldError, RSolr::Error::Http, Timeout::Error, Errno::ECONNREFUSED, Errno::ECONNRESET => e
-        Rails.logger.error e.inspect
-      end
-      record
-    end
-
     def self.find_multiple(ids)
       return [] unless ids.try(:any?)
       string_ids = ids.find_all {|id| id.to_s.length > 10 }

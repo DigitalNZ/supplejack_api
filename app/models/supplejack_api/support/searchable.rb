@@ -8,9 +8,9 @@
 module SupplejackApi
   module Support
     module Searchable
-    	extend ActiveSupport::Concern
+      extend ActiveSupport::Concern
 
-    	included do
+      included do
         include Sunspot::Mongoid
   
         searchable if: :should_index? do
@@ -32,9 +32,32 @@ module SupplejackApi
       }
 
       module ClassMethods
-      	def schema_class
-		  		"#{self.to_s.demodulize}Schema".constantize
-		  	end
+        def schema_class
+          "#{self.to_s.demodulize}Schema".constantize
+        end
+
+        def custom_find(id, scope=nil, options={})
+          options ||= {}
+          class_scope = self.unscoped
+          class_scope = class_scope.active unless options.delete(:status) == :all
+          column = "#{self.name.demodulize.downcase}_id"
+
+          if id.to_s.match(/^\d+$/)
+            data = class_scope.where(column => id).first
+          elsif id.to_s.match(/^[0-9a-f]{24}$/i)
+            data = class_scope.find(id)
+          end
+      
+          raise Mongoid::Errors::DocumentNotFound.new(self, [id], [id]) unless data
+
+          begin
+            data.find_next_and_previous_records(scope, options) if options.any?
+          rescue Sunspot::UnrecognizedFieldError, RSolr::Error::Http, Timeout::Error, Errno::ECONNREFUSED, Errno::ECONNRESET => e
+            Rails.logger.error e.inspect
+          end
+      
+          data
+        end
 
         def build_sunspot_schema(builder)
           schema_class.fields.each do |name,field|

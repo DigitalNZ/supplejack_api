@@ -34,28 +34,11 @@ module SupplejackApi
     # Callbacks
     before_save :merge_fragments
 
-
     # Scopes
     scope :active, where(status: 'active')
     scope :deleted, where(status: 'deleted')
     scope :suppressed, where(status: 'suppressed')
     scope :solr_rejected, where(status: 'solr_rejected')
-
-    def self.custom_find(id, scope=nil, options={})
-      options ||= {}
-      concept_scope = self.unscoped
-      concept_scope = concept_scope.active unless options.delete(:status) == :all
-  
-      if id.to_s.match(/^\d+$/)
-        concept = concept_scope.where(concept_id: id).first
-      elsif id.to_s.match(/^[0-9a-f]{24}$/i)
-        concept = concept_scope.find(id)
-      end
-  
-      raise Mongoid::Errors::DocumentNotFound.new(self, [id], [id]) unless concept
-  
-      concept
-    end
 
     def active?
       self.status == 'active'

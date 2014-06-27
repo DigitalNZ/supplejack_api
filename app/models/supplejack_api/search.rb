@@ -70,7 +70,7 @@ module SupplejackApi
       scope = self
 
       @search_builder ||= Sunspot.new_search(scope.class.model_class) do
-        facet_list.each do |facet_name|
+        scope.facet_list.each do |facet_name|
           facet(facet_name, limit: facets_per_page, offset: facets_offset)
         end
   

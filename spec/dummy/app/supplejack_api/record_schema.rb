@@ -12,6 +12,7 @@ class RecordSchema < SupplejackApi::SupplejackSchema
 
   # Fields
   string    :record_id,    store: false
+  string    :concept_ids,  multi_value: true,     search_as: [:filter, :fulltext]
   string    :name,         search_boost: 10,      search_as: [:filter, :fulltext], namespace: :dc
   string    :address,      search_boost: 2,       search_as: [:filter, :fulltext]
   string    :email,        multi_value: true,     search_as: [:filter]
@@ -32,6 +33,7 @@ class RecordSchema < SupplejackApi::SupplejackSchema
   group :all do
     includes [:default]
     fields [
+      :concept_ids,
       :email,
       :children,
       :nz_citizen,

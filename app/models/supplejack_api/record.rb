@@ -22,6 +22,7 @@ module SupplejackApi
 
     # From storable
     store_in collection: 'records'
+    index({ concept_ids: 1})
     index({ record_id: 1 }, { unique: true })
     auto_increment :record_id, session: 'strong', collection: 'records'
 

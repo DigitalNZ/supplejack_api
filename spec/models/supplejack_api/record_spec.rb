@@ -277,6 +277,17 @@ module SupplejackApi
         @record.should_index?.should be_true
       end
     end
+
+    describe '#reindex' do
+      before(:each) do
+        @record = FactoryGirl.build(:record)
+      end
+      
+      it 'should reindex record after save' do
+        @record.should_receive(:reindex)
+        @record.save
+      end
+    end
   
   end
 end

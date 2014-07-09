@@ -26,6 +26,7 @@ module SupplejackApi
         copy_file 'config/initializers/simple_form_foundation.rb'
         copy_file 'config/initializers/state_machine.rb'
         copy_file 'config/initializers/status_logger.rb'
+        copy_file 'config/initializers/sunspot.rb'
 
         directory 'config/locales'
       end
@@ -70,6 +71,7 @@ module SupplejackApi
 
         inject_into_file('Gemfile', after: /^gem.*supplejack_api.*/) do
           string = [""]
+          string << "gem 'sunspot_rails', '= 2.0.0.pre.120417'"
           string << "gem 'active_model_serializers', git: 'https://github.com/boost/active_model_serializers.git'"
           string << "gem 'mongoid_auto_inc', git: 'https://github.com/boost/mongoid_auto_inc.git'"
 

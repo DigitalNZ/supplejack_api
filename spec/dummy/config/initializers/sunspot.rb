@@ -9,7 +9,8 @@ Sunspot.session = Sunspot::ResqueSessionProxy.new(Sunspot.session) unless Rails.
 
 OriginalDismax = Sunspot::Query::Dismax
 
-require_relative '../../../../lib/sunspot/sunspot_spellcheck'
+api_gem_dir = Gem::Specification.find_by_name("supplejack_api").gem_dir
+require "#{api_gem_dir}/lib/sunspot/sunspot_spellcheck"
 
 class PatchedDismax < OriginalDismax
 

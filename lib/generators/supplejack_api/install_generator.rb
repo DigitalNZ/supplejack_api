@@ -80,10 +80,11 @@ module SupplejackApi
       end
 
       def create_schema
-        puts "\nCreating Schema in app/supplejack_api/schema.rb"
+        puts "\nCreating Schemas in app/supplejack_api/"
 
         empty_directory 'app/supplejack_api'
-        copy_file 'app/supplejack_api/schema.rb'
+        copy_file 'app/supplejack_api/schema.txt', 'app/supplejack_api/record_schema.rb'
+        copy_file 'app/supplejack_api/concept_schema.rb'
       end
 
       def add_assets

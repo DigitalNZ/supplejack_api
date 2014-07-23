@@ -49,8 +49,8 @@ module SupplejackApi
       @source = Source.find(params[:id])
       @records = []
 
-      @records += first_two_records(@source.source_id, :oldest).map(&:landing_url)
-      @records += first_two_records(@source.source_id, :latest).map(&:landing_url)
+      @records += first_two_records(@source.source_id, :oldest).map(&:source_url)
+      @records += first_two_records(@source.source_id, :latest).map(&:source_url)
 
       render json: @records.to_json
     end

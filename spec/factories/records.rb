@@ -11,7 +11,7 @@ module SupplejackApi
       internal_identifier   'nlnz:1234'
       record_id			         54321
       status			           'active'
-      landing_url            'http://google.com/landing.html'
+      source_url             'http://google.com/landing.html'
   
       factory :record_with_fragment do
         fragments            { [FactoryGirl.build(:record_fragment)] }

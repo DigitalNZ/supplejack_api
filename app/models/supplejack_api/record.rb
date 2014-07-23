@@ -46,10 +46,6 @@ module SupplejackApi
       records = records.sort_by {|r| ids.find_index(r.record_id) || 100 }
     end
 
-    def source_url
-      ENV['HTTP_HOST'] + "/records/#{self.record_id}/source"
-    end
-
     def find_next_and_previous_records(scope, options={})
       if options.try(:any?)
         search = RecordSearch.new(options)

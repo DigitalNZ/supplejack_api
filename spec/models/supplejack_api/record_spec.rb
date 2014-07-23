@@ -126,12 +126,6 @@ module SupplejackApi
       end
     end
   
-    describe '#source_url' do
-      it 'should return the API url for the record' do
-        record.source_url.should eq("#{ENV['HTTP_HOST']}/records/1234/source")
-      end
-    end
-  
     describe '#find_next_and_previous_records' do
       pending 'Implement record search'
       # before(:each) do

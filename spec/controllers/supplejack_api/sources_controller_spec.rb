@@ -107,10 +107,10 @@ module SupplejackApi
     end
 
     describe 'GET "link_check_records"' do
-      let(:records) { [ double(:record, landing_url: 'http://1'), 
-                        double(:record, landing_url: 'http://2'), 
-                        double(:record, landing_url: 'http://3'), 
-                        double(:record, landing_url: 'http://4')] }
+      let(:records) { [ double(:record, source_url: 'http://1'), 
+                        double(:record, source_url: 'http://2'), 
+                        double(:record, source_url: 'http://3'), 
+                        double(:record, source_url: 'http://4')] }
 
       let(:source) { FactoryGirl.build(:source) }
 
@@ -137,10 +137,10 @@ module SupplejackApi
       let(:asc_relation) {double(:asc_relation)} 
       let(:sorted_relation) {double(:sorted_relation)} 
 
-      let(:records) { [ double(:record, landing_url: 'http://1'), 
-                        double(:record, landing_url: 'http://2'), 
-                        double(:record, landing_url: 'http://3'), 
-                        double(:record, landing_url: 'http://4')] }
+      let(:records) { [ double(:record, source_url: 'http://1'), 
+                        double(:record, source_url: 'http://2'), 
+                        double(:record, source_url: 'http://3'), 
+                        double(:record, source_url: 'http://4')] }
 
       before do
         Record.should_receive(:where).with({"fragments.source_id" => "tapuhi", :status => 'active'}) { asc_relation }

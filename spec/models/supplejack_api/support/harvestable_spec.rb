@@ -69,16 +69,16 @@ module SupplejackApi
       end
 
       describe '#clear_attributes' do
-        let(:record) { FactoryGirl.create(:record, landing_url: 'http://goo.com/sitemap.xml') }
+        let(:record) { FactoryGirl.create(:record, source_url: 'http://goo.com/sitemap.xml') }
 
         it 'doesn\'t clear the _id attribute' do
           record.clear_attributes
           record._id.should_not be_nil
         end
         
-        it 'nullifies the landing_url' do
+        it 'nullifies the source_url' do
           record.clear_attributes
-          record.landing_url.should be_nil
+          record.source_url.should be_nil
         end
       end
 

@@ -14,7 +14,6 @@ class RecordSchema < SupplejackApi::SupplejackSchema
   # Fields
   string    :record_id,                   store: false,                                           namespace: :sj
   string    :concept_ids,                                                                         namespace: :sj
-  string    :landing_url,                 store: false
   string    :title,                       search_boost: 10,     search_as: [:filter, :fulltext],  namespace: :dc
   string    :description,                 search_boost: 2,      search_as: [:filter, :fulltext],  namespace: :dc
   string    :creator,                     multi_value: true,                                      namespace: :dc
@@ -45,7 +44,6 @@ class RecordSchema < SupplejackApi::SupplejackSchema
   group :all do
     includes [:default]
     fields [
-      :landing_url,
       :record_id,
       :concept_ids,
       :title,
@@ -77,6 +75,6 @@ class RecordSchema < SupplejackApi::SupplejackSchema
   end
   role :admin
 
-  mongo_index :landing_url,         fields: [{landing_url: 1}]
+  mongo_index :source_url,         fields: [{source_url: 1}]
 
 end

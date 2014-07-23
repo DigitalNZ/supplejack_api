@@ -11,7 +11,6 @@ module SupplejackApi
       internal_identifier   'nlnz:1234'
       concept_id			       54321
       status			          'active'
-      landing_url           'http://google.com/landing.html'
   
       factory :concept_with_fragment do
         fragments            { [FactoryGirl.build(:concept_fragment)] }

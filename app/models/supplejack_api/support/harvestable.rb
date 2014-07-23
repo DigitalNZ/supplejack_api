@@ -31,7 +31,7 @@ module SupplejackApi
       # that shouldn't be removed (_id, _type, etc..)
       #
       def clear_attributes
-        self[:landing_url] = nil
+        self[:source_url] = nil
         self.primary_fragment.clear_attributes
       end
 

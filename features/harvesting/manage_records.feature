@@ -41,8 +41,6 @@ Feature: Manage records
       | name       | priority |
       | John Smith | -10      |
 
-
-    @focus
     Scenario: Set record-level attributes on new record
     When I post a request to create a record with the JSON:
     """
@@ -52,13 +50,13 @@ Feature: Manage records
         "internal_identifier": "abc123",
         "name": "John Smith",
         "priority": -10,
-        "landing_url": "http://nz-census-2014.govt.nz/"
+        "source_url": "http://nz-census-2014.govt.nz/"
       }
     }
     """
     Then the record with the identifier "abc123" should have status "active"
     And the record should have attributes:
-      | landing_url                    |
+      | source_url                     |
       | http://nz-census-2014.govt.nz/ |
     And the record should have a fragment with the source id "nz-census-2014" and the attributes:
       | name       |
@@ -76,7 +74,7 @@ Feature: Manage records
       "record": {
         "source_id": "nz-census-2014",
         "internal_identifier": "abc123",
-        "landing_url": "http://nz-census-2014.govt.nz/",
+        "source_url": "http://nz-census-2014.govt.nz/",
         "name": "Bob Jones",
         "age": "20"
       }

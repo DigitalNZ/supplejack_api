@@ -16,7 +16,6 @@ module SupplejackApi
 
         field :internal_identifier,         type: String
         field :status,                      type: String
-        field :source_url,                  type: String
 
         validates :internal_identifier,     presence: true
       end

@@ -26,6 +26,8 @@ module SupplejackApi
     index({ record_id: 1 }, { unique: true })
     auto_increment :record_id, session: 'strong'
 
+    field :source_url, type: String
+
     # Callbacks
     before_save :merge_fragments
 

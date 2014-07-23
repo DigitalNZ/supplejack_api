@@ -25,7 +25,9 @@ module SupplejackApi
       def validate_unique_source_ids
         if duplicate_source_ids?
           self.errors.add(:base, "fragment source_ids must be unique, source_ids: #{source_ids}")
-          ::VALIDATION_LOGGER.error("Record with record_id:#{self.record_id}, internal_identifier:#{self.internal_identifier} failed validation. Fragment source_ids must be unique, source_ids: #{source_ids}")
+          klass_name = fragment_class.to_s.demodulize.gsub(/Fragment/, '')
+          klass_id = "#{klass_name.downcase}_id"
+          ::VALIDATION_LOGGER.error("#{klass_name} with #{klass_id}:#{self.send(klass_id)}, internal_identifier:#{self.internal_identifier} failed validation. Fragment source_ids must be unique, source_ids: #{source_ids}")
         end
       end
 

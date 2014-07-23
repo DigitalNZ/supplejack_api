@@ -18,7 +18,8 @@ class ConceptSchema < SupplejackApi::SupplejackSchema
   string    :concept_id,    store: false
   string    :type
   string    :match_status,  search_as: [:filter]
-  
+  # TODO Remove name
+  string    :name,          multi_value: true,    search_boost: 10,     search_as: [:filter, :fulltext], namespace: :foaf
   string    :givenName,     search_boost: 10,     search_as: [:filter, :fulltext], namespace: :foaf
   string    :familyName,    search_boost: 10,     search_as: [:filter, :fulltext], namespace: :foaf
   string    :label,         search_boost: 5,      search_as: [:filter, :fulltext], namespace: :skos, namespace_field: :prefLabel

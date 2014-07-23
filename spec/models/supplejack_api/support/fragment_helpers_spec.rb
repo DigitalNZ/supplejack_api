@@ -19,6 +19,74 @@ module SupplejackApi
         end
       end
 
+      describe "valiations" do
+        it "should be valid" do
+          record.should be_valid
+        end
+
+        context "duplicate source_ids" do
+          before do
+            record.fragments << FactoryGirl.build(:record_fragment, source_id: 'source_name')
+          end
+
+          it "should not be valid" do
+            record.should_not be_valid
+          end
+        end
+      end
+
+      describe "#source_ids" do
+        it "should return an array with a single source_id" do
+          record.source_ids.should eq ['source_name']
+        end
+
+        context "multiple fragments" do
+          before do
+            record.fragments << FactoryGirl.build(:record_fragment, source_id: 'another_source')
+          end
+
+          it "should return an array with the source_ids" do
+            record.source_ids.should eq ['source_name', "another_source"]
+          end      
+        end
+      end
+
+      describe "#duplicate_source_ids?" do
+        it "should return false" do
+          record.duplicate_source_ids?.should be_false
+        end
+
+        context "duplicate source_ids" do
+          before do
+            record.fragments << FactoryGirl.build(:record_fragment, source_id: 'source_name')
+          end
+
+          it "should return true" do
+            record.duplicate_source_ids?.should be_true
+          end      
+        end
+      end
+
+      describe '#primary_fragment' do
+        let(:record) { FactoryGirl.build(:record) }
+        before { record.save }
+
+        it 'returns the fragment with priority 0' do
+          fragment1 = record.fragments.create(name: 'John', priority: 1)
+          fragment0 = record.fragments.create(name: 'John', priority: 0)
+          record.primary_fragment.should eq fragment0
+        end
+
+        it 'returns a new fragment with priority 0' do
+          record.primary_fragment.should be_a ApiRecord::RecordFragment
+          record.primary_fragment.priority.should eq 0
+        end
+
+        it 'should build a primary fragment with default attributes' do
+          record.primary_fragment(name: 'John').name.should eq 'John'
+        end
+      end
+
       describe 'merge_fragments' do
         let(:record) { FactoryGirl.build(:record_with_fragment) }
         let(:primary) { record.fragments.first }
@@ -39,7 +107,7 @@ module SupplejackApi
 
         context 'multiple fragments' do
           before(:each) do
-            record.fragments << FactoryGirl.build(:record_fragment, name: 'James Smith', email: ['jamessmith@example.com'])
+            record.fragments << FactoryGirl.build(:record_fragment, name: 'James Smith', email: ['jamessmith@example.com'], source_id: 'another_source')
             record.save!
           end
 
@@ -94,7 +162,7 @@ module SupplejackApi
 
         context 'multiple fragments' do
           before(:each) do
-            record.fragments << FactoryGirl.build(:record_fragment, email: ['jamessmith@example.com'])
+            record.fragments << FactoryGirl.build(:record_fragment, email: ['jamessmith@example.com'], source_id: 'another_source')
             record.save!
           end
 
@@ -115,6 +183,16 @@ module SupplejackApi
         # end
       end
 
+      describe '#sorted_fragments' do
+        it 'returns a list of fragments sorted by priority' do
+          record.fragments.build(priority: 10)
+          record.fragments.build(priority: -1)
+          record.fragments.build(priority: 5)
+
+          record.sorted_fragments.map(&:priority).should eq [-1,0,5,10]
+        end
+      end
+
       describe '#find_fragment' do
         before { record.save }
 
@@ -126,36 +204,6 @@ module SupplejackApi
 
         it "should return nil when it doesn't find a fragment" do
           record.find_fragment('nlnzcat').should be_nil
-        end
-      end
-
-      describe '#primary_fragment' do
-        let(:record) { FactoryGirl.build(:record) }
-        before { record.save }
-
-        it 'returns the fragment with priority 0' do
-          fragment1 = record.fragments.create(name: 'John', priority: 1)
-          fragment0 = record.fragments.create(name: 'John', priority: 0)
-          record.primary_fragment.should eq fragment0
-        end
-
-        it 'returns a new fragment with priority 0' do
-          record.primary_fragment.should be_a ApiRecord::RecordFragment
-          record.primary_fragment.priority.should eq 0
-        end
-
-        it 'should build a primary fragment with default attributes' do
-          record.primary_fragment(name: 'John').name.should eq 'John'
-        end
-      end
-
-      describe '#sorted_fragments' do
-        it 'returns a list of fragments sorted by priority' do
-          record.fragments.build(priority: 10)
-          record.fragments.build(priority: -1)
-          record.fragments.build(priority: 5)
-
-          record.sorted_fragments.map(&:priority).should eq [-1,0,5,10]
         end
       end
     end

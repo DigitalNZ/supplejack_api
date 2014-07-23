@@ -10,6 +10,25 @@ module SupplejackApi
     module FragmentHelpers
       extend ActiveSupport::Concern
 
+      included do 
+        validate :validate_unique_source_ids
+      end
+
+      def source_ids
+        fragments.map(&:source_id)
+      end
+
+      def duplicate_source_ids?
+        source_ids.size != fragments.distinct(:source_id).count
+      end
+
+      def validate_unique_source_ids
+        if duplicate_source_ids?
+          self.errors.add(:base, "fragment source_ids must be unique, source_ids: #{source_ids}")
+          ::VALIDATION_LOGGER.error("Record with record_id:#{self.record_id}, internal_identifier:#{self.internal_identifier} failed validation. Fragment source_ids must be unique, source_ids: #{source_ids}")
+        end
+      end
+
       def primary_fragment(attributes={})
         primary = self.fragments.where(priority: 0).first
         primary ? primary : self.fragments.build(attributes.merge(priority: 0))

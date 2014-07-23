@@ -14,22 +14,12 @@ module SupplejackApi
         include Mongoid::Document
     		include Mongoid::Timestamps
 
-        # index status: 1
-        # index internal_identifier: 1
-        # index landing_url: 1
-        # index updated_at: 1
-
         field :internal_identifier,         type: String
-        field :landing_url,                 type: String
         field :status,                      type: String
+        field :landing_url, type: String
 
         validates :internal_identifier,     presence: true
-        validates :landing_url,             url: true
-
-        def landing_url=(url)
-          self.write_attribute(:landing_url, Array(url).first)
-        end
-      end  
+      end
     end
   end
 end

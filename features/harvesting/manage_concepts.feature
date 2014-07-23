@@ -13,14 +13,14 @@ Feature: Manage concepts
     {
       "concept": {
         "internal_identifier": "abc123",
-        "landing_url": "http://nz-census-2014.govt.nz/",
+        "label": "John Doe",
         "type": "people"
       }
     }
     """
     Then the concept with the identifier "abc123" should have attributes:
-      | landing_url                    | type   |
-      | http://nz-census-2014.govt.nz/ | people |
+      | label | type   |
+      | John Doe   | people |
 
   Scenario: Update a concept
     Given a concept with the identifier "abc123"
@@ -31,9 +31,9 @@ Feature: Manage concepts
       """
       {
         "concept": {
-          "source_id": "nz-census-2014",
           "internal_identifier": "abc123",
-          "landing_url": "http://nz-census-2014.govt.nz/",
+          "source_id": "nz-census-2014",
+          "source_url": "http://nz-census-2014.govt.nz/",
           "name": "Bob Jones",
           "gender": "male"
         }

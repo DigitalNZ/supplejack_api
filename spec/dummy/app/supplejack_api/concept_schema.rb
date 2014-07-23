@@ -16,11 +16,9 @@ class ConceptSchema < SupplejackApi::SupplejackSchema
 
   # Fields
   string    :concept_id,    store: false
-  string    :landing_url,   store: false
   string    :type
   string    :match_status,  search_as: [:filter]
-  # TODO Remove name
-  string    :name,          search_boost: 10,     search_as: [:filter, :fulltext], namespace: :foaf
+  
   string    :givenName,     search_boost: 10,     search_as: [:filter, :fulltext], namespace: :foaf
   string    :familyName,    search_boost: 10,     search_as: [:filter, :fulltext], namespace: :foaf
   string    :label,         search_boost: 5,      search_as: [:filter, :fulltext], namespace: :skos, namespace_field: :prefLabel
@@ -47,7 +45,6 @@ class ConceptSchema < SupplejackApi::SupplejackSchema
   group :all do
     includes [:default]
     fields [
-      :landing_url,
       :match_status,
       :name,
       :givenName,

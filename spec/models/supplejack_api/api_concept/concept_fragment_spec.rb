@@ -15,13 +15,10 @@ module SupplejackApi
       let!(:fragment) { concept.fragments.build(priority: 0) }
       let(:fragment_class) { ConceptFragment }
 
-      before {
-        concept.save
-      }
+      before { concept.save }
 
       it { should have_index_for(status: 1) }
       it { should have_index_for(internal_identifier: 1) }
-      it { should have_index_for(landing_url: 1) }
       it { should have_index_for(updated_at: 1) }
 
       describe 'schema_class' do

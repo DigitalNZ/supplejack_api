@@ -20,7 +20,7 @@ module SupplejackApi
 
         @record.save
         @record.unset_null_fields
-        render json: {record_id: @record.record_id}
+        render json: { record_id: @record.record_id }
       end
 
       def flush

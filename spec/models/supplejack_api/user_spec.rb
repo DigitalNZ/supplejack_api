@@ -12,7 +12,7 @@ module SupplejackApi
     let(:user) { User.new }
   
     before(:each) do
-      Schema.stub(:default_role) { double(:role, name: :developer) }
+      RecordSchema.stub(:default_role) { double(:role, name: :developer) }
     end
   
     describe '#role' do

@@ -28,7 +28,6 @@ module SupplejackApi
 
     # Callbacks
     before_save :merge_fragments
-    after_save  :reindex
 
     # Scopes
     scope :active, where(status: 'active')
@@ -108,17 +107,6 @@ module SupplejackApi
 
     def fragment_class
       SupplejackApi::ApiRecord::RecordFragment
-    end
-
-    def reindex
-      if active? && should_index?
-        record = SupplejackApi::Record.custom_find self.record_id
-
-        if record && Rails.env != 'test'
-          Sunspot.session = Sunspot::Rails.build_session
-          record.index! rescue nil
-        end
-      end
     end
   end
 end

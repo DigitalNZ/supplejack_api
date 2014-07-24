@@ -10,14 +10,14 @@ module SupplejackApi
   	extend ActiveSupport::Concern
     include SupplejackApi::SchemaDefinition
 
-    included do
-			CORE_FIELDS = [
-		    :internal_identifier,
-		    :status,
-		    :created_at,
-		    :updated_at
-		  ]
+    CORE_FIELDS = [
+	    :internal_identifier,
+	    :status,
+	    :created_at,
+	    :updated_at
+	  ]
 
+    included do
 		  CORE_FIELDS.each do |field|
 	      string field, store: false
 	    end

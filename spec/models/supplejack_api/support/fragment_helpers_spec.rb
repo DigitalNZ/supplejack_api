@@ -111,6 +111,11 @@ module SupplejackApi
             record.save!
           end
 
+          it 'unsets the priority field' do
+            record.save
+            expect(record.merged_fragment.priority).to be_nil
+          end
+
           context 'single value fields' do
             it 'should store the first non-nil value of the field' do
               primary.name = nil

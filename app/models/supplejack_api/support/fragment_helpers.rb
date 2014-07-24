@@ -58,6 +58,8 @@ module SupplejackApi
               self.merged_fragment.public_send("#{name}=", values.compact.first)
             end
           end
+
+          self.merged_fragment.unset(:priority)
         end
       end
 

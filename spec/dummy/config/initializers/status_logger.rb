@@ -7,4 +7,5 @@
 
 logfile = File.open("#{Rails.root}/log/status.log", 'a')
 logfile.sync = true  # automatically flush data to file
+logfile.chmod(0777)
 STATUS_LOGGER = SupplejackApi::StatusLogger.new(logfile)

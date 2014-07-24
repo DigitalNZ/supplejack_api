@@ -7,4 +7,5 @@
 
 logfile = File.open("#{Rails.root}/log/validation.log", 'a')
 logfile.sync = true  # automatically flush data to file
+logfile.chmod(0777)
 VALIDATION_LOGGER = SupplejackApi::ValidationLogger.new(logfile)

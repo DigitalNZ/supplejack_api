@@ -15,16 +15,16 @@ Feature: Get Concept
 	Scenario: Show concept
 		When I get a concept
 		Then the JSON should be a hash
-		And the JSON at "name" should be "Colin McCahon"
+		And the JSON at "label" should be "Colin McCahon"
 
 	Scenario: Get specific field
-		When I get a concept with "name" field
+		When I get a concept with "label" field
 		Then the JSON should have 2 keys
-		And the JSON at "name" should be "Colin McCahon"
+		And the JSON at "label" should be "Colin McCahon"
 		And the JSON at "@context" should be:
 		"""
       {
-        "dc": "http://purl.org/dc/elements/1.1/",
-        "name": "dc:name"
+        "label": "skos:prefLabel",
+      	"skos": "http://www.w3.org/2004/02/skos/core"
       }
     """

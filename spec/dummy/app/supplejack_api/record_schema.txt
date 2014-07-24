@@ -5,7 +5,8 @@
 # Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
-class RecordSchema < SupplejackApi::SupplejackSchema
+class RecordSchema
+  include SupplejackApi::SupplejackSchema
 
   # Namespaces
   namespace :dc,        url: 'http://purl.org/dc/elements/1.1/'

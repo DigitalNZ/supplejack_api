@@ -5,7 +5,8 @@
 # Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
-class ConceptSchema < SupplejackApi::SupplejackSchema
+class ConceptSchema
+  include SupplejackApi::SupplejackSchema
 
   #namespaces
   namespace :skos,   url: 'http://www.w3.org/2004/02/skos/core'
@@ -39,6 +40,7 @@ class ConceptSchema < SupplejackApi::SupplejackSchema
     fields [
       :type,
       :label,
+      :name,
       :role
     ]
   end

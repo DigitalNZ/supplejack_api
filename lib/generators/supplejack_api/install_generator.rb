@@ -26,7 +26,6 @@ module SupplejackApi
         copy_file 'config/initializers/simple_form_foundation.rb'
         copy_file 'config/initializers/state_machine.rb'
         copy_file 'config/initializers/status_logger.rb'
-        copy_file 'config/initializers/validation_logger.rb'
         copy_file 'config/initializers/sunspot.rb'
 
         directory 'config/locales'

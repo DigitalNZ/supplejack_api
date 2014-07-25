@@ -27,7 +27,7 @@ module SupplejackApi
           self.errors.add(:base, "fragment source_ids must be unique, source_ids: #{source_ids}")
           klass_name = fragment_class.to_s.demodulize.gsub(/Fragment/, '')
           klass_id = "#{klass_name.downcase}_id"
-          ::VALIDATION_LOGGER.error("#{klass_name} with #{klass_id}:#{self.send(klass_id)}, internal_identifier:#{self.internal_identifier} failed validation. Fragment source_ids must be unique, source_ids: #{source_ids}")
+          ValidationLogger.logger.error("#{klass_name} with #{klass_id}:#{self.send(klass_id)}, internal_identifier:#{self.internal_identifier} failed validation. Fragment source_ids must be unique, source_ids: #{source_ids}")
         end
       end
 

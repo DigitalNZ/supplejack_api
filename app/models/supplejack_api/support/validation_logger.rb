@@ -12,6 +12,10 @@ module SupplejackApi
         logfile = File.open("#{Rails.root}/log/validation.log", 'a')
         logfile.sync = true  # automatically flush data to file
         @logger ||= Logger.new(logfile)
+        @logger.formatter = proc do |severity, datetime, progname, msg|
+          "#{datetime.to_formatted_s(:db)}: #{msg}\n"
+        end
+        @logger
       end
     end
   end

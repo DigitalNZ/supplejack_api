@@ -8,10 +8,7 @@
 module SupplejackApi
   class RecordsController < ApplicationController
     
-    skip_before_filter :authenticate_user!, only: [:source, :status]
-    skip_before_filter :verify_limits!,     only: [:source, :status]
-
-  	respond_to :json, :xml, :rss
+    respond_to :json, :xml, :rss
 
     def index
       @search = RecordSearch.new(params)
@@ -39,10 +36,6 @@ module SupplejackApi
         render request.format.to_sym => { errors: "Record with ID #{params[:id]} was not found" }, status: :not_found 
       end
     end
-
-    def status
-	  	render nothing: true
-	  end
 
     # This options are merged with the serializer options. Which will allow the serializer
     # to know which fields to render for a specific request

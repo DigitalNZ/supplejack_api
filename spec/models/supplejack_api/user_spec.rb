@@ -27,6 +27,35 @@ module SupplejackApi
       user.authentication_token.should_not be_nil
     end
 
+    describe "user_sets" do
+      describe "custom_find" do
+        it "should lookup the UserSet by Mongo ID" do
+          user.user_sets.should_receive(:find).with('503a95b112575773920005f4')
+          user.user_sets.custom_find('503a95b112575773920005f4')
+        end
+
+        it "should lookup the UserSet by URL if param not an ID" do
+          user.user_sets.should_receive(:where).with(url: 'http://google.com') { [] }
+          user.user_sets.custom_find('http://google.com')
+        end
+      end
+    end
+
+    describe "#sets=" do
+      it "creates a new set for the user" do
+        user.sets = [{name: "Favourites", privacy: "hidden", priority: 0}]
+        user.user_sets.size.should eq 1
+        user.user_sets.first.name.should eq "Favourites"
+        user.user_sets.first.privacy.should eq "hidden"
+        user.user_sets.first.priority.should eq 0
+      end
+
+      it "doesn't create a new set when the sets are nil" do
+        user.sets = nil
+        user.user_sets.size.should eq 0
+      end
+    end
+
     describe '#name' do
       it "returns the user's name" do
         User.new(name: 'John').name.should eq 'John'
@@ -294,6 +323,22 @@ module SupplejackApi
   
       it 'finds the user by the id' do
         User.custom_find(user.id).should eq user
+      end
+    end
+
+    describe "can_change_featured_sets?" do
+      context "admin user" do
+        before { user.role = 'admin' }
+
+        it "should return true" do
+          user.can_change_featured_sets?.should be_true
+        end
+      end
+
+      context "user" do
+        it "should return false" do
+          user.can_change_featured_sets?.should be_false
+        end
       end
     end
 

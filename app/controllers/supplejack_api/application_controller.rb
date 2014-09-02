@@ -7,7 +7,7 @@
 
 module SupplejackApi
   class ApplicationController < ActionController::Base
-  	protect_from_forgery
+    protect_from_forgery
   
     before_filter :authenticate_user!
 
@@ -33,12 +33,35 @@ module SupplejackApi
       format = request.format.to_sym if [:xml, :json, :rss].include?(request.format.try(:to_sym))
   
       if error_message
-        render format => {:errors => error_message}, :status => :forbidden
+        render format => {errors: error_message}, status: :forbidden
       end
     end
   
     def current_user
       @current_user ||= User.find_by_api_key(params[:api_key])
+    end
+
+    def authenticate_admin!
+      if current_user.admin?
+        return true
+      else
+        render request.format.to_sym => {errors: "You need Administrator privileges to perform this request"}, status: :forbidden
+        return false
+      end
+    end
+
+    def find_user_set
+      user_set_id = params[:user_set_id] || params[:id]
+
+      if current_user.admin?
+        @user_set = UserSet.custom_find(user_set_id)
+      else
+        @user_set = current_user.user_sets.custom_find(user_set_id)
+      end
+      
+      unless @user_set
+        render json: {errors: "Set with id: #{params[:id]} was not found."}, status: :not_found
+      end
     end
   end
 end

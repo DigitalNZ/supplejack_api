@@ -83,5 +83,49 @@ module SupplejackApi
         end
       end
     end
+
+    describe "#authenticate_admin!" do
+      before :each do
+        @controller.stub(:request) { double(:request, :ip => "1.1.1.1", :format => :json)}
+      end
+
+      it "returns true when the admin authentication was successful" do
+        @controller.stub(:current_user) { double(:user, admin?: true) }
+        @controller.authenticate_admin!.should be_true
+      end
+
+      it "returns false when the admin authentication was not successful" do
+        @controller.stub(:current_user) { double(:user, admin?: false) }
+        @controller.authenticate_admin!.should be_false
+      end
+    end
+
+    describe "#find_user_set" do
+      context "current_user is a admin" do
+        before :each do
+          @user_set = double(:set).as_null_object
+          @controller.stub(:current_user) { double(:user, admin?: true).as_null_object }
+          @controller.stub(:params) { {:id => "12345"} }
+        end
+
+        it "finds the set even if it's not owned by the current_user" do
+          UserSet.should_receive(:custom_find).with("12345") { @user_set }
+          @controller.find_user_set
+        end
+      end
+
+      context "current_user has dnz role" do
+        before :each do
+          @user_set = double(:set).as_null_object
+          @controller.stub(:current_user) { double(:user, dnz?: true).as_null_object }
+          @controller.stub(:params) { {:id => "12345"} }
+        end
+
+        it "finds the set even if it's not owned by the current_user" do
+          UserSet.should_receive(:custom_find).with("12345") { @user_set }
+          @controller.find_user_set
+        end
+      end
+    end
   end
 end

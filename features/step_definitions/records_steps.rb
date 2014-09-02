@@ -7,8 +7,8 @@
 
 Given(/^these records:$/) do |table|
   table.hashes.each do |hash|
-  	record = FactoryGirl.create(:record, internal_identifier: "abc:#{rand(1000..10000)}")
-    fragment = FactoryGirl.build(:record_fragment, hash)
+    record = FactoryGirl.create(:record, internal_identifier: "abc:#{rand(1000..10000)}", record_id: hash[:record_id])
+    fragment = FactoryGirl.build(:record_fragment, hash.except('record_id'))
     record.fragments << fragment
     record.save
   end

@@ -6,9 +6,18 @@
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
-  class StatusLogger < Logger
-    def format_message(severity, timestamp, progname, msg)
-      "#{timestamp.to_formatted_s(:db)} #{severity} #{msg}\n"
+  module Support
+    module StatusLogger
+
+      def self.logger
+        logfile = File.open("#{Rails.root}/log/status.log", 'a')
+        logfile.sync = true
+        @logger ||= Logger.new(logfile)
+        @logger.formatter = proc do |severity, datetime, progname, msg|
+          "#{datetime.to_formatted_s(:db)} #{msg}\n"
+        end
+        @logger
+      end
     end
   end
 end

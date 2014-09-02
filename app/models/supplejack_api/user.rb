@@ -19,8 +19,8 @@ module SupplejackApi
     devise :trackable, :token_authenticatable, :database_authenticatable
 
     # Database authenticatable
-    # field :email,              :type => String, :null => false
-    # field :encrypted_password, :type => String, :null => false
+    # field :email,              type: String, null: false
+    # field :encrypted_password, type: String, null: false
     field :email,               type: String
     field :encrypted_password,  type: String
     field :name,                type: String
@@ -54,6 +54,21 @@ module SupplejackApi
     alias_method :api_key, :authentication_token
 
     before_save :ensure_authentication_token
+
+    has_many :user_sets, dependent: :destroy, autosave: true, class_name: 'SupplejackApi::UserSet' do
+      def custom_find(id)
+        if Moped::BSON::ObjectId.legal?(id.to_s)
+          user_set = find(id) rescue nil
+        else
+          user_set = where(url: id).first
+        end
+      end
+    end
+
+    def sets=(attrs_array)
+      return false unless attrs_array.try(:any?)
+      attrs_array.each {|attrs| self.user_sets.build(attrs)}
+    end
   
     def name
       name = self[:name]
@@ -177,6 +192,10 @@ module SupplejackApi
 
     def admin?
       role == 'admin'
+    end
+
+    def can_change_featured_sets?
+      admin?
     end
     
   end

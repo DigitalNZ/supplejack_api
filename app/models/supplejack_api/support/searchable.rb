@@ -12,6 +12,7 @@ module SupplejackApi
 
       included do
         include Sunspot::Mongoid
+        after_save :reindex
   
         searchable if: :should_index? do
           string :internal_identifier
@@ -21,6 +22,15 @@ module SupplejackApi
           end
   
           self.build_sunspot_schema(self)
+        end
+
+        def reindex
+          if active? && should_index?
+            if Rails.env != 'test'
+              Sunspot.session = Sunspot::Rails.build_session
+              self.index! rescue nil
+            end
+          end
         end
       end
 

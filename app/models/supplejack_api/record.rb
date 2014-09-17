@@ -106,5 +106,6 @@ module SupplejackApi
     def fragment_class
       SupplejackApi::ApiRecord::RecordFragment
     end
+
   end
 end

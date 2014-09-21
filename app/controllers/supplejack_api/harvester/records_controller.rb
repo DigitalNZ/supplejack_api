@@ -15,7 +15,6 @@ module SupplejackApi
         klass = params[:preview] ? SupplejackApi::PreviewRecord : SupplejackApi::Record
         @record = klass.find_or_initialize_by_identifier(params[:record])
         @record.set_status(params[:required_fragments])
-        @record.source_url = params[:record].delete(:source_url)
         @record.create_or_update_fragment(params[:record])
 
         @record.save

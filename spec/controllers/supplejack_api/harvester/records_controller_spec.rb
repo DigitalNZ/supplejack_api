@@ -51,11 +51,6 @@ module SupplejackApi
         post :create, record: {"internal_identifier" => "1234"}, required_fragments: ['ndha_rights']
       end
 
-      it "sets the source_url" do
-        record.should_receive('source_url=').with('http://google.com/landing.html')
-        post :create, record: {"internal_identifier" => "1234", source_url: 'http://google.com/landing.html'}
-      end
-
       it "saves the record" do
         record.should_receive(:save)
         post :create, record: {"internal_identifier" => "1234"}

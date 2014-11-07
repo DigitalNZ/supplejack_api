@@ -6,7 +6,7 @@ For more information on how to configure and use this application refer to the [
 
 ## Installation
 
-[Install & Setup instructions](http://digitalnz.github.io/supplejack/start/install-setup.html)
+[Install & Setup instructions](http://digitalnz.github.io/supplejack/start/development-setup.html)
 
 
 ## Engine Development

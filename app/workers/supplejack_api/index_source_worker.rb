@@ -15,11 +15,12 @@ module SupplejackApi
       else
         cursor = Record.where(:'fragments.source_id' => source_id)
       end
-      in_chunks(cursor.active) do |records|
+
+      in_chunks(cursor.where(status: "active")) do |records|
         Sunspot.index(records)
       end
 
-      in_chunks(cursor.deleted) do |records|
+      in_chunks(cursor.where(status: "deleted")) do |records|
         Sunspot.remove(records)
       end
     end

@@ -93,7 +93,7 @@ module SupplejackApi
       it 'describes primary_collection' do
         ExampleSchema.fields[:primary_collection].name.should eq :primary_collection
         ExampleSchema.fields[:primary_collection].type.should eq :string
-        ExampleSchema.fields[:primary_collection].multi_value.should be_true
+        ExampleSchema.fields[:primary_collection].multi_value.should be_truthy
         ExampleSchema.fields[:primary_collection].search_as.should eq [:filter]
       end
 
@@ -105,8 +105,8 @@ module SupplejackApi
       it 'describes year' do
         ExampleSchema.fields[:year].name.should eq :year
         ExampleSchema.fields[:year].type.should eq :integer
-        ExampleSchema.fields[:year].multi_value.should be_true
-        ExampleSchema.fields[:year].store.should be_false
+        ExampleSchema.fields[:year].multi_value.should be_truthy
+        ExampleSchema.fields[:year].store.should be_falsey
         ExampleSchema.fields[:year].search_as.should eq [:filter]
         ExampleSchema.fields[:year].search_value.should be_a Proc
       end
@@ -177,7 +177,7 @@ module SupplejackApi
         let(:restrictions) { ExampleSchema.roles[:developer].record_restrictions }
 
         it 'should create a restriction on records where is_catalog_record is true' do
-          restrictions[:is_catalog_record].should be_true
+          restrictions[:is_catalog_record].should be_truthy
         end
 
         it 'should not create a restriction if none are set' do

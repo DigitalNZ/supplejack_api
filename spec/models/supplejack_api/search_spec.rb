@@ -1,8 +1,8 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 require 'spec_helper'
@@ -18,16 +18,16 @@ module SupplejackApi
     }
 
   	describe '#facet_list' do
-  		before { 
+  		before {
         @search = RecordSearch.new
-        @search.stub(:model_class) { Record } 
+        @search.stub(:model_class) { Record }
       }
 
       it 'should return a array of facets' do
         @search.options[:facets] = 'name, address'
         @search.facet_list.should eq [:name, :address]
       end
-  
+
       it 'should discard any fields not configured as facets' do
         @search.options[:facets] = 'name, address, other_facet'
         @search.facet_list.should eq [:name, :address]
@@ -35,9 +35,9 @@ module SupplejackApi
     end
 
     describe '#field_list' do
-    	before { 
+    	before {
         @search = RecordSearch.new
-        @search.stub(:schema_class) { RecordSchema } 
+        @search.stub(:schema_class) { RecordSchema }
       }
 
       it 'should return a array of fields' do
@@ -52,9 +52,9 @@ module SupplejackApi
     end
 
     describe '#group_list' do
-    	before { 
+    	before {
         @search = RecordSearch.new
-        @search.stub(:model_class) { Record } 
+        @search.stub(:model_class) { Record }
       }
 
 	    it 'gets the groups from the fields list' do
@@ -68,27 +68,27 @@ module SupplejackApi
         @search = Search.new
         @search.query_fields.should be_nil
       end
-  
+
       it 'returns the query fields from the params' do
         @search = Search.new(query_fields: [:collection])
         @search.query_fields.should eq([:collection])
       end
-  
+
       it 'supports the query_fields as comma separated string' do
         @search = Search.new(query_fields: 'collection, creator, publisher')
         @search.query_fields.should eq([:collection, :creator, :publisher])
       end
-  
+
       it 'converts an array of strings to symbols' do
         @search = Search.new(query_fields: ['collection','creator'])
         @search.query_fields.should eq([:collection, :creator])
       end
-  
+
       it 'returns nil when query_fields is an empty string' do
         @search = Search.new(query_fields: '')
         @search.query_fields.should be_nil
       end
-  
+
       it 'returns nil when query_fields is an empty array' do
         @search = Search.new(query_fields: [])
         @search.query_fields.should be_nil
@@ -111,11 +111,11 @@ module SupplejackApi
 
      describe '#to_proper_value' do
       it 'returns false for "false" string' do
-        @search.to_proper_value('active?', 'false').should be_false
+        @search.to_proper_value('active?', 'false').should be_falsey
       end
 
       it 'returns true for "true" string' do
-        @search.to_proper_value('active?', 'true').should be_true
+        @search.to_proper_value('active?', 'true').should be_truthy
       end
 
       it 'returns nil if is a "nil" string' do
@@ -139,7 +139,7 @@ module SupplejackApi
       it 'downcases the text string' do
         Search.new(text: 'McDowall').text.should eq 'mcdowall'
       end
-      
+
       ['AND', 'OR', 'NOT'].each do |operator|
         it "downcases everything except the #{operator} operators" do
           Search.new(text: "McDowall #{operator} Dogs").text.should eq "mcdowall #{operator} dogs"
@@ -154,20 +154,20 @@ module SupplejackApi
         @search.solr_search_object
         @search.solr_search_object.should eq(sunspot_mock)
       end
-  
+
       it 'sets the solr request parameters when debug=true' do
         @search.options[:debug] = 'true'
         @search.stub(:execute_solr_search) { double(:solr_request, query: double(:query, to_params: {param1: 1})) }
         @search.solr_search_object
         @search.solr_request_params.should eq({:param1 => 1})
       end
-  
+
       it "doesn't set the solr request parameters" do
         @search.stub(:execute_solr_search) { double(:solr_request, query: double(:query, to_params: {param1: 1})) }
         @search.solr_search_object
         @search.solr_request_params.should be_nil
       end
-  
+
       it 'returns a empty hash when solr request fails' do
         @search.options[:debug] = 'true'
         @search.stub(:execute_solr_search) { {} }
@@ -180,7 +180,7 @@ module SupplejackApi
         @error = double(:error, response: {status: 400, body: 'Solr error'})
         @error.stub(:parse_solr_error_response) { 'Solr error' }
       }
-  
+
       it 'returns a hash with the solr error title and description' do
         @search.solr_error_message(@error).should eq({title: '400 Bad Request', body: 'Solr error'})
       end
@@ -205,7 +205,7 @@ module SupplejackApi
         @error = double(:error, response: {status: 400, body: 'Solr error'})
         @error.stub(:parse_solr_error_response) { 'Solr error' }
       end
-  
+
       it 'returns a hash with the solr error title and description' do
         @search.solr_error_message(@error).should eq({:title => '400 Bad Request', :body => 'Solr error'})
       end
@@ -218,20 +218,20 @@ module SupplejackApi
         @search.solr_search_object
         @search.solr_search_object.should eq(sunspot_mock)
       end
-  
+
       it 'sets the solr request parameters when debug=true' do
         @search.options[:debug] = 'true'
         @search.stub(:execute_solr_search) { double(:solr_request, query: double(:query, to_params: {param1: 1})) }
         @search.solr_search_object
         @search.solr_request_params.should eq({:param1 => 1})
       end
-  
+
       it "doesn't set the solr request parameters" do
         @search.stub(:execute_solr_search) { double(:solr_request, query: double(:query, to_params: {param1: 1})) }
         @search.solr_search_object
         @search.solr_request_params.should be_nil
       end
-  
+
       it 'returns a empty hash when solr request fails' do
         @search.options[:debug] = 'true'
         @search.stub(:execute_solr_search) { {} }

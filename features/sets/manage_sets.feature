@@ -11,10 +11,10 @@ Feature: Manage sets
     Given a user with a API Key
     And these records:
       | record_id | name         | address            | email                       | age | children   | nz_citizen |
-      | 78        | John Doe     | Wellington         | ["john@example.com"]        | 30  | ["Sally"]  | true       |
-      | 79        | Sally Smith  | Auckland           | ["sally@example.com"]       | 22  | ["James"]  | true       |
-      | 12        | Steve Jobs   | Parker St. Dunedin | ["stevejobs@example.com"]   | 62  | ["Samuel"] | false      |
-      | 55        | Peter Parker | Christchruch       | ["peterparker@example.com"] | 42  | ["Lily"]   | false      |
+      | 78        | John Doe     | Wellington         | "john@example.com"        | 30  | "Sally"  | true       |
+      | 79        | Sally Smith  | Auckland           | "sally@example.com"       | 22  | "James"  | true       |
+      | 12        | Steve Jobs   | Parker St. Dunedin | "stevejobs@example.com"   | 62  | "Samuel" | false      |
+      | 55        | Peter Parker | Christchruch       | "peterparker@example.com" | 42  | "Lily"   | false      |
   
   Scenario: Create a set
     When I post a request to create a set with the JSON:

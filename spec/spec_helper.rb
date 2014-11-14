@@ -1,8 +1,8 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 # This file is copied to spec/ when you run 'rails generate rspec:install'
@@ -24,9 +24,9 @@ Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
 RSpec.configure do |config|
   config.mock_with :rspec
+  config.infer_spec_type_from_file_location!
   config.infer_base_class_for_anonymous_controllers = false
   config.order = "random"
-  config.treat_symbols_as_metadata_keys_with_true_values = true
   config.filter_run focus: true
   config.run_all_when_everything_filtered = true
 
@@ -40,7 +40,7 @@ RSpec.configure do |config|
     DatabaseCleaner.clean
     Sunspot.session = Sunspot::Rails::StubSessionProxy.new(Sunspot.session)
     Timecop.return
-    
+
     %w(record concept).each do |model|
       klass = "#{model.capitalize}Schema".constantize
 

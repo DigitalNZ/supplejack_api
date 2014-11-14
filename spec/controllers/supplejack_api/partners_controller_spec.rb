@@ -8,7 +8,7 @@
 require 'spec_helper'
 
 module SupplejackApi
-  describe PartnersController do
+  describe PartnersController, type: :controller do
     routes { SupplejackApi::Engine.routes }
 
     describe "POST 'create'" do

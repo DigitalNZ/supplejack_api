@@ -1,22 +1,23 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 require 'rails'
 require 'devise'
+require 'devise-token_authenticatable'
 require 'kaminari'
 require 'simple_form'
 require 'state_machine'
+require 'protected_attributes'
 require 'sunspot'
 require 'active_model_serializers'
 require 'mongoid'
 require 'mongoid_auto_inc'
 require 'mongoid/tree'
 require 'devise/orm/mongoid'
-require 'strong_parameters'
 require 'figaro'
 require 'unicode_utils'
 require 'rest_client'

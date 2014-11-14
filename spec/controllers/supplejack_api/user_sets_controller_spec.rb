@@ -1,16 +1,16 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 require 'spec_helper'
 
 module SupplejackApi
-  describe UserSetsController do
+  describe UserSetsController, type: :controller do
     routes { SupplejackApi::Engine.routes }
-    
+
     before(:each) do
       @user = FactoryGirl.create(:user, authentication_token: "abc123")
       controller.stub(:authenticate_user!) { true }
@@ -19,7 +19,7 @@ module SupplejackApi
 
     describe "GET 'index'" do
       before(:each) do
-        @sets = [double(:set).as_null_object]
+        @sets = [FactoryGirl.build(:user_set)]
       end
 
       it "should return all the user's sets" do
@@ -32,7 +32,7 @@ module SupplejackApi
       context "authentication succedded" do
         before :each do
           controller.stub(:authenticate_admin!) { true }
-          @normal_user = mock_model(User, user_sets: []).as_null_object
+          @normal_user = double(User, user_sets: []).as_null_object
           User.stub(:find_by_api_key).with("nonadminkey") { @normal_user }
         end
 
@@ -62,7 +62,7 @@ module SupplejackApi
 
       context "authentication fails" do
         it "renders a error when the admin authentication fails" do
-          controller.stub(:current_user) { mock_model(User, :admin? => false) }
+          controller.stub(:current_user) { double(User, :admin? => false) }
           get :admin_index, user_id: "nonadminkey", format: "json"
           response.code.should eq "403"
           response.body.should eq({errors: "You need Administrator privileges to perform this request"}.to_json)
@@ -74,7 +74,7 @@ module SupplejackApi
       context "authentication succedded" do
         before :each do
           controller.stub(:authenticate_admin!) { true }
-          @admin_user = mock_model(User).as_null_object
+          @admin_user = double(User).as_null_object
           controller.stub(:current_user) { @admin_user }
         end
 
@@ -89,7 +89,7 @@ module SupplejackApi
       context "authentication succedded" do
         before :each do
           controller.stub(:authenticate_admin!) { true }
-          @admin_user = mock_model(User).as_null_object
+          @admin_user = double(User).as_null_object
           controller.stub(:current_user) { @admin_user }
         end
 
@@ -99,7 +99,7 @@ module SupplejackApi
         end
       end
     end
-    
+
     describe "GET 'show'" do
       before(:each) do
         @user_set = FactoryGirl.build(:user_set)
@@ -115,7 +115,7 @@ module SupplejackApi
         get :show, id: @user_set.id.to_s
         response.code.should eq("404")
         response.body.should eq({errors: "Set with id: #{@user_set.id.to_s} was not found."}.to_json)
-      end 
+      end
     end
 
     describe "POST 'create'" do
@@ -211,15 +211,15 @@ module SupplejackApi
 
       it "finds the @user_set through the user" do
         controller.current_user.user_sets.should_receive(:custom_find).with(@user_set.id.to_s) { @user_set }
-        delete :destroy, id: @user_set.id.to_s
+        delete :destroy, id: @user_set.id.to_s, format: :json
       end
 
       it "deletes the user set" do
         @user_set.should_receive(:destroy)
-        delete :destroy, id: @user_set.id.to_s 
+        delete :destroy, id: @user_set.id.to_s, format: :json
       end
-    end 
-  
+    end
+
   end
 
 end

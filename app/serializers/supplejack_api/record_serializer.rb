@@ -17,6 +17,7 @@ module SupplejackApi
 
     # Returns a hash including all desirable record attributes and its associations
     def serializable_hash
+      # debugger
       hash = attributes
 
       groups = (options[:groups] & RecordSchema.groups.keys) || []

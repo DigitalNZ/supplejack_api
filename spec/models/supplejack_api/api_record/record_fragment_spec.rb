@@ -89,6 +89,7 @@ module SupplejackApi
       describe '.mutable_fields' do
         {name: String, email: Array, nz_citizen: Boolean}.each do |name, type|
           it 'should return a hash that includes the key #{name} and value #{type}' do
+            type = Mongoid::Boolean if type == Boolean
             fragment_class.mutable_fields[name.to_s].should eq type
           end
         end
@@ -119,12 +120,12 @@ module SupplejackApi
       describe '#primary?' do
         it 'returns true when priority is 0' do
           fragment.priority = 0
-          fragment.primary?.should be_true
+          fragment.primary?.should be_truthy
         end
 
         it 'returns false when priority is 1' do
           fragment.priority = 1
-          fragment.primary?.should be_false
+          fragment.primary?.should be_falsey
         end
       end
 

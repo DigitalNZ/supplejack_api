@@ -1,8 +1,8 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 $:.push File.expand_path('../lib', __FILE__)
@@ -24,36 +24,37 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,db,lib}/**/*"] + ['Rakefile', 'README.md']
   s.test_files = Dir['spec/**/*']
 
-  s.add_dependency 'rails', '~> 3.2.12'
+  s.add_dependency 'rails', '~> 4.1.7'
 
+  s.add_dependency 'protected_attributes'
   s.add_dependency 'thin', '~> 1.6.2'
   s.add_dependency 'kaminari', '~> 0.14.0'
-  s.add_dependency 'strong_parameters', '~> 0.1.5'
   s.add_dependency 'unicode_utils', '~> 1.4.0'
   s.add_dependency 'rest-client', '~> 1.6.7'
   s.add_dependency 'state_machine', '~> 1.1.2'
-  s.add_dependency 'devise', '~> 2.2.3'
+  s.add_dependency 'devise', '~> 3.4.1'
+  s.add_dependency 'devise-token_authenticatable', '~> 0.3.0'
   s.add_dependency 'active_model_serializers'
   s.add_dependency 'paperclip', '~> 3.1.4'
   s.add_dependency 'progressbar', '~> 0.11.0'
   s.add_dependency 'dimensions', '~> 1.2.0'
   s.add_dependency 'mimemagic', '~> 0.1.8'
   s.add_dependency 'dalli', '~> 1.1.2'
-  s.add_dependency 'simple_form', '~> 2.1.1'
+  s.add_dependency 'simple_form', '~> 3.0.2'
   s.add_dependency 'lazy_high_charts', '~> 1.3.2'
   s.add_dependency 'figaro', '~> 0.7.0'
 
   s.add_dependency 'jquery-rails', '~> 3.1.0'
-  s.add_dependency 'sass-rails', '~> 3.2.5'
-  s.add_dependency 'coffee-rails','~> 3.2.2'
+  s.add_dependency 'sass-rails', '~> 4.0.3'
+  s.add_dependency 'coffee-rails','~> 4.0.0'
   s.add_dependency 'uglifier', '~> 2.5.0'
   s.add_dependency 'therubyracer', '~> 0.12.0'
   s.add_dependency 'compass-rails', '~> 1.0.3'
   s.add_dependency 'zurb-foundation', '~> 4.3.2'
   s.add_dependency 'gabba', '~> 0.3.0'
 
-  s.add_dependency 'sunspot_rails', '= 2.0.0.pre.120417'
-  s.add_dependency 'mongoid', '~> 3.1.6'
+  s.add_dependency 'sunspot_rails', '~> 2.1.0'
+  s.add_dependency 'mongoid', '~> 4.0.0'
   s.add_dependency 'mongoid_auto_inc', '~> 0.1.0'
   s.add_dependency 'mongoid-tree', '~> 1.0.0'
 
@@ -63,21 +64,22 @@ Gem::Specification.new do |s|
 
   # Adding sunspot_solr so app has access to sunspot:solr rake tasks
   s.add_dependency 'sunspot_solr', '~> 2.1.0'
-  
+
   s.add_dependency 'json-ld', '~> 1.1.4'
 
+  s.add_dependency 'activeresource'
+
   ## Development dependancies
-  
-  s.add_development_dependency 'rspec-rails', '~> 2.14.0'
+
+  s.add_development_dependency 'rspec-rails', '~> 3.1.0'
   s.add_development_dependency 'cucumber-rails', '~> 1.3.0'
-  s.add_development_dependency 'capybara', '~> 1.1.2'
+  s.add_development_dependency 'capybara', '~> 2.2.0'
   s.add_development_dependency 'launchy', '~> 2.1.2'
   s.add_development_dependency 'factory_girl_rails', '~> 4.0.0'
   s.add_development_dependency 'database_cleaner', '~> 0.8.0'
-  s.add_development_dependency 'mongoid-rspec', '~> 1.11.0'
-  s.add_development_dependency 'json_spec', '~> 1.0.3'
-  s.add_development_dependency 'xml_spec', '~> 0.1.0' # This is a gem created by fedegl to test the XML responses, its part of the Boost github organization account
-  s.add_development_dependency 'sunspot_matchers', '~> 1.3.0.2'
+  s.add_development_dependency 'mongoid-rspec', '~> 2.0.0.rc1'
+  s.add_development_dependency 'json_spec', '~> 1.1.4'
+  s.add_development_dependency 'sunspot_matchers', '~> 2.1.1.0'
   s.add_development_dependency 'timecop', '~> 0.4.6'
   s.add_development_dependency 'pry', '~> 0.9.12'
   s.add_development_dependency 'pry-rails', '~> 0.2.2'
@@ -86,8 +88,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rb-fsevent', '~> 0.9.1'
   s.add_development_dependency 'simplecov', '~> 0.6.4'
   s.add_development_dependency 'sunspot_test', '~> 0.4.0'
-  s.add_development_dependency 'debugger', '~> 1.6.8'
-  
+
   # s.add_development_dependency 'zeus' # TODO SEE my_plan.rb FOR MORE INFO
 
   if RUBY_VERSION =~ /1.9/

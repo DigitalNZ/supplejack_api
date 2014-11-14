@@ -47,13 +47,13 @@ module SupplejackApi
 
           it "should return an array with the source_ids" do
             record.source_ids.should eq ['source_name', "another_source"]
-          end      
+          end
         end
       end
 
       describe "#duplicate_source_ids?" do
         it "should return false" do
-          record.duplicate_source_ids?.should be_false
+          record.duplicate_source_ids?.should be_falsey
         end
 
         context "duplicate source_ids" do
@@ -62,8 +62,8 @@ module SupplejackApi
           end
 
           it "should return true" do
-            record.duplicate_source_ids?.should be_true
-          end      
+            record.duplicate_source_ids?.should be_truthy
+          end
         end
       end
 

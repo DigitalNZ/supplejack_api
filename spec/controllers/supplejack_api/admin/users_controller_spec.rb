@@ -9,10 +9,10 @@ require 'spec_helper'
 
 module SupplejackApi
   module Admin
-    describe UsersController do
+    describe UsersController, type: :controller do
       routes { SupplejackApi::Engine.routes }
       
-      let(:user) { mock_model(User).as_null_object }
+      let(:user) { double(User).as_null_object }
 
       before(:each) do
         controller.stub(:current_admin_user) { user }
@@ -49,11 +49,12 @@ module SupplejackApi
       describe 'PUT update' do 
         before(:each) do
           User.stub(:find) {user}
+          # allow(User).to receive_messages(find: user)
         end
 
         it 'finds the user by id' do
           User.should_receive(:find).with('1') { user }
-          put :update, id: 1
+          put :update, id: 1, user: {max_requests: 1000}
           assigns(:user).should eq user
         end
 

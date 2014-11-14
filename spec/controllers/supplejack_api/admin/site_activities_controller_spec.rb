@@ -9,11 +9,11 @@ require 'spec_helper'
 
 module SupplejackApi
   module Admin
-    describe SiteActivitiesController do
+    describe SiteActivitiesController, type: :controller do
       routes { SupplejackApi::Engine.routes }
       
-      let(:site_activity) { mock_model(SiteActivity).as_null_object }
-      let(:user) { mock_model(User).as_null_object }
+      let(:site_activity) { double(SiteActivity).as_null_object }
+      let(:user) { double(User).as_null_object }
 
       before(:each) do
         controller.stub(:current_admin_user) { user }

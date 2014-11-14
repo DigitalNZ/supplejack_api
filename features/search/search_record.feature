@@ -12,10 +12,10 @@ Feature: Search Record
     Given a user with a API Key
     And these records:
       | name         | address            | email                       | age | children   | nz_citizen |
-      | John Doe     | Wellington         | ["john@example.com"]        | 30  | ["Sally"]  | true       |
-      | Sally Smith  | Auckland           | ["sally@example.com"]       | 22  | ["James"]  | true       |
-      | Steve Jobs   | Parker St. Dunedin | ["stevejobs@example.com"]   | 62  | ["Samuel"] | false      |
-      | Peter Parker | Christchruch       | ["peterparker@example.com"] | 42  | ["Lily"]   | false      |
+      | John Doe     | Wellington         | "john@example.com"        | 30  | "Sally"  | true       |
+      | Sally Smith  | Auckland           | "sally@example.com"       | 22  | "James"  | true       |
+      | Steve Jobs   | Parker St. Dunedin | "stevejobs@example.com"   | 62  | "Samuel" | false      |
+      | Peter Parker | Christchruch       | "peterparker@example.com" | 42  | "Lily"   | false      |
   
   Scenario Outline: Find records by term and return JSON
     When I search record for "<name>"

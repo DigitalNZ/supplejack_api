@@ -36,10 +36,10 @@ module SupplejackApi
     before_save :merge_fragments
 
     # Scopes
-    scope :active, where(status: 'active')
-    scope :deleted, where(status: 'deleted')
-    scope :suppressed, where(status: 'suppressed')
-    scope :solr_rejected, where(status: 'solr_rejected')
+    scope :active, -> { where(status: 'active') }
+    scope :deleted, -> { where(status: 'deleted') }
+    scope :suppressed, -> { where(status: 'suppressed') }
+    scope :solr_rejected, -> { where(status: 'solr_rejected') }
 
     def active?
       self.status == 'active'

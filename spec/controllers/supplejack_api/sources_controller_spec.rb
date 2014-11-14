@@ -8,7 +8,7 @@
 require 'spec_helper'
 
 module SupplejackApi
-  describe SourcesController do
+  describe SourcesController, type: :controller do
     routes { SupplejackApi::Engine.routes }
 
     let(:partner) { FactoryGirl.create(:partner) }

@@ -9,8 +9,9 @@ module SupplejackApi
 	class Fragment
 		include Mongoid::Document
 	  include Mongoid::Timestamps
+		include Mongoid::Attributes::Dynamic
 
-	  default_scope asc(:priority)
+	  default_scope -> { asc(:priority) }
 
 	  field :source_id, type: String
 	  field :priority,  type: Integer, default: 1

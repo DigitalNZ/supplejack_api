@@ -1,16 +1,16 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 require 'spec_helper'
 
 module SupplejackApi
-  describe ApplicationController do
+  describe ApplicationController, type: :controller do
     routes { SupplejackApi::Engine.routes }
-  
+
     before(:each) do
       @controller = ApplicationController.new
       @controller.stub(:render) { nil }
@@ -91,12 +91,12 @@ module SupplejackApi
 
       it "returns true when the admin authentication was successful" do
         @controller.stub(:current_user) { double(:user, admin?: true) }
-        @controller.authenticate_admin!.should be_true
+        @controller.authenticate_admin!.should be_truthy
       end
 
       it "returns false when the admin authentication was not successful" do
         @controller.stub(:current_user) { double(:user, admin?: false) }
-        @controller.authenticate_admin!.should be_false
+        @controller.authenticate_admin!.should be_falsey
       end
     end
 

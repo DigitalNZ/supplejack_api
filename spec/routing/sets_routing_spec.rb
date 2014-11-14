@@ -1,13 +1,13 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 require 'spec_helper'
 
-describe 'Sets routes' do
+describe 'Sets routes', type: :routing do
   routes { SupplejackApi::Engine.routes }
 
   it 'routes /sets.format to user_sets#index' do
@@ -21,7 +21,7 @@ describe 'Sets routes' do
   it 'routes /sets/public.format to user_sets#public_index' do
     { get: '/sets/public.json' }.should route_to(controller: 'supplejack_api/user_sets', action: 'public_index', format: 'json')
   end
-  
+
   it 'routes /sets/1.format to user_sets#show' do
     { get: '/sets/10.json' }.should route_to(controller: 'supplejack_api/user_sets', action: 'show', format: 'json', id: '10')
   end
@@ -42,4 +42,3 @@ describe 'Sets routes' do
     { delete: '/sets/123abc/records/666.json' }.should route_to(controller: 'supplejack_api/set_items', action: 'destroy', format: 'json', user_set_id: '123abc', id: '666')
   end
 end
-

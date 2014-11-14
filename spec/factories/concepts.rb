@@ -24,7 +24,7 @@ module SupplejackApi
       '@id'           'http://digitalnz.org/person/colin-mccahon'
       '@type'         'foaf:person'
       label           'Colin McCahon'
-      name            'Colin McCahon'
+      name            ['Colin McCahon']
       description     'Colin John McCahon was a prominent New Zealand artist. During his life he also worked in art galleries and as a university lecturer. Some of McCahon\'s best-known works are wall-sized paintings with a dark background, overlaid with religious texts in white and varying in size.'
       dateOfBirth     '1919-08-01'
       dateOfDeath     '1987-05-27' 

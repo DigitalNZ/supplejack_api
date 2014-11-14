@@ -11,6 +11,14 @@ module SupplejackApi
       name            "Dogs and cats"
       description     "Ugly dogs and cats"
       user
+      factory :user_set_with_set_item do
+        set_items { [FactoryGirl.build(:set_item)] }
+      end
+    end
+
+    factory :set_item, class: SupplejackApi::SetItem do
+      record_id 12345
+      position  1
     end
   end
 end

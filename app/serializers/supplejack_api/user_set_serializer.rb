@@ -1,13 +1,13 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
   class UserSetSerializer < ActiveModel::Serializer
-    
+
     attributes :id, :name, :count, :priority, :featured, :approved, :created_at, :updated_at
     root :set
 
@@ -34,7 +34,7 @@ module SupplejackApi
       hash
     end
 
-    # Returns a array of Hashes with the information from each record 
+    # Returns a array of Hashes with the information from each record
     # included in the Hash
     #
     # The values to be added from the record are stored in SetItem::ATTRIBUTES
@@ -56,7 +56,7 @@ module SupplejackApi
 
     # Return the user information about the set, this is only displyed
     # on the set show endpoint.
-    # 
+    #
     # When the user requesting the sets is a admin, also return the API Key
     # for the owner of the set. This is required in order for applications
     # to make requests on the user's behalf.

@@ -26,16 +26,14 @@ module SupplejackApi
     index({ record_id: 1 }, { unique: true })
     auto_increment :record_id, session: 'strong'
 
-    field :source_url, type: String
-
     # Callbacks
     before_save :merge_fragments
 
     # Scopes
-    scope :active, where(status: 'active')
-    scope :deleted, where(status: 'deleted')
-    scope :suppressed, where(status: 'suppressed')
-    scope :solr_rejected, where(status: 'solr_rejected')
+    scope :active, -> { where(status: 'active') }
+    scope :deleted, -> { where(status: 'deleted') }
+    scope :suppressed, -> { where(status: 'suppressed') }
+    scope :solr_rejected, -> { where(status: 'solr_rejected') }
 
     def self.find_multiple(ids)
       return [] unless ids.try(:any?)

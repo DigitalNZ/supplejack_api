@@ -7,6 +7,9 @@
 
 Given(/^these records:$/) do |table|
   table.hashes.each do |hash|
+    hash["email"] = hash["email"].split(',') if hash["email"]
+    hash["children"] = hash["children"].split(',') if hash["children"]
+    hash["contact"] = hash["contact"].split(',') if hash["contact"]
     record = FactoryGirl.create(:record, internal_identifier: "abc:#{rand(1000..10000)}", record_id: hash[:record_id])
     fragment = FactoryGirl.build(:record_fragment, hash.except('record_id'))
     record.fragments << fragment

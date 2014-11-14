@@ -1,20 +1,20 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 require 'spec_helper'
 
 module SupplejackApi
-  describe 'Source routes' do
+  describe 'Source routes', type: :routing do
     routes { SupplejackApi::Engine.routes }
 
     before(:each) do
       HarvesterConstraint.any_instance.should_receive(:matches?).and_return(true)
     end
-    
+
     it 'routes /partners/123/sources to sources#create' do
       post('/partners/123/sources.json').should route_to(controller: 'supplejack_api/sources', action: 'create', partner_id: '123', format: 'json')
     end

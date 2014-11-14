@@ -119,12 +119,12 @@ module SupplejackApi
       describe '#primary?' do
         it 'returns true when priority is 0' do
           fragment.priority = 0
-          fragment.primary?.should be_true
+          fragment.primary?.should be_truthy
         end
 
         it 'returns false when priority is 1' do
           fragment.priority = 1
-          fragment.primary?.should be_false
+          fragment.primary?.should be_falsey
         end
       end
 

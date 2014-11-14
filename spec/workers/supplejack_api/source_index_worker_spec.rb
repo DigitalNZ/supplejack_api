@@ -23,7 +23,7 @@ module SupplejackApi
 
       it "finds all active records and indexes them" do
         Record.should_receive(:where).with(:'fragments.source_id' => 'tapuhi').and_call_original
-        Mongoid::Criteria.any_instance.should_receive(:active).and_call_original
+        # Mongoid::Criteria.any_instance.should_receive(:active).and_call_original
 
         Sunspot.should_receive(:index).with(records)
         IndexSourceWorker.perform('tapuhi')
@@ -34,7 +34,7 @@ module SupplejackApi
         records.each { |r| r.update_attribute(:status, 'deleted') }
 
         Record.should_receive(:where).with(:'fragments.source_id' => 'tapuhi').and_call_original
-        Mongoid::Criteria.any_instance.should_receive(:deleted).and_call_original
+        # Mongoid::Criteria.any_instance.should_receive(:deleted).and_call_original
 
         Sunspot.should_receive(:remove).with(records)
         IndexSourceWorker.perform('tapuhi')

@@ -1,18 +1,18 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 require "spec_helper"
 
 module SupplejackApi
-  describe Harvester::RecordsController do
+  describe Harvester::RecordsController, type: :controller do
     routes { SupplejackApi::Engine.routes }
 
-    let(:record) { mock_model(Record).as_null_object }
-    
+    let(:record) { FactoryGirl.build(:record) }
+
     describe "POST create" do
       before(:each) do
         Record.stub(:find_or_initialize_by_identifier) { record }
@@ -25,7 +25,7 @@ module SupplejackApi
           assigns(:record).should eq record
         end
       end
-      
+
       context "preview is true" do
         it "finds or initializes a preview record by identifier" do
           PreviewRecord.should_receive(:find_or_initialize_by_identifier).with("internal_identifier" => "1234") { record }
@@ -37,7 +37,7 @@ module SupplejackApi
       context "record has a priority other then 0" do
         it "creates or updates the fragment" do
           rec = {
-            "internal_identifier" => "1234", 
+            "internal_identifier" => "1234",
             "title" => "Hi",
             "priority" => "10"
           }
@@ -93,7 +93,7 @@ module SupplejackApi
 
       it "returns a 204" do
         delete :flush, source_id: 'tapuhi', job_id: 'abc123'
-        response.code.should eq '204'     
+        response.code.should eq '204'
       end
     end
 
@@ -125,13 +125,13 @@ module SupplejackApi
 
       it 'finds the record and asigns it' do
         Record.should_receive(:custom_find).with('123', nil, {status: :all}) { record }
-        put :update, id: 123, record: { status: 'supressed' }
+        put :update, id: 123, record: { status: 'supressed' }, format: :json
         assigns(:record).should eq(record)
       end
 
       it "updates the status of the record" do
         record.should_receive(:update_attribute).with(:status, 'supressed')
-        put :update, id: 123, record: { status: 'supressed' }
+        put :update, id: 123, record: { status: 'supressed' }, format: :json
       end
     end
   end

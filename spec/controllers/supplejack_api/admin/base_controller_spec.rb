@@ -1,18 +1,18 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 require 'spec_helper'
 
 module SupplejackApi
   module Admin
-    describe BaseController do
+    describe BaseController, type: :controller do
       routes { SupplejackApi::Engine.routes }
-      
-      let(:user) { mock_model(User).as_null_object }
+
+      let(:user) { double(User).as_null_object }
 
       controller(Admin::BaseController) do
         def index
@@ -33,7 +33,7 @@ module SupplejackApi
         end
 
         context 'user is not a admin' do
-          before do 
+          before do
             user.stub(:admin?) { false }
             controller.stub(:redirect_to) { nil }
           end

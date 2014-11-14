@@ -38,7 +38,7 @@ Given(/^I have a set with name "(.*?)"$/) do |name|
 end
 
 When(/^I post a request to add a set item with the JSON:$/) do |json|
-  post user_set_set_items_path(@user_set.id, api_key: @user.authentication_token), JSON.parse(json)
+  post user_set_set_items_path(@user_set.id, api_key: @user.authentication_token, format: "json"), JSON.parse(json)
 end
 
 Then(/^there should be (\d+) items in the set$/) do |count|
@@ -53,7 +53,7 @@ Then(/^the item with record_id of (\d+) should have a "(.*?)" of (\d+)$/) do |re
 end
 
 When(/^I issue a delete request to remove set item with record_id (\d+)$/) do |record_id|
-  delete user_set_set_item_path(@user_set.id, record_id.to_i, api_key: @user.authentication_token)
+  delete user_set_set_item_path(@user_set.id, record_id.to_i, api_key: @user.authentication_token, format: "json")
 end
 
 Then(/^I should have a set with the values:$/) do |table|
@@ -92,7 +92,7 @@ When(/^I request my sets$/) do
 end
 
 When(/^I issue a delete request for the set$/) do
-  delete user_set_path(@user_set.id, api_key: @user.authentication_token)
+  delete user_set_path(@user_set.id, api_key: @user.authentication_token, format: "json")
 end
 
 Then(/^the set should have (\d+) tags the values:$/) do |tags_count, table|

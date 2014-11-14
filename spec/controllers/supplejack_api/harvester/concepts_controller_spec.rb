@@ -1,18 +1,18 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 require "spec_helper"
 
 module SupplejackApi
-  describe Harvester::ConceptsController do
+  describe Harvester::ConceptsController, type: :controller do
     routes { SupplejackApi::Engine.routes }
 
-    let(:concept) { mock_model(Concept).as_null_object }
-    
+    let(:concept) { FactoryGirl.build(:concept) }
+
     describe "POST create" do
       before(:each) do
         Concept.stub(:find_or_initialize_by_identifier) { concept }
@@ -25,7 +25,7 @@ module SupplejackApi
           assigns(:concept).should eq concept
         end
       end
-      
+
       context "preview is true" do
         it "finds or initializes a preview record by identifier" do
           PreviewRecord.should_receive(:find_or_initialize_by_identifier).with("internal_identifier" => "1234") { concept }
@@ -44,13 +44,13 @@ module SupplejackApi
 
       it 'finds the record and assigns it' do
         Concept.should_receive(:custom_find).with('123', nil, {status: :all}) { concept }
-        put :update, id: 123, concept: { status: 'supressed' }
+        put :update, id: 123, concept: { status: 'supressed' }, format: :json
         assigns(:concept).should eq(concept)
       end
 
       it "updates the status of the record" do
         concept.should_receive(:update_attribute).with(:status, 'supressed')
-        put :update, id: 123, concept: { status: 'supressed' }
+        put :update, id: 123, concept: { status: 'supressed' }, format: :json
       end
     end
   end

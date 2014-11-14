@@ -1,15 +1,15 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 require 'spec_helper'
 
 module SupplejackApi
   describe UserSet do
-    
+
     let(:user_set) { FactoryGirl.build(:user_set)}
 
   before(:each) do
@@ -227,7 +227,7 @@ module SupplejackApi
       user_set = FactoryGirl.create(:user_set, user_id: regular_user.id, featured: false)
       user_set.update_attributes_and_embedded({featured: true}, regular_user)
       user_set.reload
-      user_set.featured.should be_false
+      user_set.featured.should be_falsey
     end
 
     it "should allow admins to change the :featured attribute" do
@@ -235,7 +235,7 @@ module SupplejackApi
       user_set = FactoryGirl.create(:user_set, user_id: admin_user.id)
       user_set.update_attributes_and_embedded({featured: true}, admin_user)
       user_set.reload
-      user_set.featured.should be_true
+      user_set.featured.should be_truthy
     end
 
     it "should update the featured_at when the featured attribute is updated" do
@@ -265,7 +265,7 @@ module SupplejackApi
       user_set = FactoryGirl.create(:user_set, user_id: admin_user.id, featured: true, featured_at: time)
       user_set.update_attributes_and_embedded({featured: false}, admin_user)
       user_set.reload
-      user_set.featured.should be_false
+      user_set.featured.should be_falsey
     end
 
     it "initializes the set_items through the user_set" do

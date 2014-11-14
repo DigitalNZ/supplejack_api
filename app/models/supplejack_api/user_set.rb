@@ -1,8 +1,8 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
@@ -10,6 +10,7 @@ module SupplejackApi
     include Mongoid::Document
     include Mongoid::Timestamps
     include ActionView::Helpers::SanitizeHelper
+    include ActiveModel::MassAssignmentSecurity
 
     store_in collection: 'user_sets', session: 'strong'
 
@@ -37,7 +38,7 @@ module SupplejackApi
     index featured: 1
 
     before_validation :set_default_privacy
-    
+
     validates :name, presence: true
     validates :privacy, inclusion: {in: ["public", "hidden", "private"]}
 
@@ -45,7 +46,7 @@ module SupplejackApi
     before_save :strip_html_tags
 
     attr_accessible :name, :description, :privacy, :priority, :tags, :tag_list, :records, :approved
-    
+
     # Force-capitalize only the first word of the set name
     #
     def name=(name)
@@ -101,8 +102,8 @@ module SupplejackApi
           end
         end
       end
-      
-      if new_attributes.has_key?(:featured) 
+
+      if new_attributes.has_key?(:featured)
         featured_value = new_attributes.delete(:featured)
         if user.try(:can_change_featured_sets?)
           self.featured = featured_value
@@ -124,7 +125,7 @@ module SupplejackApi
 
     def record_status
       self.privacy == "public" && approved ? "active" : "suppressed"
-    end  
+    end
 
     # Remove HTML tags from the name, description and tags
     #
@@ -140,7 +141,7 @@ module SupplejackApi
       set_items.asc(:position).map(&:record_id)
     end
 
-    # Return a array of actual Record objects 
+    # Return a array of actual Record objects
     #
     def records(amount=nil)
       @records ||= begin
@@ -165,7 +166,7 @@ module SupplejackApi
     end
 
     # Return a array of SetItem objects with the actual Record object attached through
-    # the "record" virtual attribute. 
+    # the "record" virtual attribute.
     #
     # The set items are sorted by position.
     #

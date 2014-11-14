@@ -33,7 +33,7 @@ module SupplejackApi
       def field(type, name, options={}, &block)
           self.fields ||= {}
           options.merge!(type: type)
-
+          
           field = Field.new(name, options, &block)
           self.fields[name] = field
       end

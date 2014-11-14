@@ -7,6 +7,7 @@
 
 Given(/^these concepts:$/) do |table|
   table.hashes.each do |hash|
+    hash["name"] = hash["name"].split(',')
   	concept = FactoryGirl.create(:concept, internal_identifier: "c:#{rand(1000..10000)}")
     fragment = FactoryGirl.build(:concept_fragment, hash)
     concept.fragments << fragment

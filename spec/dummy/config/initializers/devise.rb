@@ -209,4 +209,6 @@ Devise.setup do |config|
   # end
 
   config.router_name = :supplejack_api
+
+  config.secret_key = 'b2510510cac145b70663d56b9489f9e42f61e09bf15608a5bbffd037c44fa53cacf8e8daf1b9ef9b721de902b93cba9ef1fb0395478175288bfd4f12ac5b5aae'
 end

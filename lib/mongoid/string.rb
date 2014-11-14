@@ -5,20 +5,14 @@
 # Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
-module SupplejackApi
-  module Support
-    module Storable
-      extend ActiveSupport::Concern
+# method String#to_a was removed in Mongoid 4
+# reference: https://github.com/mongoid/mongoid/commit/db84c0972bf4f01019cdfc2e9ab647fb814d3224
 
-    	included do
-        include Mongoid::Document
-    		include Mongoid::Timestamps
-        include Mongoid::Attributes::Dynamic
-
-        field :internal_identifier,         type: String
-        field :status,                      type: String
-
-        validates :internal_identifier,     presence: true
+module Mongoid
+  module Extensions
+    module String
+      def to_a
+        [ self ]
       end
     end
   end

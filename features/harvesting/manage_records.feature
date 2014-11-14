@@ -49,15 +49,11 @@ Feature: Manage records
         "source_id": "nz-census-2014",
         "internal_identifier": "abc123",
         "name": "John Smith",
-        "priority": -10,
-        "source_url": "http://nz-census-2014.govt.nz/"
+        "priority": -10
       }
     }
     """
     Then the record with the identifier "abc123" should have status "active"
-    And the record should have attributes:
-      | source_url                     |
-      | http://nz-census-2014.govt.nz/ |
     And the record should have a fragment with the source id "nz-census-2014" and the attributes:
       | name       |
       | John Smith |

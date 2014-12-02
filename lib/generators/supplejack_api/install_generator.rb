@@ -1,8 +1,8 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 require 'rails/generators'
@@ -14,22 +14,6 @@ module SupplejackApi
       class_option :documentation, type: :boolean, default: true, desc: 'Displays documentation after installation'
 
       source_root(File.expand_path('../../../../spec/dummy/', __FILE__))
-
-      def initializers
-        puts "\nInstalling initializers into config/initializers/"
-
-        copy_file 'config/initializers/devise.rb'
-        copy_file 'config/initializers/kaminari_config.rb'
-        copy_file 'config/initializers/quiet_logger.rb'
-        copy_file 'config/initializers/resque.rb'
-        copy_file 'config/initializers/simple_form.rb'
-        copy_file 'config/initializers/simple_form_foundation.rb'
-        copy_file 'config/initializers/state_machine.rb'
-        copy_file 'config/initializers/status_logger.rb'
-        copy_file 'config/initializers/sunspot.rb'
-
-        directory 'config/locales'
-      end
 
       def config_files
         puts "\nInstalling config files into config/"
@@ -47,6 +31,21 @@ module SupplejackApi
         end
       end
 
+      def initializers
+        puts "\nInstalling initializers into config/initializers/"
+
+        copy_file 'config/initializers/devise.rb'
+        copy_file 'config/initializers/kaminari_config.rb'
+        copy_file 'config/initializers/quiet_logger.rb'
+        copy_file 'config/initializers/resque.rb'
+        copy_file 'config/initializers/simple_form.rb'
+        copy_file 'config/initializers/simple_form_foundation.rb'
+        copy_file 'config/initializers/state_machine.rb'
+        copy_file 'config/initializers/sunspot.rb'
+
+        directory 'config/locales'
+      end
+
       def environment_files
         puts "\nInstalling environment files into config/environments/"
 
@@ -56,7 +55,6 @@ module SupplejackApi
 
       def solr_config_files
         puts "\nInstalling Solr config files into solr/"
- 
         directory 'solr'
       end
 

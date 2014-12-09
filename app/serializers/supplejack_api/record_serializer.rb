@@ -17,7 +17,6 @@ module SupplejackApi
 
     # Returns a hash including all desirable record attributes and its associations
     def serializable_hash
-      # debugger
       hash = attributes
 
       groups = (options[:groups] & RecordSchema.groups.keys) || []
@@ -33,7 +32,7 @@ module SupplejackApi
         hash[field] = field_value(field, options)
       end
 
-      # include_individual_fields!(hash)
+      include_individual_fields!(hash)
       remove_restricted_fields!(hash)
 
       hash[:next_page] = object.next_page if object.next_page.present?
@@ -47,14 +46,14 @@ module SupplejackApi
       serializable_hash.to_xml(root: "record")
     end
 
-    # def include_individual_fields!(hash)
-    #   if self.options[:fields].present?
-    #     self.options[:fields].each do |field|
-    #       hash[field] = record.send(field)
-    #     end
-    #   end
-    #   hash
-    # end
+    def include_individual_fields!(hash)
+      if self.options[:fields].present?
+        self.options[:fields].each do |field|
+          hash[field] = record.send(field)
+        end
+      end
+      hash
+    end
 
     def remove_restricted_fields!(hash)
       role_field_restrictions.each do |conditional_field, restrictions|

@@ -57,15 +57,15 @@ module SupplejackApi
       end
     end
 
-    # describe '#include_individual_fields!' do
-    #   before { @hash = {} }
+    describe '#include_individual_fields!' do
+      before { @hash = {} }
 
-    #   it 'merges in the hash the requested fields' do
-    #     s = serializer({ fields: [:age] }, { age: 22 })
-    #     s.include_individual_fields!(@hash)
-    #     @hash.should eq({ age: 22 })
-    #   end
-    # end
+      it 'merges in the hash the requested fields' do
+        s = serializer({ fields: [:age] }, { age: 22 })
+        s.include_individual_fields!(@hash)
+        @hash.should eq({ age: 22 })
+      end
+    end
 
     describe '#remove_restricted_fields!' do
       let(:hash) { {name: 'John Doe', address: "Wellington", email: ["johndoe@example.com"], age: 30} }

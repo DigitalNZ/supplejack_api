@@ -11,6 +11,7 @@ defaults: &defaults
     port: 8983
     path: /solr
     log_level: DEBUG
+    solr_home: solr
 
 development:
   <<: *defaults

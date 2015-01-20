@@ -46,7 +46,7 @@ module SupplejackApi
     end
 
     def to_json(options={})
-      rendered_json = as_json(options).to_json #JSON.generate(as_json(options))# Doing this to avoid using to_json method of activesupport serialiser
+      rendered_json = as_json(options).to_json
       rendered_json = "#{object.jsonp}(#{rendered_json})" if object.jsonp
       rendered_json
     end

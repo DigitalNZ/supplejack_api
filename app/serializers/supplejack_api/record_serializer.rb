@@ -7,6 +7,6 @@
 
 module SupplejackApi
   class RecordSerializer < ActiveModel::Serializer
-    include SupplejackApi::Concerns::RecordSerializer
+    include SupplejackApi::Concerns::RecordSerializable
   end
 end

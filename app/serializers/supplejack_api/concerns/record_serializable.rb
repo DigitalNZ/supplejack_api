@@ -1,4 +1,4 @@
-module SupplejackApi::Concerns::RecordSerializer
+module SupplejackApi::Concerns::RecordSerializable
   extend ActiveSupport::Concern
 
   included do

@@ -41,8 +41,6 @@ module SupplejackApi::Concerns::RecordSerializable
     @role ||= options[:scope].role.to_sym rescue nil
   end
 
-  private
-
   def role_field_restrictions
     restrictions = []
 

@@ -29,6 +29,8 @@ module SupplejackApi
       end
       datetime :syndication_date,                         search_as: [:filter]
       string :text, solr_name: :text
+      string :display_date, date_format: "%y/%d/%m"
+      string :dnz_type, default_value: "Unknown"
 
       mongo_index :year, fields: [{year: 1}], index_options: [{background:true}]
       mongo_index :title_is_natlib_record, fields: [{title: 1, is_natlib_record: 1}]
@@ -83,6 +85,16 @@ module SupplejackApi
         ExampleSchema.fields[:title].search_as.should eq [:fulltext]
         ExampleSchema.fields[:title].namespace.should eq :dc
         ExampleSchema.fields[:title].namespace_field.should eq :creator
+      end
+
+      it "deiscribe dnz_type" do
+        ExampleSchema.fields[:dnz_type].name.should eq :dnz_type
+        ExampleSchema.fields[:dnz_type].default_value.should eq "Unknown"
+      end
+
+      it "deiscribe display_date" do
+        ExampleSchema.fields[:display_date].name.should eq :display_date
+        ExampleSchema.fields[:display_date].date_format.should eq "%y/%d/%m"
       end
 
       it 'describes display_collection' do

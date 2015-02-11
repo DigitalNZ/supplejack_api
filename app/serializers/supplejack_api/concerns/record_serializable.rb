@@ -34,6 +34,10 @@ module SupplejackApi::Concerns::RecordSerializable
       value = object.public_send(field)
     end
 
+    value = RecordSchema.fields[field].try(:default_value) if value.nil? rescue nil
+
+    value = format_date(value, RecordSchema.fields[field].try(:date_format)) if RecordSchema.fields[field].try(:date_format)
+
     value
   end
 
@@ -42,6 +46,10 @@ module SupplejackApi::Concerns::RecordSerializable
   end
 
   private
+
+  def format_date(date, format)
+    date.strftime(format) rescue date
+  end
 
   def role_field_restrictions
     restrictions = []

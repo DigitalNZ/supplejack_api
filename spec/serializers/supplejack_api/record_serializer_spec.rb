@@ -221,6 +221,15 @@ module SupplejackApi
   		end
     end
 
+    describe "#format_date" do
+      let(:s) { serializer({groups: [:default]}) }
+
+      it "returns formated date for a date string" do
+        date_time = Time.now
+        expect(s.send(:format_date, date_time, "%y/%d/%m")).to eq (date_time.strftime("%y/%d/%m"))
+      end
+    end
+
     describe "#field_value" do
       let(:s) { serializer({groups: [:default]}) }
       let(:record) { double(:record, name: 'John Doe', address: nil, email: ['johndoe@example.com', 'jdoe@test.com'], children: ['Sara', 'Bob']) }

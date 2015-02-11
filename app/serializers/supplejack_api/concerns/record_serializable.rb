@@ -45,8 +45,6 @@ module SupplejackApi::Concerns::RecordSerializable
     @role ||= options[:scope].role.to_sym rescue nil
   end
 
-  private
-
   def format_date(date, format)
     date.strftime(format) rescue date
   end

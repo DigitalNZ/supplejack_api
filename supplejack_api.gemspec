@@ -41,7 +41,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'mimemagic', '~> 0.1.8'
   s.add_dependency 'dalli', '~> 1.1.2'
   s.add_dependency 'simple_form', '~> 3.0.2'
-  s.add_dependency 'lazy_high_charts', '~> 1.3.2'
+  s.add_dependency 'lazy_high_charts', '~> 1.5.4'
   s.add_dependency 'figaro', '~> 0.7.0'
 
   s.add_dependency 'jquery-rails', '~> 3.1.0'

@@ -31,3 +31,4 @@ gem 'simplecov', require: false
 gem 'debugger'
 gem 'pry-rails'
 gem 'xml_spec', git: "https://github.com/boost/xml_spec", require: false # This is a gem created by fedegl to test the XML responses, its part of the Boost github organization account
+gem 'simplecov'

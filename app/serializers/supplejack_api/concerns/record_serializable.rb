@@ -35,7 +35,6 @@ module SupplejackApi::Concerns::RecordSerializable
     end
 
     value = RecordSchema.fields[field].try(:default_value) if value.nil? rescue nil
-
     value = format_date(value, RecordSchema.fields[field].try(:date_format)) if RecordSchema.fields[field].try(:date_format)
 
     value

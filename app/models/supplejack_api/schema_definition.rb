@@ -22,7 +22,7 @@ module SupplejackApi
     end
 
     module ClassMethods
-      [:string, :integer, :datetime, :boolean].each do |type|
+      [:string, :integer, :datetime, :boolean, :latlon].each do |type|
         define_method(type) do |*args, &block|
           field(type, *args, &block)
         end

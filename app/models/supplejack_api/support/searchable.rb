@@ -38,7 +38,8 @@ module SupplejackApi
         string: :string, 
         integer: :integer, 
         datetime: :time, 
-        boolean: :boolean
+        boolean: :boolean,
+        latlon: :latlon
       }
 
       module ClassMethods

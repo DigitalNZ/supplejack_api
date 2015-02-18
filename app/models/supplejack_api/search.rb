@@ -84,6 +84,11 @@ module SupplejackApi
             without(name, self.to_proper_value(name, value))
           end
         end
+
+        if options[:geo_bbox]
+          coords = options[:geo_bbox].split(',').map(&:to_f)
+          with(:lat_lng).in_bounding_box([coords[2], coords[1]], [coords[0], coords[3]])
+        end        
   
         adjust_solr_params do |params|
           if options[:solr_query].present?

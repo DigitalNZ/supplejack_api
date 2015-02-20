@@ -32,6 +32,16 @@ module SupplejackApi
       string :display_date, date_format: "%y/%d/%m"
       string :dnz_type, default_value: "Unknown"
 
+      latlon(:lat_lng) do
+        search_as [:filter]
+        multi_value true
+        search_value do |record|
+          record.locations.keep_if do |l|
+            (l.lat.present? and l.lng.present?) ? Sunspot::Util::Coordinates.new(l.lat, l.lng) : Sunspot::Util::Coordinates.new(0, 0)
+          end
+        end
+      end
+
       mongo_index :year, fields: [{year: 1}], index_options: [{background:true}]
       mongo_index :title_is_natlib_record, fields: [{title: 1, is_natlib_record: 1}]
 
@@ -134,6 +144,13 @@ module SupplejackApi
         ExampleSchema.fields[:text].type.should eq :string
         ExampleSchema.fields[:text].solr_name.should eq :text
       end
+
+      it "describes lat_lng" do
+        ExampleSchema.fields[:lat_lng].name.should eq :lat_lng
+        ExampleSchema.fields[:lat_lng].type.should eq :latlon
+        ExampleSchema.fields[:lat_lng].search_as.should eq [:filter]
+        ExampleSchema.fields[:lat_lng].multi_value.should be_truthy
+      end      
 
       context "namespace field" do
         it 'returns the namespace field' do

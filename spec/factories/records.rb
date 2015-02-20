@@ -15,7 +15,7 @@ module SupplejackApi
   
       factory :record_with_fragment do
         fragments            { [FactoryGirl.build(:record_fragment)] }
-      end
+      end    
     end
   
     factory :record_fragment, class: SupplejackApi::ApiRecord::RecordFragment do
@@ -29,7 +29,7 @@ module SupplejackApi
       age             30
       birth_date      DateTime.now
       nz_citizen	    true
-    end
+    end  
   end
 
 end

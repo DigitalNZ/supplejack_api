@@ -240,6 +240,16 @@ module SupplejackApi
         @session.should have_search_params(:without, :address, nil)
       end
 
+      # it 'should return results with locations with in the co ordinate range' do
+      #   @search.options[:geo_bbox] = "-28.729130483430154,159.169921875,-52.025458603488126,-169.716796875"
+      #   @search.execute_solr_search
+        # @session.should have_search_params(:without, Proc.new {
+        #   without(:email, 'jd@example.com')
+        #   without(:email, 'johnd@test.com')
+        #   without(:name, 'James Cook')
+        # })
+      # end      
+
       it 'should sort by the specified field' do
         @search.options[:sort] = 'name'
         @search.execute_solr_search

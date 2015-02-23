@@ -9,4 +9,5 @@ spec/dummy/log/
 spec/dummy/tmp/
 spec/dummy/.sass-cache
 spec/dummy/.ruby-version
-spec/dummy/solr/
+spec/dummy/solr/pids
+spec/dummy/solr/data

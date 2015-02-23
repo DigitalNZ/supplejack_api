@@ -1,7 +1,7 @@
 {
   "RSpec": {
     "coverage": {
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/support/devise.rb": [
+      "/code/boost/supplejack_api/spec/support/devise.rb": [
         null,
         null,
         null,
@@ -13,7 +13,7 @@
         1,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/controllers/supplejack_api/admin/base_controller.rb": [
+      "/code/boost/supplejack_api/app/controllers/supplejack_api/admin/base_controller.rb": [
         null,
         null,
         null,
@@ -39,7 +39,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/controllers/supplejack_api/admin/site_activities_controller_spec.rb": [
+      "/code/boost/supplejack_api/spec/controllers/supplejack_api/admin/site_activities_controller_spec.rb": [
         null,
         null,
         null,
@@ -84,7 +84,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/controllers/supplejack_api/admin/site_activities_controller.rb": [
+      "/code/boost/supplejack_api/app/controllers/supplejack_api/admin/site_activities_controller.rb": [
         null,
         null,
         null,
@@ -106,7 +106,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/controllers/supplejack_api/admin/users_controller_spec.rb": [
+      "/code/boost/supplejack_api/spec/controllers/supplejack_api/admin/users_controller_spec.rb": [
         null,
         null,
         null,
@@ -188,7 +188,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/controllers/supplejack_api/admin/users_controller.rb": [
+      "/code/boost/supplejack_api/app/controllers/supplejack_api/admin/users_controller.rb": [
         null,
         null,
         null,
@@ -241,7 +241,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/controllers/supplejack_api/application_controller_spec.rb": [
+      "/code/boost/supplejack_api/spec/controllers/supplejack_api/application_controller_spec.rb": [
         null,
         null,
         null,
@@ -374,7 +374,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/controllers/supplejack_api/concepts_controller_spec.rb": [
+      "/code/boost/supplejack_api/spec/controllers/supplejack_api/concepts_controller_spec.rb": [
         null,
         null,
         null,
@@ -459,7 +459,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/controllers/supplejack_api/concepts_controller.rb": [
+      "/code/boost/supplejack_api/app/controllers/supplejack_api/concepts_controller.rb": [
         null,
         null,
         null,
@@ -513,7 +513,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/controllers/supplejack_api/harvester/concepts_controller_spec.rb": [
+      "/code/boost/supplejack_api/spec/controllers/supplejack_api/harvester/concepts_controller_spec.rb": [
         null,
         null,
         null,
@@ -572,7 +572,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/controllers/supplejack_api/harvester/concepts_controller.rb": [
+      "/code/boost/supplejack_api/app/controllers/supplejack_api/harvester/concepts_controller.rb": [
         null,
         null,
         null,
@@ -614,7 +614,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/controllers/supplejack_api/harvester/records_controller_spec.rb": [
+      "/code/boost/supplejack_api/spec/controllers/supplejack_api/harvester/records_controller_spec.rb": [
         null,
         null,
         null,
@@ -754,7 +754,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/controllers/supplejack_api/harvester/records_controller.rb": [
+      "/code/boost/supplejack_api/app/controllers/supplejack_api/harvester/records_controller.rb": [
         null,
         null,
         null,
@@ -802,11 +802,11 @@
         3,
         null,
         3,
+        null,
+        null,
+        null,
+        null,
         2,
-        null,
-        null,
-        null,
-        null,
         null,
         1,
         null,
@@ -816,7 +816,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/controllers/supplejack_api/partners_controller_spec.rb": [
+      "/code/boost/supplejack_api/spec/controllers/supplejack_api/partners_controller_spec.rb": [
         null,
         null,
         null,
@@ -895,7 +895,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/controllers/supplejack_api/partners_controller.rb": [
+      "/code/boost/supplejack_api/app/controllers/supplejack_api/partners_controller.rb": [
         null,
         null,
         null,
@@ -935,7 +935,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/controllers/supplejack_api/records_controller_spec.rb": [
+      "/code/boost/supplejack_api/spec/controllers/supplejack_api/records_controller_spec.rb": [
         null,
         null,
         null,
@@ -1050,7 +1050,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/controllers/supplejack_api/records_controller.rb": [
+      "/code/boost/supplejack_api/app/controllers/supplejack_api/records_controller.rb": [
         null,
         null,
         null,
@@ -1103,7 +1103,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/controllers/supplejack_api/set_items_controller_spec.rb": [
+      "/code/boost/supplejack_api/spec/controllers/supplejack_api/set_items_controller_spec.rb": [
         null,
         null,
         null,
@@ -1165,7 +1165,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/controllers/supplejack_api/set_items_controller.rb": [
+      "/code/boost/supplejack_api/app/controllers/supplejack_api/set_items_controller.rb": [
         null,
         null,
         null,
@@ -1199,7 +1199,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/controllers/supplejack_api/sources_controller_spec.rb": [
+      "/code/boost/supplejack_api/spec/controllers/supplejack_api/sources_controller_spec.rb": [
         null,
         null,
         null,
@@ -1362,7 +1362,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/controllers/supplejack_api/sources_controller.rb": [
+      "/code/boost/supplejack_api/app/controllers/supplejack_api/sources_controller.rb": [
         null,
         null,
         null,
@@ -1431,7 +1431,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/controllers/supplejack_api/status_controller_spec.rb": [
+      "/code/boost/supplejack_api/spec/controllers/supplejack_api/status_controller_spec.rb": [
         null,
         null,
         null,
@@ -1553,7 +1553,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/controllers/supplejack_api/status_controller.rb": [
+      "/code/boost/supplejack_api/app/controllers/supplejack_api/status_controller.rb": [
         null,
         null,
         null,
@@ -1625,7 +1625,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/controllers/supplejack_api/user_sets_controller_spec.rb": [
+      "/code/boost/supplejack_api/spec/controllers/supplejack_api/user_sets_controller_spec.rb": [
         null,
         null,
         null,
@@ -1852,7 +1852,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/controllers/supplejack_api/user_sets_controller.rb": [
+      "/code/boost/supplejack_api/app/controllers/supplejack_api/user_sets_controller.rb": [
         null,
         null,
         null,
@@ -1947,7 +1947,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/controllers/supplejack_api/users_controller_spec.rb": [
+      "/code/boost/supplejack_api/spec/controllers/supplejack_api/users_controller_spec.rb": [
         null,
         null,
         null,
@@ -2010,7 +2010,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/controllers/supplejack_api/users_controller.rb": [
+      "/code/boost/supplejack_api/app/controllers/supplejack_api/users_controller.rb": [
         null,
         null,
         null,
@@ -2054,7 +2054,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/helpers/application_helper_spec.rb": [
+      "/code/boost/supplejack_api/spec/helpers/application_helper_spec.rb": [
         1,
         null,
         1,
@@ -2092,7 +2092,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/models/concept_spec.rb": [
+      "/code/boost/supplejack_api/spec/models/concept_spec.rb": [
         null,
         null,
         null,
@@ -2186,7 +2186,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/models/fragment_spec.rb": [
+      "/code/boost/supplejack_api/spec/models/fragment_spec.rb": [
         null,
         null,
         null,
@@ -2203,7 +2203,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/models/supplejack_api/api_concept/concept_fragment_spec.rb": [
+      "/code/boost/supplejack_api/spec/models/supplejack_api/api_concept/concept_fragment_spec.rb": [
         null,
         null,
         null,
@@ -2398,7 +2398,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/models/supplejack_api/api_record/record_fragment_spec.rb": [
+      "/code/boost/supplejack_api/spec/models/supplejack_api/api_record/record_fragment_spec.rb": [
         null,
         null,
         null,
@@ -2593,10 +2593,10 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/models/supplejack_api/concept_spec.rb": [
+      "/code/boost/supplejack_api/spec/models/supplejack_api/concept_spec.rb": [
 
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/models/supplejack_api/partner_spec.rb": [
+      "/code/boost/supplejack_api/spec/models/supplejack_api/partner_spec.rb": [
         null,
         null,
         null,
@@ -2618,7 +2618,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/models/supplejack_api/record_search_spec.rb": [
+      "/code/boost/supplejack_api/spec/models/supplejack_api/record_search_spec.rb": [
         null,
         null,
         null,
@@ -3050,7 +3050,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/models/supplejack_api/record_search.rb": [
+      "/code/boost/supplejack_api/app/models/supplejack_api/record_search.rb": [
         null,
         null,
         null,
@@ -3064,7 +3064,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/models/supplejack_api/search.rb": [
+      "/code/boost/supplejack_api/app/models/supplejack_api/search.rb": [
         null,
         null,
         null,
@@ -3477,7 +3477,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/models/supplejack_api/record_spec.rb": [
+      "/code/boost/supplejack_api/spec/models/supplejack_api/record_spec.rb": [
         null,
         null,
         null,
@@ -3766,7 +3766,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/models/supplejack_api/schema_definition_spec.rb": [
+      "/code/boost/supplejack_api/spec/models/supplejack_api/schema_definition_spec.rb": [
         null,
         null,
         null,
@@ -3815,6 +3815,30 @@
         1,
         null,
         1,
+        null,
+        null,
+        null,
+        1,
+        null,
+        null,
+        1,
+        1,
+        null,
+        null,
+        1,
+        null,
+        null,
+        1,
+        1,
+        null,
+        null,
+        1,
+        null,
+        null,
+        1,
+        1,
+        null,
+        1,
         1,
         null,
         null,
@@ -3822,35 +3846,11 @@
         null,
         null,
         1,
-        1,
-        1,
         null,
         null,
         null,
         null,
         1,
-        1,
-        1,
-        null,
-        null,
-        null,
-        null,
-        1,
-        1,
-        null,
-        1,
-        1,
-        1,
-        null,
-        null,
-        null,
-        null,
-        null,
-        1,
-        null,
-        null,
-        null,
-        null,
         null,
         null,
         null,
@@ -4017,7 +4017,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/models/supplejack_api/search_spec.rb": [
+      "/code/boost/supplejack_api/spec/models/supplejack_api/search_spec.rb": [
         null,
         null,
         null,
@@ -4262,7 +4262,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/models/supplejack_api/set_item_spec.rb": [
+      "/code/boost/supplejack_api/spec/models/supplejack_api/set_item_spec.rb": [
         null,
         null,
         null,
@@ -4347,7 +4347,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/models/supplejack_api/source_spec.rb": [
+      "/code/boost/supplejack_api/spec/models/supplejack_api/source_spec.rb": [
         null,
         null,
         null,
@@ -4371,7 +4371,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/models/supplejack_api/support/fragment_helpers_spec.rb": [
+      "/code/boost/supplejack_api/spec/models/supplejack_api/support/fragment_helpers_spec.rb": [
         null,
         null,
         null,
@@ -4589,7 +4589,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/models/supplejack_api/support/harvestable_spec.rb": [
+      "/code/boost/supplejack_api/spec/models/supplejack_api/support/harvestable_spec.rb": [
         null,
         null,
         null,
@@ -4768,7 +4768,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/models/supplejack_api/support/searchable_spec.rb": [
+      "/code/boost/supplejack_api/spec/models/supplejack_api/support/searchable_spec.rb": [
         null,
         null,
         null,
@@ -4855,7 +4855,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/models/supplejack_api/support/storable_spec.rb": [
+      "/code/boost/supplejack_api/spec/models/supplejack_api/support/storable_spec.rb": [
         null,
         null,
         null,
@@ -4882,7 +4882,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/models/supplejack_api/user_activity_spec.rb": [
+      "/code/boost/supplejack_api/spec/models/supplejack_api/user_activity_spec.rb": [
         null,
         null,
         null,
@@ -4972,7 +4972,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/models/supplejack_api/user_set_spec.rb": [
+      "/code/boost/supplejack_api/spec/models/supplejack_api/user_set_spec.rb": [
         null,
         null,
         null,
@@ -5421,7 +5421,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/models/supplejack_api/user_spec.rb": [
+      "/code/boost/supplejack_api/spec/models/supplejack_api/user_spec.rb": [
         null,
         null,
         null,
@@ -5769,7 +5769,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/routing/concepts_routing_spec.rb": [
+      "/code/boost/supplejack_api/spec/routing/concepts_routing_spec.rb": [
         null,
         null,
         null,
@@ -5793,7 +5793,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/routing/harvester_constraint_spec.rb": [
+      "/code/boost/supplejack_api/spec/routing/harvester_constraint_spec.rb": [
         null,
         null,
         null,
@@ -5861,7 +5861,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/routing/harvester_routing_spec.rb": [
+      "/code/boost/supplejack_api/spec/routing/harvester_routing_spec.rb": [
         null,
         null,
         null,
@@ -5914,7 +5914,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/routing/partner_routing_spec.rb": [
+      "/code/boost/supplejack_api/spec/routing/partner_routing_spec.rb": [
         null,
         null,
         null,
@@ -5950,7 +5950,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/routing/records_routing_spec.rb": [
+      "/code/boost/supplejack_api/spec/routing/records_routing_spec.rb": [
         null,
         null,
         null,
@@ -5974,7 +5974,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/routing/sets_routing_spec.rb": [
+      "/code/boost/supplejack_api/spec/routing/sets_routing_spec.rb": [
         null,
         null,
         null,
@@ -6020,7 +6020,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/routing/source_routing_spec.rb": [
+      "/code/boost/supplejack_api/spec/routing/source_routing_spec.rb": [
         null,
         null,
         null,
@@ -6060,7 +6060,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/routing/users_routing_spec.rb": [
+      "/code/boost/supplejack_api/spec/routing/users_routing_spec.rb": [
         null,
         null,
         null,
@@ -6080,7 +6080,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/serializers/supplejack_api/application_serializer_spec.rb": [
+      "/code/boost/supplejack_api/spec/serializers/supplejack_api/application_serializer_spec.rb": [
         null,
         null,
         null,
@@ -6096,7 +6096,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/serializers/supplejack_api/application_serializer.rb": [
+      "/code/boost/supplejack_api/app/serializers/supplejack_api/application_serializer.rb": [
         null,
         null,
         null,
@@ -6110,7 +6110,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/serializers/supplejack_api/concept_search_serializer_spec.rb": [
+      "/code/boost/supplejack_api/spec/serializers/supplejack_api/concept_search_serializer_spec.rb": [
         null,
         null,
         null,
@@ -6146,7 +6146,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/serializers/supplejack_api/concept_search_serializer.rb": [
+      "/code/boost/supplejack_api/app/serializers/supplejack_api/concept_search_serializer.rb": [
         null,
         null,
         null,
@@ -6167,7 +6167,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/serializers/supplejack_api/search_serializer.rb": [
+      "/code/boost/supplejack_api/app/serializers/supplejack_api/search_serializer.rb": [
         null,
         null,
         null,
@@ -6244,7 +6244,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/serializers/supplejack_api/concept_serializer_spec.rb": [
+      "/code/boost/supplejack_api/spec/serializers/supplejack_api/concept_serializer_spec.rb": [
         null,
         null,
         null,
@@ -6291,7 +6291,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/serializers/supplejack_api/concept_serializer.rb": [
+      "/code/boost/supplejack_api/app/serializers/supplejack_api/concept_serializer.rb": [
         null,
         null,
         null,
@@ -6381,7 +6381,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/serializers/supplejack_api/record_search_serializer_spec.rb": [
+      "/code/boost/supplejack_api/spec/serializers/supplejack_api/record_search_serializer_spec.rb": [
         null,
         null,
         null,
@@ -6417,7 +6417,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/serializers/supplejack_api/record_search_serializer.rb": [
+      "/code/boost/supplejack_api/app/serializers/supplejack_api/record_search_serializer.rb": [
         null,
         null,
         null,
@@ -6438,7 +6438,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/serializers/supplejack_api/record_serializer_spec.rb": [
+      "/code/boost/supplejack_api/spec/serializers/supplejack_api/record_serializer_spec.rb": [
         null,
         null,
         null,
@@ -6711,7 +6711,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/serializers/supplejack_api/record_serializer.rb": [
+      "/code/boost/supplejack_api/app/serializers/supplejack_api/record_serializer.rb": [
         null,
         null,
         null,
@@ -6725,7 +6725,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/serializers/supplejack_api/concerns/record_serializable.rb": [
+      "/code/boost/supplejack_api/app/serializers/supplejack_api/concerns/record_serializable.rb": [
         1,
         1,
         null,
@@ -6842,7 +6842,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/serializers/supplejack_api/search_serializer_spec.rb": [
+      "/code/boost/supplejack_api/spec/serializers/supplejack_api/search_serializer_spec.rb": [
         null,
         null,
         null,
@@ -6934,7 +6934,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/serializers/supplejack_api/user_serializer_spec.rb": [
+      "/code/boost/supplejack_api/spec/serializers/supplejack_api/user_serializer_spec.rb": [
         null,
         null,
         null,
@@ -6958,7 +6958,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/serializers/supplejack_api/user_serializer.rb": [
+      "/code/boost/supplejack_api/app/serializers/supplejack_api/user_serializer.rb": [
         null,
         null,
         null,
@@ -6974,7 +6974,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/serializers/supplejack_api/user_set_serializer_spec.rb": [
+      "/code/boost/supplejack_api/spec/serializers/supplejack_api/user_set_serializer_spec.rb": [
         null,
         null,
         null,
@@ -7071,7 +7071,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/serializers/supplejack_api/user_set_serializer.rb": [
+      "/code/boost/supplejack_api/app/serializers/supplejack_api/user_set_serializer.rb": [
         null,
         null,
         null,
@@ -7149,7 +7149,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/workers/supplejack_api/flush_old_records_worker_spec.rb": [
+      "/code/boost/supplejack_api/spec/workers/supplejack_api/flush_old_records_worker_spec.rb": [
         null,
         null,
         null,
@@ -7171,7 +7171,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/workers/supplejack_api/flush_old_records_worker.rb": [
+      "/code/boost/supplejack_api/app/workers/supplejack_api/flush_old_records_worker.rb": [
         null,
         null,
         null,
@@ -7190,7 +7190,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/workers/supplejack_api/index_worker_spec.rb": [
+      "/code/boost/supplejack_api/spec/workers/supplejack_api/index_worker_spec.rb": [
         null,
         null,
         null,
@@ -7244,7 +7244,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/workers/supplejack_api/index_worker.rb": [
+      "/code/boost/supplejack_api/app/workers/supplejack_api/index_worker.rb": [
         null,
         null,
         null,
@@ -7328,7 +7328,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/spec/workers/supplejack_api/source_index_worker_spec.rb": [
+      "/code/boost/supplejack_api/spec/workers/supplejack_api/source_index_worker_spec.rb": [
         null,
         null,
         null,
@@ -7395,7 +7395,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/workers/supplejack_api/index_source_worker.rb": [
+      "/code/boost/supplejack_api/app/workers/supplejack_api/index_source_worker.rb": [
         null,
         null,
         null,
@@ -7436,37 +7436,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/models/supplejack_api/preview_record.rb": [
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        1,
-        1,
-        null,
-        null,
-        1,
-        1,
-        1,
-        null,
-        1,
-        null,
-        1,
-        1,
-        null,
-        1,
-        1,
-        null,
-        1,
-        0,
-        null,
-        null,
-        null
-      ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/models/supplejack_api/site_activity.rb": [
+      "/code/boost/supplejack_api/app/models/supplejack_api/support/validation_logger.rb": [
         null,
         null,
         null,
@@ -7478,10 +7448,6 @@
         1,
         1,
         1,
-        null,
-        1,
-        null,
-        1,
         1,
         1,
         1,
@@ -7489,63 +7455,12 @@
         1,
         null,
         1,
-        null,
-        1,
-        null,
-        1,
-        0,
-        0,
-        null,
-        0,
-        null,
-        0,
-        0,
-        0,
-        null,
-        null,
-        null,
-        null,
-        0,
-        null,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        null,
-        null,
-        1,
-        0,
-        null,
-        null,
-        1,
-        0,
         null,
         null,
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/models/supplejack_api/concept_search.rb": [
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        null,
-        1,
-        1,
-        null,
-        1,
-        0,
-        0,
-        null,
-        null,
-        null,
-        null
-      ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/models/supplejack_api/support/status_logger.rb": [
+      "/code/boost/supplejack_api/app/models/supplejack_api/support/status_logger.rb": [
         null,
         null,
         null,
@@ -7570,7 +7485,67 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/controllers/supplejack_api/harvester/fragments_controller.rb": [
+      "/code/boost/supplejack_api/app/models/supplejack_api/site_activity.rb": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        1,
+        1,
+        1,
+        1,
+        null,
+        1,
+        null,
+        1,
+        1,
+        1,
+        1,
+        1,
+        1,
+        null,
+        1,
+        null,
+        1,
+        null,
+        1,
+        0,
+        0,
+        null,
+        0,
+        null,
+        0,
+        0,
+        0,
+        null,
+        null,
+        null,
+        null,
+        0,
+        null,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        null,
+        null,
+        1,
+        0,
+        null,
+        null,
+        1,
+        0,
+        null,
+        null,
+        null,
+        null
+      ],
+      "/code/boost/supplejack_api/app/controllers/supplejack_api/harvester/fragments_controller.rb": [
         null,
         null,
         null,
@@ -7601,7 +7576,7 @@
         null,
         null
       ],
-      "/Users/edwinrozario/Git/DNZ/supplejack_api/app/models/supplejack_api/support/validation_logger.rb": [
+      "/code/boost/supplejack_api/app/models/supplejack_api/concept_search.rb": [
         null,
         null,
         null,
@@ -7611,21 +7586,46 @@
         null,
         1,
         1,
+        null,
+        1,
+        0,
+        0,
+        null,
+        null,
+        null,
+        null
+      ],
+      "/code/boost/supplejack_api/app/models/supplejack_api/preview_record.rb": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
         1,
         1,
-        1,
-        1,
+        null,
+        null,
         1,
         1,
         1,
         null,
         1,
         null,
+        1,
+        1,
+        null,
+        1,
+        1,
+        null,
+        1,
+        0,
         null,
         null,
         null
       ]
     },
-    "timestamp": 1424397160
+    "timestamp": 1424664759
   }
 }

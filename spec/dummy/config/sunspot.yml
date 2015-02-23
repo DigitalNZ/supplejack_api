@@ -5,34 +5,34 @@
 # Supplejack was created by DigitalNZ at the National Library of NZ and 
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
-defaults: &defaults
-  solr: &solr
+development:
+  solr:
+    hostname: localhost
+    port: 8982
+    path: /solr
+    log_level: INFO
+
+test:
+  solr:
     hostname: localhost
     port: 8983
     path: /solr
     log_level: DEBUG
     solr_home: solr
 
-development:
-  <<: *defaults
-    
-test:
-  <<: *defaults
-
-# Uncomment this to configure staging environment
-# staging:
-#   <<: *defaults
+# production:
 #   solr:
+#     hostname: localhost
+#     port: 8983
+#     log_level: WARNING
+#     # read_timeout: 2solr
+#     # open_timeout: 0.5
+
+# staging:
+#   solr:
+#     hostname: localhost
 #     port: 8080
 #     path: '/solr4'
 #     log_level: WARNING 
 #     pid_dir: '/var/run/tomcat'
-#     auto_commit_after_request: false
-
-# Uncomment this to configure production environment
-# production:
-#   <<: *defaults
-#   solr:
-#     port: 8180
-#     path: /solr4
 #     auto_commit_after_request: false

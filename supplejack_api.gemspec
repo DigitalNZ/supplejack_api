@@ -59,7 +59,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'mongoid-tree', '~> 1.0.0'
 
   s.add_dependency 'resque', '~> 1.22.0'
-  s.add_dependency 'resque-scheduler', '~> 2.0.0'
+  s.add_dependency 'resque-scheduler', '= 2.0.0'
   s.add_dependency 'resque-pool', '~> 0.3.0'
 
   # Adding sunspot_solr so app has access to sunspot:solr rake tasks
@@ -68,6 +68,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'json-ld', '~> 1.1.4'
 
   s.add_dependency 'activeresource'
+  s.add_dependency 'rufus-scheduler', '= 2.0.17'
 
   ## Development dependancies
 

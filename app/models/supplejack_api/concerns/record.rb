@@ -37,7 +37,7 @@ module SupplejackApi::Concerns::Record
 
     def find_next_and_previous_records(scope, options={})
       if options.try(:any?)
-        search = RecordSearch.new(options)
+        search = ::SupplejackApi::RecordSearch.new(options)
         search.scope = scope
 
         return nil unless search.valid?
@@ -52,7 +52,7 @@ module SupplejackApi::Concerns::Record
         if record_index
           if record_index == 0
             unless search.page == 1
-              previous_page_search = RecordSearch.new(options.merge(:page => search.page - 1))
+              previous_page_search = ::SupplejackApi::RecordSearch.new(options.merge(:page => search.page - 1))
               previous_primary_key = previous_page_search.hits[-1].try(:primary_key)
               self.previous_page = search.page - 1
             end
@@ -61,12 +61,12 @@ module SupplejackApi::Concerns::Record
           end
 
           if previous_primary_key.present?
-            self.previous_record = Record.find(previous_primary_key).try(:record_id) rescue nil
+            self.previous_record = SupplejackApi::Record.find(previous_primary_key).try(:record_id) rescue nil
           end
 
           if record_index == search.hits.size-1
             unless search.page >= total_pages
-              next_page_search = RecordSearch.new(options.merge(:page => search.page + 1))
+              next_page_search = ::SupplejackApi::RecordSearch.new(options.merge(:page => search.page + 1))
               next_primary_key = next_page_search.hits[0].try(:primary_key)
               self.next_page = search.page + 1
             end
@@ -75,7 +75,7 @@ module SupplejackApi::Concerns::Record
           end
 
           if next_primary_key.present?
-            self.next_record = Record.find(next_primary_key).try(:record_id) rescue nil
+            self.next_record = ::SupplejackApi::Record.find(next_primary_key).try(:record_id) rescue nil
           end
         end
       end

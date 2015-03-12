@@ -73,7 +73,7 @@ module SupplejackApi
     end
   
     def self.find_all(klass, ids)
-      klass = "SupplejackApi::#{klass}"
+      klass = "SupplejackApi::#{klass}" if klass.deconstantize.blank?
       object_ids = *ids
       klass.constantize.where(:id.in => object_ids)
     end

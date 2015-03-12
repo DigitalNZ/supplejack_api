@@ -11,7 +11,7 @@ module SupplejackApi
     respond_to :json, :xml, :rss
 
     def index
-      @search = RecordSearch.new(params)
+      @search = SupplejackApi::RecordSearch.new(params)
       @search.request_url = request.original_url
       @search.scope = current_user
       
@@ -30,7 +30,7 @@ module SupplejackApi
 
     def show
       begin
-        @record = Record.custom_find(params[:id], current_user, params[:search])
+        @record = SupplejackApi::Record.custom_find(params[:id], current_user, params[:search])
         respond_with @record, serializer: RecordSerializer
       rescue Mongoid::Errors::DocumentNotFound
         render request.format.to_sym => { errors: "Record with ID #{params[:id]} was not found" }, status: :not_found 
@@ -42,7 +42,7 @@ module SupplejackApi
     #
     def default_serializer_options
       default_options = {}
-      @search ||= RecordSearch.new(params)
+      @search ||= SupplejackApi::RecordSearch.new(params)
       default_options.merge!({:fields => @search.field_list}) if @search.field_list.present?
       default_options.merge!({:groups => @search.group_list}) if @search.group_list.present?
       default_options

@@ -272,16 +272,5 @@ module SupplejackApi
       end
     end
 
-    describe '#reindex' do
-      before(:each) do
-        @record = FactoryGirl.build(:record)
-      end
-
-      it 'reindex record after save' do
-        @record.should_receive(:reindex)
-        @record.save
-      end
-    end
-
   end
 end

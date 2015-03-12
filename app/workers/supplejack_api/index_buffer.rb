@@ -26,13 +26,13 @@ module SupplejackApi
     end
 
     def records_to_index
-      @records_to_index ||= Record.where(:id.in => self.pop_record_ids(:index)).to_a
+      @records_to_index ||= SupplejackApi::Record.where(:id.in => self.pop_record_ids(:index)).to_a
       @records_to_index.keep_if {|r| r.should_index? }
       @records_to_index
     end
 
     def records_to_remove
-      @records_to_remove ||= Record.where(:id.in => self.pop_record_ids(:remove)).to_a
+      @records_to_remove ||= SupplejackApi::Record.where(:id.in => self.pop_record_ids(:remove)).to_a
       @records_to_remove.delete_if {|r| r.should_index?}
       @records_to_remove
     end

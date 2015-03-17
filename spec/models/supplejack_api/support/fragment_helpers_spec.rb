@@ -14,14 +14,14 @@ module SupplejackApi
 
       describe '#before_save' do
         it 'should call merge_fragments' do
-          record.should_receive(:merge_fragments)
+          expect(record).to receive(:merge_fragments)
           record.save
         end
       end
 
       describe "valiations" do
         it "should be valid" do
-          record.should be_valid
+          expect(record).to be_valid
         end
 
         context "duplicate source_ids" do
@@ -30,14 +30,14 @@ module SupplejackApi
           end
 
           it "should not be valid" do
-            record.should_not be_valid
+            expect(record).to_not be_valid
           end
         end
       end
 
       describe "#source_ids" do
         it "should return an array with a single source_id" do
-          record.source_ids.should eq ['source_name']
+          expect(record.source_ids).to eq ['source_name']
         end
 
         context "multiple fragments" do
@@ -46,14 +46,14 @@ module SupplejackApi
           end
 
           it "should return an array with the source_ids" do
-            record.source_ids.should eq ['source_name', "another_source"]
+            expect(record.source_ids).to eq ['source_name', "another_source"]
           end
         end
       end
 
       describe "#duplicate_source_ids?" do
         it "should return false" do
-          record.duplicate_source_ids?.should be_falsey
+          expect(record.duplicate_source_ids?).to be_falsey
         end
 
         context "duplicate source_ids" do
@@ -62,7 +62,7 @@ module SupplejackApi
           end
 
           it "should return true" do
-            record.duplicate_source_ids?.should be_truthy
+            expect(record.duplicate_source_ids?).to be_truthy
           end
         end
       end
@@ -74,16 +74,16 @@ module SupplejackApi
         it 'returns the fragment with priority 0' do
           fragment1 = record.fragments.create(name: 'John', priority: 1)
           fragment0 = record.fragments.create(name: 'John', priority: 0)
-          record.primary_fragment.should eq fragment0
+          expect(record.primary_fragment).to eq fragment0
         end
 
         it 'returns a new fragment with priority 0' do
-          record.primary_fragment.should be_a ApiRecord::RecordFragment
-          record.primary_fragment.priority.should eq 0
+          expect(record.primary_fragment).to be_a ApiRecord::RecordFragment
+          expect(record.primary_fragment.priority).to eq 0
         end
 
         it 'should build a primary fragment with default attributes' do
-          record.primary_fragment(name: 'John').name.should eq 'John'
+          expect(record.primary_fragment(name: 'John').name).to eq 'John'
         end
       end
 
@@ -95,13 +95,13 @@ module SupplejackApi
         it 'should delete any existing merged fragment' do
           record.merged_fragment = FactoryGirl.build(:record_fragment)
           record.save
-          record.merged_fragment.should be_nil
+          expect(record.merged_fragment).to be_nil
         end
 
         context 'one fragment' do
           it 'should not save the merged fragment' do
             record.merge_fragments
-            record.merged_fragment.should be_nil
+            expect(record.merged_fragment).to be_nil
           end
         end
 
@@ -120,25 +120,25 @@ module SupplejackApi
             it 'should store the first non-nil value of the field' do
               primary.name = nil
               record.save
-              record.merged_fragment.name.should eq 'James Smith'
+              expect(record.merged_fragment.name).to eq 'James Smith'
             end
           end
 
           context 'multi-value fields' do
             it 'should store the merged values of the field' do
-              record.merged_fragment.email.should eq ['johndoe@example.com', 'jamessmith@example.com']
+              expect(record.merged_fragment.email).to eq ['johndoe@example.com', 'jamessmith@example.com']
             end
 
             it 'should not return duplicate values' do
               primary.email = ['johndoe@example.com', 'jamessmith@example.com']
               record.save
-              record.merged_fragment.email.should eq ['johndoe@example.com', 'jamessmith@example.com']
+              expect(record.merged_fragment.email).to eq ['johndoe@example.com', 'jamessmith@example.com']
             end
 
             it 'should not return nil values' do
               secondary.email = nil
               record.save
-              record.merged_fragment.email.should eq ['johndoe@example.com']
+              expect(record.merged_fragment.email).to eq ['johndoe@example.com']
             end
           end
         end
@@ -151,17 +151,17 @@ module SupplejackApi
           let(:record) { FactoryGirl.create(:record) }
 
           it 'should return nil' do
-            record.nz_citizen.should be_nil
+            expect(record.nz_citizen).to be_nil
           end
         end
 
         context 'single fragment' do
           it 'should return a single value field from merged_fragment' do
-            record.name.should eq 'John Doe'
+            expect(record.name).to eq 'John Doe'
           end
 
           it 'returns an array for an empty mutli-value field' do
-            record.contact.should eq []
+            expect(record.contact).to eq []
           end
         end
 
@@ -172,18 +172,18 @@ module SupplejackApi
           end
 
           it 'should return a single value field from merged_fragment' do
-            record.name.should eq 'John Doe'
+            expect(record.name).to eq 'John Doe'
           end
 
           it 'should return the multi-value field values from merged_fragment' do
-            record.email.should eq ['johndoe@example.com', 'jamessmith@example.com']
+            expect(record.email).to eq ['johndoe@example.com', 'jamessmith@example.com']
           end
         end
 
         # context "namespaced field names" do
         #   it "should translate namespaced field names into their stored field name" do
         #     record.fragments.first.stub(:dc_name) { 'Joe Bloggs' }
-        #     record.public_send(:'dc:name').should eq 'Joe Bloggs'
+        #     record.public_send(:'dc:name')).to eq 'Joe Bloggs'
         #   end
         # end
       end
@@ -194,7 +194,7 @@ module SupplejackApi
           record.fragments.build(priority: -1)
           record.fragments.build(priority: 5)
 
-          record.sorted_fragments.map(&:priority).should eq [-1,0,5,10]
+          expect(record.sorted_fragments.map(&:priority)).to eq [-1,0,5,10]
         end
       end
 
@@ -204,11 +204,11 @@ module SupplejackApi
         let!(:fragment) { record.fragments.create(source_id: 'thumbnails_enrichment') }
 
         it 'should find a fragment by source_id' do
-          record.find_fragment('thumbnails_enrichment').should eq fragment
+          expect(record.find_fragment('thumbnails_enrichment')).to eq fragment
         end
 
         it "should return nil when it doesn't find a fragment" do
-          record.find_fragment('nlnzcat').should be_nil
+          expect(record.find_fragment('nlnzcat')).to be_nil
         end
       end
     end

@@ -13,72 +13,72 @@ module SupplejackApi
 
     before(:each) do
       @controller = ApplicationController.new
-      @controller.stub(:render) { nil }
+      allow(@controller).to receive(:render) { nil }
     end
 
     describe '#authenticate_user!' do
       before(:each) do
-        @controller.stub(:params) { { api_key: '12345' } }
-        @controller.stub(:request) { double(:request, ip: '1.1.1.1', format: :json) }
+        allow(@controller).to receive(:params) { { api_key: '12345' } }
+        allow(@controller).to receive(:request) { double(:request, ip: '1.1.1.1', format: :json) }
         @user = FactoryGirl.create(:user)
-        @user.stub(:update_daily_activity) {  nil }
-        @controller.stub(:current_user) {  @user }
+        allow(@user).to receive(:update_daily_activity) {  nil }
+        allow(@controller).to receive(:current_user) {  @user }
       end
 
       it 'should set the current_user' do
         @controller.authenticate_user!
-        @controller.current_user.should eq @user
+        expect(@controller.current_user).to eq @user
       end
 
       it 'updates the tracked fields for the user' do
-        @user.should_receive(:update_tracked_fields)
+        expect(@user).to receive(:update_tracked_fields)
         @controller.authenticate_user!
       end
 
       it 'updates the daily activity for the user' do
-        @user.should_receive(:update_daily_activity)
+        expect(@user).to receive(:update_daily_activity)
         @controller.authenticate_user!
       end
 
       it 'verifies the user limits' do
-        @user.should_receive(:check_daily_requests)
+        expect(@user).to receive(:check_daily_requests)
         @controller.authenticate_user!
       end
 
       it 'saves the user' do
-        @user.should_receive(:save)
+        expect(@user).to receive(:save)
         @controller.authenticate_user!
       end
 
       context 'user over daily requests limit' do
         it 'returns a error message' do
-          @user.stub(:over_limit?) { true }
-          @controller.should_receive(:render).with({ json: { errors: 'You have reached your maximum number of api requests today' }, status: :forbidden })
+          allow(@user).to receive(:over_limit?) { true }
+          expect(@controller).to receive(:render).with({ json: { errors: 'You have reached your maximum number of api requests today' }, status: :forbidden })
           @controller.authenticate_user!
         end
       end
 
       context 'api_key not found' do
         it 'returns a error message' do
-          @controller.stub(:current_user) {  nil }
-          @controller.should_receive(:render).with({ json: { errors: 'Invalid API Key' }, status: :forbidden})
+          allow(@controller).to receive(:current_user) {  nil }
+          expect(@controller).to receive(:render).with({ json: { errors: 'Invalid API Key' }, status: :forbidden})
           @controller.authenticate_user!
         end
       end
 
       context 'api key not provided' do
         it 'returns a error message' do
-          @controller.stub(:params) {  { api_key: ''} }
-          @controller.should_receive(:render).with({ json: { errors: 'Please provide a API Key' }, status: :forbidden })
+          allow(@controller).to receive(:params) {  { api_key: ''} }
+          expect(@controller).to receive(:render).with({ json: { errors: 'Please provide a API Key' }, status: :forbidden })
           @controller.authenticate_user!
         end
       end
 
       context 'wrong format' do
         it 'returns a error message in the default format' do
-          @controller.stub(:params) { {} }
-          @controller.stub(:request) { double(:request, format: :css).as_null_object }
-          @controller.should_receive(:render).with({ json: { errors: 'Please provide a API Key' }, status: :forbidden })
+          allow(@controller).to receive(:params) { {} }
+          allow(@controller).to receive(:request) { double(:request, format: :css).as_null_object }
+          expect(@controller).to receive(:render).with({ json: { errors: 'Please provide a API Key' }, status: :forbidden })
           @controller.authenticate_user!
         end
       end
@@ -86,17 +86,17 @@ module SupplejackApi
 
     describe "#authenticate_admin!" do
       before :each do
-        @controller.stub(:request) { double(:request, :ip => "1.1.1.1", :format => :json)}
+        allow(@controller).to receive(:request) { double(:request, :ip => "1.1.1.1", :format => :json)}
       end
 
       it "returns true when the admin authentication was successful" do
-        @controller.stub(:current_user) { double(:user, admin?: true) }
-        @controller.authenticate_admin!.should be_truthy
+        allow(@controller).to receive(:current_user) { double(:user, admin?: true) }
+        expect(@controller.authenticate_admin!).to be_truthy
       end
 
       it "returns false when the admin authentication was not successful" do
-        @controller.stub(:current_user) { double(:user, admin?: false) }
-        @controller.authenticate_admin!.should be_falsey
+        allow(@controller).to receive(:current_user) { double(:user, admin?: false) }
+        expect(@controller.authenticate_admin!).to be_falsey
       end
     end
 
@@ -104,12 +104,12 @@ module SupplejackApi
       context "current_user is a admin" do
         before :each do
           @user_set = double(:set).as_null_object
-          @controller.stub(:current_user) { double(:user, admin?: true).as_null_object }
-          @controller.stub(:params) { {:id => "12345"} }
+          allow(@controller).to receive(:current_user) { double(:user, admin?: true).as_null_object }
+          allow(@controller).to receive(:params) { {:id => "12345"} }
         end
 
         it "finds the set even if it's not owned by the current_user" do
-          UserSet.should_receive(:custom_find).with("12345") { @user_set }
+          expect(UserSet).to receive(:custom_find).with("12345") { @user_set }
           @controller.find_user_set
         end
       end
@@ -117,12 +117,12 @@ module SupplejackApi
       context "current_user has dnz role" do
         before :each do
           @user_set = double(:set).as_null_object
-          @controller.stub(:current_user) { double(:user, dnz?: true).as_null_object }
-          @controller.stub(:params) { {:id => "12345"} }
+          allow(@controller).to receive(:current_user) { double(:user, dnz?: true).as_null_object }
+          allow(@controller).to receive(:params) { {:id => "12345"} }
         end
 
         it "finds the set even if it's not owned by the current_user" do
-          UserSet.should_receive(:custom_find).with("12345") { @user_set }
+          expect(UserSet).to receive(:custom_find).with("12345") { @user_set }
           @controller.find_user_set
         end
       end

@@ -26,11 +26,11 @@ module SupplejackApi
       end
 
       it 'should search for a concept via its concept_id' do
-        Concept.custom_find(54321).should eq(@concept)
+        expect(Concept.custom_find(54321)).to eq(@concept)
       end
 
       it 'should search for a concept via its ObjectId (MongoDB auto assigned id)' do
-        Concept.custom_find(@concept.id).should eq(@concept)
+        expect(Concept.custom_find(@concept.id)).to eq(@concept)
       end
 
       it 'should raise a error when a concept is not found' do
@@ -38,7 +38,7 @@ module SupplejackApi
       end
 
       it "shouldn't call find when the mongo id is invalid" do
-        Concept.should_not_receive(:find)
+        expect(Concept).to_not receive(:find)
         expect { Concept.custom_find('1234567abc') }.to raise_error(Mongoid::Errors::DocumentNotFound)
       end
 
@@ -52,11 +52,11 @@ module SupplejackApi
         it 'finds also inactive records when :status => :all' do
           @concept.update_attribute(:status, 'deleted')
           @concept.reload
-          Concept.custom_find(54321, nil, {status: :all}).should eq @concept
+          expect(Concept.custom_find(54321, nil, {status: :all})).to eq @concept
         end
 
         it "doesn't break with nil options" do
-          Concept.custom_find(54321, nil, nil).should eq @concept
+          expect(Concept.custom_find(54321, nil, nil)).to eq @concept
         end
       end
     end
@@ -66,12 +66,12 @@ module SupplejackApi
 
       it 'returns true when state is active' do
         @record.status = 'active'
-        @record.active?.should be_truthy
+        expect(@record.active?).to be_truthy
       end
 
       it 'returns false when state is deleted' do
         @record.status = 'deleted'
-        @record.active?.should be_falsey
+        expect(@record.active?).to be_falsey
       end
     end
 
@@ -79,13 +79,13 @@ module SupplejackApi
       before { @record = build(:record) }
 
       it 'returns false when active? is false' do
-        @record.stub(:active?) { false }
-        @record.should_index?.should be_falsey
+        allow(@record).to receive(:active?) { false }
+        expect(@record.should_index?).to be_falsey
       end
 
       it 'returns true when active? is true' do
-        @record.stub(:active?) { true }
-        @record.should_index?.should be_truthy
+        allow(@record).to receive(:active?) { true }
+        expect(@record.should_index?).to be_truthy
       end
     end
   end

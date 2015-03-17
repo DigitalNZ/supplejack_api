@@ -11,7 +11,7 @@ module SupplejackApi
   describe RecordSerializer do
 
     before(:each) do
-      RecordSchema.stub(:roles) { double(:developer).as_null_object }
+      allow(RecordSchema).to receive(:roles) { double(:developer).as_null_object }
     end
 
     def record_hash(attributes={}, method=nil, options={})
@@ -47,12 +47,12 @@ module SupplejackApi
       [:next_record, :previous_record, :next_page, :previous_page].each do |attribute|
         it "should include #{attribute} when present" do
           record.send("#{attribute}=", 2)
-          serializer.as_json[:record][attribute].should eq 2
+          expect(serializer.as_json[:record][attribute]).to eq 2
         end
 
         it "should not include #{attribute} when null" do
           record.send("#{attribute}=", nil)
-          serializer.as_json[:record].should_not have_key(attribute)
+          expect(serializer.as_json[:record]).to_not have_key(attribute)
         end
       end
     end
@@ -63,7 +63,7 @@ module SupplejackApi
       it 'merges in the hash the requested fields' do
         s = serializer({ fields: [:age] }, { age: 22 })
         s.include_individual_fields!(@hash)
-        @hash.should eq({ age: 22 })
+        expect(@hash).to eq({ age: 22 })
       end
     end
 
@@ -76,7 +76,7 @@ module SupplejackApi
       let(:admin_role) { double(:admin_role, field_restrictions: nil) }
 
       before(:each) do
-        RecordSchema.stub(:roles).and_return({ developer: developer_role, admin: admin_role })
+        allow(RecordSchema).to receive(:roles).and_return({ developer: developer_role, admin: admin_role })
       end
 
       context "string conditions" do
@@ -85,12 +85,12 @@ module SupplejackApi
 
           it "removes name field" do
             s.remove_restricted_fields!(hash)
-            hash[:name].should be_nil
+            expect(hash[:name]).to be_nil
           end
 
           it "doesn't remove non-restriected fields" do
             s.remove_restricted_fields!(hash)
-            hash[:age].should eq 30
+            expect(hash[:age]).to eq 30
           end
         end
 
@@ -99,7 +99,7 @@ module SupplejackApi
 
           it "removes email field" do
             s.remove_restricted_fields!(hash)
-            hash[:email].should be_nil
+            expect(hash[:email]).to be_nil
           end
         end
       end
@@ -109,7 +109,7 @@ module SupplejackApi
 
         it "removes address field" do
           s.remove_restricted_fields!(hash)
-          hash[:address].should be_nil
+          expect(hash[:address]).to be_nil
         end
       end
 
@@ -118,8 +118,8 @@ module SupplejackApi
 
         it "removes all fields that match the restrictions" do
           s.remove_restricted_fields!(hash)
-          hash[:large_thumbnail_url].should be_nil
-          hash[:thumbnail_url].should be_nil
+          expect(hash[:large_thumbnail_url]).to be_nil
+          expect(hash[:thumbnail_url]).to be_nil
         end
       end
 
@@ -128,12 +128,12 @@ module SupplejackApi
 
         it "doesn't fail when a string condition field value is empty" do
           s.remove_restricted_fields!(hash)
-          hash[:name].should eq 'John Doe'
+          expect(hash[:name]).to eq 'John Doe'
         end
 
         it "doesn't fail when a regex condition field value is empty" do
           s.remove_restricted_fields!(hash)
-          hash[:email].should eq ['johndoe@example.com']
+          expect(hash[:email]).to eq ['johndoe@example.com']
         end
       end
 
@@ -143,7 +143,7 @@ module SupplejackApi
 
         it "returns all fields" do
           s.remove_restricted_fields!(hash)
-          hash.keys.should eq [:name, :address, :email, :age]
+          expect(hash.keys).to eq [:name, :address, :email, :age]
         end
       end
     end
@@ -157,46 +157,46 @@ module SupplejackApi
 
         before(:each) do
           @hash = {}
-          RecordSchema.stub(:groups) { {default: default_group, details: details_group} }
-          s.stub(:record) { record }
-          s.stub(:field_value)
+          allow(RecordSchema).to receive(:groups) { {default: default_group, details: details_group} }
+          allow(s).to receive(:record) { record }
+          allow(s).to receive(:field_value)
         end
 
         context 'handling groups' do
           it 'should include fields from given group' do
-            default_group.should_receive(:fields)
-            details_group.should_not_receive(:fields)
+            expect(default_group).to receive(:fields)
+            expect(details_group).to_not receive(:fields)
             s.serializable_hash
           end
 
           it 'should handle non-existent groups' do
-            s.stub(:options) { { groups: [:dogs] } }
-            s.serializable_hash.size.should eq 0
+            allow(s).to receive(:options) { { groups: [:dogs] } }
+            expect(s.serializable_hash.size).to eq 0
           end
 
           it 'should remove non-existent groups (or field names)' do
-            s.stub(:options) { { groups: [:default, :description] } }
-            s.stub(:field_value).with(:name, anything()) { 'John Doe' }
-            s.serializable_hash[:name].should eq 'John Doe'
+            allow(s).to receive(:options) { { groups: [:default, :description] } }
+            allow(s).to receive(:field_value).with(:name, anything()) { 'John Doe' }
+            expect(s.serializable_hash[:name]).to eq 'John Doe'
           end
 
           it 'should include fields from multiple groups' do
-            s.stub(:options) { { groups: [:default, :details] } }
+            allow(s).to receive(:options) { { groups: [:default, :details] } }
             [:name, :email, :age].each do |field|
-              s.serializable_hash.keys.should include field
+              expect(s.serializable_hash.keys).to include field
             end
           end
         end
 
         it 'should remove restricted fields' do
-          s.should_receive(:remove_restricted_fields!)
+          expect(s).to receive(:remove_restricted_fields!)
           s.serializable_hash
         end
 
         context 'field/group doesn\'t exist' do
           it 'returns an empty record hash' do
-            s.stub(:options) { { groups: [:dogs] } }
-            s.serializable_hash.should be_empty
+            allow(s).to receive(:options) { { groups: [:dogs] } }
+            expect(s.serializable_hash).to be_empty
           end
         end
       end
@@ -206,17 +206,17 @@ module SupplejackApi
     	let(:s) { serializer({groups: [:default]}) }
 
   		it 'returns true if the field is restricted' do
-  			s.stub(:field_value) { 'Wellington' }
+  			allow(s).to receive(:field_value) { 'Wellington' }
   			expect(s.send(:field_restricted?, 'address', "Wellington")).to be_truthy
   		end
 
   		it 'returns false if the field is not restricted' do
-  			s.stub(:field_value) { 'Auckland' }
+  			allow(s).to receive(:field_value) { 'Auckland' }
   			expect(s.send(:field_restricted?, 'address', "Wellington")).to be_falsey
   		end
 
   		it 'handles multi-value fields' do
-  			s.stub(:field_value) { ['jdoe@test.com', 'johndoe@example.com'] }
+  			allow(s).to receive(:field_value) { ['jdoe@test.com', 'johndoe@example.com'] }
   			expect(s.send(:field_restricted?, 'email', /test.com/)).to be_truthy
   		end
     end
@@ -235,33 +235,33 @@ module SupplejackApi
       let(:record) { double(:record, name: 'John Doe', address: nil, email: ['johndoe@example.com', 'jdoe@test.com'], children: ['Sara', 'Bob']) }
 
       before(:each) do
-        s.stub(:object) { record }
+        allow(s).to receive(:object) { record }
       end
 
       it "should return the single field value" do
-        s.field_value(:name).should eq 'John Doe'
+        expect(s.field_value(:name)).to eq 'John Doe'
       end
 
       it "should return the multipe field value" do
-        s.field_value(:email).should eq ['johndoe@example.com', 'jdoe@test.com']
+        expect(s.field_value(:email)).to eq ['johndoe@example.com', 'jdoe@test.com']
       end
 
       it "return nil for nil value" do
-        s.field_value(:address).should be_nil
+        expect(s.field_value(:address)).to be_nil
       end
 
       context 'search_value defined' do
         context 'field not stored in mongo' do
           it 'uses the value of the search_value block' do
-            RecordSchema.stub(:fields) { { age: double(:field, store: false, search_value: Proc.new{ 21 }) } }
-            s.field_value(:age).should eq 21
+            allow(RecordSchema).to receive(:fields) { { age: double(:field, store: false, search_value: Proc.new{ 21 }) } }
+            expect(s.field_value(:age)).to eq 21
           end
         end
 
         context 'field stored in mongo' do
           it "uses the value from mongo" do
-            RecordSchema.stub(:fields) { {children: double(:field, search_value: Proc.new{1}).as_null_object} }
-            s.field_value(:children).should eq ['Sara', 'Bob']
+            allow(RecordSchema).to receive(:fields) { {children: double(:field, search_value: Proc.new{1}).as_null_object} }
+            expect(s.field_value(:children)).to eq ['Sara', 'Bob']
           end
         end
       end

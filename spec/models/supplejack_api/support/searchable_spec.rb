@@ -14,7 +14,7 @@ module SupplejackApi
       let(:fragment) { record.fragments.create({nz_citizen: false }) }
     
       before do
-        RecordSchema.stub(:fields) do
+        allow(RecordSchema).to receive(:fields) do
           {
             name: double(:field, name: :name, type: :string, search_as: [:filter]).as_null_object,
             age: double(:field, name: :age, type: :integer, search_as: [:filter]).as_null_object,
@@ -38,46 +38,46 @@ module SupplejackApi
         end
     
         it 'defines a single value string field' do
-          builder.should_receive(:string).with(:name, {})
+          expect(builder).to receive(:string).with(:name, {})
         end
     
         it 'defines a single value integer field' do
-          builder.should_receive(:integer).with(:age, {})
+          expect(builder).to receive(:integer).with(:age, {})
         end
     
         it 'defines a single value time field' do
-          builder.should_receive(:time).with(:birth_date, {})
+          expect(builder).to receive(:time).with(:birth_date, {})
         end
     
         it 'defines a single value boolean field' do
-          builder.should_receive(:boolean).with(:nz_citizen, {})
+          expect(builder).to receive(:boolean).with(:nz_citizen, {})
         end
     
         it 'defines a multivalue field' do
-          builder.should_receive(:string).with(:email, {multiple: true})
+          expect(builder).to receive(:string).with(:email, {multiple: true})
         end
     
         it 'defines a field with a different name' do
-          builder.should_receive(:string).with(:address, {as: :new_address})
+          expect(builder).to receive(:string).with(:address, {as: :new_address})
         end
     
         it 'defines a full text field' do
-          builder.should_receive(:text).with(:occupation, {})
+          expect(builder).to receive(:text).with(:occupation, {})
         end
     
         it 'defines a full text field with boost' do
-          builder.should_receive(:text).with(:birth_place, {boost: 10})
+          expect(builder).to receive(:text).with(:birth_place, {boost: 10})
         end   
     
         it 'defines a field with fulltext and filter, and lots of options' do
-          builder.should_receive(:text).with(:short_description, {boost: 2})
-          builder.should_receive(:string).with(:short_description, {multiple: true})
+          expect(builder).to receive(:text).with(:short_description, {boost: 2})
+          expect(builder).to receive(:string).with(:short_description, {multiple: true})
         end
       end
 
       describe 'valid_facets' do
         it 'returns all fields with search_as filter' do
-          Record.valid_facets.should eq [:name, :age, :birth_date, :nz_citizen, :email, :address, :short_description]
+          expect(Record.valid_facets).to eq [:name, :age, :birth_date, :nz_citizen, :email, :address, :short_description]
         end      
       end
     end

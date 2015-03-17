@@ -14,15 +14,15 @@ module SupplejackApi
     describe '#custom_find' do
       before(:each) do
         @record = FactoryGirl.create(:record, record_id: 54321)
-        @record.stub(:find_next_and_previous_records).and_return(nil)
+        allow(@record).to receive(:find_next_and_previous_records).and_return(nil)
       end
 
       it 'should search for a record via its record_id' do
-        Record.custom_find(54321).should eq(@record)
+        expect(Record.custom_find(54321)).to eq(@record)
       end
 
       it 'should search for a record via its ObjectId (MongoDB autoassigned id)' do
-        Record.custom_find(@record.id).should eq(@record)
+        expect(Record.custom_find(@record.id)).to eq(@record)
       end
 
       it 'should raise a error when a record is not found' do
@@ -30,28 +30,28 @@ module SupplejackApi
       end
 
       it "shouldn't call find when the mongo id is invalid" do
-        Record.should_not_receive(:find)
+        expect(Record).to_not receive(:find)
         expect { Record.custom_find('1234567abc') }.to raise_error(Mongoid::Errors::DocumentNotFound)
       end
 
       it 'should find next and previous records' do
         @user = double(:user)
-        Record.stub_chain(:unscoped, :active, :where, :first).and_return(@record)
-        @record.should_receive(:find_next_and_previous_records).with(@user, {text: 'dogs'})
+        allow(Record).to receive_message_chain(:unscoped, :active, :where, :first).and_return(@record)
+        expect(@record).to receive(:find_next_and_previous_records).with(@user, {text: 'dogs'})
         Record.custom_find(54321, @user, {text: 'dogs'})
       end
 
       [Sunspot::UnrecognizedFieldError, Timeout::Error, Errno::ECONNREFUSED, Errno::ECONNRESET].each do |error_klass|
         it 'should rescue from a #{error_klass}' do
-          Record.stub_chain(:unscoped, :active, :where, :first).and_return(@record)
-          @record.stub(:find_next_and_previous_records).and_raise(error_klass)
+          allow(Record).to receive_message_chain(:unscoped, :active, :where, :first).and_return(@record)
+          allow(@record).to receive(:find_next_and_previous_records).and_raise(error_klass)
           Record.custom_find(54321, nil, {text: 'dogs'})
         end
       end
 
       it 'should rescue from a RSolr::Error::Http' do
-        Record.stub_chain(:unscoped, :active, :where, :first).and_return(@record)
-        @record.stub(:find_next_and_previous_records).and_raise(RSolr::Error::Http.new({}, {}))
+        allow(Record).to receive_message_chain(:unscoped, :active, :where, :first).and_return(@record)
+        allow(@record).to receive(:find_next_and_previous_records).and_raise(RSolr::Error::Http.new({}, {}))
         Record.custom_find(54321, nil, {text: 'dogs'})
       end
 
@@ -65,17 +65,17 @@ module SupplejackApi
         it 'finds also inactive records when :status => :all' do
           @record.update_attribute(:status, 'deleted')
           @record.reload
-          Record.custom_find(54321, nil, {status: :all}).should eq @record
+          expect(Record.custom_find(54321, nil, {status: :all})).to eq @record
         end
 
         it "doesn't find next and previous record without any search options" do
-          Record.stub_chain(:unscoped, :where, :first) { @record }
-          @record.should_not_receive(:find_next_and_previous_records)
+          allow(Record).to receive_message_chain(:unscoped, :where, :first) { @record }
+          expect(@record).to_not receive(:find_next_and_previous_records)
           Record.custom_find(54321, nil, {status: :all})
         end
 
         it "doesn't break with nil options" do
-          Record.custom_find(54321, nil, nil).should eq @record
+          expect(Record.custom_find(54321, nil, nil)).to eq @record
         end
       end
     end
@@ -88,41 +88,41 @@ module SupplejackApi
       it 'should find multiple records by numeric id' do
         r1 = FactoryGirl.create(:record, record_id: 999)
         r2 = FactoryGirl.create(:record, record_id: 998)
-        Record.find_multiple([999, 998]).should include(r1, r2)
-        Record.find_multiple([999, 998]).length.should eq(2)
+        expect(Record.find_multiple([999, 998])).to include(r1, r2)
+        expect(Record.find_multiple([999, 998]).length).to eq(2)
       end
 
       it 'should find multiple records by ObjectId' do
         r1 = FactoryGirl.create(:record)
         r2 = FactoryGirl.create(:record)
-        Record.find_multiple([r1.id, r2.id]).should include(r1, r2)
-        Record.find_multiple([r1.id, r2.id]).length.should eq(2)
+        expect(Record.find_multiple([r1.id, r2.id])).to include(r1, r2)
+        expect(Record.find_multiple([r1.id, r2.id]).length).to eq(2)
       end
 
       it "should find multiple records with ObjectId's and numeric id's" do
         r1 = FactoryGirl.create(:record, record_id: 997)
         r2 = FactoryGirl.create(:record)
-        Record.find_multiple([997, r2.id]).should include(r1, r2)
-        Record.find_multiple([997, r2.id]).length.should eq(2)
+        expect(Record.find_multiple([997, r2.id])).to include(r1, r2)
+        expect(Record.find_multiple([997, r2.id]).length).to eq(2)
       end
 
       it 'returns an empty array when ids is nil' do
-        Record.find_multiple(nil).should eq []
+        expect(Record.find_multiple(nil)).to eq []
       end
 
       it 'should not return inactive records' do
         r1 = FactoryGirl.create(:record, record_id: 997, status: 'deleted')
         r2 = FactoryGirl.create(:record, record_id: 667, status: 'active')
         records = Record.find_multiple([997, 667]).to_a
-        records.should_not include(r1)
-        records.should include(r2)
+        expect(records).to_not include(r1)
+        expect(records).to include(r2)
       end
 
       it 'returns the records in the same order as requested' do
         r1 = FactoryGirl.create(:record, record_id: 1, created_at: Time.now-10.days)
         r2 = FactoryGirl.create(:record, record_id: 2, created_at: Time.now)
         records = Record.find_multiple([2,1]).to_a
-        records.first.should eq r2
+        expect(records.first).to eq r2
       end
     end
 
@@ -168,14 +168,14 @@ module SupplejackApi
       #     @search.stub(:hits) { mock_hits(['12345', @record.id, '98765']) }
       #     Record.should_receive(:find).with('12345').and_return(mock_model(Record, :record_id => 654))
       #     @record.find_next_and_previous_records(@user, text: 'dogs')
-      #     @record.previous_record.should eq(654)
+      #     @record.previous_record).to eq(654)
       #   end
 
       #   it 'should set the next record' do
       #     @search.stub(:hits).and_return(mock_hits([nil, @record.id, '98765']))
       #     Record.should_receive(:find).with('98765').and_return(mock_model(Record, :record_id => 987))
       #     @record.find_next_and_previous_records(@user, {text: 'dogs'})
-      #     @record.next_record.should eq(987)
+      #     @record.next_record).to eq(987)
       #   end
       # end
 
@@ -189,14 +189,14 @@ module SupplejackApi
       #     Search.should_receive(:new).with(anything)
       #     Search.should_receive(:new).with(hash_including(page: 1))
       #     @record.find_next_and_previous_records(@user, {text: 'dogs'})
-      #     @record.previous_page.should eq(1)
+      #     @record.previous_page).to eq(1)
       #   end
 
       #   it 'should not perform a new search when in the first page' do
       #     @search.stub(:hits).and_return(mock_hits([@record.id, '12345', '98765']))
       #     Search.should_receive(:new).once
       #     @record.find_next_and_previous_records(@user, {text: 'dogs'})
-      #     @record.previous_record.should be_nil
+      #     @record.previous_record).to be_nil
       #   end
       # end
 
@@ -211,14 +211,14 @@ module SupplejackApi
       #     Search.should_receive(:new).with(anything)
       #     Search.should_receive(:new).with(hash_including(page: 2))
       #     @record.find_next_and_previous_records(@user, {text: 'dogs'})
-      #     @record.next_page.should eq(2)
+      #     @record.next_page).to eq(2)
       #   end
 
       #   it 'should not perform a new search when in the last page' do
       #     @search.stub(:total).and_return(3)
       #     Search.should_receive(:new).once
       #     @record.find_next_and_previous_records(@user, {text: 'dogs'})
-      #     @record.next_record.should be_nil
+      #     @record.next_record).to be_nil
       #   end
       # end
     end
@@ -231,12 +231,12 @@ module SupplejackApi
     #   it 'finds a harvest job and assigns it to harvest_job' do
     #     harvest_job = FactoryGirl.create(:harvest_job, harvest_job_id: 13)
     #     record = Record.new(harvest_job_id: 13)
-    #     record.harvest_job.should eq(harvest_job)
+    #     record.harvest_job).to eq(harvest_job)
     #   end
 
     #   it 'returns nil for a non existent harvest job' do
     #     record = Record.new(harvest_job_id: 13)
-    #     record.harvest_job.should be_nil
+    #     record.harvest_job).to be_nil
     #   end
     # end
 
@@ -247,12 +247,12 @@ module SupplejackApi
 
       it 'returns true when state is active' do
         @record.status = 'active'
-        @record.active?.should be_truthy
+        expect(@record.active?).to be_truthy
       end
 
       it 'returns false when state is deleted' do
         @record.status = 'deleted'
-        @record.active?.should be_falsey
+        expect(@record.active?).to be_falsey
       end
     end
 
@@ -262,13 +262,13 @@ module SupplejackApi
       end
 
       it 'returns false when active? is false' do
-        @record.stub(:active?) { false }
-        @record.should_index?.should be_falsey
+        allow(@record).to receive(:active?) { false }
+        expect(@record.should_index?).to be_falsey
       end
 
       it 'returns true when active? is true' do
-        @record.stub(:active?) { true }
-        @record.should_index?.should be_truthy
+        allow(@record).to receive(:active?) { true }
+        expect(@record.should_index?).to be_truthy
       end
     end
 

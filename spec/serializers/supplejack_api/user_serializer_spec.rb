@@ -13,8 +13,8 @@ module SupplejackApi
     let(:serializer) { UserSerializer.new(user) }
   
     it 'includes the basic user information' do
-      user.stub(:id) { 'abc1234567' }
-      serializer.as_json.should eq({user: {id: 'abc1234567', name: 'Fed', email: 'fed@boost.com', username: 'fede', api_key: '12345'}})
+      allow(user).to receive(:id) { 'abc1234567' }
+      expect(serializer.as_json).to eq({user: {id: 'abc1234567', name: 'Fed', email: 'fed@boost.com', username: 'fede', api_key: '12345'}})
     end
   
   end

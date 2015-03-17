@@ -13,8 +13,8 @@ module SupplejackApi
 
     before(:each) do
       @user = FactoryGirl.create(:user, authentication_token: "abc123")
-      controller.stub(:authenticate_user!) { true }
-      controller.stub(:current_user) { @user }
+      allow(controller).to receive(:authenticate_user!) { true }
+      allow(controller).to receive(:current_user) { @user }
     end
 
     describe "GET 'index'" do
@@ -23,7 +23,7 @@ module SupplejackApi
       end
 
       it "should return all the user's sets" do
-        controller.current_user.should_receive(:user_sets){@sets}
+        expect(controller.current_user).to receive(:user_sets){@sets}
         get :index
       end
     end
@@ -31,41 +31,41 @@ module SupplejackApi
     describe "GET 'admin_index'" do
       context "authentication succedded" do
         before :each do
-          controller.stub(:authenticate_admin!) { true }
+          allow(controller).to receive(:authenticate_admin!) { true }
           @normal_user = double(User, user_sets: []).as_null_object
-          User.stub(:find_by_api_key).with("nonadminkey") { @normal_user }
+          allow(User).to receive(:find_by_api_key).with("nonadminkey") { @normal_user }
         end
 
         it "authenticates the user as an admin" do
-          controller.should_receive(:authenticate_admin!) { true }
+          expect(controller).to receive(:authenticate_admin!) { true }
           get :admin_index, user_id: "nonadminkey"
         end
 
         it "finds the user from the :user_id" do
-          User.should_receive(:find_by_api_key).with("nonadminkey")
+          expect(User).to receive(:find_by_api_key).with("nonadminkey")
           get :admin_index, user_id: "nonadminkey"
         end
 
         it "assigns the user's sets to @user_sets" do
-          @normal_user.should_receive(:user_sets) { [] }
+          expect(@normal_user).to receive(:user_sets) { [] }
           get :admin_index, user_id: "nonadminkey"
-          assigns(:user_sets).should eq []
+          expect(assigns(:user_sets)).to eq []
         end
 
         it "renders a error when the user is not found" do
-          User.stub(:find_by_api_key) { nil }
+          allow(User).to receive(:find_by_api_key) { nil }
           get :admin_index, user_id: "whatever"
-          response.code.should eq "404"
-          response.body.should eq({errors: "The user with api key: 'whatever' was not found"}.to_json)
+          expect(response.code).to eq "404"
+          expect(response.body).to eq({errors: "The user with api key: 'whatever' was not found"}.to_json)
         end
       end
 
       context "authentication fails" do
         it "renders a error when the admin authentication fails" do
-          controller.stub(:current_user) { double(User, :admin? => false) }
+          allow(controller).to receive(:current_user) { double(User, :admin? => false) }
           get :admin_index, user_id: "nonadminkey", format: "json"
-          response.code.should eq "403"
-          response.body.should eq({errors: "You need Administrator privileges to perform this request"}.to_json)
+          expect(response.code).to eq "403"
+          expect(response.body).to eq({errors: "You need Administrator privileges to perform this request"}.to_json)
         end
       end
     end
@@ -73,13 +73,13 @@ module SupplejackApi
     describe "#public_index" do
       context "authentication succedded" do
         before :each do
-          controller.stub(:authenticate_admin!) { true }
+          allow(controller).to receive(:authenticate_admin!) { true }
           @admin_user = double(User).as_null_object
-          controller.stub(:current_user) { @admin_user }
+          allow(controller).to receive(:current_user) { @admin_user }
         end
 
         it "finds all public sets" do
-          UserSet.should_receive(:public_sets).with(page: nil) { [] }
+          expect(UserSet).to receive(:public_sets).with(page: nil) { [] }
           get :public_index, format: "json"
         end
       end
@@ -88,13 +88,13 @@ module SupplejackApi
     describe "#featured_sets_index" do
       context "authentication succedded" do
         before :each do
-          controller.stub(:authenticate_admin!) { true }
+          allow(controller).to receive(:authenticate_admin!) { true }
           @admin_user = double(User).as_null_object
-          controller.stub(:current_user) { @admin_user }
+          allow(controller).to receive(:current_user) { @admin_user }
         end
 
         it "finds 4 public sets" do
-          UserSet.should_receive(:featured_sets).with(4) { [] }
+          expect(UserSet).to receive(:featured_sets).with(4) { [] }
           get :featured_sets_index, format: "json"
         end
       end
@@ -106,116 +106,116 @@ module SupplejackApi
       end
 
       it "finds the @user_set" do
-        UserSet.should_receive(:custom_find).with(@user_set.id.to_s) { @user_set }
+        expect(UserSet).to receive(:custom_find).with(@user_set.id.to_s) { @user_set }
         get :show, id: @user_set.id.to_s
       end
 
       it "returns a 404 error when the set is not found" do
-        UserSet.stub(:custom_find) { nil }
+        allow(UserSet).to receive(:custom_find) { nil }
         get :show, id: @user_set.id.to_s
-        response.code.should eq("404")
-        response.body.should eq({errors: "Set with id: #{@user_set.id.to_s} was not found."}.to_json)
+        expect(response.code).to eq("404")
+        expect(response.body).to eq({errors: "Set with id: #{@user_set.id.to_s} was not found."}.to_json)
       end
     end
 
     describe "POST 'create'" do
       before(:each) do
         @user_set = FactoryGirl.build(:user_set)
-        controller.current_user.user_sets.stub(:build) { @user_set }
+        allow(controller.current_user.user_sets).to receive(:build) { @user_set }
       end
 
       it "should build a new set with the params" do
-        controller.current_user.user_sets.should_receive(:build) { @user_set }
-        @user_set.should_receive(:update_attributes_and_embedded).with({"name" => "Dogs", "description" => "Ugly", "privacy" => "hidden"})
+        expect(controller.current_user.user_sets).to receive(:build) { @user_set }
+        expect(@user_set).to receive(:update_attributes_and_embedded).with({"name" => "Dogs", "description" => "Ugly", "privacy" => "hidden"})
         post :create, set: {"name" => "Dogs", "description" => "Ugly", "privacy" => "hidden"}
       end
 
       it "saves the user set" do
-        @user_set.should_receive(:save).and_return(true)
+        expect(@user_set).to receive(:save).and_return(true)
         post :create, set: {}
       end
 
       it "returns a 422 error when the set is invalid" do
-        @user_set.stub(:update_attributes_and_embedded) { false }
-        @user_set.stub(:errors).and_return({name: ["can't be blank"]})
+        allow(@user_set).to receive(:update_attributes_and_embedded) { false }
+        allow(@user_set).to receive(:errors).and_return({name: ["can't be blank"]})
         post :create, set: {}
-        response.code.should eq("422")
-        response.body.should eq({errors: {name: ["can't be blank"]}}.to_json)
+        expect(response.code).to eq("422")
+        expect(response.body).to eq({errors: {name: ["can't be blank"]}}.to_json)
       end
 
       it "rescues from a :records format error and renders the error" do
-        @user_set.stub(:update_attributes_and_embedded).and_raise(UserSet::WrongRecordsFormat)
+        allow(@user_set).to receive(:update_attributes_and_embedded).and_raise(UserSet::WrongRecordsFormat)
         post :create, set: {}
-        response.code.should eq("422")
-        response.body.should eq({errors: {records: ["The records array is not in a valid format."]}}.to_json)
+        expect(response.code).to eq("422")
+        expect(response.body).to eq({errors: {records: ["The records array is not in a valid format."]}}.to_json)
       end
     end
 
     describe "PUT 'update'" do
       before(:each) do
         @user_set = FactoryGirl.create(:user_set, user_id: @user.id)
-        @user_set.stub(:update_attributes_and_embedded) { true }
-        controller.current_user.user_sets.stub(:custom_find) { @user_set }
+        allow(@user_set).to receive(:update_attributes_and_embedded) { true }
+        allow(controller.current_user.user_sets).to receive(:custom_find) { @user_set }
       end
 
       it "finds the @user_set through the user" do
-        controller.current_user.user_sets.should_receive(:custom_find).with(@user_set.id.to_s) { @user_set }
+        expect(controller.current_user.user_sets).to receive(:custom_find).with(@user_set.id.to_s) { @user_set }
         put :update, id: @user_set.id.to_s, set: {records: [{record_id: 13, position: 2}]}
       end
 
       it "returns a 404 error when the set is not found" do
-        controller.current_user.user_sets.stub(:custom_find) { nil }
+        allow(controller.current_user.user_sets).to receive(:custom_find) { nil }
         put :update, id: @user_set.id.to_s
-        response.code.should eq("404")
-        response.body.should eq({errors: "Set with id: #{@user_set.id.to_s} was not found."}.to_json)
+        expect(response.code).to eq("404")
+        expect(response.body).to eq({errors: "Set with id: #{@user_set.id.to_s} was not found."}.to_json)
       end
 
       it "updates the attributes of the @user_set" do
-        @user_set.should_receive(:update_attributes_and_embedded).with({"records" => [{"record_id" => "13", "position" => "2"}]}, @user)
+        expect(@user_set).to receive(:update_attributes_and_embedded).with({"records" => [{"record_id" => "13", "position" => "2"}]}, @user)
         put :update, id: @user_set.id.to_s, set: {records: [{record_id: 13, position: 2}]}
       end
 
       it "updates the approved attribute of a @user_set" do
-        @user_set.should_receive(:update_attributes_and_embedded).with({"approved" => true}, @user)
+        expect(@user_set).to receive(:update_attributes_and_embedded).with({"approved" => true}, @user)
         put :update, id: @user_set.id.to_s, set: {approved: true}
       end
 
       it "returns a 406 error when the set is invalid" do
-        @user_set.stub(:update_attributes_and_embedded) { false }
-        @user_set.stub(:errors).and_return({name: ["can't be blank"]})
+        allow(@user_set).to receive(:update_attributes_and_embedded) { false }
+        allow(@user_set).to receive(:errors).and_return({name: ["can't be blank"]})
         post :update, id: @user_set.id.to_s, set: {name: nil}
-        response.code.should eq("422")
-        response.body.should eq({errors: {name: ["can't be blank"]}}.to_json)
+        expect(response.code).to eq("422")
+        expect(response.body).to eq({errors: {name: ["can't be blank"]}}.to_json)
       end
 
       it "rescues from a :records format error and renders the error" do
-        @user_set.stub(:update_attributes_and_embedded).and_raise(UserSet::WrongRecordsFormat)
+        allow(@user_set).to receive(:update_attributes_and_embedded).and_raise(UserSet::WrongRecordsFormat)
         post :update, id: @user_set.id.to_s, set: {name: nil}
-        response.code.should eq("422")
-        response.body.should eq({errors: {records: ["The records array is not in a valid format."]}}.to_json)
+        expect(response.code).to eq("422")
+        expect(response.body).to eq({errors: {records: ["The records array is not in a valid format."]}}.to_json)
       end
     end
 
     describe "DELETE 'destroy'" do
       before(:each) do
         @user_set = FactoryGirl.create(:user_set, user_id: @user.id)
-        controller.current_user.user_sets.stub(:custom_find) { @user_set }
+        allow(controller.current_user.user_sets).to receive(:custom_find) { @user_set }
       end
 
       it "returns a 404 error when the set is not found" do
-        controller.current_user.user_sets.stub(:custom_find) { nil }
+        allow(controller.current_user.user_sets).to receive(:custom_find) { nil }
         delete :destroy, id: @user_set.id.to_s
-        response.code.should eq("404")
-        response.body.should eq({errors: "Set with id: #{@user_set.id.to_s} was not found."}.to_json)
+        expect(response.code).to eq("404")
+        expect(response.body).to eq({errors: "Set with id: #{@user_set.id.to_s} was not found."}.to_json)
       end
 
       it "finds the @user_set through the user" do
-        controller.current_user.user_sets.should_receive(:custom_find).with(@user_set.id.to_s) { @user_set }
+        expect(controller.current_user.user_sets).to receive(:custom_find).with(@user_set.id.to_s) { @user_set }
         delete :destroy, id: @user_set.id.to_s, format: :json
       end
 
       it "deletes the user set" do
-        @user_set.should_receive(:destroy)
+        expect(@user_set).to receive(:destroy)
         delete :destroy, id: @user_set.id.to_s, format: :json
       end
     end

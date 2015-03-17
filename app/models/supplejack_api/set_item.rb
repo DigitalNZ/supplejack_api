@@ -9,8 +9,7 @@ module SupplejackApi
   class SetItem
     include Mongoid::Document
   
-    # TODO DETERMINE SET FIELDS THIS
-    ATTRIBUTES = RecordSchema.groups[:default].fields
+    ATTRIBUTES = RecordSchema.groups[:sets].fields
 
     attr_accessor :record
 
@@ -21,8 +20,16 @@ module SupplejackApi
 
     validates :record_id,   presence: true, uniqueness: true, numericality: { greater_than: 0 }
     validates :position,    presence: true
+    validate  :not_adding_set_to_itself
 
     before_validation :set_position
+    after_destroy :reindex_record
+
+    def not_adding_set_to_itself
+      if self.user_set.record && self.record_id == self.user_set.record.record_id
+        errors.add(:set, 'can\'t be added to itself')
+      end
+    end
 
     # Dynamically define methods for the attributes that get added to the set_item from
     # the actual Record.
@@ -40,6 +47,10 @@ module SupplejackApi
         positions = self.user_set.set_items.map(&:position)
         self.position = positions.compact.max.to_i + 1
       end
+    end
+
+    def reindex_record
+      SupplejackApi::Record.custom_find(record_id).index rescue nil
     end
   end
 end

@@ -18,48 +18,48 @@ module SupplejackApi
     describe 'GET index' do
       before(:each) do
         @search = RecordSearch.new
-        @search.stub(:valid?) { true }
-        RecordSearch.stub(:new) {@search}
+        allow(@search).to receive(:valid?) { true }
+        allow(RecordSearch).to receive(:new) {@search}
       end
 
       it 'should initialize a new search instance' do
-        RecordSearch.any_instance.stub(:valid?) { false }
-        RecordSearch.should_receive(:new).with(hash_including(text: 'dogs')).and_return(@search)
+        allow_any_instance_of(RecordSearch).to receive(:valid?) { false }
+        expect(RecordSearch).to receive(:new).with(hash_including(text: 'dogs')).and_return(@search)
         get :index, api_key: 'apikey', text: "dogs", format: "json"
-        assigns(:search).should eq(@search)
+        expect(assigns(:search)).to eq(@search)
       end
 
       it 'should set the request url on search object' do
-        RecordSearch.any_instance.stub(:valid?) { false }
-        controller.request.stub(:original_url).and_return('http://foo.com/blah')
-        @search.should_receive(:request_url=).with('http://foo.com/blah')
+        allow_any_instance_of(RecordSearch).to receive(:valid?) { false }
+        allow(controller.request).to receive(:original_url).and_return('http://foo.com/blah')
+        expect(@search).to receive(:request_url=).with('http://foo.com/blah')
         get :index, api_key: 'apikey', format: "json"
       end
 
       it 'should set the current_user on the search' do
-        RecordSearch.any_instance.stub(:valid?) { false }
-        @search.should_receive(:scope=).with(@user)
+        allow_any_instance_of(RecordSearch).to receive(:valid?) { false }
+        expect(@search).to receive(:scope=).with(@user)
         get :index, api_key: 'apikey', format: "json"
       end
 
       it 'renders a the solr error when the query is invalid' do
-        RecordSearchSerializer.stub(:new).and_raise(RSolr::Error::Http.new({}, {}))
-        controller.stub(:solr_error_message).and_return('Error')
+        allow(RecordSearchSerializer).to receive(:new).and_raise(RSolr::Error::Http.new({}, {}))
+        allow(controller).to receive(:solr_error_message).and_return('Error')
         get :index, api_key: 'apikey', format: 'json'
-        response.body.should eq({errors: 'Error'}.to_json)
+        expect(response.body).to eq({errors: 'Error'}.to_json)
       end
 
       it "renders a error when the requested field doesn't exist" do
-        RecordSearchSerializer.stub(:new).and_raise(Sunspot::UnrecognizedFieldError.new('No field configured for Record with name "something"'))
+        allow(RecordSearchSerializer).to receive(:new).and_raise(Sunspot::UnrecognizedFieldError.new('No field configured for Record with name "something"'))
         get :index, api_key: 'apikey', format: 'json', and: {:something => true}
-        response.body.should eq({:errors => 'No field configured for Record with name "something"'}.to_json)
+        expect(response.body).to eq({:errors => 'No field configured for Record with name "something"'}.to_json)
       end
 
       it 'should return an error if the search request is invalid' do
-        @search.stub(:valid?) { false }
-        @search.stub(:errors) { ['The page parameter can not exceed 100,000'] }
+        allow(@search).to receive(:valid?) { false }
+        allow(@search).to receive(:errors) { ['The page parameter can not exceed 100,000'] }
         get :index, api_key: 'apikey', page: 100001, format: 'json'
-        response.body.should eq({errors: ['The page parameter can not exceed 100,000']}.to_json)
+        expect(response.body).to eq({errors: ['The page parameter can not exceed 100,000']}.to_json)
       end
     end
 
@@ -68,44 +68,44 @@ module SupplejackApi
 
       before(:each) do
         @record = FactoryGirl.create(:record)
-        controller.stub(:current_user) { @user }
-        RecordSchema.stub(:roles) { {developer: developer_restriction} }
+        allow(controller).to receive(:current_user) { @user }
+        allow(RecordSchema).to receive(:roles) { {developer: developer_restriction} }
       end
 
       it 'should find the record and assign it' do
-        Record.should_receive(:custom_find).with('123', @user, {}).and_return(@record)
+        expect(Record).to receive(:custom_find).with('123', @user, {}).and_return(@record)
         get :show, id: 123, search: {}, api_key: 'abc123', format: "json"
-        assigns(:record).should eq(@record)
+        expect(assigns(:record)).to eq(@record)
       end
 
       it 'renders a error when records is not found' do
-        Record.stub(:custom_find).and_raise(Mongoid::Errors::DocumentNotFound.new(Record, ['123'], ['123']))
+        allow(Record).to receive(:custom_find).and_raise(Mongoid::Errors::DocumentNotFound.new(Record, ['123'], ['123']))
         get :show, id: 123, search: {}, api_key: 'abc123', :format => 'json'
-        response.body.should eq({:errors => 'Record with ID 123 was not found'}.to_json)
+        expect(response.body).to eq({:errors => 'Record with ID 123 was not found'}.to_json)
       end
 
       it 'merges the scope in the options' do
-        Record.should_receive(:custom_find).with('123', @user, {'and' => {'category' => 'Books'}}).and_return(@record)
+        expect(Record).to receive(:custom_find).with('123', @user, {'and' => {'category' => 'Books'}}).and_return(@record)
         get :show, id: 123, search: {and: {category: 'Books'}}, api_key: 'abc123', format: "json"
-        assigns(:record).should eq(@record)
+        expect(assigns(:record)).to eq(@record)
       end
     end
 
      describe '#default_serializer_options' do
       before(:each) do
         @search = RecordSearch.new
-        RecordSearch.stub(:new) { @search }
+        allow(RecordSearch).to receive(:new) { @search }
       end
 
       it 'should return a hash with info for serialization' do
         controller.default_serializer_options
-        assigns(:search).should eq(@search)
+        expect(assigns(:search)).to eq(@search)
       end
 
       it 'should merge in the search fields' do
-        @search.stub(:field_list).and_return([:title, :description])
-        @search.stub(:group_list).and_return([:verbose])
-        controller.default_serializer_options.should eq({fields: [:title, :description], groups: [:verbose]})
+        allow(@search).to receive(:field_list).and_return([:title, :description])
+        allow(@search).to receive(:group_list).and_return([:verbose])
+        expect(controller.default_serializer_options).to eq({fields: [:title, :description], groups: [:verbose]})
       end
     end
   end

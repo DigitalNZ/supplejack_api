@@ -47,6 +47,13 @@ class RecordSchema
     fields [:record_id]
   end
 
+  group :sets do
+    fields [
+      :name,
+      :address
+    ]
+  end
+
    # Roles
   role :developer do
     default true

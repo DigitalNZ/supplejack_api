@@ -22,11 +22,11 @@ module SupplejackApi
           end
 
           it 'updates the fragment attributes' do
-            @fragment.age.should eq 100
+            expect(@fragment.age).to eq 100
           end
 
           it 'nilifies the fields not updated in the fragment' do
-            @fragment.name.should be_nil
+            expect(@fragment.name).to be_nil
           end
         end
 
@@ -34,9 +34,9 @@ module SupplejackApi
           it 'creates a new fragment' do
             record.create_or_update_fragment({'source_id' => 'nz_census', 'name' => 'John Smith', 'priority' => [1]})
             fragment = record.find_fragment('nz_census')
-            fragment.should_not be_nil
-            fragment.name.should eq 'John Smith'
-            fragment.priority.should eq 1
+            expect(fragment).to_not be_nil
+            expect(fragment.name).to eq 'John Smith'
+            expect(fragment.priority).to eq 1
           end
         end
       end
@@ -48,23 +48,23 @@ module SupplejackApi
 
         it 'sets the status to active if nil is passed' do
           record.set_status(nil)
-          record.status.should eq 'active'
+          expect(record.status).to eq 'active'
         end
 
         it 'sets the status to active if an empty array is passed' do
           record.set_status([])
-          record.status.should eq 'active'
+          expect(record.status).to eq 'active'
         end
 
         it 'sets the status to partial if one required fragment does not exists' do
           record.set_status(['nz_census', 'thumbnails'])
-          record.status.should eq 'partial'
+          expect(record.status).to eq 'partial'
         end
 
         it 'sets the status to active if all required fragments exist' do
           record.fragments.build(source_id: 'thumbnails', name: 'John Smith')
           record.set_status(['nz_census', 'thumbnails'])
-          record.status.should eq 'active'
+          expect(record.status).to eq 'active'
         end
       end
 
@@ -73,7 +73,7 @@ module SupplejackApi
 
         it 'doesn\'t clear the _id attribute' do
           record.clear_attributes
-          record._id.should_not be_nil
+          expect(record._id).to_not be_nil
         end
   
       end
@@ -84,7 +84,7 @@ module SupplejackApi
           record.update_attributes(name: nil)
           record.unset_null_fields
           raw_record = record.reload.raw_attributes
-          raw_record.should_not have_key('name')
+          expect(raw_record).to_not have_key('name')
         end
 
         it 'should unset null fields inside fragments' do
@@ -92,12 +92,12 @@ module SupplejackApi
           record.primary_fragment.update_attributes(address: nil)
           record.unset_null_fields
           raw_record = record.reload.raw_attributes
-          raw_record['fragments'][0].should_not have_key('address')
+          expect(raw_record['fragments'][0]).to_not have_key('address')
         end
 
         it 'should handle null fragments' do
           record = FactoryGirl.create(:record_with_fragment, record_id: 1234)
-          record.stub(:raw_attributes) { {'fragments' => [nil]} }
+          allow(record).to receive(:raw_attributes) { {'fragments' => [nil]} }
           expect { record.unset_null_fields }.to_not raise_exception
         end
 
@@ -106,20 +106,20 @@ module SupplejackApi
           record.primary_fragment.update_attributes(nz_citizen: false)
           record.unset_null_fields
           raw_record = record.reload.raw_attributes
-          raw_record['fragments'][0].should have_key('nz_citizen')
+          expect(raw_record['fragments'][0]).to have_key('nz_citizen')
         end
 
         it 'doesn\'t unset any field with values' do
           record = FactoryGirl.create(:record_with_fragment, record_id: 1234)
           record.unset_null_fields
           raw_record = record.reload.raw_attributes
-          raw_record.should include({'record_id' => 1234})
-          raw_record['fragments'][0].should include({'address' => 'Wellington'})
+          expect(raw_record).to include({'record_id' => 1234})
+          expect(raw_record['fragments'][0]).to include({'address' => 'Wellington'})
         end
 
         it 'should not trigger a db query if there is nothing to unset' do
           record = FactoryGirl.create(:record)
-          record.collection.should_not_receive(:find)
+          expect(record.collection).to_not receive(:find)
           record.unset_null_fields
         end
 
@@ -131,12 +131,12 @@ module SupplejackApi
 
       describe '.find_or_initialize_by_identifier' do
         it 'finds from the internal_identifier param' do
-          Record.should_receive(:find_or_initialize_by).with(internal_identifier: '1234')
+          expect(Record).to receive(:find_or_initialize_by).with(internal_identifier: '1234')
           Record.find_or_initialize_by_identifier({internal_identifier: '1234'})
         end
 
         it 'handles an array of identifiers' do
-          Record.should_receive(:find_or_initialize_by).with(internal_identifier: '1234')
+          expect(Record).to receive(:find_or_initialize_by).with(internal_identifier: '1234')
           Record.find_or_initialize_by_identifier({internal_identifier: ['1234']})
         end
       end
@@ -155,20 +155,20 @@ module SupplejackApi
         it 'sets status deleted on records with the source_id, but without the given job_id' do
           Record.flush_old_records @record1.primary_fragment.source_id, '123'
 
-          @record1.reload.status.should eq 'active'
-          @record2.reload.status.should eq 'deleted'
+          expect(@record1.reload.status).to eq 'active'
+          expect(@record2.reload.status).to eq 'deleted'
         end
 
         it 'only deletes record that don\'t have the job_id in any fragment' do
           @record1.fragments.create(priority: -4, job_id: 'abc', source_id: 'a-fragment')
           Record.flush_old_records @record1.primary_fragment.source_id, '123'
 
-          @record1.reload.status.should eq 'active'
-          @record2.reload.status.should eq 'deleted'
+          expect(@record1.reload.status).to eq 'active'
+          expect(@record2.reload.status).to eq 'deleted'
         end
 
         it 'indexs deleted records' do
-          Sunspot.should_receive(:remove)
+          expect(Sunspot).to receive(:remove)
           Record.flush_old_records @record1.primary_fragment.source_id, '123'
         end
       end

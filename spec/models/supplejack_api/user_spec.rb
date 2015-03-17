@@ -12,30 +12,30 @@ module SupplejackApi
     let(:user) { User.new }
 
     before(:each) do
-      RecordSchema.stub(:default_role) { double(:role, name: :developer) }
+      allow(RecordSchema).to receive(:default_role) { double(:role, name: :developer) }
     end
 
     describe '#role' do
       it 'should set the default value of the role from the Schema' do
-        user.role.should eq 'developer'
+        expect(user.role).to eq 'developer'
       end
     end
 
     it 'should generate a authentication_token after creating a user' do
       user.save
       user.reload
-      user.authentication_token.should_not be_nil
+      expect(user.authentication_token).to_not be_nil
     end
 
     describe "user_sets" do
       describe "custom_find" do
         it "should lookup the UserSet by Mongo ID" do
-          user.user_sets.should_receive(:find).with('503a95b112575773920005f4')
+          expect(user.user_sets).to receive(:find).with('503a95b112575773920005f4')
           user.user_sets.custom_find('503a95b112575773920005f4')
         end
 
         it "should lookup the UserSet by URL if param not an ID" do
-          user.user_sets.should_receive(:where).with(url: 'http://google.com') { [] }
+          expect(user.user_sets).to receive(:where).with(url: 'http://google.com') { [] }
           user.user_sets.custom_find('http://google.com')
         end
       end
@@ -44,37 +44,37 @@ module SupplejackApi
     describe "#sets=" do
       it "creates a new set for the user" do
         user.sets = [{name: "Favourites", privacy: "hidden", priority: 0}]
-        user.user_sets.size.should eq 1
-        user.user_sets.first.name.should eq "Favourites"
-        user.user_sets.first.privacy.should eq "hidden"
-        user.user_sets.first.priority.should eq 0
+        expect(user.user_sets.size).to eq 1
+        expect(user.user_sets.first.name).to eq "Favourites"
+        expect(user.user_sets.first.privacy).to eq "hidden"
+        expect(user.user_sets.first.priority).to eq 0
       end
 
       it "doesn't create a new set when the sets are nil" do
         user.sets = nil
-        user.user_sets.size.should eq 0
+        expect(user.user_sets.size).to eq 0
       end
     end
 
     describe '#name' do
       it "returns the user's name" do
-        User.new(name: 'John').name.should eq 'John'
+        expect(User.new(name: 'John').name).to eq 'John'
       end
 
       it 'returns the username when the name is empty' do
-        User.new(username: 'ben').name.should eq 'ben'
+        expect(User.new(username: 'ben').name).to eq 'ben'
       end
     end
 
     describe '#updated_today?' do
       it 'should return true if the user was last updated today' do
         user.updated_at = Time.now.beginning_of_day + 10.seconds
-        user.updated_today?.should be_truthy
+        expect(user.updated_today?).to be_truthy
       end
 
       it 'should return false when the user was last updated yesterday' do
         user.updated_at = Time.now - 1.day
-        user.updated_today?.should be_falsey
+        expect(user.updated_today?).to be_falsey
       end
     end
 
@@ -82,13 +82,13 @@ module SupplejackApi
       it "should reset daily requests if it wasn't updated today" do
         user.attributes = { updated_at: Time.now-1.day, daily_requests: 100 }
         user.check_daily_requests
-        user.daily_requests.should eq 1
+        expect(user.daily_requests).to eq 1
       end
 
       it 'should increment daily requests if it was updated today' do
         user.attributes = { updated_at: Time.now, daily_requests: 100 }
         user.check_daily_requests
-        user.daily_requests.should eq 101
+        expect(user.daily_requests).to eq 101
       end
 
 
@@ -96,13 +96,13 @@ module SupplejackApi
         pending 'Fix RequestLimitMailer issues'
         # before(:each) do
         #   @email = double
-        #   RequestLimitMailer.stub(:at90percent) { @email }
+        #   RequestLimitMailer).to receive(:at90percent) { @email }
         # end
 
         # it 'should send an email if the user is at 90% daily requests' do
-        #   @email.should_receive(:deliver)
+        #   @email).to receive(:deliver)
         #   user.attributes = { daily_requests: 89, updated_at: Time.now, max_requests: 100 }
-        #   RequestLimitMailer.should_receive(:at90percent).with(user) { @email }
+        #   RequestLimitMailer).to receive(:at90percent).with(user) { @email }
         #   user.check_daily_requests
         # end
 
@@ -113,9 +113,9 @@ module SupplejackApi
         # end
 
         # it 'should send an email if the user has reached 100%' do
-        #   @email.should_receive(:deliver)
+        #   @email).to receive(:deliver)
         #   user.attributes = { daily_requests: 99, updated_at: Time.now, max_requests: 100 }
-        #   RequestLimitMailer.should_receive(:at100percent).with(user) { @email }
+        #   RequestLimitMailer).to receive(:at100percent).with(user) { @email }
         #   user.check_daily_requests
         # end
 
@@ -131,13 +131,13 @@ module SupplejackApi
       it 'should increment daily_requests by 1' do
         user.attributes = { updated_at: Time.now, daily_requests: 100 }
         user.increment_daily_requests
-        user.daily_requests.should eq 101
+        expect(user.daily_requests).to eq 101
       end
 
       it 'increments daily requests when is nil' do
         user.attributes = { updated_at: Time.now, daily_requests: nil }
         user.increment_daily_requests
-        user.daily_requests.should eq 1
+        expect(user.daily_requests).to eq 1
       end
     end
 
@@ -145,49 +145,49 @@ module SupplejackApi
       let(:request) { double(:request, params: { action: ', controller: ' }).as_null_object }
 
       it 'sets the daily_activity_stored flag to false' do
-        request.stub(:params) { { action: 'index', controller: 'records' } }
+        allow(request).to receive(:params) { { action: 'index', controller: 'records' } }
         user.update_daily_activity(request)
-        user.daily_activity_stored.should be_falsey
+        expect(user.daily_activity_stored).to be_falsey
       end
 
       context 'records and search requests' do
         it 'updates the search requests' do
-          request.stub(:params) { { action: 'index', controller: 'records' } }
+          allow(request).to receive(:params) { { action: 'index', controller: 'records' } }
           user.update_daily_activity(request)
-          user.daily_activity['search']['records'].should eq 1
+          expect(user.daily_activity['search']['records']).to eq 1
         end
 
         it 'increases the amount of requests for the day' do
-          request.stub(:params) { {action: 'index', controller: 'records'} }
+          allow(request).to receive(:params) { {action: 'index', controller: 'records'} }
           user.update_daily_activity(request)
-          user.daily_activity['search']['records'].should eq 1
+          expect(user.daily_activity['search']['records']).to eq 1
 
           user.update_daily_activity(request)
-          user.daily_activity['search']['records'].should eq 2
+          expect(user.daily_activity['search']['records']).to eq 2
         end
 
         it 'updates the requests for the record details' do
-          request.stub(:params) { {action: 'show', controller: 'records'} }
+          allow(request).to receive(:params) { {action: 'show', controller: 'records'} }
           user.update_daily_activity(request)
-          user.daily_activity['records']['show'].should eq 1
+          expect(user.daily_activity['records']['show']).to eq 1
         end
 
         it 'updates the requests for multiple records' do
-          request.stub(:params) { {action: 'multiple', controller: 'records'} }
+          allow(request).to receive(:params) { {action: 'multiple', controller: 'records'} }
           user.update_daily_activity(request)
-          user.daily_activity['records']['multiple'].should eq 1
+          expect(user.daily_activity['records']['multiple']).to eq 1
         end
 
         it 'updates the requests for the source redirect' do
-          request.stub(:params) { {action: 'source', controller: 'records'} }
+          allow(request).to receive(:params) { {action: 'source', controller: 'records'} }
           user.update_daily_activity(request)
-          user.daily_activity['records']['source'].should eq 1
+          expect(user.daily_activity['records']['source']).to eq 1
         end
 
         it 'updates the requests for search through a custom search' do
-          request.stub(:params) { {action: 'records', controller: 'custom_searches'} }
+          allow(request).to receive(:params) { {action: 'records', controller: 'custom_searches'} }
           user.update_daily_activity(request)
-          user.daily_activity['search']['custom_search'].should eq 1
+          expect(user.daily_activity['search']['custom_search']).to eq 1
         end
       end
     end
@@ -195,19 +195,19 @@ module SupplejackApi
     describe '#reset_daily_activity' do
       it 'nullifies the daily_activity' do
         user.reset_daily_activity
-        user.daily_activity.should be_nil
+        expect(user.daily_activity).to be_nil
       end
 
       it 'sets the daily_activity_stored flag to true' do
         user.daily_activity_stored = false
         user.reset_daily_activity
-        user.daily_activity_stored.should be_truthy
+        expect(user.daily_activity_stored).to be_truthy
       end
 
       it 'resets the daily requests count' do
         user.daily_requests = 100
         user.reset_daily_activity
-        user.daily_requests.should eq 0
+        expect(user.daily_requests).to eq 0
       end
     end
 
@@ -219,19 +219,19 @@ module SupplejackApi
 
         it 'should return true when daily requests is greater than max requests' do
           user.attributes = {daily_requests: 100, max_requests: 99}
-          user.over_limit?.should be_truthy
+          expect(user.over_limit?).to be_truthy
         end
 
         it 'should return false when daily requests is less than max requests' do
           user.attributes = {daily_requests: 100, max_requests: 110}
-          user.over_limit?.should be_falsey
+          expect(user.over_limit?).to be_falsey
         end
       end
 
       context "user wasn't updated today" do
         it 'should always return false' do
           user.attributes = {updated_at: Time.now-1.day, daily_requests: 100, max_requests: 99}
-          user.over_limit?.should be_falsey
+          expect(user.over_limit?).to be_falsey
         end
       end
     end
@@ -242,17 +242,17 @@ module SupplejackApi
 
       it 'adds up the totals of the last 30 days' do
         FactoryGirl.create(:user_activity, user_id: user.id, total: 2, created_at: Time.now - 5.days)
-        user.calculate_last_30_days_requests.should eq 7
+        expect(user.calculate_last_30_days_requests).to eq 7
       end
 
       it 'ignores requests older than 30 days' do
         FactoryGirl.create(:user_activity, user_id: user.id, total: 2, created_at: Time.now - 31.days)
-        user.calculate_last_30_days_requests.should eq 5
+        expect(user.calculate_last_30_days_requests).to eq 5
       end
 
       it 'stores the requests in monthly_requests field' do
         user.calculate_last_30_days_requests
-        user.monthly_requests.should eq 5
+        expect(user.monthly_requests).to eq 5
       end
     end
 
@@ -265,48 +265,48 @@ module SupplejackApi
       end
 
       it 'returns an array with the total requests per day' do
-        user.requests_per_day(2).should eq [5, 2]
+        expect(user.requests_per_day(2)).to eq [5, 2]
       end
 
       it "returns 0 for days when there isn't any activity" do
         FactoryGirl.create(:user_activity, user_id: user.id, total: 1, created_at: Time.now - 3.day)
-        user.requests_per_day(4).should eq [1, 0, 5, 2]
+        expect(user.requests_per_day(4)).to eq [1, 0, 5, 2]
       end
     end
 
     describe '#name_or_user' do
       it 'should return the name' do
         user.name = 'Federico'
-        user.name_or_user.should eq('Federico')
+        expect(user.name_or_user).to eq('Federico')
       end
 
       it 'should return the username' do
         user.name = ''
         user.username = 'fedegl'
-        user.name_or_user.should eq('fedegl')
+        expect(user.name_or_user).to eq('fedegl')
       end
 
       it 'should return the first part of the email address from name if email' do
         user.name = 'chris.mcdowall@dia.govt.nz'
-        user.name_or_user.should eq('chris.mcdowall')
+        expect(user.name_or_user).to eq('chris.mcdowall')
       end
 
       it 'should return the first part of the email address from username if email' do
         user.name = ''
         user.username = 'chris.mcdowall@dia.govt.nz'
-        user.name_or_user.should eq('chris.mcdowall')
+        expect(user.name_or_user).to eq('chris.mcdowall')
       end
     end
 
     describe '#find_by_api_key' do
       it 'searches for a user by its api key' do
-        User.should_receive(:where).with(authentication_token: '1234').and_return([double(:record)])
+        expect(User).to receive(:where).with(authentication_token: '1234').and_return([double(:record)])
         User.find_by_api_key('1234')
       end
 
       it 'returns nil when user not found' do
-        User.stub(:where).and_return([])
-        User.find_by_api_key('1234').should be_nil
+        allow(User).to receive(:where).and_return([])
+        expect(User.find_by_api_key('1234')).to be_nil
       end
     end
 
@@ -314,7 +314,7 @@ module SupplejackApi
       let(:user) { FactoryGirl.create(:user) }
 
       it 'finds the user by the api_key' do
-        User.custom_find(user.api_key).should eq user
+        expect(User.custom_find(user.api_key)).to eq user
       end
 
       it 'should raise a error when a record is not found' do
@@ -322,7 +322,7 @@ module SupplejackApi
       end
 
       it 'finds the user by the id' do
-        User.custom_find(user.id).should eq user
+        expect(User.custom_find(user.id)).to eq user
       end
     end
 
@@ -331,13 +331,13 @@ module SupplejackApi
         before { user.role = 'admin' }
 
         it "should return true" do
-          user.can_change_featured_sets?.should be_truthy
+          expect(user.can_change_featured_sets?).to be_truthy
         end
       end
 
       context "user" do
         it "should return false" do
-          user.can_change_featured_sets?.should be_falsey
+          expect(user.can_change_featured_sets?).to be_falsey
         end
       end
     end

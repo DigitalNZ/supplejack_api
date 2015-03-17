@@ -16,10 +16,10 @@ module SupplejackApi
       respond_with @user, serializer: UserSerializer
     end
     
-    # def create
-    #   @user = User.create(user_params)
-    #   respond_with @user, location: user_url(@user), serializer: UserSerializer
-    # end
+    def create
+      @user = User.create(user_params)
+      respond_with @user, location: user_url(@user), serializer: UserSerializer
+    end
   
     # def update
     #   @user = User.custom_find(params[:id])
@@ -33,10 +33,10 @@ module SupplejackApi
     #   respond_with @user
     # end
   
-    # private
+    private
   
-    # def user_params
-    #   params.require(:user).permit(:name, :username, :email, :encrypted_password, :sets, :authentication_token)
-    # end
+    def user_params
+      params.require(:user).permit(:name, :username, :email, :encrypted_password, :sets, :authentication_token)
+    end
   end
 end

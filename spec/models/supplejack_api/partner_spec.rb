@@ -12,7 +12,7 @@ module SupplejackApi
     describe 'validations' do
       it 'is not valid without a name' do
         partner = Partner.new()
-        partner.valid?.should be_falsey
+        expect(partner.valid?).to be_falsey
       end
     end
   end

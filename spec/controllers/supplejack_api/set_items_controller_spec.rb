@@ -13,45 +13,45 @@ module SupplejackApi
 
     before {
       @user = FactoryGirl.create(:user, authentication_token: "abc123")
-      controller.stub(:authenticate_user!) { true }
-      controller.stub(:current_user) { @user }
+      allow(controller).to receive(:authenticate_user!) { true }
+      allow(controller).to receive(:current_user) { @user }
       @user_set = FactoryGirl.create(:user_set_with_set_item)
       @set_item = @user_set.set_items.first
-      controller.current_user.user_sets.stub(:custom_find) { @user_set }
+      allow(controller.current_user.user_sets).to receive(:custom_find) { @user_set }
     }
 
     describe "POST 'create'" do
       it 'creates the set item through the @user_set' do
-        @user_set.set_items.should_receive(:build).with({'record_id' => '2'}) { @set_item }
-        @user_set.should_receive(:save).and_return(true)
+        expect(@user_set.set_items).to receive(:build).with({'record_id' => '2'}) { @set_item }
+        expect(@user_set).to receive(:save).and_return(true)
         post :create, user_set_id: @user_set.id, record: { record_id: '2' }, format: :json
       end
     end
     
     describe "DELETE 'destroy'" do
       before(:each) do
-        @user_set.set_items.stub(:find_by_record_id) { @set_item }
+        allow(@user_set.set_items).to receive(:find_by_record_id) { @set_item }
       end
 
       it 'finds the @set_item through the user_set' do
-        @user_set.set_items.should_receive(:find_by_record_id).with('12')
+        expect(@user_set.set_items).to receive(:find_by_record_id).with('12')
         delete :destroy, user_set_id: @user_set.id, id: '12', format: :json
       end
 
       it 'destroys the @set_item' do
-        @set_item.should_receive(:destroy)
+        expect(@set_item).to receive(:destroy)
         delete :destroy, user_set_id: @user_set.id, id: '12', format: :json
       end
 
       context 'it doesn\'t find the set_item' do
         before(:each) do
-          @user_set.set_items.stub(:find_by_record_id) { nil }
+          allow(@user_set.set_items).to receive(:find_by_record_id) { nil }
         end
 
         it 'returns a 404' do
           delete :destroy, user_set_id: @user_set.id, id: '12'
-          response.code.should eq '404'
-          response.body.should eq({errors: 'The record with id: 12 was not found.'}.to_json)
+          expect(response.code).to eq '404'
+          expect(response.body).to eq({errors: 'The record with id: 12 was not found.'}.to_json)
         end
       end
     end

@@ -48,7 +48,7 @@ SupplejackApi::Engine.routes.draw do
   end
   
   # User level authentication
-  resources :users, only: [:show] do
+  resources :users, only: [:show, :create, :update, :destroy] do
     get "/sets" => "user_sets#admin_index", as: :user_sets
   end
   devise_for :users, class_name: 'SupplejackApi::User'

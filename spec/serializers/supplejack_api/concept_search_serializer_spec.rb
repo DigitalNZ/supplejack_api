@@ -17,16 +17,16 @@ module SupplejackApi
 
     describe '#default?' do
       it 'should return true when default is part of the groups' do
-        serializer(groups: [:default]).default?.should be_truthy
+        expect(serializer(groups: [:default]).default?).to be_truthy
       end
 
       it 'should return false when the group is verbose' do
-        serializer(groups: [:verbose]).default?.should be_falsey
+        expect(serializer(groups: [:verbose]).default?).to be_falsey
       end
 
       it 'should return false' do
-        serializer(groups: nil).default?.should be_falsey
-        serializer(groups: []).default?.should be_falsey
+        expect(serializer(groups: nil).default?).to be_falsey
+        expect(serializer(groups: []).default?).to be_falsey
       end
     end
   end

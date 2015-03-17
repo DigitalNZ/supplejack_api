@@ -15,7 +15,7 @@ module SupplejackApi
   		let!(:suppressed_source) { FactoryGirl.create(:source, status: 'suppressed') }
   
   		it 'should return all the suppressed sources' do
-  		  Source.suppressed.to_a.should eq [suppressed_source]
+  		  expect(Source.suppressed.to_a).to eq [suppressed_source]
   		end
   	end
   end

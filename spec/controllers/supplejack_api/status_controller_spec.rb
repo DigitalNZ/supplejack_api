@@ -14,38 +14,38 @@ module SupplejackApi
     let(:logger) { double(:logger).as_null_object }
 
     before do
-      Support::StatusLogger.stub(:logger) { logger }
+      allow(Support::StatusLogger).to receive(:logger) { logger }
     end
 
     describe "GET 'status'" do
       it "returns a '200' HTTP status if both Solr and Mongo are up and running" do
-        controller.stub(:solr_up?).and_return(true)
-        controller.stub(:mongod_up?).and_return(true)
+        allow(controller).to receive(:solr_up?).and_return(true)
+        allow(controller).to receive(:mongod_up?).and_return(true)
 
         get :show
-        response.status.should == 200
+        expect(response.status).to eq 200
       end
 
       it "returns a '500' HTTP response if Solr is down" do
-        controller.stub(:solr_up?).and_return(false)
-        controller.stub(:mongod_up?).and_return(true)
+        allow(controller).to receive(:solr_up?).and_return(false)
+        allow(controller).to receive(:mongod_up?).and_return(true)
 
         get :show
-        response.status.should == 500
+        expect(response.status).to eq 500
       end
 
       it "returns a '500' http response if Mongo is down" do
-        controller.stub(:solr_up?).and_return(true)
-        controller.stub(:mongod_up?).and_return(false)
+        allow(controller).to receive(:solr_up?).and_return(true)
+        allow(controller).to receive(:mongod_up?).and_return(false)
 
         get :show
-        response.status.should == 500
+        expect(response.status).to eq 500
       end
 
       it "logs an error message when the status call takes a long time" do
-        controller.stub(:solr_up?).and_raise(Timeout::Error)
+        allow(controller).to receive(:solr_up?).and_raise(Timeout::Error)
 
-        logger.should_receive(:error)
+        expect(logger).to receive(:error)
         get :show
       end
     end
@@ -59,9 +59,9 @@ module SupplejackApi
           </response>
         EOF
 
-        RestClient.stub(:get) { ok_xml_string }
+        allow(RestClient).to receive(:get) { ok_xml_string }
 
-        controller.send(:solr_up?).should be_truthy
+        expect(controller.send(:solr_up?)).to be_truthy
       end
 
       it "returns false when solr is running but failing" do
@@ -71,22 +71,22 @@ module SupplejackApi
             <str name="status">NOK</str>
           </response>
         EOF
-        RestClient.stub(:get) { failed_xml_string }
+        allow(RestClient).to receive(:get) { failed_xml_string }
 
-        controller.send(:solr_up?).should be_falsey
+        expect(controller.send(:solr_up?)).to be_falsey
       end
 
       context "solr is down" do
         before(:each) do
-          RestClient.stub(:get).and_raise(StandardError)
+          allow(RestClient).to receive(:get).and_raise(StandardError)
         end
 
         it "returns false" do
-          controller.send(:solr_up?).should be_falsey
+          expect(controller.send(:solr_up?)).to be_falsey
         end
 
         it "should log an error" do
-          logger.should_receive(:error)
+          expect(logger).to receive(:error)
           controller.send(:solr_up?)
         end
       end
@@ -94,24 +94,24 @@ module SupplejackApi
 
     describe "#mongod_up?" do
       it "returns true when mongod is up and running" do
-        Record.stub_chain(:collection, :database, :session).and_return(session).as_null_object
-        session.should_receive(:command).with(ping: 1).and_return({"ok" => 1})
+        allow(Record).to receive_message_chain(:collection, :database, :session).and_return(session)
+        expect(session).to receive(:command).with(ping: 1).and_return({"ok" => 1})
 
-        controller.send(:mongod_up?).should be_truthy
+        expect(controller.send(:mongod_up?)).to be_truthy
       end
 
       context "mongod is down" do
         before(:each) do
-          Record.stub_chain(:collection, :database, :session).and_return(session).as_null_object
-          session.should_receive(:command).with(ping: 1).and_return(nil)
+          allow(Record).to receive_message_chain(:collection, :database, :session).and_return(session)
+          expect(session).to receive(:command).with(ping: 1).and_return(nil)
         end
 
         it "returns false" do
-          controller.send(:mongod_up?).should be_falsey
+          expect(controller.send(:mongod_up?)).to be_falsey
         end
 
         it "should log an error" do
-          logger.should_receive(:error)
+          expect(logger).to receive(:error)
           controller.send(:mongod_up?)
         end
       end

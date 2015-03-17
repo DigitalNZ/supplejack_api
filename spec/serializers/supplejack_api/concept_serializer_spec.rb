@@ -9,7 +9,7 @@ require 'spec_helper'
 
 module SupplejackApi
   describe ConceptSerializer do
-    before { ConceptSchema.stub(:roles) { double(:developer).as_null_object } }
+    before { allow(ConceptSchema).to receive(:roles) { double(:developer).as_null_object } }
 
     def serializer(options={}, attributes={})
       concept_fields = Concept.fields.keys
@@ -27,7 +27,7 @@ module SupplejackApi
       it 'merges in the hash the requested fields' do
         s = serializer({ fields: [:gender] }, { gender: 'female' })
         s.include_individual_fields!(@hash)
-        @hash.should eq({ gender: 'female' })
+        expect(@hash).to eq({ gender: 'female' })
       end
     end
 

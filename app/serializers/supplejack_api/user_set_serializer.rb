@@ -8,13 +8,17 @@
 module SupplejackApi
   class UserSetSerializer < ActiveModel::Serializer
 
-    attributes :id, :name, :count, :priority, :featured, :approved, :created_at, :updated_at
+    attributes :name, :count, :priority, :featured, :approved, :created_at, :updated_at
+    has_one :record, serializer: UserSetRecordSerializer
     root :set
 
     def serializable_hash
-      hash = attributes
+      hash = { id: object.id.to_s}
+      hash.merge! attributes
 
       options.reverse_merge!(items: true)
+
+      include!(:record, :node => hash)
 
       if options[:items]
         hash[:description] = object.description

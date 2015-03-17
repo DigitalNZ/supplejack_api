@@ -16,25 +16,25 @@ module SupplejackApi
       let(:user) { double(User).as_null_object }
 
       before(:each) do
-        controller.stub(:current_admin_user) { user }
-        controller.stub(:authenticate_admin_user!) { true }
+        allow(controller).to receive(:current_admin_user) { user }
+        allow(controller).to receive(:authenticate_admin_user!) { true }
       end
       
       describe 'GET index' do
-        before { SiteActivity.stub(:sortable) { [site_activity] } }
+        before { allow(SiteActivity).to receive(:sortable) { [site_activity] } }
 
         it 'finds all site activities' do
           get :index
-          assigns(:site_activities).should eq [site_activity]
+          expect(assigns(:site_activities)).to eq [site_activity]
         end
 
         it 'sorts the site activities by the order param' do
-          SiteActivity.should_receive(:sortable).with(hash_including(order: 'total_asc'))
+          expect(SiteActivity).to receive(:sortable).with(hash_including(order: 'total_asc'))
           get :index, order: 'total_asc'
         end
 
         it 'paginates the site activities' do
-          SiteActivity.should_receive(:sortable).with(hash_including(page: '2'))
+          expect(SiteActivity).to receive(:sortable).with(hash_including(page: '2'))
           get :index, page: 2
         end
       end

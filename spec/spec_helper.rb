@@ -17,6 +17,7 @@ require 'timecop'
 require 'sunspot_matchers'
 require 'mongoid-rspec'
 require 'simplecov'
+require 'rspec/active_model/mocks'
 
 SimpleCov.start
 
@@ -47,8 +48,8 @@ RSpec.configure do |config|
     %w(record concept).each do |model|
       klass = "#{model.capitalize}Schema".constantize
 
-      klass.stub(:default_role) { double(:role, name: :developer) }
-      klass.stub_chain(:roles, :keys) { [:developer] }
+      allow(klass).to receive(:default_role) { double(:role, name: :developer) }
+      allow(klass).to receive_message_chain(:roles, :keys) { [:developer] }
     end
   end
 

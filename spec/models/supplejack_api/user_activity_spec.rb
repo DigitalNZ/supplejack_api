@@ -15,19 +15,19 @@ module SupplejackApi
       it 'generates the total for the grouped activities' do
         activity.user_sets = {create: 1, update: 2, destroy: 3, index: 4, show: 5}
         activity.calculate_total_for(:user_sets)
-        activity.user_sets['total'].should eq 15
+        expect(activity.user_sets['total']).to eq 15
       end
   
       it 'handles activities with null values' do
         activity.search = {records: nil, custom_search: 3}
         activity.calculate_total_for(:search)
-        activity.search['total'].should eq 3
+        expect(activity.search['total']).to eq 3
       end
   
       it 'handles where the whole hash is nil' do
         activity.search = nil
         activity.calculate_total_for(:search)
-        activity.search['total'].should eq 0
+        expect(activity.search['total']).to eq 0
       end
     end
   
@@ -38,13 +38,13 @@ module SupplejackApi
         activity.records =          {'total' => 3}
         activity.custom_searches =  {'total' => 5}
         activity.calculate_total
-        activity.total.should eq 11
+        expect(activity.total).to eq 11
       end
   
       it 'handles nil fields' do
         activity.user_sets = nil
         activity.calculate_total
-        activity.total.should eq 0
+        expect(activity.total).to eq 0
       end
     end
   
@@ -57,31 +57,31 @@ module SupplejackApi
   
       it 'buils a user_activity with user_sets stats' do
         user_activity = UserActivity.build_from_user(activity)
-        user_activity.user_sets.should eq({'total' => 1})
+        expect(user_activity.user_sets).to eq({'total' => 1})
       end
   
       it 'buils a user_activity with search stats' do
         user_activity = UserActivity.build_from_user(activity)
-        user_activity.search.should eq({'custom_search' => 2, 'total' => 2})
+        expect(user_activity.search).to eq({'custom_search' => 2, 'total' => 2})
       end
   
       it 'buils a user_activity with records stats' do
         user_activity = UserActivity.build_from_user(activity)
-        user_activity.records.should eq({'show' => 1, 'multiple' => 2, 'total' => 3})
+        expect(user_activity.records).to eq({'show' => 1, 'multiple' => 2, 'total' => 3})
       end
   
       it 'buils a user_activity with custom_searches stats' do
         user_activity = UserActivity.build_from_user(activity)
-        user_activity.custom_searches.should eq({'index' => 1, 'show' => 2, 'total' => 3})
+        expect(user_activity.custom_searches).to eq({'index' => 1, 'show' => 2, 'total' => 3})
       end
   
       it 'calculates the total of requests' do
         user_activity = UserActivity.build_from_user(activity)
-        user_activity.total.should eq 9
+        expect(user_activity.total).to eq 9
       end
   
       it 'returns nil when there is no activity for a group' do
-        UserActivity.build_from_user(nil).records.should be_nil
+        expect(UserActivity.build_from_user(nil).records).to be_nil
       end
     end
   end

@@ -29,8 +29,8 @@ module SupplejackApi
       end
       datetime :syndication_date,                         search_as: [:filter]
       string :text, solr_name: :text
-      string :display_date, date_format: "%y/%d/%m"
-      string :dnz_type, default_value: "Unknown"
+      string :display_date, date_format: '%y/%d/%m'
+      string :dnz_type, default_value: 'Unknown'
 
       latlon(:lat_lng) do
         search_as [:filter]
@@ -83,12 +83,14 @@ module SupplejackApi
           }
         )
       end
+
+      model_field :name, field_options: { type: String }, validation: { presence: true }, index_fields: { name: 1, address: 1 }, index_options: { background: true }, store: false
     end
 
 
     describe '#fields' do
 
-      it "describes title" do
+      it 'describes title' do
         expect(ExampleSchema.fields[:title].name).to eq :title
         expect(ExampleSchema.fields[:title].type).to eq :string
         expect(ExampleSchema.fields[:title].search_boost).to eq 10
@@ -97,14 +99,14 @@ module SupplejackApi
         expect(ExampleSchema.fields[:title].namespace_field).to eq :creator
       end
 
-      it "deiscribe dnz_type" do
+      it 'deiscribe dnz_type' do
         expect(ExampleSchema.fields[:dnz_type].name).to eq :dnz_type
-        expect(ExampleSchema.fields[:dnz_type].default_value).to eq "Unknown"
+        expect(ExampleSchema.fields[:dnz_type].default_value).to eq 'Unknown'
       end
 
-      it "deiscribe display_date" do
+      it 'deiscribe display_date' do
         expect(ExampleSchema.fields[:display_date].name).to eq :display_date
-        expect(ExampleSchema.fields[:display_date].date_format).to eq "%y/%d/%m"
+        expect(ExampleSchema.fields[:display_date].date_format).to eq '%y/%d/%m'
       end
 
       it 'describes display_collection' do
@@ -145,14 +147,14 @@ module SupplejackApi
         expect(ExampleSchema.fields[:text].solr_name).to eq :text
       end
 
-      it "describes lat_lng" do
+      it 'describes lat_lng' do
         expect(ExampleSchema.fields[:lat_lng].name).to eq :lat_lng
         expect(ExampleSchema.fields[:lat_lng].type).to eq :latlon
         expect(ExampleSchema.fields[:lat_lng].search_as).to eq [:filter]
         expect(ExampleSchema.fields[:lat_lng].multi_value).to be_truthy
       end      
 
-      context "namespace field" do
+      context 'namespace field' do
         it 'returns the namespace field' do
           expect(ExampleSchema.fields[:title].namespace_field).to eq :creator
         end
@@ -225,14 +227,14 @@ module SupplejackApi
       end
     end
 
-    describe "#namespaces" do
-      it "should return all the defined namespaces" do
+    describe '#namespaces' do
+      it 'should return all the defined namespaces' do
         expect(ExampleSchema.namespaces.keys).to eq([:dc])
       end
     end
 
     describe '#mongo_indexes' do
-      it "returns all the mongo indexes that are defined" do
+      it 'returns all the mongo indexes that are defined' do
         expect(ExampleSchema.mongo_indexes.keys).to eq [:year, :title_is_natlib_record]
       end
 
@@ -245,5 +247,26 @@ module SupplejackApi
       end
     end
 
+    describe '#model_field' do
+      it 'returns all the model fields that are defined' do
+        expect(ExampleSchema.model_fields.keys).to eq [:name]  
+      end
+
+      it 'returns the field_options for a model' do
+        expect(ExampleSchema.model_fields[:name].field_options).to include({ type: String })
+      end
+
+      it 'returns the validation for a model' do
+        expect(ExampleSchema.model_fields[:name].validation).to include({ presence: true })
+      end
+
+      it 'returns the index_fields for a model' do
+        expect(ExampleSchema.model_fields[:name].index_fields).to include({ name: 1 })
+      end
+
+      it 'returns the index_options for a model' do
+        expect(ExampleSchema.model_fields[:name].index_options).to include({ background: true })
+      end
+    end
   end
 end

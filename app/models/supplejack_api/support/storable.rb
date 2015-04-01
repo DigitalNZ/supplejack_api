@@ -15,10 +15,29 @@ module SupplejackApi
     		include Mongoid::Timestamps
         include Mongoid::Attributes::Dynamic
 
+        # Both of these fields are required in SJ API Core
+        # No need to configure in *Schema
         field :internal_identifier,         type: String
         field :status,                      type: String
+        index status: 1
+        index internal_identifier: 1
 
-        validates :internal_identifier,     presence: true
+        def self.build_model_fields
+          if RecordSchema.model_fields.present?
+            RecordSchema.model_fields.each do |name, index|
+              # Set the field
+              field name.to_sym, index.field_options if !!index.field_options
+
+              # Set the index
+              index_fields = !!index.index_fields ? index.index_fields : {}
+              index_options = !!index.index_options ? index.index_options : {}
+              index index_fields, index_options unless index_fields.empty?
+
+              # Set the validation
+              validates name.to_sym, index.validation if !!index.validation
+            end
+          end
+        end
       end
     end
   end

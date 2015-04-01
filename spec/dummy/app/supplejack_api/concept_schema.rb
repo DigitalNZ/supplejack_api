@@ -74,4 +74,10 @@ class ConceptSchema
   end
   role :admin
 
+  model_field :label, index_fields: { label: 1 }
+  model_field :gender, index_fields: { gender: 1 }
+  model_field :dateOfBirth, index_fields: { dateOfBirth: 1 }
+  model_field :dateOfDeath, index_fields: { dateOfDeath: 1 }
+  model_field :type, index_fields: { type: 1 }
+
 end

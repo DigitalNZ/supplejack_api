@@ -24,6 +24,8 @@ module SupplejackApi::Concerns::Record
     scope :suppressed, -> { where(status: 'suppressed') }
     scope :solr_rejected, -> { where(status: 'solr_rejected') }
 
+    build_model_fields
+
     def self.find_multiple(ids)
       return [] unless ids.try(:any?)
       string_ids = ids.find_all {|id| id.to_s.length > 10 }

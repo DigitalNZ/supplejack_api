@@ -21,6 +21,8 @@ module SupplejackApi
     auto_increment :record_id, session: 'strong', collection: 'preview_sequences'
     auto_increment :concept_id, session: 'strong', collection: 'preview_sequences'
 
+    build_model_fields
+
     def fragment_class
       SupplejackApi::ApiRecord::RecordFragment
     end

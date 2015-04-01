@@ -14,11 +14,12 @@ module SupplejackApi
       group: [:fields, :includes],
       role: [:default, :field_restrictions, :record_restrictions],
       namespace: [:url],
-      mongo_index: [:fields, :index_options]
+      mongo_index: [:fields, :index_options],
+      model_field: [:type, :field_options, :validation, :index_fields, :index_options]
     }
 
     included do
-      cattr_accessor :fields, :groups, :roles, :default_role, :namespaces, :mongo_indexes
+      cattr_accessor :fields, :groups, :roles, :default_role, :namespaces, :mongo_indexes, :model_fields
     end
 
     module ClassMethods
@@ -70,6 +71,13 @@ module SupplejackApi
 
         mongo_index = MongoIndex.new(name, options)
         self.mongo_indexes[name] = mongo_index
+      end
+
+      def model_field(name, options={}, &block)
+        self.model_fields ||= {}
+
+        model_field = ModelField.new(name, options)
+        self.model_fields[name] = model_field
       end
     end
 
@@ -132,6 +140,9 @@ module SupplejackApi
     end
 
     class MongoIndex < SchemaObject
+    end
+
+    class ModelField < SchemaObject
     end
 
   end

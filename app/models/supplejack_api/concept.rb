@@ -24,13 +24,7 @@ module SupplejackApi
     index({ concept_id: 1 }, { unique: true })
     auto_increment :concept_id, session: 'strong'
 
-    # TODO Move these indexes to ConceptFragment? 
-    index label: 1
-    index name: 1
-    index gender: 1
-    index dateOfBirth: 1
-    index dateOfDeath: 1
-    index type: 1
+    build_model_fields
 
     # Callbacks
     before_save :merge_fragments

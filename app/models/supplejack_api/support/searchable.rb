@@ -20,7 +20,7 @@ module SupplejackApi
             primary_fragment.source_id
           end
   
-          self.build_sunspot_schema(self)
+          build_sunspot_schema(self)
         end
       end
 

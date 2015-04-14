@@ -14,9 +14,18 @@ module SupplejackApi
       def create
         klass = params[:preview] ? SupplejackApi::PreviewRecord : SupplejackApi::Record
         @record = klass.find_or_initialize_by_identifier(params[:record])
-        @record.set_status(params[:required_fragments])
-        @record.create_or_update_fragment(params[:record])
 
+        # In the long run this condition shouldn't be here.
+        # It's because the data_handler interfaces are using update_from_harvest,
+        # and clear_attributes that I can't factor it back in.
+        if params[:record][:priority] and params[:record][:priority].to_i != 0
+          @record.create_or_update_fragment(params[:record])
+        else
+          @record.clear_attributes
+          @record.update_from_harvest(params[:record])
+        end
+
+        @record.set_status(params[:required_fragments])
         @record.save
         @record.unset_null_fields
         render json: { record_id: @record.record_id }

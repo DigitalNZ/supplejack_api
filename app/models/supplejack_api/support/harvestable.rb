@@ -22,6 +22,29 @@ module SupplejackApi
         fragment.update_from_harvest(attributes)
       end
 
+
+      def update_from_harvest(attributes={})
+        attributes = attributes.try(:symbolize_keys) || {}
+
+        attributes[:status] ||= "active"
+
+        self.class.fields.each do |name, field|
+          if attributes.has_key?(name.to_sym)
+            value = Array(attributes[name.to_sym]).first
+            self.send("#{name}=", value)
+          end
+        end
+
+        self.primary_fragment.update_from_harvest(attributes)
+        self.updated_at = Time.now
+      end
+
+
+      def update_from_harvest!(attributes={})
+        self.update_from_harvest(attributes)
+        self.save
+      end
+
       def set_status(required_fragments)
         missing_fragments = Array(required_fragments) - self.fragments.map(&:source_id)
         self.status = missing_fragments.empty? ? 'active' : 'partial'

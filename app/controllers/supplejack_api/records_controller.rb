@@ -37,6 +37,11 @@ module SupplejackApi
       end
     end
 
+    def multiple
+      @records = Record.find_multiple(params[:record_ids])
+      respond_with @records
+    end
+
     # This options are merged with the serializer options. Which will allow the serializer
     # to know which fields to render for a specific request
     #

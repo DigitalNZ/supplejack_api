@@ -9,7 +9,10 @@ SupplejackApi::Engine.routes.draw do
   root to: 'records#index'
 
   # Records
-  resources :records, only: [:index, :show]
+  resources :records, only: [:index, :show] do
+    get :multiple, on: :collection
+    get :source, on: :member
+  end
 
   # Concepts
   resources :concepts, only: [:index, :show]

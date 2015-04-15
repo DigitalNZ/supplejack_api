@@ -67,31 +67,48 @@ module SupplejackApi
       let(:developer_restriction) { double(:developer_restriction).as_null_object }
 
       before(:each) do
-        @record = FactoryGirl.create(:record)
+        @record = create(:record)
         allow(controller).to receive(:current_user) { @user }
         allow(RecordSchema).to receive(:roles) { {developer: developer_restriction} }
       end
 
       it 'should find the record and assign it' do
         expect(Record).to receive(:custom_find).with('123', @user, {}).and_return(@record)
-        get :show, id: 123, search: {}, api_key: 'abc123', format: "json"
+        get :show, id: 123, search: {}, api_key: 'apikey', format: 'json'
         expect(assigns(:record)).to eq(@record)
       end
 
       it 'renders a error when records is not found' do
         allow(Record).to receive(:custom_find).and_raise(Mongoid::Errors::DocumentNotFound.new(Record, ['123'], ['123']))
-        get :show, id: 123, search: {}, api_key: 'abc123', :format => 'json'
+        get :show, id: 123, search: {}, api_key: 'apikey', format: 'json'
         expect(response.body).to eq({:errors => 'Record with ID 123 was not found'}.to_json)
       end
 
       it 'merges the scope in the options' do
         expect(Record).to receive(:custom_find).with('123', @user, {'and' => {'category' => 'Books'}}).and_return(@record)
-        get :show, id: 123, search: {and: {category: 'Books'}}, api_key: 'abc123', format: "json"
+        get :show, id: 123, search: {and: {category: 'Books'}}, api_key: 'apikey', format: 'json'
         expect(assigns(:record)).to eq(@record)
       end
     end
 
-     describe '#default_serializer_options' do
+    describe 'GET multiple' do
+      let(:developer_restriction) { double(:developer_restriction).as_null_object }
+
+      before(:each) do
+        @record = create(:record)
+        allow(controller).to receive(:current_user) { @user }
+        allow(RecordSchema).to receive(:roles) { {developer: developer_restriction} }
+      end
+      
+      it 'should find multiple records and assign them' do
+        @records = [create(:record), create(:record)]
+        allow(Record).to receive(:find_multiple) { @records }
+        get :multiple, record_ids: [123, 124, 456], api_key: 'apikey', format: 'json'
+        expect(assigns(:records)).to eq(@records)
+      end
+    end
+
+    describe '#default_serializer_options' do
       before(:each) do
         @search = RecordSearch.new
         allow(RecordSearch).to receive(:new) { @search }

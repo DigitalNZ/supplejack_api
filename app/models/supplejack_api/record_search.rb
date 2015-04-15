@@ -6,7 +6,7 @@
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
-	class RecordSearch < Search
+  class RecordSearch < Search
 
-	end
+  end
 end

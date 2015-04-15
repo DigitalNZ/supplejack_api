@@ -18,5 +18,13 @@ module SupplejackApi
     it 'routes /records/1.format to records#index' do
       expect(get '/records/99.json').to route_to(controller: 'supplejack_api/records', action: 'show', id: '99', format: 'json')
     end
+    
+    it 'routes /records/multiple.json records#multiple' do
+      expect(get: '/records/multiple.json').to route_to(controller: 'supplejack_api/records', action: 'multiple', format: 'json')
+    end
+    
+    it 'routes /records/10/source.json records#source' do
+      expect(get: '/records/10/source.json').to route_to(controller: 'supplejack_api/records', action: 'source', format: 'json', id: '10')
+    end
   end
 end

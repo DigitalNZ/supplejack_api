@@ -8,6 +8,7 @@
 module SupplejackApi
   class RecordsController < ApplicationController
     
+    skip_before_action :authenticate_user!, :only => [:source, :status]
     respond_to :json, :xml, :rss
 
     def index
@@ -26,6 +27,10 @@ module SupplejackApi
       rescue Sunspot::UnrecognizedFieldError => e
         render request.format.to_sym => { errors: e.to_s }, status: :bad_request 
       end
+    end
+
+    def status
+      render nothing: true
     end
 
     def show

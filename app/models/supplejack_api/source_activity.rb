@@ -18,7 +18,7 @@ module SupplejackApi
 
 		def self.increment
 			if self.first
-				self.first.inc(:source_clicks, 1)
+				self.first.inc(source_clicks: 1)
 			else
 				SourceActivity.create(source_clicks: 1)
 			end

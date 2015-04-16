@@ -83,6 +83,30 @@ module SupplejackApi::Concerns::Record
       end
     end
 
+    def redirect_url
+      if merged_fragment.present?
+        if merged_fragment.landing_url.present?
+          if merged_fragment.landing_url.match(/replace_this/)
+            merged_fragment.landing_url.gsub(/replace_this/, self.record_id.to_s)
+          else
+            merged_fragment.landing_url
+          end
+        else
+          "http://#{ENV['WWW_DOMAIN']}/record-not-found"
+        end
+      else
+        if landing_url.present?
+          if landing_url.match(/replace_this/)
+            landing_url.gsub(/replace_this/, self.record_id.to_s)
+          else
+            landing_url
+          end
+        else
+          "http://#{ENV['WWW_DOMAIN']}/record-not-found"
+        end
+      end
+    end
+
     def active?
       self.status == 'active'
     end

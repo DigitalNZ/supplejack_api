@@ -11,7 +11,6 @@ SupplejackApi::Engine.routes.draw do
   # Records
   resources :records, only: [:index, :show] do
     get :multiple, on: :collection
-    get :source, on: :member
   end
 
   # Concepts

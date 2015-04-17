@@ -47,22 +47,6 @@ module SupplejackApi
       respond_with @records
     end
 
-    def source
-      begin
-        @record = SupplejackApi::Record.custom_find(params[:id])
-
-        # TODO: KEEP IN ENGINE?
-        # track_google_analytics!({content_partner:  @record.display_content_partner, collection: @record.display_collection, :id => @record.record_id})
-
-        @record.link_check if @record.landing_url.present?
-
-        SupplejackApi::SourceActivity.increment
-        redirect_to @record.redirect_url
-      rescue Mongoid::Errors::DocumentNotFound
-        render request.format.to_sym => {:errors => "Record with ID #{params[:id]} was not found" }, :status => :not_found 
-      end
-    end
-
     # This options are merged with the serializer options. Which will allow the serializer
     # to know which fields to render for a specific request
     #

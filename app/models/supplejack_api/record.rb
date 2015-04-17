@@ -13,6 +13,5 @@ module SupplejackApi
     include Support::FragmentHelpers
     include ActiveModel::SerializerSupport
     include SupplejackApi::Concerns::Record
-    include SupplejackApi::ApiRecord::LinkCheckable
   end
 end

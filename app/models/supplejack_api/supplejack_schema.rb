@@ -13,6 +13,7 @@ module SupplejackApi
     CORE_FIELDS = [
 	    :internal_identifier,
 	    :status,
+	    :record_type,
 	    :created_at,
 	    :updated_at
 	  ]

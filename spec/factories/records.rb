@@ -9,9 +9,10 @@ module SupplejackApi
   FactoryGirl.define do
     factory :record, class: SupplejackApi::Record do
       internal_identifier   'nlnz:1234'
-      record_id			         54321
-      status			           'active'
+      record_id              54321
+      status                 'active'
       source_url             'http://google.com/landing.html'
+      record_type            0
   
       factory :record_with_fragment do
         fragments            { [FactoryGirl.build(:record_fragment)] }
@@ -24,11 +25,11 @@ module SupplejackApi
       name            'John Doe'
       address         'Wellington'
       email           ['johndoe@example.com']
-      children			  ['Sally Doe', 'James Doe']
+      children        ['Sally Doe', 'James Doe']
       contact         nil
       age             30
       birth_date      DateTime.now
-      nz_citizen	    true
+      nz_citizen      true
     end  
   end
 

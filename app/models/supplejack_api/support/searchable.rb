@@ -15,6 +15,7 @@ module SupplejackApi
   
         searchable if: :should_index? do
           string :internal_identifier
+          string :record_type
           
           string :source_id do
             primary_fragment.source_id

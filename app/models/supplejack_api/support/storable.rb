@@ -19,8 +19,11 @@ module SupplejackApi
         # No need to configure in *Schema
         field :internal_identifier,         type: String
         field :status,                      type: String
+        field :record_type,                 type: Integer,    default: 0
+        
         index status: 1
         index internal_identifier: 1
+        index record_type: 1
 
         def self.build_model_fields
           if RecordSchema.model_fields.present?

@@ -14,6 +14,7 @@ module SupplejackApi::Concerns::Searchable
       facets_per_page: 150, 
       facets_page: 5000
     }
+
     def initialize(options={})
       @options = options.dup
       @options.reverse_merge!(

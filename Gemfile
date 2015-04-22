@@ -16,7 +16,7 @@ gemspec
 gem 'jquery-rails'
 
 # Xml doesn't get support in AMS, this is an existing fork
-gem 'active_model_serializers', git: "https://github.com/boost/active_model_serializers"
+gem 'active_model_serializers', git: 'https://github.com/boost/active_model_serializers'
 gem 'mongoid_auto_inc', git: 'https://github.com/boost/mongoid_auto_inc.git'
 
 # Must add 'require' statments in Gemfile
@@ -28,5 +28,6 @@ gem 'rb-fsevent', require: false
 gem 'cucumber-rails', require: false
 gem 'factory_girl_rails', require: false
 gem 'simplecov', require: false
-gem 'pry-rails'
+gem 'pry', require: true
+gem 'pry-byebug', require: true
 gem 'xml_spec', git: "https://github.com/boost/xml_spec", require: false # This is a gem created by fedegl to test the XML responses, its part of the Boost github organization account

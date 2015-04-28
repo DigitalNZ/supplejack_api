@@ -89,7 +89,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rb-fsevent', '~> 0.9.1'
   s.add_development_dependency 'simplecov', '~> 0.6.4'
   s.add_development_dependency 'sunspot_test', '~> 0.4.0'
-  s.add_development_dependency 'byebug', '~> 3.5.1'
+  s.add_development_dependency 'byebug', '~> 3.5.1' if RUBY_VERSION =~ /2/
   s.add_development_dependency 'rspec-activemodel-mocks', '~> 1.0.1'
 
   # s.add_development_dependency 'zeus' # TODO SEE my_plan.rb FOR MORE INFO

@@ -29,5 +29,5 @@ gem 'cucumber-rails', require: false
 gem 'factory_girl_rails', require: false
 gem 'simplecov', require: false
 gem 'pry', require: true
-gem 'pry-byebug', require: true
+gem 'pry-byebug', require: true if RUBY_VERSION =~ /2/
 gem 'xml_spec', git: "https://github.com/boost/xml_spec", require: false # This is a gem created by fedegl to test the XML responses, its part of the Boost github organization account

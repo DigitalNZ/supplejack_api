@@ -27,6 +27,8 @@ module SupplejackApi
         index({ record_id: 1 }, { unique: true })
 
         if %w(development staging).include?(Rails.env)
+          Support::StatusLogger.logger.warn("#{Rails.env}: Adding auto increment")
+
           auto_increment :record_id,        session: 'strong',  seed: 100000000
         else
           auto_increment :record_id,        session: 'strong'

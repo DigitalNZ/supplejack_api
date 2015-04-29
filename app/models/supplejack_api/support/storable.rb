@@ -19,11 +19,18 @@ module SupplejackApi
         # No need to configure in *Schema
         field :internal_identifier,         type: String
         field :status,                      type: String
-        field :record_type,                 type: Integer,    default: 0
+        field :record_type,                 type: Integer,      default: 0
         
         index status: 1
         index internal_identifier: 1
         index record_type: 1
+        index({ record_id: 1 }, { unique: true })
+
+        if %w(development staging).include?(Rails.env)
+          auto_increment :record_id,        session: 'strong',  seed: 100000000
+        else
+          auto_increment :record_id,        session: 'strong'
+        end
 
         def self.build_model_fields
           if RecordSchema.model_fields.present?

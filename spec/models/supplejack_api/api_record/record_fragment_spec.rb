@@ -17,10 +17,6 @@ module SupplejackApi
 
       before { record.save }
 
-      it { should have_index_for(status: 1) }
-      it { should have_index_for(internal_identifier: 1) }
-      it { should have_index_for(updated_at: 1) }
-
       describe 'schema_class' do
       	it 'should return RecordSchema' do
       		expect(RecordFragment.schema_class).to eq RecordSchema

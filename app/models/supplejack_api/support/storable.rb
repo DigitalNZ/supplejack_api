@@ -22,13 +22,11 @@ module SupplejackApi
         field :record_type,                 type: Integer,      default: 0
         
         index status: 1
-        index internal_identifier: 1
+        index({ internal_identifier: 1}, { unique: true, drop_dups: true })
         index record_type: 1
         index({ record_id: 1 }, { unique: true })
 
         if %w(development staging).include?(Rails.env)
-          Support::StatusLogger.logger.warn("#{Rails.env}: Adding auto increment")
-
           auto_increment :record_id,        session: 'strong',  seed: 100000000
         else
           auto_increment :record_id,        session: 'strong'

@@ -28,9 +28,9 @@ module SupplejackApi
 	    end
 
 			# Index core fields in mongo
-			mongo_index :status, 						  fields: [{status: 1}]
-			mongo_index :internal_identifier, fields: [{internal_identifier: 1}]
-			mongo_index :updated_at, 				  fields: [{updated_at: 1}]
+			# mongo_index :status, 						  fields: [{status: 1}]
+			# mongo_index :internal_identifier, fields: [{internal_identifier: 1}]
+			# mongo_index :updated_at, 				  fields: [{updated_at: 1}]
 		end
 	end
 

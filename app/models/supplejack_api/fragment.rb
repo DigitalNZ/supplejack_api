@@ -37,10 +37,12 @@ module SupplejackApi
       end
 
 			# Build indexes
-			self.schema_class.mongo_indexes.each do |name, index|
-				index_options = !!index.index_options ? index.index_options : {}
-				self.index index.fields.first, index_options
-			end
+      if self.schema_class.mongo_indexes.present?
+  			self.schema_class.mongo_indexes.each do |name, index|
+  				index_options = !!index.index_options ? index.index_options : {}
+  				self.index index.fields.first, index_options
+  			end
+      end
     end
 
     def primary?

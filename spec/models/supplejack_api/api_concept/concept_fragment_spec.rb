@@ -17,10 +17,6 @@ module SupplejackApi
 
       before { concept.save }
 
-      it { should have_index_for(status: 1) }
-      it { should have_index_for(internal_identifier: 1) }
-      it { should have_index_for(updated_at: 1) }
-
       describe 'schema_class' do
         it 'should return ConceptSchema' do
           expect(ConceptFragment.schema_class).to eq ConceptSchema

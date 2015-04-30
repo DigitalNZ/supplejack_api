@@ -82,17 +82,18 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'json_spec', '~> 1.1.4'
   s.add_development_dependency 'sunspot_matchers', '~> 2.1.1.0'
   s.add_development_dependency 'timecop', '~> 0.4.6'
-  s.add_development_dependency 'pry', '~> 0.9.12'
-  s.add_development_dependency 'pry-rails', '~> 0.2.2'
+  s.add_development_dependency 'pry', '~> 0.10.1'
   s.add_development_dependency 'better_errors', '~> 0.8.0'
   s.add_development_dependency 'binding_of_caller', '~> 0.7.1'
   s.add_development_dependency 'rb-fsevent', '~> 0.9.1'
   s.add_development_dependency 'simplecov', '~> 0.6.4'
   s.add_development_dependency 'sunspot_test', '~> 0.4.0'
-  s.add_development_dependency 'byebug', '~> 3.5.1' if RUBY_VERSION =~ /2/
   s.add_development_dependency 'rspec-activemodel-mocks', '~> 1.0.1'
 
-  # s.add_development_dependency 'zeus' # TODO SEE my_plan.rb FOR MORE INFO
+  if RUBY_VERSION =~ /2/
+    s.add_development_dependency 'pry-byebug', '~> 3.1.0' 
+    s.add_development_dependency 'byebug', '~> 3.5.1'
+  end
 
   if RUBY_VERSION =~ /1.9/
     Encoding.default_external = Encoding::UTF_8

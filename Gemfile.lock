@@ -201,7 +201,7 @@ GEM
     mime-types (1.25.1)
     mimemagic (0.1.9)
     mini_portile (0.6.2)
-    minitest (5.6.0)
+    minitest (5.6.1)
     mongoid (4.0.0)
       activemodel (~> 4.0)
       moped (~> 2.0.0)
@@ -238,8 +238,6 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
-    pry-rails (0.2.2)
-      pry (>= 0.9.10)
     rack (1.5.2)
     rack-protection (1.5.3)
       rack
@@ -404,8 +402,7 @@ DEPENDENCIES
   mongoid-rspec (~> 2.0.0.rc1)
   mongoid-tree
   mongoid_auto_inc!
-  pry
-  pry-rails (~> 0.2.2)
+  pry (~> 0.10.1)
   rb-fsevent
   resque-scheduler
   rspec-activemodel-mocks (~> 1.0.1)

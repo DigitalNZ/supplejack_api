@@ -26,12 +26,6 @@ module SupplejackApi
         index record_type: 1
         index({ record_id: 1 }, { unique: true })
 
-        if %w(development staging).include?(Rails.env)
-          auto_increment :record_id,        session: 'strong',  seed: 100000000
-        else
-          auto_increment :record_id,        session: 'strong'
-        end
-
         def self.build_model_fields
           if RecordSchema.model_fields.present?
             RecordSchema.model_fields.each do |name, index|

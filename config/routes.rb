@@ -8,14 +8,38 @@
 SupplejackApi::Engine.routes.draw do
   root to: 'records#index'
 
-  # Records
-  resources :records, only: [:index, :show] do
-    get :multiple, on: :collection
+  devise_for :users, class_name: 'SupplejackApi::User'
+
+  # Admin level authentication
+  namespace :admin do
+    devise_for :users, class_name: 'SupplejackApi::User'
+    resources :users, only: [:index, :show, :edit, :update]
+    resources :site_activities, only: [:index]
   end
 
-  # Concepts
-  resources :concepts, only: [:index, :show]
-  
+  scope '(/:version)', version: /v3/, defaults: { version: nil, format: 'json' } do
+    # User level authentication
+    resources :users, only: [:show, :create, :update, :destroy] do
+      get "/sets" => "user_sets#admin_index", as: :user_sets
+    end
+
+    # Concepts
+    resources :concepts, only: [:index, :show]
+
+    # Records
+    resources :records, only: [:index, :show] do
+      get :multiple, on: :collection
+    end
+
+    # Sets
+    get '/sets/public' => 'user_sets#public_index', as: :public_user_sets
+    get '/sets/featured' => 'user_sets#featured_sets_index', as: :featured_sets
+
+    resources :user_sets, path: 'sets', except: [:new, :edit] do
+      resources :set_items, path: 'records', only: [:create, :destroy]
+    end
+  end
+
   # Harvester
   namespace :harvester, constraints: SupplejackApi::HarvesterConstraint.new do
     resources :records, only: [:create, :update, :show] do
@@ -40,27 +64,6 @@ SupplejackApi::Engine.routes.draw do
 
   # Sources
   resources :sources, only: [:index, :update], constraints: SupplejackApi::HarvesterConstraint.new
-
-  # Sets
-  get '/sets/public' => 'user_sets#public_index', as: :public_user_sets
-  get '/sets/featured' => 'user_sets#featured_sets_index', as: :featured_sets
-  
-  resources :user_sets, path: 'sets', except: [:new, :edit] do
-    resources :set_items, path: 'records', only: [:create, :destroy]
-  end
-  
-  # User level authentication
-  resources :users, only: [:show, :create, :update, :destroy] do
-    get "/sets" => "user_sets#admin_index", as: :user_sets
-  end
-  devise_for :users, class_name: 'SupplejackApi::User'
-
-  # Admin level authentication
-  namespace :admin do
-    devise_for :users, class_name: 'SupplejackApi::User'
-    resources :users, only: [:index, :show, :edit, :update]
-    resources :site_activities, only: [:index]
-  end
 
   get '/status', to: 'status#show'
 

@@ -40,7 +40,7 @@ module SupplejackApi
 
     def featured_sets_index
       @user_sets = UserSet.featured_sets(4)
-      render json: serializable_array(@user_sets, user: true, home: true).to_json
+      render json: serializable_array(@user_sets, user: true, featured: true).to_json
     end
 
     def show

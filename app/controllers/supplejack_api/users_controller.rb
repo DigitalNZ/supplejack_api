@@ -36,7 +36,7 @@ module SupplejackApi
     private
   
     def user_params
-      params.require(:user).permit(:name, :username, :email, :encrypted_password, :sets, :authentication_token)
+      params.require(:user).permit(:name, :username, :email, :encrypted_password, :authentication_token, sets: [:name, :privacy, :priority])
     end
   end
 end

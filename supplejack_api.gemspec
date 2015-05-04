@@ -91,8 +91,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec-activemodel-mocks', '~> 1.0.1'
 
   if RUBY_VERSION =~ /2/
+    s.add_development_dependency 'pry'
     s.add_development_dependency 'pry-byebug', '~> 3.1.0' 
-    s.add_development_dependency 'byebug', '~> 3.5.1'
   end
 
   if RUBY_VERSION =~ /1.9/

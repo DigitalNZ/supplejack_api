@@ -61,11 +61,9 @@ module SupplejackApi::Concerns::Searchable
       search_model = self
 
       @search_builder ||= Sunspot.new_search(search_model.class.model_class) do
-        with(:record_type, record_type) if options[:record_type]
-        
-        # unless options[:record_type] == 'all'
-        #   with(:record_type, record_type)
-        # end
+        unless options[:record_type] == 'all'
+          with(:record_type, record_type)
+        end
 
         search_model.facet_list.each do |facet_name|
           facet(facet_name, limit: facets_per_page, offset: facets_offset)

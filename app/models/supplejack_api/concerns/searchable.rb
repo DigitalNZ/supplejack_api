@@ -48,28 +48,26 @@ module SupplejackApi::Concerns::Searchable
     #
     def self.role_collection_restrictions(scope)
       restrictions = []
+
       if scope
         role = scope.role.try(:to_sym)
-  
-        if self.schema_class.roles[role].record_restrictions
-          restrictions = self.schema_class.roles[role].record_restrictions
-        end
+        restrictions = self.schema_class.roles[role].record_restrictions if self.schema_class.roles[role].record_restrictions
       end
       
       restrictions
     end
 
     def search_builder
-      scope = self
+      search_model = self
 
-      @search_builder ||= Sunspot.new_search(scope.class.model_class) do
+      @search_builder ||= Sunspot.new_search(search_model.class.model_class) do
         with(:record_type, record_type) if options[:record_type]
         
         # unless options[:record_type] == 'all'
         #   with(:record_type, record_type)
         # end
 
-        scope.facet_list.each do |facet_name|
+        search_model.facet_list.each do |facet_name|
           facet(facet_name, limit: facets_per_page, offset: facets_offset)
         end
   
@@ -132,9 +130,9 @@ module SupplejackApi::Concerns::Searchable
         if options[:sort].present?
           order_by(sort, direction)
         end
-  
-        scope.class.role_collection_restrictions(options[:scope]).each do |field, values|
-          without(field, values)
+
+        search_model.class.role_collection_restrictions(search_model.scope).each do |field, values|
+          without(field.to_sym, values)
         end
   
         SupplejackApi::Source.suppressed.each do |source|

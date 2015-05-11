@@ -53,7 +53,7 @@ module SupplejackApi
     def find_user_set
       user_set_id = params[:user_set_id] || params[:id]
 
-      if current_user.admin?
+      if RecordSchema.roles[current_user.role.to_sym].try(:admin)
         @user_set = UserSet.custom_find(user_set_id)
       else
         @user_set = current_user.user_sets.custom_find(user_set_id)

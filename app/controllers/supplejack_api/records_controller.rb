@@ -7,7 +7,6 @@
 
 module SupplejackApi
   class RecordsController < ApplicationController
-    
     skip_before_action :authenticate_user!, :only => [:source, :status]
     respond_to :json, :xml, :rss
 

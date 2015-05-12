@@ -21,17 +21,17 @@ module SupplejackApi
       respond_with @user, location: user_url(@user), serializer: UserSerializer
     end
   
-    # def update
-    #   @user = User.custom_find(params[:id])
-    #   @user.update_attributes(user_params)
-    #   render json: @user, serializer: UserSerializer
-    # end
+    def update
+      @user = User.custom_find(params[:id])
+      @user.update_attributes(user_params)
+      render json: @user, serializer: UserSerializer
+    end
   
-    # def destroy
-    #   @user = User.custom_find(params[:id])
-    #   @user.destroy
-    #   respond_with @user
-    # end
+    def destroy
+      @user = User.custom_find(params[:id])
+      @user.destroy
+      respond_with @user
+    end
   
     private
   

@@ -55,9 +55,7 @@ class RecordSchema
   end
 
    # Roles
-  role :developer do
-    default true
-  end
-  role :admin
+  role :developer, default: true
+  role :admin, admin: true
 
 end

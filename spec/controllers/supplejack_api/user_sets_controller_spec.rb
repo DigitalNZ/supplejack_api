@@ -13,6 +13,7 @@ module SupplejackApi
 
     before(:each) do
       @user = FactoryGirl.create(:user, authentication_token: "abc123")
+      allow(RecordSchema).to receive(:roles) { { admin: double(:admin, admin: true) } }
       allow(controller).to receive(:authenticate_user!) { true }
       allow(controller).to receive(:current_user) { @user }
     end
@@ -62,7 +63,7 @@ module SupplejackApi
 
       context "authentication fails" do
         it "renders a error when the admin authentication fails" do
-          allow(controller).to receive(:current_user) { double(User, :admin? => false) }
+          allow(controller).to receive(:current_user) { double(:developer, admin?: false, role: 'developer') }
           get :admin_index, user_id: "nonadminkey", format: "json"
           expect(response.code).to eq "403"
           expect(response.body).to eq({errors: "You need Administrator privileges to perform this request"}.to_json)

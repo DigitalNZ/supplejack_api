@@ -192,11 +192,11 @@ module SupplejackApi
     end
 
     def admin?
-      role == 'admin'
+      RecordSchema.roles[role.to_sym].try(:admin)
     end
 
     def can_change_featured_sets?
-      RecordSchema.roles[role.to_sym].try(:admin)
+      admin?
     end
 
   end

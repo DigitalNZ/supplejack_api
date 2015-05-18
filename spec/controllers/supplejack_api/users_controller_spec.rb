@@ -15,7 +15,6 @@ module SupplejackApi
 
     describe 'GET show' do
       it 'should assign @user' do
-        
         get :show, id: user.id, api_key: 'abc123', format: :json
         expect(assigns(:user)).to eq(user)
       end
@@ -23,6 +22,7 @@ module SupplejackApi
 
     describe 'POST create' do
       it 'should create a new user' do
+        allow(RecordSchema).to receive(:roles) { { admin: double(:admin, admin: true) } }
         expect(User).to receive(:create).with({ 'name' => 'Ben' }).and_return(user)
         post :create, api_key: 'abc123', user: { name: 'Ben' }, format: 'json'
       end

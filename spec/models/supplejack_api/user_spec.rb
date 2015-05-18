@@ -11,9 +11,12 @@ module SupplejackApi
   describe User do
     let(:user) { User.new }
 
-    before(:each) do
-      allow(RecordSchema).to receive(:default_role) { double(:role, name: :developer) }
-    end
+    before {
+      developer = double(:role, name: :developer)
+      admin = double(:admin, admin: true)
+      allow(RecordSchema).to receive(:default_role) { developer }
+      allow(RecordSchema).to receive(:roles) { { admin: admin, developer: developer } }
+    }
 
     describe '#role' do
       it 'should set the default value of the role from the Schema' do

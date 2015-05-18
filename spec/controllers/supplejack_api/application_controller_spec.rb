@@ -14,6 +14,7 @@ module SupplejackApi
     before(:each) do
       @controller = ApplicationController.new
       allow(@controller).to receive(:render) { nil }
+      allow(RecordSchema).to receive(:roles) { { admin: double(:admin, admin: true) } }
     end
 
     describe '#authenticate_user!' do
@@ -21,8 +22,8 @@ module SupplejackApi
         allow(@controller).to receive(:params) { { api_key: '12345' } }
         allow(@controller).to receive(:request) { double(:request, ip: '1.1.1.1', format: :json) }
         @user = FactoryGirl.create(:user)
-        allow(@user).to receive(:update_daily_activity) {  nil }
-        allow(@controller).to receive(:current_user) {  @user }
+        allow(@user).to receive(:update_daily_activity) { nil }
+        allow(@controller).to receive(:current_user) { @user }
       end
 
       it 'should set the current_user' do
@@ -85,17 +86,17 @@ module SupplejackApi
     end
 
     describe "#authenticate_admin!" do
-      before :each do
+      before {
         allow(@controller).to receive(:request) { double(:request, :ip => "1.1.1.1", :format => :json)}
-      end
+      }
 
       it "returns true when the admin authentication was successful" do
-        allow(@controller).to receive(:current_user) { double(:user, admin?: true) }
+        allow(@controller).to receive(:current_user) { double(:user, admin?: true, role: 'admin') }
         expect(@controller.authenticate_admin!).to be_truthy
       end
 
       it "returns false when the admin authentication was not successful" do
-        allow(@controller).to receive(:current_user) { double(:user, admin?: false) }
+        allow(@controller).to receive(:current_user) { double(:user, admin?: false, role: 'developer') }
         expect(@controller.authenticate_admin!).to be_falsey
       end
     end
@@ -104,7 +105,7 @@ module SupplejackApi
       context "current_user is a admin" do
         before :each do
           @user_set = double(:set).as_null_object
-          allow(@controller).to receive(:current_user) { double(:user, admin?: true).as_null_object }
+          allow(@controller).to receive(:current_user) { double(:user, admin?: true, role: 'admin').as_null_object }
           allow(@controller).to receive(:params) { {:id => "12345"} }
         end
 
@@ -114,18 +115,19 @@ module SupplejackApi
         end
       end
 
-      context "current_user has dnz role" do
-        before :each do
-          @user_set = double(:set).as_null_object
-          allow(@controller).to receive(:current_user) { double(:user, dnz?: true).as_null_object }
-          allow(@controller).to receive(:params) { {:id => "12345"} }
-        end
+      # TODO: Move this to the app
+      # context "current_user has dnz role" do
+      #   before :each do
+      #     @user_set = double(:set).as_null_object
+      #     allow(@controller).to receive(:current_user) { double(:user, dnz?: true).as_null_object }
+      #     allow(@controller).to receive(:params) { {:id => "12345"} }
+      #   end
 
-        it "finds the set even if it's not owned by the current_user" do
-          expect(UserSet).to receive(:custom_find).with("12345") { @user_set }
-          @controller.find_user_set
-        end
-      end
+      #   it "finds the set even if it's not owned by the current_user" do
+      #     expect(UserSet).to receive(:custom_find).with("12345") { @user_set }
+      #     @controller.find_user_set
+      #   end
+      # end
     end
   end
 end

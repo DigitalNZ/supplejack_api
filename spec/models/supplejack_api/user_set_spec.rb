@@ -216,6 +216,12 @@ module SupplejackApi
     end
 
     describe "#update_attributes_and_embedded" do
+      before { 
+        developer = double(:developer)
+        admin = double(:admin, admin: true, role: 'admin')
+        allow(RecordSchema).to receive(:roles) { { admin: admin, developer: developer } } 
+      }
+
       it "updates the set attributes" do
         user_set.update_attributes_and_embedded(name: "New dog", description: "New dog", privacy: "hidden")
         user_set.reload

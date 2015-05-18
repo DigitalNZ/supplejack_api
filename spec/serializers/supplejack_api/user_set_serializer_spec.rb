@@ -41,6 +41,7 @@ module SupplejackApi
       end
 
       it "includes the user api key when the user option is an admin" do
+        allow(RecordSchema).to receive(:roles) { { admin: double(:admin, admin: true) } }
         admin = User.new(role: "admin")
         serializer = UserSetSerializer.new(@user_set, user: admin, items: false)
         expect(serializer.as_json[:set]).to include({user: {name: "John", api_key: "12345"}})

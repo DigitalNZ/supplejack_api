@@ -18,6 +18,7 @@ module SupplejackApi
       @user_set = FactoryGirl.create(:user_set_with_set_item)
       @set_item = @user_set.set_items.first
       allow(controller.current_user.user_sets).to receive(:custom_find) { @user_set }
+      allow(RecordSchema).to receive(:roles) { { developer: double(:developer) } }
     }
 
     describe "POST 'create'" do

@@ -25,7 +25,6 @@ Gem::Specification.new do |s|
   s.test_files = Dir['spec/**/*']
 
   s.add_dependency 'rails', '~> 4.1.7'
-
   s.add_dependency 'protected_attributes'
   s.add_dependency 'thin', '~> 1.6.2'
   s.add_dependency 'kaminari', '~> 0.14.0'
@@ -43,7 +42,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'simple_form', '~> 3.0.2'
   s.add_dependency 'lazy_high_charts', '~> 1.5.4'
   s.add_dependency 'figaro', '~> 0.7.0'
-
   s.add_dependency 'jquery-rails', '~> 3.1.0'
   s.add_dependency 'sass-rails', '~> 4.0.3'
   s.add_dependency 'coffee-rails','~> 4.0.0'
@@ -52,26 +50,21 @@ Gem::Specification.new do |s|
   s.add_dependency 'compass-rails', '~> 1.0.3'
   s.add_dependency 'zurb-foundation', '~> 4.3.2'
   s.add_dependency 'gabba', '~> 0.3.0'
-
   s.add_dependency 'sunspot_rails', '~> 2.1.0'
   s.add_dependency 'mongoid', '~> 4.0.0'
   s.add_dependency 'mongoid_auto_inc', '~> 0.1.0'
   s.add_dependency 'mongoid-tree', '~> 1.0.0'
-
   s.add_dependency 'resque', '~> 1.22.0'
   s.add_dependency 'resque-scheduler', '= 2.0.0'
   s.add_dependency 'resque-pool', '~> 0.3.0'
 
   # Adding sunspot_solr so app has access to sunspot:solr rake tasks
   s.add_dependency 'sunspot_solr', '~> 2.1.0'
-
   s.add_dependency 'json-ld', '~> 1.1.4'
-
   s.add_dependency 'activeresource'
   s.add_dependency 'rufus-scheduler', '= 2.0.17'
 
   ## Development dependancies
-
   s.add_development_dependency 'rspec-rails', '~> 3.1.0'
   s.add_development_dependency 'cucumber-rails', '~> 1.3.0'
   s.add_development_dependency 'capybara', '~> 2.2.0'

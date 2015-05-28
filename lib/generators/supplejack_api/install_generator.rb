@@ -31,6 +31,10 @@ module SupplejackApi
         end
       end
 
+      def workers
+        directory 'app/workers'
+      end
+
       def initializers
         puts "\nInstalling initializers into config/initializers/"
 

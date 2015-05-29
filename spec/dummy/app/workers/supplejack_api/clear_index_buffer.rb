@@ -25,6 +25,8 @@ module SupplejackApi
       if remove_record_ids.any?
         Sunspot.remove(remove_record_ids)
       end
+
+      Sunspot.commit
     end
   end
 end

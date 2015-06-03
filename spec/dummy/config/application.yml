@@ -12,7 +12,7 @@ defaults: &defaults
   DEVISE_MAILER: 'mailer@example.com'
   HARVESTER_IPS: '127.0.0.1'
   REQUEST_LIMIT_MAILER: 'develop@example.com'
-  MONGOID_HOSTS: 'dnz-dev.boost.co.nz:27017'
+  MONGOID_HOSTS: 'localhost:27017'
 
 development:
   <<: *defaults

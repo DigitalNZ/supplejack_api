@@ -10,25 +10,25 @@ require 'spec_helper'
 module SupplejackApi
   describe ConceptSearchSerializer do
 
-    def serializer(options={}, attributes={})
-      @user = FactoryGirl.build(:user, attributes)
-      @serializer = ConceptSearchSerializer.new(@user, options)
-    end
+    # def serializer(options={}, attributes={})
+    #   @user = FactoryGirl.build(:user, attributes)
+    #   @serializer = ConceptSearchSerializer.new(@user, options)
+    # end
 
-    describe '#default?' do
-      it 'should return true when default is part of the groups' do
-        expect(serializer(groups: [:default]).default?).to be_truthy
-      end
+    # describe '#default?' do
+    #   it 'should return true when default is part of the groups' do
+    #     expect(serializer(groups: [:default]).default?).to be_truthy
+    #   end
 
-      it 'should return false when the group is verbose' do
-        expect(serializer(groups: [:verbose]).default?).to be_falsey
-      end
+    #   it 'should return false when the group is verbose' do
+    #     expect(serializer(groups: [:verbose]).default?).to be_falsey
+    #   end
 
-      it 'should return false' do
-        expect(serializer(groups: nil).default?).to be_falsey
-        expect(serializer(groups: []).default?).to be_falsey
-      end
-    end
+    #   it 'should return false' do
+    #     expect(serializer(groups: nil).default?).to be_falsey
+    #     expect(serializer(groups: []).default?).to be_falsey
+    #   end
+    # end
   end
 
 end

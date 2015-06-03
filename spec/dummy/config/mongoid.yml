@@ -11,15 +11,11 @@ development:
       database: supplejack_api_development
       hosts:
         <%= ENV['MONGOID_HOSTS'].gsub(/\s+/, "").split(',') %>
-      options:
-        read: :nearest
 
     strong:
       database: supplejack_api_development
       hosts:
         <%= ENV['MONGOID_HOSTS'].gsub(/\s+/, "").split(',') %>
-      options:
-        read: :nearest
 
 test:
   sessions:

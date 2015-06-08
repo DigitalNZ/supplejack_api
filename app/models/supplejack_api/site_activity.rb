@@ -9,8 +9,9 @@ module SupplejackApi
   class SiteActivity
     include Mongoid::Document
     include Mongoid::Timestamps
-
     include Sortable::Query
+
+    store_in collection: 'site_activities'
 
     field :date,      type: Date
     field :user_sets, type: Integer
@@ -25,7 +26,7 @@ module SupplejackApi
 
     def self.generate_activity(time=Time.now)
       site_activity_date = time.to_date
-      user_activities = UserActivity.gt(created_at: time-12.hours).lte(created_at: time)
+      user_activities = SupplejackApi::UserActivity.gt(created_at: time-12.hours).lte(created_at: time)
 
       attributes = {user_sets: 0, search: 0, records: 0}
 
@@ -39,8 +40,8 @@ module SupplejackApi
       attributes[:date] = site_activity_date
 
       site_activity = new(attributes)
-      site_activity.source_clicks = SourceActivity.get_source_clicks || 0
-      SourceActivity.reset
+      site_activity.source_clicks = SupplejackApi::SourceActivity.get_source_clicks || 0
+      SupplejackApi::SourceActivity.reset
       site_activity.calculate_total
       site_activity.save
       site_activity

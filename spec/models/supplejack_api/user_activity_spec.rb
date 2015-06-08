@@ -9,7 +9,7 @@ require 'spec_helper'
 
 module SupplejackApi
   describe UserActivity do
-    let(:activity) { UserActivity.new }
+    let(:activity) { SupplejackApi::UserActivity.new }
     
     describe '#calculate_total_for' do
       it 'generates the total for the grouped activities' do
@@ -56,32 +56,32 @@ module SupplejackApi
                       } }
   
       it 'buils a user_activity with user_sets stats' do
-        user_activity = UserActivity.build_from_user(activity)
+        user_activity = SupplejackApi::UserActivity.build_from_user(activity)
         expect(user_activity.user_sets).to eq({'total' => 1})
       end
   
       it 'buils a user_activity with search stats' do
-        user_activity = UserActivity.build_from_user(activity)
+        user_activity = SupplejackApi::UserActivity.build_from_user(activity)
         expect(user_activity.search).to eq({'custom_search' => 2, 'total' => 2})
       end
   
       it 'buils a user_activity with records stats' do
-        user_activity = UserActivity.build_from_user(activity)
+        user_activity = SupplejackApi::UserActivity.build_from_user(activity)
         expect(user_activity.records).to eq({'show' => 1, 'multiple' => 2, 'total' => 3})
       end
   
       it 'buils a user_activity with custom_searches stats' do
-        user_activity = UserActivity.build_from_user(activity)
+        user_activity = SupplejackApi::UserActivity.build_from_user(activity)
         expect(user_activity.custom_searches).to eq({'index' => 1, 'show' => 2, 'total' => 3})
       end
   
       it 'calculates the total of requests' do
-        user_activity = UserActivity.build_from_user(activity)
+        user_activity = SupplejackApi::UserActivity.build_from_user(activity)
         expect(user_activity.total).to eq 9
       end
   
       it 'returns nil when there is no activity for a group' do
-        expect(UserActivity.build_from_user(nil).records).to be_nil
+        expect(SupplejackApi::UserActivity.build_from_user(nil).records).to be_nil
       end
     end
   end

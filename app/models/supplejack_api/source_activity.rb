@@ -10,7 +10,7 @@ module SupplejackApi
 		include Mongoid::Document
 		include Mongoid::Timestamps
 
-		store_in session: "strong"
+		store_in collection: 'source_activities'
 
 		field :source_clicks,	type: Integer, default: 0
 		
@@ -20,16 +20,16 @@ module SupplejackApi
 			if self.first
 				self.first.inc(source_clicks: 1)
 			else
-				SourceActivity.create(source_clicks: 1)
+				SupplejackApi::SourceActivity.create(source_clicks: 1)
 			end
 		end
 
 		def self.get_source_clicks
-			SourceActivity.first.try(:source_clicks)
+			SupplejackApi::SourceActivity.first.try(:source_clicks)
 		end
 
 		def self.reset
-			SourceActivity.first.try(:delete)
+			SupplejackApi::SourceActivity.first.try(:delete)
 		end
 
 	end

@@ -12,19 +12,49 @@ Feature: Get Concept
 		Given a user with a API Key
 		And a concept
 
-	Scenario: Show concept
+	Scenario: Show concept without inline context
 		When I get a concept
 		Then the JSON should be a hash
-		And the JSON at "label" should be "Colin McCahon"
+    And the JSON at "@context" should be "http://www.example.com/schema"
+		And the JSON at "name" should be "Colin McCahon"
+    And the JSON at "@id" should be "http://www.example.com/concepts/1"
 
-	Scenario: Get specific field
-		When I get a concept with "label" field
-		Then the JSON should have 2 keys
-		And the JSON at "label" should be "Colin McCahon"
-		And the JSON at "@context" should be:
-		"""
+  Scenario: Show concept with inline context
+    When I get a concept with inline context
+    Then the JSON should be a hash
+    And the JSON at "@context" should be:
+      """
       {
-        "label": "skos:prefLabel",
-      	"skos": "http://www.w3.org/2004/02/skos/core"
+        "@id": {
+          "@id": ":@id"
+        },
+        "@type": {
+          "@id": ":@type"
+        },
+        "altLabel": {
+          "@id": "skos:altLabel"
+        },
+        "biographicalInformation": {
+          "@id": "rdaGr2:biographicalInformation"
+        },
+        "dateOfBirth": {
+          "@id": "rdaGr2:dateOfBirth"
+        },
+        "dateOfDeath": {
+          "@id": "rdaGr2:dateOfDeath"
+        },
+        "foaf": "http://xmlns.com/foaf/0.1/",
+        "name": {
+          "@id": "foaf:name"
+        },
+        "owl": "http://www.w3.org/2002/07/owl#",
+        "prefLabel": {
+          "@id": "skos:prefLabel"
+        },
+        "rdaGr2": "http://rdvocab.info/ElementsGr2/",
+        "sameAs": {
+          "@id": "owl:sameAs"
+        },
+        "skos": "http://www.w3.org/2004/02/skos/core#"
       }
-    """
+      """

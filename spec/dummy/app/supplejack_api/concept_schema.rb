@@ -91,11 +91,11 @@ class ConceptSchema
   # end
   # role :admin
 
-  model_field :name, field_options: { type: String }
-  model_field :prefLabel, field_options: { type: String }
-  model_field :altLabel, field_options: { type: Array }
-  model_field :dateOfBirth, field_options: { type: Date }
-  model_field :dateOfDeath, field_options: { type: Date }
-  model_field :biographicalInformation, field_options: { type: String }
-  model_field :sameAs, field_options: { type: Array }
+  model_field :name, field_options: { type: String }, namespace: :foaf
+  model_field :prefLabel, field_options: { type: String }, namespace: :skos
+  model_field :altLabel, field_options: { type: Array }, namespace: :skos
+  model_field :dateOfBirth, field_options: { type: Date }, namespace: :rdaGr2
+  model_field :dateOfDeath, field_options: { type: Date }, namespace: :rdaGr2
+  model_field :biographicalInformation, field_options: { type: String }, namespace: :rdaGr2
+  model_field :sameAs, field_options: { type: Array }, namespace: :owl
 end

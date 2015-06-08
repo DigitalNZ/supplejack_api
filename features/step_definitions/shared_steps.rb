@@ -53,6 +53,10 @@ When(/^I click "(.*?)" link$/) do |link|
   end
 end
 
+Then (/^show me the page$/) do
+  save_and_open_page
+end
+
 When(/^I click "(.*?)" button$/) do |button|
   begin
     click_button(button)

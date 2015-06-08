@@ -38,22 +38,23 @@ module SupplejackApi
       end
     end
 
-    # describe '#custom_find' do
-    #   before(:each) do
-    #     @concept = FactoryGirl.create(:concept, concept_id: 54321)
-    #   end
+    describe '#custom_find' do
+      before(:each) do
+        @concept = FactoryGirl.create(:concept, concept_id: 54321)
+      end
 
-    #   it 'should search for a concept via its concept_id' do
-    #     expect(Concept.custom_find(54321)).to eq(@concept)
-    #   end
+      it 'should search for a concept via its concept_id' do
+        expect(Concept.custom_find(54321)).to eq(@concept)
+      end
 
-    #   it 'should search for a concept via its ObjectId (MongoDB auto assigned id)' do
-    #     expect(Concept.custom_find(@concept.id)).to eq(@concept)
-    #   end
+      it 'should search for a concept via its ObjectId (MongoDB auto assigned id)' do
+        expect(Concept.custom_find(@concept.id)).to eq(@concept)
+      end
 
-    #   it 'should raise a error when a concept is not found' do
-    #     expect { Concept.custom_find(111) }.to raise_error(Mongoid::Errors::DocumentNotFound)
-    #   end
+      it 'should raise a error when a concept is not found' do
+        expect { Concept.custom_find(111) }.to raise_error(Mongoid::Errors::DocumentNotFound)
+      end
+    end
 
     #   it "shouldn't call find when the mongo id is invalid" do
     #     expect(Concept).to_not receive(:find)

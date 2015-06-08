@@ -9,7 +9,7 @@ require 'spec_helper'
 
 module SupplejackApi
   describe ConceptSerializer do
-    # before { allow(ConceptSchema).to receive(:roles) { double(:developer).as_null_object } }
+    before { allow(ConceptSchema).to receive(:roles) { double(:developer).as_null_object } }
 
     # def serializer(options={}, attributes={})
     #   concept_fields = Concept.fields.keys

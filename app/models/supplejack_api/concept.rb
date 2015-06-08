@@ -20,6 +20,22 @@ module SupplejackApi
     # embeds_one :merged_fragment, class_name: 'SupplejackApi::ApiConcept::ConceptFragment'
     has_many :source_authorities, class_name: 'SupplejackApi::SourceAuthority'
 
+    def self.custom_find(id, scope=nil, options={})
+      options ||= {}
+      class_scope = self.unscoped
+      column = "#{self.name.demodulize.downcase}_id"
+
+      if id.to_s.match(/^\d+$/)
+        data = class_scope.where(column => id).first
+      elsif id.to_s.match(/^[0-9a-f]{24}$/i)
+        data = class_scope.find(id)
+      end
+  
+      raise Mongoid::Errors::DocumentNotFound.new(self, [id], [id]) unless data
+        
+      data
+    end
+
     # From storable
 
     # build_model_fields

@@ -12,19 +12,22 @@ Feature: Get Concept
 		Given a user with a API Key
 		And a concept
 
-	Scenario: Show concept
+	Scenario: Show concept without inline context
 		When I get a concept
 		Then the JSON should be a hash
-		And the JSON at "label" should be "Colin McCahon"
+    And the JSON at "@context" should be "http://digitalnz.org/schema"
+		And the JSON at "name" should be "Colin McCahon"
 
-	Scenario: Get specific field
-		When I get a concept with "label" field
-		Then the JSON should have 2 keys
-		And the JSON at "label" should be "Colin McCahon"
-		And the JSON at "@context" should be:
-		"""
-      {
-        "label": "skos:prefLabel",
-      	"skos": "http://www.w3.org/2004/02/skos/core"
-      }
-    """
+  Scenario: Show concept with inline context
+    When I get a concept with inline context
+    Then the JSON should be a hash
+    Then show me the page
+    Then the JSON at "@context" should be:
+      """
+      [
+        {
+          "foaf": "http://xmlns.com/foaf/0.1/"
+        }
+      ]
+      """
+    And the JSON at "name" should be "Colin McCahon"

@@ -32,6 +32,7 @@ module SupplejackApi
     end
 
     def show
+      # binding.pry
       begin
         @concept = Concept.custom_find(params[:id], current_user, params[:search])
         respond_with @concept, root: false, serializer: ConceptSerializer
@@ -42,9 +43,15 @@ module SupplejackApi
 
     def default_serializer_options
       default_options = {}
-      @search ||= ConceptSearch.new(params)
-      default_options.merge!({:fields => @search.field_list}) if @search.field_list.present?
-      default_options.merge!({:groups => @search.group_list}) if @search.group_list.present?
+      #
+      # TODO: IMPLEMENT CONCEPT SEARCH
+      # @search ||= ConceptSearch.new(params)
+      # default_options.merge!({:fields => @search.field_list}) if @search.field_list.present?
+      # default_options.merge!({:groups => @search.group_list}) if @search.group_list.present?
+      default_options.merge!({:fields => ConceptSchema.model_fields.keys})
+      default_options.merge!({:groups => params[:fields]}) if params[:fields].present?
+      default_options.merge!({:inline_context => params[:inline_context]})
+
       default_options
     end
 

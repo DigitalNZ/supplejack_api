@@ -7,8 +7,9 @@
 
 module SupplejackApi
   FactoryGirl.define do
-    factory :concept, class: SupplejackApi::Concept do
-      concept_id  1
+    factory :concept, class: SupplejackApi::Concept do |f|
+      f.send(:concept_id, 1)
+      f.send(:name,"Colin McCahon")
     end
   end
 end

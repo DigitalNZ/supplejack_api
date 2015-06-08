@@ -8,22 +8,21 @@
 module SupplejackApi
   class ConceptSerializer < ActiveModel::Serializer
 
-     def serializable_hash
-      hash = attributes
+    has_many :source_authorities
 
+    def source_authorities?
+      return false if (options[:groups]).blank?
+      return concept.try(options[:groups]).try(:any?)
+    end
+
+    def serializable_hash
+      hash = attributes
       # Create empty context block to add to once we know what fields we have.
       hash['@context'] = {}
+      hash['@type'] = concept.send(:@type)
+      hash['@id'] = concept.send(:@id)
 
-      groups = (options[:groups] & ConceptSchema.groups.keys) || []
-
-      fields = Set.new
-      groups.each do |group|
-        fields.merge(ConceptSchema.groups[group].try(:fields))
-      end
-
-      fields.each do |field|
-        hash[field] = field_value(field, options)
-      end
+      include!(:source_authorities, :node => hash) if source_authorities?
 
       include_individual_fields!(hash)
       include_context_fields!(hash)
@@ -34,8 +33,11 @@ module SupplejackApi
       fields = hash.dup
       fields.shift
 
-      context = build_context(fields.keys)
-      hash['@context'] = context
+      if self.options[:inline_context]
+        hash['@context'] = build_context(fields.keys)
+      else
+        hash['@context'] = concept.send(:@context)
+      end
       hash
     end
 
@@ -48,25 +50,13 @@ module SupplejackApi
       hash
     end
 
-    def field_value(field, options={})
-      value = nil
-
-      if ConceptSchema.fields[field].try(:search_value) && ConceptSchema.fields[field].try(:store) == false
-        value = ConceptSchema.fields[field].search_value.call(object)
-      else
-        value = object.public_send(field)
-      end
-
-      value
-    end
-
     def build_context(fields)
       context = {}
 
       namespaces = []
 
       fields.each do |field|
-        namespaces << ConceptSchema.fields[field].try(:namespace)
+        namespaces << ConceptSchema.model_fields[field].try(:namespace)
       end
 
       namespaces.compact.uniq.each do | namespace |
@@ -76,6 +66,11 @@ module SupplejackApi
         end
       end
 
+      fields.each do |field|
+        context[field] = {}
+        namespace = ConceptSchema.model_fields[field].try(:namespace)
+        context[field]['@id'] = "#{namespace}:#{field.to_s}"
+      end
       context
     end
 

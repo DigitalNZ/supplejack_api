@@ -8,42 +8,46 @@ the Department of Internal Affairs. http://digitalnz.org/supplejack
 %>
 
 <div class="row">
-	<div class="left">
-    <h1><%= t('users.title') %></h1>
-  </div>
-  <div class="right">
-    <%= link_to t('admin.download_csv'), admin_users_path(format: :csv), class: 'button' %>
-  </div>
+	<div class="large-12 columns">
+		<div class="left">
+	    <h1><%= t('users.title') %></h1>
+	  </div>
+	  <div class="right">
+	    <%= link_to t('admin.download_csv'), admin_users_path(format: :csv), class: 'button' %>
+	  </div>	
+	</div>
 </div>
 
 <div class="row">
-	<table>
-	  <thead>
-	    <tr>
-	      <th><%= sortable 'user', 'username' %></th>
-	      <th><%= sortable 'user', 'name' %></th>
-	      <th><%= sortable 'user', 'authentication_token' %></th>
-	      <th><%= sortable 'user', 'email' %></th>
-	      <th><%= sortable 'user', 'role' %></th>
-	      <th><%= sortable 'user', 'daily_requests' %></th>
-	      <th><%= sortable 'user', 'monthly_requests' %></th>
-	      <th><%= sortable 'user', 'max_requests' %></th>
-	    </tr>
-	  </thead>
+	<div class="large-12 columns">
+		<table class="table">
+		  <thead>
+		    <tr>
+		      <th><%= sortable 'user', 'username' %></th>
+		      <th><%= sortable 'user', 'name' %></th>
+		      <th><%= sortable 'user', 'authentication_token' %></th>
+		      <th><%= sortable 'user', 'email' %></th>
+		      <th><%= sortable 'user', 'role' %></th>
+		      <th><%= sortable 'user', 'daily_requests' %></th>
+		      <th><%= sortable 'user', 'monthly_requests' %></th>
+		      <th><%= sortable 'user', 'max_requests' %></th>
+		    </tr>
+		  </thead>
 
-	  <tbody>
-	    <% @users.each do |user| %>
-	    <tr>
-	      <td><%= user.username %></td>
-	      <td><%= user.name %></td>
-	      <td><%= link_to user.authentication_token, admin_user_path(user.id) %></td>
-	      <td><%= user.email %></td>
-	      <td><%= user.role %></td>
-	      <td><%= number_with_delimiter user.daily_requests %></td>
-	      <td><%= number_with_delimiter user.monthly_requests %></td>
-	      <td><%= link_to user.max_requests, edit_admin_user_path(user.id) %></td>
-	    </tr>
-	    <% end %>
-	  </tbody>
-	</table>
+		  <tbody>
+		    <% @users.each do |user| %>
+		    <tr>
+		      <td><%= user.username %></td>
+		      <td><%= user.name %></td>
+		      <td><%= link_to user.authentication_token, admin_user_path(user.id) %></td>
+		      <td><%= user.email %></td>
+		      <td><%= user.role %></td>
+		      <td><%= number_with_delimiter user.daily_requests %></td>
+		      <td><%= number_with_delimiter user.monthly_requests %></td>
+		      <td><%= link_to user.max_requests, edit_admin_user_path(user.id) %></td>
+		    </tr>
+		    <% end %>
+		  </tbody>
+		</table>
+	</div>
 </div>

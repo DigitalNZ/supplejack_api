@@ -6,15 +6,15 @@
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
-	module Admin
-	  class SiteActivitiesController < BaseController
-	    
-	    respond_to :html
-	    respond_to :csv, only: :index
+  module Admin
+    class SiteActivitiesController < BaseController
+      
+      respond_to :html
+      respond_to :csv, only: :index
 
-	    def index
-	      @site_activities = SiteActivity.sortable(order: params[:order], page: params[:page])
-	    end
-	  end
-	end
+      def index
+        @site_activities = SupplejackApi::SiteActivity.sortable(order: params[:order], page: params[:page])
+      end
+    end
+  end
 end

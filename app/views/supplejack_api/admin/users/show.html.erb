@@ -9,19 +9,25 @@ the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 <div class="row">
   <div class="large-4 columns">
-    <span class="radius label"><%= t('users.name') %></span>
-    <h4><%= @user.name %></h4>
+    <h3><%= t('users.name') %></h3>
+    <h4 class="subheader"><%= @user.name %></h4>
   </div>
 
   <div class="large-4 columns">
-    <span class="radius label"><%= t('users.username') %></span>
-    <h4><%= @user.username %></h4>
+    <h3><%= t('users.username') %></h3>
+    <h4 class="subheader"><%= @user.username %></h4>
   </div>
 
   <div class="large-4 columns">
-    <span class="radius label"><%= t('users.email') %></span>
-    <h4><%= @user.email %></h4>
+    <h3><%= t('users.email') %></h3>
+    <h4 class="subheader"><%= @user.email %></h4>
   </div>
 </div>
 
-<%= high_chart('api_requests', @api_requests) %>
+<hr/>
+
+<div class="row">
+  <div class="large-12 columns">
+    <%= high_chart('api_requests', @api_requests) %>
+  </div>
+</div>

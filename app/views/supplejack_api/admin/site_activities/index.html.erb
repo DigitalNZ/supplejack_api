@@ -8,37 +8,45 @@ the Department of Internal Affairs. http://digitalnz.org/supplejack
 %>
 
 <div class="row">
-  <div class="left">
-    <h1><%= t('site_activities.title') %></h1>
-  </div>
-  <div class="right">
-    <%= link_to t('admin.download_csv'), admin_site_activities_path(format: :csv), class: 'button' %>
+  <div class="large-12 columns">
+    <div class="left">
+      <h1><%= t('site_activities.title') %></h1>
+    </div>
+    <div class="right">
+      <%= link_to t('admin.download_csv'), admin_site_activities_path(format: :csv), class: 'button success' %>
+    </div>
   </div>
 </div>
 
 <div class="row">
-  <table>
-    <thead>
-      <tr>
-        <% SupplejackApi::SiteActivity.activities.each do |activity| %>
-          <th><%= sortable "site_activity", activity.to_s %></th>
-        <% end %>
-      </tr>
-    </thead>
+  <div class="large-12 columns">
+    <table class="table">
+      <thead>
+        <tr>
+          <% SupplejackApi::SiteActivity.activities.each do |activity| %>
+            <th><%= sortable "site_activity", activity.to_s %></th>
+          <% end %>
+        </tr>
+      </thead>
 
-    <tbody>
-      <% @site_activities.each do |activity| %>
-      <tr>
-        <td><%= l(activity.date) %></td>
-        <td><%= number_with_delimiter activity.search %></td>
-        <td><%= number_with_delimiter activity.user_sets %></td>
-        <td><%= number_with_delimiter activity.records %></td>
-        <td><%= number_with_delimiter activity.source_clicks %></td>
-        <td><%= number_with_delimiter activity.total %></td>
-      </tr>
-      <% end %>
-    </tbody>
-  </table>
+      <tbody>
+        <% @site_activities.each do |activity| %>
+        <tr>
+          <td><%= l(activity.date) %></td>
+          <td><%= number_with_delimiter activity.search %></td>
+          <td><%= number_with_delimiter activity.user_sets %></td>
+          <td><%= number_with_delimiter activity.records %></td>
+          <td><%= number_with_delimiter activity.source_clicks %></td>
+          <td><%= number_with_delimiter activity.total %></td>
+        </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
 </div>
 
-<%= paginate @site_activities %>
+<div class="row">
+  <div class="large-12 columns">
+    <%= paginate @site_activities %>
+  </div>
+</div>

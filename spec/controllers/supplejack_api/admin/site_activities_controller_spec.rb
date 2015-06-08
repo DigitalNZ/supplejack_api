@@ -12,7 +12,7 @@ module SupplejackApi
     describe SiteActivitiesController, type: :controller do
       routes { SupplejackApi::Engine.routes }
       
-      let(:site_activity) { double(SiteActivity).as_null_object }
+      let(:site_activity) { double(SupplejackApi::SiteActivity).as_null_object }
       let(:user) { double(User).as_null_object }
 
       before(:each) do
@@ -21,7 +21,7 @@ module SupplejackApi
       end
       
       describe 'GET index' do
-        before { allow(SiteActivity).to receive(:sortable) { [site_activity] } }
+        before { allow(SupplejackApi::SiteActivity).to receive(:sortable) { [site_activity] } }
 
         it 'finds all site activities' do
           get :index
@@ -29,12 +29,12 @@ module SupplejackApi
         end
 
         it 'sorts the site activities by the order param' do
-          expect(SiteActivity).to receive(:sortable).with(hash_including(order: 'total_asc'))
+          expect(SupplejackApi::SiteActivity).to receive(:sortable).with(hash_including(order: 'total_asc'))
           get :index, order: 'total_asc'
         end
 
         it 'paginates the site activities' do
-          expect(SiteActivity).to receive(:sortable).with(hash_including(page: '2'))
+          expect(SupplejackApi::SiteActivity).to receive(:sortable).with(hash_including(page: '2'))
           get :index, page: 2
         end
       end

@@ -67,5 +67,7 @@ SupplejackApi::Engine.routes.draw do
 
   get '/status', to: 'status#show'
 
+  get '/schema', to: 'schema#show'
+
   mount ::Resque::Server.new, at: '/resque'
 end

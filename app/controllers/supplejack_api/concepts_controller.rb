@@ -34,6 +34,8 @@ module SupplejackApi
     def show
       begin
         @concept = Concept.custom_find(params[:id], current_user, params[:search])
+        @concept.id = concept_url(id: @concept.concept_id)
+        @concept.context = schema_url
         respond_with @concept, root: false, serializer: ConceptSerializer
       rescue Mongoid::Errors::DocumentNotFound
         render request.format.to_sym => { errors: "Concept with ID #{params[:id]} was not found" }, status: :not_found
@@ -42,9 +44,15 @@ module SupplejackApi
 
     def default_serializer_options
       default_options = {}
-      @search ||= ConceptSearch.new(params)
-      default_options.merge!({:fields => @search.field_list}) if @search.field_list.present?
-      default_options.merge!({:groups => @search.group_list}) if @search.group_list.present?
+      #
+      # TODO: IMPLEMENT CONCEPT SEARCH
+      # @search ||= ConceptSearch.new(params)
+      # default_options.merge!({:fields => @search.field_list}) if @search.field_list.present?
+      # default_options.merge!({:groups => @search.group_list}) if @search.group_list.present?
+      default_options.merge!({:fields => ConceptSchema.model_fields.keys})
+      default_options.merge!({:groups => params[:fields]}) if params[:fields].present?
+      default_options.merge!({:inline_context => params[:inline_context]}) if params[:inline_context] == 'true'
+
       default_options
     end
 

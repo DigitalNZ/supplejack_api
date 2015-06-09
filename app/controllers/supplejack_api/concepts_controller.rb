@@ -32,7 +32,6 @@ module SupplejackApi
     end
 
     def show
-      # binding.pry
       begin
         @concept = Concept.custom_find(params[:id], current_user, params[:search])
         respond_with @concept, root: false, serializer: ConceptSerializer

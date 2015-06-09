@@ -20,7 +20,7 @@ module SupplejackApi
       # Create empty context block to add to once we know what fields we have.
       hash['@context'] = {}
       hash['@type'] = concept.send(:@type)
-      hash['@id'] = "#{self.options[:domain]}/concepts/#{concept.concept_id}"
+      hash['@id'] = concept.id
 
       include!(:source_authorities, :node => hash) if source_authorities?
 
@@ -36,7 +36,8 @@ module SupplejackApi
       if self.options[:inline_context] == "true"
         hash['@context'] = build_context(fields.keys)
       else
-        hash['@context'] = "#{self.options[:domain]}/schema"
+        puts Rails.application.routes.inspect
+        hash['@context'] = concept.context
       end
       hash
     end

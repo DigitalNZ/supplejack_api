@@ -48,7 +48,7 @@ module SupplejackApi
     end
 
     def self.activities 
-      self.fields.keys - IMPLICIT_FIELDS
+      ['date', 'search', 'user_sets', 'records', 'source_clicks', 'total'] - IMPLICIT_FIELDS
     end
 
     def calculate_total

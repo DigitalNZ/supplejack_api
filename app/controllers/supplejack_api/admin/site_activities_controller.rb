@@ -13,7 +13,7 @@ module SupplejackApi
       respond_to :csv, only: :index
 
       def index
-        @site_activities = SupplejackApi::SiteActivity.sortable(order: params[:order], page: params[:page])
+        @site_activities = SupplejackApi::SiteActivity.sortable(order: params[:order], page: params[:page]).order_by(date: :desc)
       end
     end
   end

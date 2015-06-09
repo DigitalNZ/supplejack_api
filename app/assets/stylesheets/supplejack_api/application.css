@@ -24,3 +24,7 @@
 .table { 
 	width: 100%;
 }
+
+.site-activities, .users {
+	overflow: scroll;
+}

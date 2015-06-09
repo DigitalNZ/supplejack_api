@@ -9,36 +9,34 @@
 # See https://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
-  hello: "Hello world"
-
   users:
-    reached_limit: "You have reached your maximum number of api requests today"
-    invalid_token: "Invalid API Key"
-    blank_token: "Please provide a API Key"
+    reached_limit: You have reached your maximum number of api requests today
+    invalid_token: Invalid API Key
+    blank_token: Please provide a API Key
 
-    title: "Users"
-    username: "Username"
-    name: "Name"
-    authentication_token: "API Key"
-    role: "Role"
-    daily_requests: "API requests today"
-    monthly_requests: "API requests last 30 days"
+    title: Users
+    username: Username
+    name: Name
+    authentication_token: API Key
+    role: Role
+    daily_requests: API requests today
+    monthly_requests: API requests last 30 days
 
-    log_out: "Log out"
+    log_out: Log out
 
     edit: Edit
 
   site_activities:
-    title: "Usage by date"
+    title: Usage by date
     
   custom_searches:
     errors:
-      uniqueness: "is already taken, please choose a different one"
+      uniqueness: is already taken, please choose a different one
 
   admin:
-    title: "Supplejack API"
-    download_csv: "Download as CSV"
-    not_a_admin: "This area is restricted to Administrators"
+    title: Supplejack API
+    download_csv: Download as CSV
+    not_a_admin: This area is restricted to Administrators
 
 
   mongoid:

@@ -21,7 +21,7 @@ module SupplejackApi
       end
       
       describe 'GET index' do
-        before { allow(SupplejackApi::SiteActivity).to receive(:sortable) { [site_activity] } }
+        before { allow(SupplejackApi::SiteActivity).to receive_message_chain(:sortable, :order_by) { [site_activity] } }
 
         it 'finds all site activities' do
           get :index

@@ -20,28 +20,30 @@ the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 <div class="row">
   <div class="large-12 columns">
-    <table class="table">
-      <thead>
-        <tr>
-          <% SupplejackApi::SiteActivity.activities.each do |activity| %>
-            <th><%= sortable "site_activity", activity.to_s %></th>
-          <% end %>
-        </tr>
-      </thead>
+    <div class="site-activities">
+      <table class="table">
+        <thead>
+          <tr>
+            <% SupplejackApi::SiteActivity.activities.each do |activity| %>
+              <th><%= sortable 'site_activity', activity.to_s %></th>
+            <% end %>
+          </tr>
+        </thead>
 
-      <tbody>
-        <% @site_activities.each do |activity| %>
-        <tr>
-          <td><%= l(activity.date) %></td>
-          <td><%= number_with_delimiter activity.search %></td>
-          <td><%= number_with_delimiter activity.user_sets %></td>
-          <td><%= number_with_delimiter activity.records %></td>
-          <td><%= number_with_delimiter activity.source_clicks %></td>
-          <td><%= number_with_delimiter activity.total %></td>
-        </tr>
-        <% end %>
-      </tbody>
-    </table>
+        <tbody>
+          <% @site_activities.each do |activity| %>
+          <tr>
+            <td><%= l(activity.date) %></td>
+            <td><%= number_with_delimiter activity.search %></td>
+            <td><%= number_with_delimiter activity.user_sets %></td>
+            <td><%= number_with_delimiter activity.records %></td>
+            <td><%= number_with_delimiter activity.source_clicks %></td>
+            <td><%= number_with_delimiter activity.total %></td>
+          </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 

@@ -33,7 +33,7 @@ module SupplejackApi
       fields = hash.dup
       fields.shift
 
-      if self.options[:inline_context]
+      if self.options[:inline_context] == "true"
         hash['@context'] = build_context(fields.keys)
       else
         hash['@context'] = concept.send(:@context)

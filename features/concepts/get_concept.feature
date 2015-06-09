@@ -21,13 +21,40 @@ Feature: Get Concept
   Scenario: Show concept with inline context
     When I get a concept with inline context
     Then the JSON should be a hash
-    Then show me the page
-    Then the JSON at "@context" should be:
-      """
-      [
-        {
-          "foaf": "http://xmlns.com/foaf/0.1/"
-        }
-      ]
-      """
     And the JSON at "name" should be "Colin McCahon"
+    And the JSON at "@context" should be:
+      """
+      {
+        "@id": {
+          "@id": ":@id"
+        },
+        "@type": {
+          "@id": ":@type"
+        },
+        "altLabel": {
+          "@id": "skos:altLabel"
+        },
+        "biographicalInformation": {
+          "@id": "rdaGr2:biographicalInformation"
+        },
+        "dateOfBirth": {
+          "@id": "rdaGr2:dateOfBirth"
+        },
+        "dateOfDeath": {
+          "@id": "rdaGr2:dateOfDeath"
+        },
+        "foaf": "http://xmlns.com/foaf/0.1/",
+        "name": {
+          "@id": "foaf:name"
+        },
+        "owl": "http://www.w3.org/2002/07/owl#",
+        "prefLabel": {
+          "@id": "skos:prefLabel"
+        },
+        "rdaGr2": "http://rdvocab.info/ElementsGr2/",
+        "sameAs": {
+          "@id": "owl:sameAs"
+        },
+        "skos": "http://www.w3.org/2004/02/skos/core#"
+      }
+      """

@@ -49,6 +49,7 @@ module SupplejackApi
       # default_options.merge!({:fields => @search.field_list}) if @search.field_list.present?
       # default_options.merge!({:groups => @search.group_list}) if @search.group_list.present?
       default_options.merge!({:fields => ConceptSchema.model_fields.keys})
+      default_options.merge!({:domain => (request.protocol + request.host)})
       default_options.merge!({:groups => params[:fields]}) if params[:fields].present?
       default_options.merge!({:inline_context => params[:inline_context]}) if params[:inline_context] == 'true'
 

@@ -59,16 +59,16 @@ module SupplejackApi
       }
 
       it 'include inline context in concept' do
-        s = serializer({ inline_context: "true" })
+        s = serializer({ inline_context: "true", domain: "http://localhost" })
         s.include_context_fields!(@hash)
         concept = {"@context"=>{:foaf=>"http://xmlns.com/foaf/0.1/", :name=>{"@id"=>"foaf:name"}}, :name=>"McCahon"}
         expect(@hash).to eq concept
       end
 
       it 'show context document url' do
-        s = serializer()
+        s = serializer({ domain: "http://localhost" })
         s.include_context_fields!(@hash)
-        concept = {"@context"=>"http://digitalnz.org/schema", :name=>"McCahon"}
+        concept = {"@context"=>"http://localhost/schema", :name=>"McCahon"}
         expect(@hash).to eq concept
       end
     end

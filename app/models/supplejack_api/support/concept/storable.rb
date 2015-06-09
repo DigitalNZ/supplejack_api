@@ -20,9 +20,7 @@ module SupplejackApi
 
           # Both of these fields are required in SJ API Core
           # No need to configure in *Schema
-          field           :@id
-          field           :@type,         type: String, default: "edm:agent"
-          field           :@context,      type: String, default: "http://digitalnz.org/schema"
+          field           :@type,         type: String 
           auto_increment  :concept_id
           
           index({ concept_id: 1 }, { unique: true })

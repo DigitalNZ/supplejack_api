@@ -9,28 +9,28 @@ require 'spec_helper'
 
 module SupplejackApi
   describe ConceptsController, type: :controller do
-    # routes { SupplejackApi::Engine.routes }
+    routes { SupplejackApi::Engine.routes }
 
-    # before { @user = FactoryGirl.create(:user, authentication_token: 'apikey', role: 'developer') }
+    before { @user = FactoryGirl.create(:user, authentication_token: 'apikey', role: 'developer') }
 
-    # describe 'GET show' do
-    #   before {
-    #     @concept = FactoryGirl.create(:concept)
-    #     allow(controller).to receive(:current_user) { @user }
-    #   }
+    describe 'GET show' do
+      before {
+        @concept = FactoryGirl.create(:concept)
+        allow(controller).to receive(:current_user) { @user }
+      }
 
-    #   it 'should find the concept and assign it' do
-    #     expect(Concept).to receive(:custom_find).with('123', @user, {}).and_return(@concept)
-    #     get :show, id: 123, search: {}, api_key: 'abc123', format: "json"
-    #     expect(assigns(:concept)).to eq(@concept)
-    #   end
+      it 'should find the concept and assign it' do
+        expect(Concept).to receive(:custom_find).with('123', @user, {}).and_return(@concept)
+        get :show, id: 123, search: {}, api_key: 'abc123', format: "json"
+        expect(assigns(:concept)).to eq(@concept)
+      end
 
-    #   it 'renders a error when records is not found' do
-    #     allow(Concept).to receive(:custom_find).and_raise(Mongoid::Errors::DocumentNotFound.new(Concept, ['123'], ['123']))
-    #     get :show, id: 123, search: {}, api_key: 'abc123', :format => 'json'
-    #     expect(response.body).to eq({:errors => 'Concept with ID 123 was not found'}.to_json)
-    #   end
-    # end
+      it 'renders a error when records is not found' do
+        allow(Concept).to receive(:custom_find).and_raise(Mongoid::Errors::DocumentNotFound.new(Concept, ['123'], ['123']))
+        get :show, id: 123, search: {}, api_key: 'abc123', :format => 'json'
+        expect(response.body).to eq({:errors => 'Concept with ID 123 was not found'}.to_json)
+      end
+    end
 
     # describe 'GET index' do
     #   before {

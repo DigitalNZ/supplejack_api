@@ -8,7 +8,7 @@
 Given(/^these concepts:$/) do |table|
   table.hashes.each do |hash|
     hash["name"] = hash["name"].split(',')
-  	concept = FactoryGirl.create(:concept, internal_identifier: "c:#{rand(1000..10000)}")
+  	concept = FactoryGirl.create(:concept)
     fragment = FactoryGirl.build(:concept_fragment, hash)
     concept.fragments << fragment
     concept.save
@@ -23,12 +23,16 @@ end
 
 Given(/^a concept$/) do
   @concept = FactoryGirl.create(:concept)
-  @concept.fragments << FactoryGirl.build(:concept_fragment)
   @concept.save
 end
 
 When(/^I get a concept$/) do
   request_url = concept_url(@concept.concept_id, format: 'json', api_key: @user.api_key, fields: 'all')
+  visit(request_url)
+end
+
+When(/^I get a concept with inline context$/) do
+  request_url = concept_url(@concept.concept_id, format: 'json', api_key: @user.api_key, fields: 'all', inline_context: true)
   visit(request_url)
 end
 

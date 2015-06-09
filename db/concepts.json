@@ -1,7 +1,5 @@
 [
     {  
-        "@context":"http://digitalnz.org/schema",
-        "@id":"http://dnz0a.digitalnz.org/concepts/1",
         "@type":"edm:Agent",
         "concept_id":1,
         "name":"Colin McCahon",
@@ -17,8 +15,6 @@
         "source_authorities":[]
     },
     {  
-        "@context":"http://digitalnz.org/schema",
-        "@id":"http://dnz0a.digitalnz.org/concepts/2",
         "@type":"edm:Agent",
         "concept_id":2,
         "name":"Rita Angus",

@@ -10,8 +10,6 @@ module SupplejackApi
     include Support::Concept::Storable
     include ActiveModel::SerializerSupport
 
-    attr_accessor :id, :context
-
     has_many :source_authorities, class_name: 'SupplejackApi::SourceAuthority'
 
     def self.custom_find(id, scope=nil, options={})
@@ -28,6 +26,31 @@ module SupplejackApi
       raise Mongoid::Errors::DocumentNotFound.new(self, [id], [id]) unless data
         
       data
+    end
+
+    def self.build_context(fields)
+      fields.sort!
+      context = {}
+      namespaces = []
+
+      fields.each do |field|
+        namespaces << ConceptSchema.model_fields[field].try(:namespace)
+      end
+
+      namespaces.compact.uniq.each do | namespace |
+        context[namespace] = ConceptSchema.namespaces[namespace].url
+        namespaced_fields = ConceptSchema.fields.select { |key, field| field.namespace == namespace }
+        namespaced_fields.each do |name, field|
+          context[name] = "#{field.namespace}:#{field.namespace_field}" if fields.include?(name) && name != field.namespace
+        end
+      end
+
+      fields.each do |field|
+        context[field] = {}
+        namespace = ConceptSchema.model_fields[field].try(:namespace)
+        context[field]['@id'] = "#{namespace}:#{field.to_s}"
+      end
+      context
     end
   end
 end

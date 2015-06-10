@@ -406,6 +406,3 @@ DEPENDENCIES
   supplejack_api!
   timecop (~> 0.4.6)
   xml_spec!
-
-BUNDLED WITH
-   1.10.3

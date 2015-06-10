@@ -18,6 +18,8 @@ module SupplejackApi
 
           store_in collection: 'concepts'
 
+          attr_accessor :site_id, :context
+
           # Both of these fields are required in SJ API Core
           # No need to configure in *Schema
           field           :@type,         type: String 

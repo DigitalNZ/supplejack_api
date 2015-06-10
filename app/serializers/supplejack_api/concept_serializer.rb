@@ -9,6 +9,7 @@ module SupplejackApi
   class ConceptSerializer < ActiveModel::Serializer
 
     has_many :source_authorities
+    has_many :records, serializer: SupplejackApi::ConceptRecordSerializer
 
     ConceptSchema.groups.keys.each do |group|
       define_method("#{group}?") do
@@ -21,23 +22,29 @@ module SupplejackApi
       hash = attributes
       # Create empty context block to add to once we know what fields we have.
       hash['@context'] = {}
-      hash['@type'] = concept.send(:@type)
-      hash['@id'] = concept.site_id
+      hash['@type'] = object.send(:@type)
+      hash['@id'] = object.site_id
 
       include_individual_fields!(hash)
       include_context_fields!(hash)
-      include!(:source_authorities, :node => hash) if source_authorities?
+      include!(:source_authorities, node: hash) if source_authorities?
+      include_reverse_fields!(hash)
       hash
     end
 
     def include_context_fields!(hash)
       fields = hash.dup
-      fields.delete_if { |field| !ConceptSchema.model_fields.include?(field) }
+      fields.keep_if { |field| ConceptSchema.model_fields.include?(field) }
+      field_keys = fields.keys
+
+      # Include unstored fields from the Schema
+      record_fields = ConceptSchema.model_fields.select { |key, value| value.try(:store) == false }
+      field_keys += record_fields.keys
 
       if self.options[:inline_context]
-        hash['@context'] = Concept.build_context(fields.keys)
+        hash['@context'] = Concept.build_context(field_keys)
       else
-        hash['@context'] = concept.context
+        hash['@context'] = object.context
       end
       hash
     end
@@ -47,9 +54,19 @@ module SupplejackApi
         self.options[:fields].push(:concept_id)
         self.options[:fields].sort!
         self.options[:fields].each do |field|
-          hash[field] = concept.send(field)
+          hash[field] = object.send(field)
         end
       end
+      hash
+    end
+
+    def include_reverse_fields!(hash)
+      hash['@reverse'] = {}
+      key = concept.class.to_s.demodulize.downcase.pluralize
+      include!(:records, node: hash['@reverse'], key: key)
+
+      # TODO: Limit the number of records by 100 (Temporary) while there's no pagination
+      hash['@reverse'][key] = hash['@reverse'][key].take(100)
       hash
     end
   end

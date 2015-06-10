@@ -5,27 +5,20 @@
 # Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
-Feature: Get Concept
+Feature: Get Context
 
   Background:
     Given a user with a API Key
-    And I have a concept
 
-  Scenario: Show concept without inline context
-    When I get a concept
+  Scenario: Show context
+    When I visit "/schema"
     Then the JSON should be a hash
-    And the JSON at "@context" should be "http://www.example.com/schema"
-    And the JSON at "name" should be "Colin McCahon"
-
-  Scenario: Show concept with inline context
-    When I get a concept with inline context
-    Then the JSON should be a hash
-    And the JSON at "@context" should be:
+    And the JSON should be:
       """
       {
+        "foaf": "http://xmlns.com/foaf/0.1/",
         "skos": "http://www.w3.org/2004/02/skos/core#",
         "rdaGr2": "http://rdvocab.info/ElementsGr2/",
-        "foaf": "http://xmlns.com/foaf/0.1/",
         "owl": "http://www.w3.org/2002/07/owl#",
         "dc": "http://purl.org/dc/elements/1.1/",
         "edm": "http://www.europeana.eu/schemas/edm/",
@@ -33,11 +26,14 @@ Feature: Get Concept
         "concept_id": {
             "@id": "dcterms:identifier"
         },
+        "name": {
+            "@id": "foaf:name"
+        },
+        "prefLabel": {
+            "@id": "skos:prefLabel"
+        },
         "altLabel": {
             "@id": "skos:altLabel"
-        },
-        "biographicalInformation": {
-            "@id": "rdaGr2:biographicalInformation"
         },
         "dateOfBirth": {
             "@id": "rdaGr2:dateOfBirth"
@@ -45,11 +41,8 @@ Feature: Get Concept
         "dateOfDeath": {
             "@id": "rdaGr2:dateOfDeath"
         },
-        "name": {
-            "@id": "foaf:name"
-        },
-        "prefLabel": {
-            "@id": "skos:prefLabel"
+        "biographicalInformation": {
+            "@id": "rdaGr2:biographicalInformation"
         },
         "sameAs": {
             "@id": "owl:sameAs"

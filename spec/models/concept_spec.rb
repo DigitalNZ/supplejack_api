@@ -19,6 +19,7 @@ module SupplejackApi
     it { should be_timestamped_document.with(:updated) }
 
     it { should have_many(:source_authorities) }
+    it { should have_and_belong_to_many(:records) }
 
     describe 'fields' do
       context '.model fields' do
@@ -32,7 +33,7 @@ module SupplejackApi
       context '.schema fields' do
         ConceptSchema.model_fields.each do |name, field|
           it "sets the #{name} field from the schema" do
-            expect(concept.respond_to?(name)).to be_truthy
+            expect(concept.respond_to?(name)).to be_truthy unless field.try(:store) == false
           end
         end
       end

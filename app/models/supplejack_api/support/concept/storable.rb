@@ -20,6 +20,9 @@ module SupplejackApi
 
           attr_accessor :site_id, :context
 
+          has_many :source_authorities, class_name: 'SupplejackApi::SourceAuthority'
+          has_and_belongs_to_many :records, class_name: 'SupplejackApi::Record'
+
           # Both of these fields are required in SJ API Core
           # No need to configure in *Schema
           field           :@type,         type: String 
@@ -27,8 +30,9 @@ module SupplejackApi
           
           index({ concept_id: 1 }, { unique: true })
 
-          ConceptSchema.model_fields.each do |name, index|
-            field name.to_sym, index.field_options if !!index.field_options
+          ConceptSchema.model_fields.each do |name, option|
+            next if option.store == false
+            field name.to_sym, option.field_options if !!option.field_options
 
             # TODO: Set the Mongo index
             # TODO: Set the validation

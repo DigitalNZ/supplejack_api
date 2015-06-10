@@ -18,6 +18,7 @@ class ConceptSchema
   namespace :rdfs,        url: 'http://www.w3.org/2000/01/rdf-schema#'
   namespace :skos,        url: 'http://www.w3.org/2004/02/skos/core#'
   namespace :xsd,         url: 'http://www.w3.org/2001/XMLSchema#'
+  namespace :dc,          url: 'http://purl.org/dc/elements/1.1/'
 
   # Fields (SourceAuthority fields)
   string      :name
@@ -41,4 +42,9 @@ class ConceptSchema
   model_field :dateOfDeath, field_options: { type: Date }, namespace: :rdaGr2
   model_field :biographicalInformation, field_options: { type: String }, namespace: :rdaGr2
   model_field :sameAs, field_options: { type: Array }, namespace: :owl
+  
+  model_field :title, store: false, namespace: :dc
+  model_field :date, store: false, namespace: :dc
+  model_field :description, store: false, namespace: :dc
+  model_field :agents, store: false, namespace: :edm
 end

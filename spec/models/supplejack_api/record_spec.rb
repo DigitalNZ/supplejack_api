@@ -11,6 +11,10 @@ module SupplejackApi
   describe Record do
     let(:record) { FactoryGirl.build(:record, record_id: 1234) }
 
+    subject { record }
+
+    it { should have_and_belong_to_many(:agents) }
+
     describe '#custom_find' do
       before(:each) do
         @record = FactoryGirl.create(:record, record_id: 54321)

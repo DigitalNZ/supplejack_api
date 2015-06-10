@@ -9,7 +9,7 @@ module SupplejackApi
   FactoryGirl.define do
     factory :concept, class: SupplejackApi::Concept do
       concept_id    1
-      name          "Colin McCahon"
+      name          'Colin McCahon'
     end
   end
 end

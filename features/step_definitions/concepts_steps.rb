@@ -21,7 +21,7 @@ When(/^I visit index page for the concepts$/) do
   visit(@request_url)
 end
 
-Given(/^a concept$/) do
+Given(/^I have a concept$/) do
   @concept = FactoryGirl.create(:concept)
   @concept.save
 end

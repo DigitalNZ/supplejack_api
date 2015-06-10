@@ -35,7 +35,8 @@ module SupplejackApi
 
     def field_list
       return @field_list if @field_list
-      valid_fields = ConceptSchema.model_fields.keys.dup
+      model_fields = ConceptSchema.model_fields.dup
+      valid_fields = model_fields.keep_if { |key, field| field.try(:store) == nil }
 
       @field_list = options[:fields].split(",").map {|f| f.strip.gsub(':', '_').to_sym}
       @field_list.delete_if do |f|

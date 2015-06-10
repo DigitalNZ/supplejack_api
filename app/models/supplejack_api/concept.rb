@@ -10,8 +10,6 @@ module SupplejackApi
     include Support::Concept::Storable
     include ActiveModel::SerializerSupport
 
-    has_many :source_authorities, class_name: 'SupplejackApi::SourceAuthority'
-
     def self.custom_find(id, scope=nil, options={})
       options ||= {}
       class_scope = self.unscoped

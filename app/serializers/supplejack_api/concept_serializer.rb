@@ -10,7 +10,7 @@ module SupplejackApi
 
     has_many :source_authorities
 
-
+    CORE_FIELDS = %w(@context @type @id)
 
     def source_authorities?
       return false if (options[:groups]).blank?
@@ -22,24 +22,21 @@ module SupplejackApi
       # Create empty context block to add to once we know what fields we have.
       hash['@context'] = {}
       hash['@type'] = concept.send(:@type)
-      hash['@id'] = concept.id
-
-      include!(:source_authorities, :node => hash) if source_authorities?
+      hash['@id'] = concept.site_id
 
       include_individual_fields!(hash)
       include_context_fields!(hash)
+      include!(:source_authorities, :node => hash)
       hash
     end
 
     def include_context_fields!(hash)
       fields = hash.dup
-
       fields.delete_if { |field| !ConceptSchema.model_fields.include?(field) }
 
-      if self.options[:inline_context] == "true"
-        hash['@context'] = build_context(fields.keys)
+      if self.options[:inline_context]
+        hash['@context'] = Concept.build_context(fields.keys)
       else
-        puts Rails.application.routes.inspect
         hash['@context'] = concept.context
       end
       hash
@@ -47,40 +44,13 @@ module SupplejackApi
 
     def include_individual_fields!(hash)
       if self.options[:fields].present?
+        self.options[:fields].push(:concept_id)
+        self.options[:fields].sort!
         self.options[:fields].each do |field|
           hash[field] = concept.send(field)
         end
       end
       hash
     end
-
-    def build_context(fields)
-      context = {}
-      namespaces = []
-
-      fields.each do |field|
-        namespaces << ConceptSchema.model_fields[field].try(:namespace)
-      end
-
-      namespaces.compact.uniq.each do | namespace |
-        context[namespace] = ConceptSchema.namespaces[namespace].url
-        namespaced_fields(namespace).each do |name, field|
-          context[name] = "#{field.namespace}:#{field.namespace_field}" if fields.include?(name) && name != field.namespace
-        end
-      end
-
-      fields.each do |field|
-        context[field] = {}
-        namespace = ConceptSchema.model_fields[field].try(:namespace)
-        context[field]['@id'] = "#{namespace}:#{field.to_s}"
-      end
-      context
-    end
-
-    def namespaced_fields(namespace)
-      ConceptSchema.fields.select { |key, field| field.namespace == namespace }
-    end
-
   end
-
 end

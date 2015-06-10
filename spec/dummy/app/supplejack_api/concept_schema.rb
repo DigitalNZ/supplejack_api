@@ -31,66 +31,7 @@ class ConceptSchema
   string      :familyName
   string      :birthYear
   integer     :deathYear
-
-  # Fields
-  # string    :concept_id,    store: false
-  # string    :type
-  # string    :match_status,  search_as: [:filter]
-  # # TODO Remove name
-  # string    :name,          multi_value: true,    search_boost: 10,     search_as: [:filter, :fulltext], namespace: :foaf
-  # string    :givenName,     search_boost: 10,     search_as: [:filter, :fulltext], namespace: :foaf
-  # string    :familyName,    search_boost: 10,     search_as: [:filter, :fulltext], namespace: :foaf
-  # string    :label,         search_boost: 5,      search_as: [:filter, :fulltext], namespace: :skos, namespace_field: :prefLabel
-  # string    :description,   search_boost: 2,      search_as: [:filter, :fulltext], namespace: :rdaGr2, namespace_field: :biographicalInformation
-  # datetime  :dateOfBirth,   search_as: [:filter], namespace: :rdaGr2
-  # datetime  :dateOfDeath,   search_as: [:filter], namespace: :rdaGr2
-  # string    :placeOfBirth,  namespace: :rdaGr2  
-  # string    :placeOfDeath,  namespace: :rdaGr2  
-  # string    :role,          namespace: :rdaGr2,   namespace_field: :professionOrOccupation
-  # string    :gender,        search_as: [:filter], namespace: :rdaGr2
-  # string    :isRelatedTo,   multi_value: true,    namespace: :edm
-  # string    :hasMet,        multi_value: true,    namespace: :edm
-  # string    :sameAs,        multi_value: true,    namespace: :owl
-
-  # Groups
-  # group :default do
-  #   fields [
-  #     :type,
-  #     :label,
-  #     :name,
-  #     :role
-  #   ]
-  # end
-
-  # group :all do
-  #   includes [:default]
-  #   fields [
-  #     :match_status,
-  #     :name,
-  #     :givenName,
-  #     :familyName,
-  #     :description,
-  #     :dateOfBirth,
-  #     :dateOfDeath,
-  #     :placeOfBirth,
-  #     :placeOfDeath,
-  #     :gender,
-  #     :isRelatedTo,
-  #     :hasMet,
-  #     :sameAs
-  #   ]
-  # end
-
-  # group :core do
-  #   fields [:concept_id]
-  # end
-
-  # Roles
-  # role :developer do
-  #   default true
-  # end
-  # role :admin
-
+  
   model_field :name, field_options: { type: String }, namespace: :foaf
   model_field :prefLabel, field_options: { type: String }, namespace: :skos
   model_field :altLabel, field_options: { type: Array }, namespace: :skos

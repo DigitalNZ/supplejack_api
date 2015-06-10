@@ -28,30 +28,7 @@ module SupplejackApi
       it 'merges in the hash the requested fields' do
         s = serializer({ fields: [:name] }, { name: 'McCahon' })
         s.include_individual_fields!(@hash)
-        expect(@hash).to eq({ name: 'McCahon' })
-      end
-    end
-
-    describe '#build_context' do
-      let(:s) { serializer() }
-      let(:fields) { [:name, :prefLabel, :dateOfBirth] }
-
-      it 'builds inline context' do
-        context = {
-                    :skos => "http://www.w3.org/2004/02/skos/core#",
-                    :foaf => "http://xmlns.com/foaf/0.1/",
-                    :rdaGr2 => "http://rdvocab.info/ElementsGr2/",
-                    :name => {
-                        "@id" => "foaf:name"
-                    },
-                    :prefLabel => {
-                        "@id" => "skos:prefLabel"
-                    },
-                    :dateOfBirth => {
-                        "@id" => "rdaGr2:dateOfBirth"
-                    }
-                }
-        expect(s.build_context(fields)).to eq context
+        expect(@hash).to eq({ name: 'McCahon', concept_id: 1})
       end
     end
 

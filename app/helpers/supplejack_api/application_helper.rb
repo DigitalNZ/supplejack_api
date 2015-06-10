@@ -34,6 +34,5 @@ module SupplejackApi
 	      return [@sort_column, @sort_direction]
 	    end
 	  end
-
   end
 end

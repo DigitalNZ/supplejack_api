@@ -24,7 +24,9 @@ SupplejackApi::Engine.routes.draw do
     end
 
     # Concepts
-    resources :concepts, only: [:index, :show]
+    resources :concepts, only: [:index, :show] do
+      get '/schema', to: 'schema#show', on: :collection
+    end
 
     # Records
     resources :records, only: [:index, :show] do
@@ -66,8 +68,6 @@ SupplejackApi::Engine.routes.draw do
   resources :sources, only: [:index, :update], constraints: SupplejackApi::HarvesterConstraint.new
 
   get '/status', to: 'status#show'
-
-  get '/schema', to: 'schema#show'
-
+  
   mount ::Resque::Server.new, at: '/resque'
 end

@@ -56,6 +56,28 @@ module SupplejackApi
       end
     end
 
+    describe '#build_context' do
+      let(:fields) { [:name, :prefLabel, :dateOfBirth] }
+
+      it 'builds inline context' do
+        context = {
+                    :skos => "http://www.w3.org/2004/02/skos/core#",
+                    :foaf => "http://xmlns.com/foaf/0.1/",
+                    :rdaGr2 => "http://rdvocab.info/ElementsGr2/",
+                    :name => {
+                        "@id" => "foaf:name"
+                    },
+                    :prefLabel => {
+                        "@id" => "skos:prefLabel"
+                    },
+                    :dateOfBirth => {
+                        "@id" => "rdaGr2:dateOfBirth"
+                    }
+                }
+        expect(Concept.build_context(fields)).to eq context
+      end
+    end
+
     #   it "shouldn't call find when the mongo id is invalid" do
     #     expect(Concept).to_not receive(:find)
     #     expect { Concept.custom_find('1234567abc') }.to raise_error(Mongoid::Errors::DocumentNotFound)

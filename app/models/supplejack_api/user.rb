@@ -114,11 +114,13 @@ module SupplejackApi
     end
 
     def update_daily_activity(request)
-      controller = request.params[:controller].to_s
+      # Get the controller name and strips out the `supplejack_api/` namespace
+      controller = request.params[:controller].to_s.gsub(/supplejack_api\//, '')
       action = request.params[:action].to_s
 
       if controller == 'records' && action == 'index'
         controller, action = 'search', 'records'
+      # TODO: Custom Search is deprecated. Evaluate for removal
       elsif controller == 'custom_searches' && action == 'records'
         controller, action = 'search', 'custom_search'
       elsif controller == 'set_items'

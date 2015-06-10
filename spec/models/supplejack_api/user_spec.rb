@@ -96,37 +96,36 @@ module SupplejackApi
 
 
       context 'api limit notifications' do
-        pending 'Fix RequestLimitMailer issues'
-        # before(:each) do
-        #   @email = double
-        #   RequestLimitMailer).to receive(:at90percent) { @email }
-        # end
+        before {
+          @email = double
+          allow(SupplejackApi::RequestLimitMailer).to receive(:at90percent) { @email }
+        }
+          
+        it 'should send an email if the user is at 90% daily requests' do
+          expect(@email).to receive(:deliver)
+          user.attributes = {daily_requests: 89, updated_at: Time.now, max_requests: 100}
+          expect(SupplejackApi::RequestLimitMailer).to receive(:at90percent).with(user) {@email}
+          user.check_daily_requests
+        end
 
-        # it 'should send an email if the user is at 90% daily requests' do
-        #   @email).to receive(:deliver)
-        #   user.attributes = { daily_requests: 89, updated_at: Time.now, max_requests: 100 }
-        #   RequestLimitMailer).to receive(:at90percent).with(user) { @email }
-        #   user.check_daily_requests
-        # end
+        it 'should not send an email if the user has past 90%' do
+          user.attributes = {daily_requests: 90, updated_at: Time.now, max_requests: 100}
+          expect(SupplejackApi::RequestLimitMailer).to_not receive(:at90percent).with(user) {@email}
+          user.check_daily_requests
+        end
 
-        # it 'should not send an email if the user has past 90%' do
-        #   user.attributes = { daily_requests: 90, updated_at: Time.now, max_requests: 100 }
-        #   RequestLimitMailer.should_not_receive(:at90percent).with(user) { @email }
-        #   user.check_daily_requests
-        # end
+        it 'should send an email if the user has reached 100%' do
+          expect(@email).to receive(:deliver)
+          user.attributes = {daily_requests: 99, updated_at: Time.now, max_requests: 100}
+          expect(SupplejackApi::RequestLimitMailer).to receive(:at100percent).with(user) {@email}
+          user.check_daily_requests
+        end
 
-        # it 'should send an email if the user has reached 100%' do
-        #   @email).to receive(:deliver)
-        #   user.attributes = { daily_requests: 99, updated_at: Time.now, max_requests: 100 }
-        #   RequestLimitMailer).to receive(:at100percent).with(user) { @email }
-        #   user.check_daily_requests
-        # end
-
-        # it 'should not send an email when the user has past 100%' do
-        #   user.attributes = { daily_requests: 100, updated_at: Time.now, max_requests: 100 }
-        #   RequestLimitMailer.should_not_receive(:at100percent).with(user) { @email }
-        #   user.check_daily_requests
-        # end
+        it 'should not send an email when the user has past 100%' do
+          user.attributes = {daily_requests: 100, updated_at: Time.now, max_requests: 100}
+          expect(SupplejackApi::RequestLimitMailer).to_not receive(:at100percent).with(user) {@email}
+          user.check_daily_requests
+        end
       end
     end
 

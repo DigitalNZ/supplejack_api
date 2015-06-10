@@ -87,11 +87,11 @@ module SupplejackApi
       end
 
       if self.daily_requests == (self.max_requests * 0.9).floor
-        RequestLimitMailer.at90percent(self).deliver
-        RequestLimitMailer.at90percent_admin(self).deliver
+        SupplejackApi::RequestLimitMailer.at90percent(self).deliver
+        SupplejackApi::RequestLimitMailer.at90percent_admin(self).deliver
       elsif self.daily_requests == self.max_requests
-        RequestLimitMailer.at100percent(self).deliver
-        RequestLimitMailer.at100percent_admin(self).deliver
+        SupplejackApi::RequestLimitMailer.at100percent(self).deliver
+        SupplejackApi::RequestLimitMailer.at100percent_admin(self).deliver
       end
     end
 

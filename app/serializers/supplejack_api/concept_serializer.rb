@@ -10,6 +10,8 @@ module SupplejackApi
 
     has_many :source_authorities
 
+
+
     def source_authorities?
       return false if (options[:groups]).blank?
       return concept.try(options[:groups]).try(:any?)
@@ -31,7 +33,8 @@ module SupplejackApi
 
     def include_context_fields!(hash)
       fields = hash.dup
-      fields.shift
+
+      fields.delete_if { |field| !ConceptSchema.model_fields.include?(field) }
 
       if self.options[:inline_context] == "true"
         hash['@context'] = build_context(fields.keys)
@@ -53,7 +56,6 @@ module SupplejackApi
 
     def build_context(fields)
       context = {}
-
       namespaces = []
 
       fields.each do |field|

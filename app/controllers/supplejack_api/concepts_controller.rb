@@ -34,7 +34,7 @@ module SupplejackApi
     def show
       begin
         @concept = Concept.custom_find(params[:id], current_user, params[:search])
-        @concept.site_id = "#{ENV['WWW_DOMAIN']}/concepts/#{@concept.concept_id}"
+        @concept.site_id = "http://#{ENV['WWW_DOMAIN']}/concepts/#{@concept.concept_id}"
         @concept.context = schema_concepts_url
         respond_with @concept, root: false, serializer: ConceptSerializer
       rescue Mongoid::Errors::DocumentNotFound

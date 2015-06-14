@@ -10,11 +10,11 @@ module SupplejackApi
 
     has_many :source_authorities
 
-    CORE_FIELDS = %w(@context @type @id)
-
-    def source_authorities?
-      return false if (options[:groups]).blank?
-      return concept.try(options[:groups]).try(:any?)
+    ConceptSchema.groups.keys.each do |group|
+      define_method("#{group}?") do
+        return false unless options[:groups].try(:any?)
+        self.options[:groups].include?(group)
+      end
     end
 
     def serializable_hash
@@ -26,7 +26,7 @@ module SupplejackApi
 
       include_individual_fields!(hash)
       include_context_fields!(hash)
-      include!(:source_authorities, :node => hash)
+      include!(:source_authorities, :node => hash) if source_authorities?
       hash
     end
 

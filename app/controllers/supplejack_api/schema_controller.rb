@@ -8,7 +8,7 @@
 module SupplejackApi
 	class SchemaController < ApplicationController
     skip_before_filter :authenticate_user!
-    respond_to :json, :xml, :rss
+    respond_to :json, :xml
 
 		def show
       @schema_fields = Concept.build_context(ConceptSchema.model_fields.keys)

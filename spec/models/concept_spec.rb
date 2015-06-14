@@ -64,14 +64,18 @@ module SupplejackApi
                     :skos => "http://www.w3.org/2004/02/skos/core#",
                     :foaf => "http://xmlns.com/foaf/0.1/",
                     :rdaGr2 => "http://rdvocab.info/ElementsGr2/",
+                    :dcterms => "http://purl.org/dc/terms/",
+                    :concept_id => {
+                      "@id" => "dcterms:identifier"
+                    },
                     :name => {
-                        "@id" => "foaf:name"
+                      "@id" => "foaf:name"
                     },
                     :prefLabel => {
-                        "@id" => "skos:prefLabel"
+                      "@id" => "skos:prefLabel"
                     },
                     :dateOfBirth => {
-                        "@id" => "rdaGr2:dateOfBirth"
+                      "@id" => "rdaGr2:dateOfBirth"
                     }
                 }
         expect(Concept.build_context(fields)).to eq context

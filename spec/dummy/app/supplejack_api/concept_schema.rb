@@ -29,8 +29,10 @@ class ConceptSchema
   string      :sameAs,                    multi_value: true
   string      :givenName
   string      :familyName
-  string      :birthYear
+  integer     :birthYear
   integer     :deathYear
+
+  group :source_authorities
   
   model_field :name, field_options: { type: String }, namespace: :foaf
   model_field :prefLabel, field_options: { type: String }, namespace: :skos

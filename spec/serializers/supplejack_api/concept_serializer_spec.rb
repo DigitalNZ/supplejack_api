@@ -40,7 +40,7 @@ module SupplejackApi
       it 'include inline context in concept' do
         s = serializer({ inline_context: "true"})
         s.include_context_fields!(@hash)
-        concept = {"@context"=>{:foaf=>"http://xmlns.com/foaf/0.1/", :name=>{"@id"=>"foaf:name"}}, :name=>"McCahon"}
+        concept = {"@context"=>{:foaf=>"http://xmlns.com/foaf/0.1/", :dcterms => "http://purl.org/dc/terms/", :concept_id => {"@id"=>"dcterms:identifier"}, :name=>{"@id"=>"foaf:name"}}, :name=>"McCahon"}
         expect(@hash).to eq concept
       end
 

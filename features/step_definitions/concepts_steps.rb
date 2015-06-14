@@ -27,12 +27,12 @@ Given(/^a concept$/) do
 end
 
 When(/^I get a concept$/) do
-  request_url = concept_url(@concept.concept_id, format: 'json', api_key: @user.api_key, fields: 'all')
+  request_url = concept_url(@concept.concept_id, format: 'json', api_key: @user.api_key)
   visit(request_url)
 end
 
 When(/^I get a concept with inline context$/) do
-  request_url = concept_url(@concept.concept_id, format: 'json', api_key: @user.api_key, fields: 'all', inline_context: true)
+  request_url = concept_url(@concept.concept_id, format: 'json', api_key: @user.api_key, inline_context: true)
   visit(request_url)
 end
 

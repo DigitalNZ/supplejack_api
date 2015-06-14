@@ -29,7 +29,6 @@ module SupplejackApi
     end
 
     def self.build_context(fields)
-      fields.sort!
       context = {}
       namespaces = []
 
@@ -45,7 +44,12 @@ module SupplejackApi
         end
       end
 
-      fields.each do |field|
+      # Manually build context for concept_id
+      context[:dcterms] = ConceptSchema.namespaces[:dcterms].url
+      context[:concept_id] = {}
+      context[:concept_id]["@id"] = "dcterms:identifier"
+
+      fields.each do |field|        
         context[field] = {}
         namespace = ConceptSchema.model_fields[field].try(:namespace)
         context[field]['@id'] = "#{namespace}:#{field.to_s}"

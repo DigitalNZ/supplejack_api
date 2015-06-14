@@ -15,7 +15,7 @@ Feature: Get Concept
 	Scenario: Show concept without inline context
 		When I get a concept
 		Then the JSON should be a hash
-    And the JSON at "@context" should be "http://www.example.com/concepts/schema"
+    And the JSON at "@context" should be "http://www.example.com/schema"
 		And the JSON at "name" should be "Colin McCahon"
 
   Scenario: Show concept with inline context
@@ -25,29 +25,33 @@ Feature: Get Concept
       """
       {
         "altLabel": {
-          "@id": "skos:altLabel"
-        },
-        "biographicalInformation": {
-          "@id": "rdaGr2:biographicalInformation"
-        },
-        "dateOfBirth": {
-          "@id": "rdaGr2:dateOfBirth"
-        },
-        "dateOfDeath": {
-          "@id": "rdaGr2:dateOfDeath"
-        },
-        "foaf": "http://xmlns.com/foaf/0.1/",
-        "name": {
-          "@id": "foaf:name"
-        },
-        "owl": "http://www.w3.org/2002/07/owl#",
-        "prefLabel": {
-          "@id": "skos:prefLabel"
-        },
-        "rdaGr2": "http://rdvocab.info/ElementsGr2/",
-        "sameAs": {
-          "@id": "owl:sameAs"
-        },
-        "skos": "http://www.w3.org/2004/02/skos/core#"
+           "@id": "skos:altLabel"
+         },
+         "biographicalInformation": {
+           "@id": "rdaGr2:biographicalInformation"
+         },
+         "concept_id": {
+           "@id": "dcterms:identifier"
+         },
+         "dateOfBirth": {
+           "@id": "rdaGr2:dateOfBirth"
+         },
+         "dateOfDeath": {
+           "@id": "rdaGr2:dateOfDeath"
+         },
+         "dcterms": "http://purl.org/dc/terms/",
+         "foaf": "http://xmlns.com/foaf/0.1/",
+         "name": {
+           "@id": "foaf:name"
+         },
+         "owl": "http://www.w3.org/2002/07/owl#",
+         "prefLabel": {
+           "@id": "skos:prefLabel"
+         },
+         "rdaGr2": "http://rdvocab.info/ElementsGr2/",
+         "sameAs": {
+           "@id": "owl:sameAs"
+         },
+         "skos": "http://www.w3.org/2004/02/skos/core#"
       }
       """

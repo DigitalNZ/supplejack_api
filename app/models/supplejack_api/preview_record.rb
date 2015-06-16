@@ -19,7 +19,6 @@ module SupplejackApi
     embeds_one :merged_fragment, class_name: 'SupplejackApi::ApiRecord::RecordFragment'
 
     auto_increment :record_id, session: 'strong', collection: 'preview_sequences'
-    auto_increment :concept_id, session: 'strong', collection: 'preview_sequences'
 
     build_model_fields
 

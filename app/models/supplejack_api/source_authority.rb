@@ -21,7 +21,7 @@ module SupplejackApi
 
     store_in collection: 'source_authorities'
 
-    field :@type,                       type: String
+    field :concept_type,                       type: String
     field :internal_identifier,         type: String
     field :concept_score,               type: Integer
     field :source_id,                   type: String

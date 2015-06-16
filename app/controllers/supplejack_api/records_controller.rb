@@ -8,6 +8,7 @@
 module SupplejackApi
   class RecordsController < ApplicationController
     skip_before_action :authenticate_user!, :only => [:source, :status]
+    before_action :set_concept_param, only: :index
     respond_to :json, :xml, :rss
 
     def index
@@ -55,6 +56,15 @@ module SupplejackApi
       default_options.merge!({:fields => @search.field_list}) if @search.field_list.present?
       default_options.merge!({:groups => @search.group_list}) if @search.group_list.present?
       default_options
+    end
+
+    private
+
+    def set_concept_param
+      if params[:concept_id].present?
+        params[:and] ||= {}
+        params[:and][:concept_id] = params[:concept_id]
+      end
     end
   end
 end

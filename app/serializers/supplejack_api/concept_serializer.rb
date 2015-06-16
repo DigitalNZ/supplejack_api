@@ -8,7 +8,7 @@
 module SupplejackApi
   class ConceptSerializer < ActiveModel::Serializer
 
-    has_many :source_authorities
+    has_many :source_authorities, serializer: SupplejackApi::SourceAuthoritySerializer
     has_many :records, serializer: SupplejackApi::ConceptRecordSerializer
 
     ConceptSchema.groups.keys.each do |group|
@@ -22,13 +22,13 @@ module SupplejackApi
       hash = attributes
       # Create empty context block to add to once we know what fields we have.
       hash['@context'] = {}
-      hash['@type'] = object.send(:@type)
+      hash['@type'] = object.concept_type
       hash['@id'] = object.site_id
 
       include_individual_fields!(hash)
       include_context_fields!(hash)
+      include_reverse_fields!(hash) if reverse?
       include!(:source_authorities, node: hash) if source_authorities?
-      include_reverse_fields!(hash)
       hash
     end
 
@@ -62,11 +62,8 @@ module SupplejackApi
 
     def include_reverse_fields!(hash)
       hash['@reverse'] = {}
-      key = concept.class.to_s.demodulize.downcase.pluralize
+      key = concept.edm_type
       include!(:records, node: hash['@reverse'], key: key)
-
-      # TODO: Limit the number of records by 100 (Temporary) while there's no pagination
-      hash['@reverse'][key] = hash['@reverse'][key].take(100)
       hash
     end
   end

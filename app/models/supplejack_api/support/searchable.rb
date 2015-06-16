@@ -20,7 +20,7 @@ module SupplejackApi
           string :source_id do
             primary_fragment.source_id
           end
-  
+
           build_sunspot_schema(self)
         end
       end

@@ -7,6 +7,5 @@
 
 module SupplejackApi
   class RecordSearch < Search
-
   end
 end

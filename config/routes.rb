@@ -24,7 +24,9 @@ SupplejackApi::Engine.routes.draw do
     end
 
     # Concepts
-    resources :concepts, only: [:index, :show]
+    resources :concepts, only: [:index, :show] do
+      resources :records, only: [:index], on: :member
+    end
     
     # Records
     resources :records, only: [:index, :show] do

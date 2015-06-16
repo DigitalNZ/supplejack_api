@@ -10,6 +10,7 @@ require 'spec_helper'
 module SupplejackApi
   describe Concept do
     let(:concept) { create(:concept) }
+    let(:record) { create(:record) }
 
     subject { concept }
 
@@ -19,11 +20,10 @@ module SupplejackApi
     it { should be_timestamped_document.with(:updated) }
 
     it { should have_many(:source_authorities) }
-    it { should have_and_belong_to_many(:records) }
 
     describe 'fields' do
       context '.model fields' do
-        %w(@type concept_id).each do |field|
+        %w(concept_type concept_id).each do |field|
           it "responds to #{field} field" do
             expect(concept.respond_to?(field)).to be_truthy
           end
@@ -80,6 +80,31 @@ module SupplejackApi
                     }
                 }
         expect(Concept.build_context(fields)).to eq context
+      end
+    end
+
+    describe '#records' do
+      it 'returns the records' do
+        record.concepts << concept
+        expect(concept.records).to eq [record]
+      end
+    end
+
+    describe '#edm_type' do
+      it 'returns the type of the concept' do
+        expect(concept.edm_type).to eq 'agents'
+      end
+    end
+
+    describe '#site_id' do
+      it 'returns the site_id of the concept' do
+        expect(concept.site_id).to eq "#{ENV['HTTP_HOST']}/concepts/1"
+      end
+    end
+
+    describe '#context' do
+      it 'returns the context of the concept' do
+        expect(concept.context).to eq "#{ENV['HTTP_HOST']}/schema"
       end
     end
 

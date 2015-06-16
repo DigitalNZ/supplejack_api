@@ -14,7 +14,7 @@ Feature: Get Concept
   Scenario: Show concept without inline context
     When I get a concept
     Then the JSON should be a hash
-    And the JSON at "@context" should be "http://www.example.com/schema"
+    And the JSON at "@context" should be "http://test.host/schema"
     And the JSON at "name" should be "Colin McCahon"
 
   Scenario: Show concept with inline context

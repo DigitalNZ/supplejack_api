@@ -10,7 +10,7 @@ module SupplejackApi
 
     attributes :title, :description, :date, :display_content_partner, :display_collection, :thumbnail_url
 
-    TYPE_PROXY = 'edm:Proxy'
+    TYPE_PROXY = 'edm:ProvidedCHO'
 
     def serializable_hash
       hash = {}

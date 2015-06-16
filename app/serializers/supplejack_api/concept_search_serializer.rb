@@ -7,14 +7,5 @@
 
 module SupplejackApi
   class ConceptSearchSerializer < SearchSerializer
-    
-    # TODO: Commented out as part of the concepts work.
-    # ConceptSchema.groups.keys.each do |group|
-    #   define_method("#{group}?") do
-    #     return false unless options[:groups].try(:any?)
-    #     self.options[:groups].include?(group)  
-    #   end
-    # end
   end
-
 end

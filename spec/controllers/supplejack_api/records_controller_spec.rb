@@ -11,16 +11,16 @@ module SupplejackApi
   describe RecordsController, type: :controller do
     routes { SupplejackApi::Engine.routes }
 
-    before(:each) do
+    before {
       @user = FactoryGirl.create(:user, authentication_token: 'apikey', role: 'developer')
-    end
+    }
 
     describe 'GET index' do
-      before(:each) do
+      before {
         @search = RecordSearch.new
         allow(@search).to receive(:valid?) { true }
         allow(RecordSearch).to receive(:new) {@search}
-      end
+      }
 
       it 'should initialize a new search instance' do
         allow_any_instance_of(RecordSearch).to receive(:valid?) { false }
@@ -123,6 +123,20 @@ module SupplejackApi
         allow(@search).to receive(:field_list).and_return([:title, :description])
         allow(@search).to receive(:group_list).and_return([:verbose])
         expect(controller.default_serializer_options).to eq({fields: [:title, :description], groups: [:verbose]})
+      end
+    end
+
+    describe '#set_concept_param' do
+      it 'adds concept_id in the parameter' do
+        controller.params = { concept_id: 3 }
+        controller.send(:set_concept_param)
+        expect(controller.params[:and]).to eq({'concept_id' => 3})
+      end
+
+      it 'merges concept_id with existing "and" parameter' do
+        controller.params = { concept_id: 3, and: { category: 'Category A' } }
+        controller.send(:set_concept_param)
+        expect(controller.params[:and]).to eq({'concept_id' => 3, 'category' => 'Category A'})
       end
     end
   end

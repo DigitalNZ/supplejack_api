@@ -22,7 +22,7 @@ module SupplejackApi
 
     describe 'fields' do
       context '.model fields' do
-        %w(@type internal_identifier concept_score source_id source_name url).each do |field|
+        %w(concept_type internal_identifier concept_score source_id source_name url).each do |field|
           it "responds to #{field} field" do
             expect(source_authority.respond_to?(field)).to be_truthy
           end

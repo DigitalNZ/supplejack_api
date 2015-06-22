@@ -60,11 +60,11 @@ module Sunspot
       Resque.enqueue(SupplejackApi::IndexWorker, :commit)
     end
 
-    def commit_if_dirty
+    def commit_if_dirty(soft_commit = false)
       # no-op
     end
 
-    def commit_if_delete_dirty
+    def commit_if_delete_dirty(soft_commit = false)
       # no-op
     end
   end

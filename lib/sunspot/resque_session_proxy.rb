@@ -56,7 +56,7 @@ module Sunspot
       Resque.enqueue SupplejackApi::IndexWorker, :remove_all, clazz.to_s
     end
 
-    def commit
+    def commit(soft_commit = false)
       Resque.enqueue(SupplejackApi::IndexWorker, :commit)
     end
 

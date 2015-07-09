@@ -22,6 +22,9 @@ class RecordSchema
   datetime  :birth_date
   boolean   :nz_citizen,                          search_as: [:filter]
 
+  # facets
+  string    :category,     multi_value: true,     search_as: [:filter]
+
   # Groups
   group :default do
     fields [

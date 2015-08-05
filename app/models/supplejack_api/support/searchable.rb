@@ -51,13 +51,13 @@ module SupplejackApi
           end
       
           raise Mongoid::Errors::DocumentNotFound.new(self, [id], [id]) unless data
-
+    
           begin
             data.find_next_and_previous_records(scope, options) if options.any?
           rescue Sunspot::UnrecognizedFieldError, RSolr::Error::Http, Timeout::Error, Errno::ECONNREFUSED, Errno::ECONNRESET => e
             Rails.logger.error e.inspect
           end
-      
+            
           data
         end
 

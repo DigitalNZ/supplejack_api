@@ -100,6 +100,7 @@ module SupplejackApi::Concerns::RecordSerializable
     hash[:next_record] = object.next_record if object.next_record.present?
     hash[:previous_page] = object.previous_page if object.previous_page.present?
     hash[:previous_record] = object.previous_record if object.previous_record.present?
+
     hash
   end
 
@@ -109,6 +110,7 @@ module SupplejackApi::Concerns::RecordSerializable
         hash[field] = record.send(field)
       end
     end
+
     hash
   end
 

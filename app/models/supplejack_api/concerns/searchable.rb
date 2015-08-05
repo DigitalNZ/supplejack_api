@@ -141,6 +141,7 @@ module SupplejackApi::Concerns::Searchable
       end
   
       @search_builder.build(&build_conditions)
+
       @search_builder
     end
 
@@ -244,7 +245,7 @@ module SupplejackApi::Concerns::Searchable
       self.solr_search_object.results
     end
   
-    def jsonp
+    def jsonp    
       @options[:jsonp].present? ? @options[:jsonp] : nil
     end
 

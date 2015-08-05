@@ -15,9 +15,10 @@ module SupplejackApi
       @search = SupplejackApi::RecordSearch.new(params)
       @search.request_url = request.original_url
       @search.scope = current_user
-      
+
       begin
-        if @search.valid?
+        if @search.valid?          
+          SupplejackApi::RequestLog.create_search(@search, params[:request_logger_field]) if params[:request_logger]
           respond_with @search, serializer: RecordSearchSerializer
         else
           render request.format.to_sym => { errors: @search.errors }, status: :bad_request
@@ -36,6 +37,7 @@ module SupplejackApi
     def show
       begin
         @record = SupplejackApi::Record.custom_find(params[:id], current_user, params[:search])
+        SupplejackApi::RequestLog.create_find(@record, params[:request_logger_field]) if params[:request_logger]
         respond_with @record, serializer: RecordSerializer
       rescue Mongoid::Errors::DocumentNotFound
         render request.format.to_sym => { errors: "Record with ID #{params[:id]} was not found" }, status: :not_found

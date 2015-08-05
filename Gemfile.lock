@@ -190,7 +190,7 @@ GEM
     lazy_high_charts (1.5.4)
       bundler (>= 1.0)
       hash-deep-merge
-    libv8 (3.16.14.9)
+    libv8 (3.16.14.11)
     link_header (0.0.8)
     mail (2.6.3)
       mime-types (>= 1.16, < 3)

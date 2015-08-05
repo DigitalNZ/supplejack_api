@@ -39,7 +39,7 @@ module SupplejackApi
             end
         
             raise Mongoid::Errors::DocumentNotFound.new(self, [id], [id]) unless data
-              
+
             data
           end
 

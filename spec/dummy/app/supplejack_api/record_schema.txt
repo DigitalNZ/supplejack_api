@@ -14,6 +14,7 @@ class RecordSchema
 
   # Fields
   string    :record_id,                   store: false,                                           namespace: :sj
+  string    :concept_ids,                                                                         namespace: :sj
   string    :title,                       search_boost: 10,     search_as: [:filter, :fulltext],  namespace: :dc
   string    :description,                 search_boost: 2,      search_as: [:filter, :fulltext],  namespace: :dc
         
@@ -29,11 +30,19 @@ class RecordSchema
   # Groups
   group :default do
     fields [
-      :record_id,
       :title,
-      :description,
+      :description
+    ]
+  end
+
+  group :all do
+    includes [:default]
+    fields [
+      :record_id,
+      :concept_ids,
       :subject,
       :display_content_partner,
+      :display_collection,
       :source_url,
       :thumbnail_url,
       :display_date,

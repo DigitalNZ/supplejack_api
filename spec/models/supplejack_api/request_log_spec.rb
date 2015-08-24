@@ -9,11 +9,11 @@ require 'spec_helper'
 
 module SupplejackApi
   describe RequestLog do
-  	let(:record) { FactoryGirl.build(:record, record_id: 123) }
+    let(:record) { FactoryGirl.build(:record, record_id: 123) }
   	let(:records) { [FactoryGirl.build(:record, record_id: 1234),
-  									 FactoryGirl.build(:record, record_id: 12345),
-  									 FactoryGirl.build(:record, record_id: 123456)
-  									 ] }
+  									      FactoryGirl.build(:record, record_id: 12345),
+  									      FactoryGirl.build(:record, record_id: 123456)
+  									     ] }
 
   	describe '#create_search' do
       before(:each) do

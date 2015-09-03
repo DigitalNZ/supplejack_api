@@ -13,7 +13,7 @@ module SupplejackApi
     respond_to :json
 
     def create
-      @set_item = @user_set.set_items.build(params[:record])
+      @set_item = @user_set.set_items.build(record_params)
       @user_set.save
       respond_with @user_set, @set_item
     end
@@ -27,6 +27,10 @@ module SupplejackApi
       else
         render json: {errors: "The record with id: #{params[:id]} was not found."}, status: :not_found
       end
+    end
+
+    def record_params
+      params.require(:record).permit(:record_id)
     end
   end
 end

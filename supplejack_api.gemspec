@@ -81,12 +81,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'sunspot_test', '~> 0.4.0'
   s.add_development_dependency 'rspec-activemodel-mocks', '~> 1.0.1'
 
-  if RUBY_VERSION =~ /2/
-    s.add_development_dependency 'better_errors', '~> 0.8.0'
-    s.add_development_dependency 'pry'
-    s.add_development_dependency 'pry-byebug', '~> 3.1.0'
-  end
-
   if RUBY_VERSION =~ /1.9/
     Encoding.default_external = Encoding::UTF_8
     Encoding.default_internal = Encoding::UTF_8

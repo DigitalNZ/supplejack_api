@@ -37,7 +37,6 @@ RSpec.configure do |config|
   require 'database_cleaner'
   config.before(:suite) do
     DatabaseCleaner[:mongoid].strategy = :truncation
-    Rails.cache.clear
   end
 
   config.before(:each) do

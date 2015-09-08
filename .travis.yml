@@ -5,7 +5,9 @@ install:
 rvm:
 - 1.9.3
 - 2.1.5
+cache: bundler
+bundler_args: --without production
+sudo: false
 notifications:
   slack:
     secure: Sp50H+dzfLIDCzWx06X3fzaqQIMLQ05ujV3O+am3tD3njTNJc1LuYSkc9WycVqiUQStDOraN8Rwu0tZkui3MSGRvTJsQaORuq6wwcR0kT5QXBZNmmeV/aCaMJaI/T1U4ucC7At5ZT2xFv3Cp943lOEjVTqr4eUZ29jJWirD2NwQ=
-script: bundle exec rspec spec

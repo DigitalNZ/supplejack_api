@@ -7,6 +7,9 @@ AllCops:
     - 'spec/**/*'
   RunRailsCops: true
   DisplayStyleGuide: true
+  # prevent bug caused by https://github.com/bbatsov/rubocop/issues/2213 on travis
+  # TODO remove
+  UseCache: false
 Metrics/LineLength:
   Max: 120
 Metrics/MethodLength:

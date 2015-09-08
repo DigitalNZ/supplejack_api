@@ -1,7 +1,4 @@
 language: ruby
-install:
-- gem uninstall bundler
-- gem install bundler --version '1.9.0'
 rvm:
 - 1.9.3
 - 2.1.5

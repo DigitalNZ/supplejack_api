@@ -29,3 +29,4 @@ gem 'cucumber-rails', require: false
 gem 'factory_girl_rails', require: false
 gem 'simplecov', require: false
 gem 'xml_spec', git: "https://github.com/boost/xml_spec", require: false # This is a gem created by fedegl to test the XML responses, its part of the Boost github organization account
+gem 'codeclimate-test-reporter', group: :test, require: nil

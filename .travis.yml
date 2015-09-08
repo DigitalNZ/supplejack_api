@@ -5,6 +5,10 @@ rvm:
 cache: bundler
 bundler_args: --without production
 sudo: false
+addons:
+  codeclimate:
+    repo_token:
+      secure: "BPE0Z8pERKEUtfnQrAHHFZe0vSRcmc5z+1M6vou9DGnln0k/A8g/WDMuejFJyutGrh+6RXAUwpreIYmmnnorRNrCJjjTZtS09n2tfhj58JiZEWFhzf5d3Gv0VbiflISJk+Ech5HDQgS7m96H0TFJzemurLkGbfjkJOuLLHOJanc="
 notifications:
   slack:
     secure: Sp50H+dzfLIDCzWx06X3fzaqQIMLQ05ujV3O+am3tD3njTNJc1LuYSkc9WycVqiUQStDOraN8Rwu0tZkui3MSGRvTJsQaORuq6wwcR0kT5QXBZNmmeV/aCaMJaI/T1U4ucC7At5ZT2xFv3Cp943lOEjVTqr4eUZ29jJWirD2NwQ=

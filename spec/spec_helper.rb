@@ -19,7 +19,10 @@ require 'mongoid-rspec'
 require 'simplecov'
 require 'rspec/active_model/mocks'
 
-SimpleCov.start
+
+require "codeclimate-test-reporter"
+CodeClimate::TestReporter.start
+#SimpleCov.start
 
 Rails.backtrace_cleaner.remove_silencers!
 

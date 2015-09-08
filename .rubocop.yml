@@ -1,0 +1,14 @@
+inherit_from: .rubocop_todo.yml
+AllCops:
+  Exclude:
+    - 'vendor/**/*'
+    - 'db/**/*'
+    - 'config/**/*'
+    - 'spec/**/*'
+  RunRailsCops: true
+  DisplayStyleGuide: true
+Metrics/LineLength:
+  Max: 120
+Metrics/MethodLength:
+  Max: 15
+

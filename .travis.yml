@@ -6,6 +6,7 @@ cache: bundler
 bundler_args: --without production
 sudo: false
 script: bundle exec rspec
+services: mongodb
 addons:
   codeclimate:
     repo_token:

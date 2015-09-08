@@ -70,7 +70,7 @@ module SupplejackApi
 
       request_logs.each do |request_log|
         if request_log.log_values
-          request_log.log_values.each do |field|
+          request_log.log_values.compact.each do |field|
             key = field.to_sym
             unless request_log_counts.has_key? key
               request_log_counts[key] = 1

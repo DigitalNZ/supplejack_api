@@ -1,0 +1,33 @@
+{
+  "description": "Represents Record views for a single day",
+  "type": "object",
+  "required": [
+    "id",
+    "searches",
+    "record_page_views",
+    "user_set_views",
+    "total"
+  ],
+  "properties": {
+    "id": {
+      "description": "Value of key that metric is grouped by (which defaults to display_collection)",
+      "type": "string"
+    },
+    "searches": {
+      "description": "Number of times records from this group appeared in search results",
+      "type": "number"
+    },
+    "record_page_views": {
+      "description": "Number of times records from this were viewed on their landing page",
+      "type": "number"
+    },
+    "user_set_views": {
+      "description": "Number of times records from this group were viewed as part of a user set",
+      "type": "number"
+    },
+    "total": {
+      "description": "Cumulative view count",
+      "type": "number"
+    }
+  }
+}

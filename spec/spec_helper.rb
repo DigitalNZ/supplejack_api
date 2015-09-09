@@ -8,7 +8,11 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV['RAILS_ENV'] ||= 'test'
 
-require File.expand_path("../dummy/config/environment.rb",  __FILE__)
+begin
+  require 'pry'
+end
+
+require File.expand_path("../dummy/config/environment.rb", __FILE__)
 require 'rails/application'
 require 'rails/mongoid'
 require 'rspec/rails'
@@ -19,10 +23,9 @@ require 'mongoid-rspec'
 require 'simplecov'
 require 'rspec/active_model/mocks'
 
-
 require "codeclimate-test-reporter"
 CodeClimate::TestReporter.start
-#SimpleCov.start
+# SimpleCov.start
 
 Rails.backtrace_cleaner.remove_silencers!
 

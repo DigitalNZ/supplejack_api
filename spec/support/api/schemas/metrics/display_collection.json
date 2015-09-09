@@ -1,0 +1,33 @@
+{
+  "description": "Represents Record related metrics for a single day",
+  "type": "object",
+  "required": [
+    "id",
+    "total_active_records",
+    "total_new_records",
+    "category_counts",
+    "copyright_counts"
+  ],
+  "properties": {
+    "id": {
+      "description": "Value of key that metric is grouped by (which defaults to display_collection)",
+      "type": "string"
+    },
+    "total_active_records": {
+      "description": "Total number of active records for this group",
+      "type": "number"
+    },
+    "total_new_records": {
+      "description": "Total number of new records harvested on this day for group",
+      "type": "number"
+    },
+    "category_counts": {
+      "description": "Object with the keys being the category name, values being the count",
+      "type": "object"
+    },
+    "copyright_counts": {
+      "description": "Object with the keys being the copyright type, values being the count",
+      "type": "object"
+    }
+  }
+}

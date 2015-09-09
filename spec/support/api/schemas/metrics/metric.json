@@ -1,0 +1,28 @@
+{
+  "description": "Metric object",
+  "type": "object",
+  "required": [
+    "day",
+    "total_active_records",
+    "total_new_records"
+  ],
+  "properties": {
+    "day": {
+      "description": "Day this metrics object refers to",
+      "type": "string",
+      "format": "date"
+    },
+    "total_active_records": {
+      "type": "number"
+    },
+    "total_new_records": {
+      "type": "number"
+    },
+    "record": {
+      "$ref": "records.json"
+    },
+    "usage": {
+      "$ref": "usages.json"
+    }
+  }
+}

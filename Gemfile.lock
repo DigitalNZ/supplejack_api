@@ -189,6 +189,8 @@ GEM
     json (1.8.3)
     json-ld (1.1.9)
       rdf (~> 1.1, >= 1.1.7)
+    json-schema (2.5.1)
+      addressable (~> 2.3.7)
     json_spec (1.1.4)
       multi_json (~> 1.0)
       rspec (>= 2.0, < 4.0)
@@ -415,6 +417,7 @@ DEPENDENCIES
   factory_girl_rails
   faker
   jquery-rails
+  json-schema
   json_spec (~> 1.1.4)
   launchy (~> 2.1.2)
   mimemagic

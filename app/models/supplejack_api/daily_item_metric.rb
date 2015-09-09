@@ -22,5 +22,11 @@ module SupplejackApi
     field :day,                   type: Date
   
     index day: 1
+
+    def self.created_between(start_date, end_date)
+      end_date = start_date + 1.day unless end_date.present?
+
+      where(:day.gte => start_date, :day.lte => end_date)
+    end
   end
 end

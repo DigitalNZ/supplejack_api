@@ -4,7 +4,6 @@
 # 
 # Supplejack was created by DigitalNZ at the National Library of NZ and 
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
-require 'pry'
 
 module SupplejackApi
   class DailyItemMetricsWorker

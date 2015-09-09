@@ -42,10 +42,16 @@ SupplejackApi::Engine.routes.draw do
     end
   end
 
+  scope '/metrics' do
+    scope '/:version', version: /v1/, defaults: {format: 'json'} do
+      get '/', to: 'metrics_api#endpoint'
+    end
+  end
+
   # Harvester
   namespace :harvester, constraints: SupplejackApi::HarvesterConstraint.new do
     resources :records, only: [:create, :update, :show] do
-      # TODO Add record parameter constraint for update and create
+      # TODO: Add record parameter constraint for update and create
       collection do
         post :flush
         put :delete
@@ -58,7 +64,7 @@ SupplejackApi::Engine.routes.draw do
 
   # Partners
   resources :partners, except: [:destroy], constraints: SupplejackApi::HarvesterConstraint.new do
-    resources :sources, except: [:update, :index ,:destroy], shallow: true do
+    resources :sources, except: [:update, :index, :destroy], shallow: true do
       get :reindex, on: :member
       get :link_check_records, on: :member
     end

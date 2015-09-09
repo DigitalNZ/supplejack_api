@@ -34,6 +34,7 @@ gem 'codeclimate-test-reporter', group: :test, require: nil
 gem 'rubocop', require: false
 group :test do
   gem 'faker'
+  gem 'json-schema'
 end
 
 group :test, :development do

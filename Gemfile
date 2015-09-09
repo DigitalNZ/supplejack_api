@@ -28,5 +28,7 @@ gem 'rb-fsevent', require: false
 gem 'cucumber-rails', require: false
 gem 'factory_girl_rails', require: false
 gem 'simplecov', require: false
-gem 'xml_spec', git: "https://github.com/boost/xml_spec", require: false # This is a gem created by fedegl to test the XML responses, its part of the Boost github organization account
+# This is a gem created by fedegl to test the XML responses, its part of the Boost github organization account
+gem 'xml_spec', git: "https://github.com/boost/xml_spec", require: false 
 gem 'codeclimate-test-reporter', group: :test, require: nil
+gem 'rubocop', require: false

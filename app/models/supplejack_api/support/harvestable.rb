@@ -84,7 +84,11 @@ module SupplejackApi
         end
 
         def flush_old_records(source_id, job_id)
-          self.where(:'fragments.source_id' => source_id, :'fragments.job_id'.ne => job_id, :'status'.in => ['active', 'supressed']).update_all(status: 'deleted', updated_at: Time.now)
+          self.where(
+            :'fragments.source_id' => source_id, 
+            :'fragments.job_id'.ne => job_id, 
+            :'status'.in => ['active', 'supressed']
+          ).update_all(status: 'deleted', updated_at: Time.now)
 
           cursor = self.deleted.where(:'fragments.source_id' => source_id)
           total = cursor.count

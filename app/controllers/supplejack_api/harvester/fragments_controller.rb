@@ -21,7 +21,8 @@ module SupplejackApi
       end
   
       def destroy
-        SupplejackApi::Record.where(:"fragments.source_id" => params[:id]).update_all({ "$pull" => {fragments: {source_id: params[:id]}} })
+        SupplejackApi::Record.where(:"fragments.source_id" => params[:id])
+                             .update_all({ "$pull" => {fragments: {source_id: params[:id]}} })
         respond_with
       end
   	end

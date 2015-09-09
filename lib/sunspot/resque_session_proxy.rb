@@ -34,7 +34,8 @@ module Sunspot
           class_name = objects.first.class.name
 
           while batch_object_ids do
-            Resque.enqueue(SupplejackApi::IndexWorker, method, {:class => class_name, :id => batch_object_ids }) if batch_object_ids.try(:any?)
+            index_worker_args = {:class => class_name, :id => batch_object_ids }
+            Resque.enqueue(SupplejackApi::IndexWorker, method, index_worker_args) if batch_object_ids.try(:any?)
             start += batch_size
             batch_object_ids = total_ids[start..(start+batch_size-1)]
           end

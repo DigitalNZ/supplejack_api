@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ModuleLength
 module SupplejackApi::Concerns::Searchable
   extend ActiveSupport::Concern
 
@@ -51,12 +52,16 @@ module SupplejackApi::Concerns::Searchable
 
       if scope
         role = scope.role.try(:to_sym)
-        restrictions = self.schema_class.roles[role].record_restrictions if self.schema_class.roles[role].record_restrictions
+        if self.schema_class.roles[role].record_restrictions
+          restrictions = self.schema_class.roles[role].record_restrictions 
+        end
       end
       
       restrictions
     end
 
+    # rubocop:disable Metrics/MethodLength
+    # FIXME: Make this method smaller, it's triple the max method length
     def search_builder
       search_model = self
 
@@ -144,6 +149,7 @@ module SupplejackApi::Concerns::Searchable
 
       @search_builder
     end
+    # rubocop:enable Metrics/MethodLength
 
     # Return an array of valid facets
     # It will remove any invalid facets in order to avoid Solr errors
@@ -234,7 +240,9 @@ module SupplejackApi::Concerns::Searchable
       self.warnings ||= []
       self.class.max_values.each do |attribute, max_value|
         max_value = self.class.max_values[attribute]
-        self.warnings << "The #{attribute} parameter can not exceed #{max_value}" if @options[attribute].to_i > max_value
+        if @options[attribute].to_i > max_value
+          self.warnings << "The #{attribute} parameter can not exceed #{max_value}" 
+        end
       end
   
       self.solr_search_object
@@ -405,3 +413,4 @@ module SupplejackApi::Concerns::Searchable
   end
 
 end
+# rubocop:enable Metrics/ModuleLength

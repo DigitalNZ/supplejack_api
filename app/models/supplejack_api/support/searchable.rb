@@ -54,7 +54,11 @@ module SupplejackApi
     
           begin
             data.find_next_and_previous_records(scope, options) if options.any?
-          rescue Sunspot::UnrecognizedFieldError, RSolr::Error::Http, Timeout::Error, Errno::ECONNREFUSED, Errno::ECONNRESET => e
+          rescue Sunspot::UnrecognizedFieldError, 
+                 RSolr::Error::Http, Timeout::Error, 
+                 Errno::ECONNREFUSED, 
+                 Errno::ECONNRESET => e
+
             Rails.logger.error e.inspect
           end
             

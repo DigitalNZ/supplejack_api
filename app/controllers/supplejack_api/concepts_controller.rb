@@ -45,7 +45,9 @@ module SupplejackApi
       @search ||= SupplejackApi::ConceptSearch.new(params)
       default_options.merge!({:fields => @search.field_list}) if @search.field_list.present?
       default_options.merge!({:groups => @search.group_list}) if @search.group_list.present?
-      default_options.merge!({:inline_context => params[:inline_context]}) if params[:inline_context].try(:downcase) == 'true'
+      if params[:inline_context].try(:downcase) == 'true'
+        default_options.merge!({:inline_context => params[:inline_context]}) 
+      end
       default_options
     end
   end

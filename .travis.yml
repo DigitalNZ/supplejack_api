@@ -5,7 +5,9 @@ rvm:
 cache: bundler
 bundler_args: --without production
 sudo: false
-script: bundle exec rspec
+script: 
+  - bundle exec rspec
+  - bundle exec rubocop
 services: mongodb
 addons:
   codeclimate:

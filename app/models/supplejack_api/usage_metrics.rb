@@ -18,21 +18,26 @@ module SupplejackApi
     field :user_set_views,   	 type: Integer, default: 0
     field :total,              type: Integer, default: 0
 
+    # rubocop:disable Metrics/MethodLength
+    # FIXME: make method smaller
     def self.build_metrics
       Rails.logger.level = 1 unless Rails.env.development?
-      Rails.logger.info "UsageMetrics:[#{Time.now}]: build"
+      Rails.logger.info "UsageMetrics:[#{Time.zone.now}]: build"
 
       search_counts,   search_ids   = self.build_hash_for("search")
       get_counts,      get_ids      = self.build_hash_for("get")
       user_set_counts, user_set_ids = self.build_hash_for("user_set")
 
-      Rails.logger.info "UsageMetrics:[#{Time.now}]: Hashes built"
+      Rails.logger.info "UsageMetrics:[#{Time.zone.now}]: Hashes built"
 
       unique_field_values = (search_counts.keys + get_counts.keys + user_set_counts.keys).uniq
 
       # Creating metrics for each primary collection
       unique_field_values.each do |field_value|
-        usage_metric_entry = SupplejackApi::UsageMetrics.where(:created_at.gt => Date.today, :record_field_value => field_value.to_s).first
+        usage_metric_entry = SupplejackApi::UsageMetrics.where(
+          :created_at.gt => Date.today, 
+          :record_field_value => field_value.to_s
+        ).first
 
         # # set everything to default value of 0 if no value is present, makes following code simpler
         [search_counts, get_counts, user_set_counts].each do |x|
@@ -64,12 +69,13 @@ module SupplejackApi
       end    	
 
       # Deleting all the RequestLogs just counted
-      Rails.logger.info "UsageMetrics:[#{Time.now}]: Deleting RequestLogs"
+      Rails.logger.info "UsageMetrics:[#{Time.zone.now}]: Deleting RequestLogs"
       (search_ids + get_ids + user_set_ids).each do |id|
         SupplejackApi::RequestLog.find(id).delete
       end
-      Rails.logger.info "UsageMetrics:[#{Time.now}]: Complete"
+      Rails.logger.info "UsageMetrics:[#{Time.zone.now}]: Complete"
     end
+    # rubocop:enable Metrics/MethodLength
 
     def self.build_hash_for(request_type)
       request_logs = SupplejackApi::RequestLog.where(request_type: request_type)

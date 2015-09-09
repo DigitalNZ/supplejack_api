@@ -23,6 +23,8 @@ module SupplejackApi
       )
     end
 
+    # rubocop:disable Metrics/MethodLength
+    # FIXME: make me smaller!
     def search_builder
       @search_builder ||= Sunspot.new_search(SupplejackApi::Concept) do
         if options[:suggest]
@@ -59,6 +61,7 @@ module SupplejackApi
       @search_builder.build(&build_conditions)
       @search_builder
     end
+    # rubocop:enable Metrics/MethodLength
 
     def query_fields
       query_fields_list = super

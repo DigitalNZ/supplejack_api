@@ -32,3 +32,4 @@ gem 'simplecov', require: false
 gem 'xml_spec', git: "https://github.com/boost/xml_spec", require: false 
 gem 'codeclimate-test-reporter', group: :test, require: nil
 gem 'rubocop', require: false
+gem 'faker', group: :test

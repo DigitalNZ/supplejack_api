@@ -22,13 +22,13 @@ module SupplejackApi
     # FIXME: make method smaller
     def self.build_metrics
       Rails.logger.level = 1 unless Rails.env.development?
-      Rails.logger.info "UsageMetrics:[#{Time.now}]: build"
+      Rails.logger.info "UsageMetrics:[#{Time.zone.now}]: build"
 
       search_counts,   search_ids   = self.build_hash_for("search")
       get_counts,      get_ids      = self.build_hash_for("get")
       user_set_counts, user_set_ids = self.build_hash_for("user_set")
 
-      Rails.logger.info "UsageMetrics:[#{Time.now}]: Hashes built"
+      Rails.logger.info "UsageMetrics:[#{Time.zone.now}]: Hashes built"
 
       unique_field_values = (search_counts.keys + get_counts.keys + user_set_counts.keys).uniq
 
@@ -69,11 +69,11 @@ module SupplejackApi
       end    	
 
       # Deleting all the RequestLogs just counted
-      Rails.logger.info "UsageMetrics:[#{Time.now}]: Deleting RequestLogs"
+      Rails.logger.info "UsageMetrics:[#{Time.zone.now}]: Deleting RequestLogs"
       (search_ids + get_ids + user_set_ids).each do |id|
         SupplejackApi::RequestLog.find(id).delete
       end
-      Rails.logger.info "UsageMetrics:[#{Time.now}]: Complete"
+      Rails.logger.info "UsageMetrics:[#{Time.zone.now}]: Complete"
     end
     # rubocop:enable Metrics/MethodLength
 

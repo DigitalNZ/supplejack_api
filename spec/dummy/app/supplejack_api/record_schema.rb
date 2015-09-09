@@ -21,9 +21,11 @@ class RecordSchema
   integer   :age
   datetime  :birth_date
   boolean   :nz_citizen,                          search_as: [:filter]
+  string    :display_collection,                                search_as: [:filter, :fulltext],  namespace: :sj
 
   # facets
   string    :category,     multi_value: true,     search_as: [:filter]
+  string    :copyright,    multi_value: true,     search_as: [:filter]
 
   # Groups
   group :default do

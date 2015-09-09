@@ -45,21 +45,23 @@ module SupplejackApi
       records = Record.active.created_before(date + 1.day)
       records_to_check = previous_metrics.present? ? records.created_on_day(date) : records
 
-      display_collection_metrics = perform_map_reduce(records_to_check, date)
+      collection_metrics = perform_map_reduce(records_to_check, date)
 
-      processed_display_collection_metrics = display_collection_metrics.map(&method(:process_display_collection_metrics))
+      processed_collection_metrics = collection_metrics.map(&method(:process_collection_metrics))
 
-      build_full_metrics_data(previous_metrics, processed_display_collection_metrics, records_to_check, date)
+      build_full_metrics_data(previous_metrics, processed_collection_metrics, records_to_check, date)
     end
 
     private
+
+    # rubocop:disable Metrics/MethodLength
     def perform_map_reduce(records, date)
       # this is inserted into the map/reduce JS so they can access the configuration variables
-      config_js = %Q{
+      config_js = %(
         var primaryKey = '#{@primary_key}';
-        var secondaryKeys = [#{@secondary_keys.reduce(''){|acc, key| acc + "'#{key}',"}.chomp(',')}];
-      }
-      map = %Q{
+        var secondaryKeys = [#{@secondary_keys.reduce(''){|a, e| a + "'#{e}',"}.chomp(',')}];
+      )
+      map = %{
         function() {
           #{config_js}
           var fragment = this.fragments[0];
@@ -98,7 +100,7 @@ module SupplejackApi
           }
         }
       }
-      reduce = %Q{
+      reduce = %{
         function(key, values) {
           #{config_js}
           var result = {name: key, count: 0, newCount: 0};
@@ -127,20 +129,20 @@ module SupplejackApi
 
       records.map_reduce(map, reduce).out(inline: true).to_a
     end
+    # rubocop:enable Metrics/MethodLength
 
-    def process_display_collection_metrics(pcm)
+    def process_collection_metrics(pcm)
       # unwrap pcm data
       pcm = pcm[:value]
 
       hardcoded = {
         name:                 pcm[:name],
         total_active_records: pcm[:count],
-        total_new_records:    pcm[:newCount],
+        total_new_records:    pcm[:newCount]
       }
 
-      custom = @secondary_keys.select do |key|
-        pcm[key] != {}
-      end.reduce({}){|acc, k| acc.merge({custom_key_to_field_key(k) => pcm[k]})}
+      custom = @secondary_keys.select{|key| pcm[key] != {}}
+                              .reduce({}){|a, e| a.merge({custom_key_to_field_key(e) => pcm[e]})}
 
       hardcoded.merge(custom)
     end
@@ -171,11 +173,11 @@ module SupplejackApi
 
     def merge_display_collection_metrics(metrics_to_merge, existing_metrics)
       metrics_to_merge.each do |pcm|
-        existing_pcm = existing_metrics.select{|x| x[:name] == pcm[:name]}.first || {}
+        existing_pcm = existing_metrics.find{|x| x[:name] == pcm[:name]} || {}
         pcm[:total_active_records] += existing_pcm.try(:total_active_records) || 0
 
-        pcm_group_updater = ->(accessor_symbol) do
-          ->(category_metric) do
+        pcm_group_updater = lambda do |accessor_symbol|
+          lambda do |category_metric|
             name, count = category_metric
             existing_cm = (existing_pcm[accessor_symbol] || {}).select{|x| x == name} || {}
 

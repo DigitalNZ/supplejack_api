@@ -25,26 +25,19 @@ module SupplejackApi
     field :copyright_counts,     type: Hash
 
     def replace_periods
-      if self.category_counts.present?
-        self.category_counts  = Hash[self.category_counts. map(&key_replacer(".", "\u2024"))]
-      end
-      if self.copyright_counts.present?
-        self.copyright_counts = Hash[self.copyright_counts.map(&key_replacer(".", "\u2024"))]
-      end
+      self.category_counts  = Hash[self.category_counts. map(&key_replacer(".", "\u2024"))] if self.category_counts
+      self.copyright_counts = Hash[self.copyright_counts.map(&key_replacer(".", "\u2024"))] if self.copyright_counts
     end
 
     def replace_unicode_periods
-      if self.category_counts.present?
-        self.category_counts  = Hash[self.category_counts. map(&key_replacer("\u2024", "."))]
-      end
-      if self.copyright_counts.present?
-        self.copyright_counts = Hash[self.copyright_counts.map(&key_replacer("\u2024", "."))]
-      end
+      self.category_counts  = Hash[self.category_counts. map(&key_replacer("\u2024", "."))] if self.category_counts
+      self.copyright_counts = Hash[self.copyright_counts.map(&key_replacer("\u2024", "."))] if self.copyright_counts
     end
 
     private
+
     def key_replacer(target, replacement)
-      ->(kv) do
+      lambda do |kv|
         key, value = kv
 
         [key.gsub(target, replacement), value]

@@ -12,7 +12,10 @@ module SupplejackApi
   
     store_in collection: 'daily_metrics'
 
-    embeds_many :display_collection_metrics, class_name: 'SupplejackApi::DisplayCollectionMetric', cascade_callbacks: true
+    embeds_many :display_collection_metrics, 
+                class_name: 'SupplejackApi::DisplayCollectionMetric', 
+                cascade_callbacks: true
+
     accepts_nested_attributes_for :display_collection_metrics
   
     field :total_active_records,  type: Integer

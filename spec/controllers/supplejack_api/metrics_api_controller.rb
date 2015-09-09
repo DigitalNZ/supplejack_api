@@ -22,8 +22,10 @@ module SupplejackApi
 
     describe 'GET endpoint' do
       before do
-
+        create_daily_item_metric
       end
+
+
     end
   end
 end

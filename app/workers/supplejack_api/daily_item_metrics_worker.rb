@@ -4,6 +4,7 @@
 # 
 # Supplejack was created by DigitalNZ at the National Library of NZ and 
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
+require 'pry'
 
 module SupplejackApi
   class DailyItemMetricsWorker
@@ -47,13 +48,15 @@ module SupplejackApi
 
       collection_metrics = perform_map_reduce(records_to_check, date)
 
-      processed_collection_metrics = collection_metrics.map(&method(:process_collection_metrics))
-
-      build_full_metrics_data(previous_metrics, processed_collection_metrics, records_to_check, date)
+      BuildMetricsData.new(@primary_key, @secondary_keys)
+                      .call(collection_metrics, 
+                            previous_metrics, 
+                            records_to_check,
+                            date)
     end
 
     private
-
+ 
     # rubocop:disable Metrics/MethodLength
     def perform_map_reduce(records, date)
       # this is inserted into the map/reduce JS so they can access the configuration variables
@@ -131,6 +134,23 @@ module SupplejackApi
     end
     # rubocop:enable Metrics/MethodLength
 
+  end
+  
+  class BuildMetricsData
+    
+    def initialize(primary_key, secondary_keys)
+      @primary_key = primary_key
+      @secondary_keys = secondary_keys
+    end
+
+    def call(collection_metrics, previous_metrics, records_to_check, date)
+      processed_collection_metrics = collection_metrics.map(&method(:process_collection_metrics))
+
+      build_full_metrics_data(previous_metrics, processed_collection_metrics, records_to_check, date)
+    end
+
+    private
+
     def process_collection_metrics(pcm)
       # unwrap pcm data
       pcm = pcm[:value]
@@ -173,7 +193,7 @@ module SupplejackApi
 
     def merge_display_collection_metrics(metrics_to_merge, existing_metrics)
       metrics_to_merge.each do |pcm|
-        existing_pcm = existing_metrics.find{|x| x[:name] == pcm[:name]} || {}
+        existing_pcm = existing_metrics.detect{|x| x[:name] == pcm[:name]} || {}
         pcm[:total_active_records] += existing_pcm.try(:total_active_records) || 0
 
         pcm_group_updater = lambda do |accessor_symbol|

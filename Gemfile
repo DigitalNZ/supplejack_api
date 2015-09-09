@@ -32,4 +32,10 @@ gem 'simplecov', require: false
 gem 'xml_spec', git: "https://github.com/boost/xml_spec", require: false 
 gem 'codeclimate-test-reporter', group: :test, require: nil
 gem 'rubocop', require: false
-gem 'faker', group: :test
+group :test do
+  gem 'faker'
+end
+
+group :test, :development do
+  gem 'pry-byebug' if RUBY_VERSION =~ /2/
+end

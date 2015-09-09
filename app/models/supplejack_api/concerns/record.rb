@@ -40,6 +40,8 @@ module SupplejackApi::Concerns::Record
       records = records.sort_by {|r| ids.find_index(r.record_id) || 100 }
     end
 
+    # rubocop:disable Metrics/MethodLength
+    # FIXME: make me smaller!
     def find_next_and_previous_records(scope, options={})
       if options.try(:any?)
         search = ::SupplejackApi::RecordSearch.new(options)
@@ -85,6 +87,7 @@ module SupplejackApi::Concerns::Record
         end
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
     def active?
       self.status == 'active'

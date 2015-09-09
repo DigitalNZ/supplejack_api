@@ -18,6 +18,8 @@ module SupplejackApi
     field :user_set_views,   	 type: Integer, default: 0
     field :total,              type: Integer, default: 0
 
+    # rubocop:disable Metrics/MethodLength
+    # FIXME: make method smaller
     def self.build_metrics
       search_counts,   search_ids   = self.build_hash_for("search")
       get_counts,      get_ids      = self.build_hash_for("get")
@@ -27,7 +29,10 @@ module SupplejackApi
 
       # Creating metrics for each primary collection
       unique_field_values.each do |field_value|
-        usage_metric_entry = SupplejackApi::UsageMetrics.where(:created_at.gt => Date.today, :record_field_value => field_value.to_s).first
+        usage_metric_entry = SupplejackApi::UsageMetrics.where(
+          :created_at.gt => Date.today, 
+          :record_field_value => field_value.to_s
+        ).first
 
         # # set everything to default value of 0 if no value is present, makes following code simpler
         [search_counts, get_counts, user_set_counts].each do |x|
@@ -63,6 +68,7 @@ module SupplejackApi
         SupplejackApi::RequestLog.find(id).delete
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
     def self.build_hash_for(request_type)
       request_logs = SupplejackApi::RequestLog.where(request_type: request_type)

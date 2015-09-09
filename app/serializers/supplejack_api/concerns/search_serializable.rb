@@ -16,7 +16,8 @@ module SupplejackApi::Concerns::SearchSerializable
     end
 
     def records_serialized_array
-      ActiveModel::ArraySerializer.new(object.results, {fields: object.field_list, groups: object.group_list, scope: object.scope})
+      args = {fields: object.field_list, groups: object.group_list, scope: object.scope}
+      ActiveModel::ArraySerializer.new(object.results, args)
     end
   end
 end

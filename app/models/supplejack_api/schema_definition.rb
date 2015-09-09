@@ -10,7 +10,8 @@ module SupplejackApi
     extend ActiveSupport::Concern
 
     ALLOWED_ATTRIBUTES = {
-      field: [:type, :search_value, :search_boost, :multi_value, :search_as, :store, :solr_name, :namespace, :namespace_field, :default_value, :date_format],
+      field: [:type, :search_value, :search_boost, :multi_value, :search_as, :store, 
+              :solr_name, :namespace, :namespace_field, :default_value, :date_format],
       group: [:fields, :includes],
       role: [:default, :field_restrictions, :record_restrictions, :admin],
       namespace: [:url],

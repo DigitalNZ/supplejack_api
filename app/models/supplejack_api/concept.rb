@@ -23,7 +23,9 @@ module SupplejackApi
         context[namespace] = ConceptSchema.namespaces[namespace].url
         namespaced_fields = ConceptSchema.fields.select { |key, field| field.namespace == namespace }
         namespaced_fields.each do |name, field|
-          context[name] = "#{field.namespace}:#{field.namespace_field}" if fields.include?(name) && name != field.namespace
+          if fields.include?(name) && name != field.namespace
+            context[name] = "#{field.namespace}:#{field.namespace_field}" 
+          end
         end
       end
 

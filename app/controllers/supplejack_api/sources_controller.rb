@@ -59,7 +59,8 @@ module SupplejackApi
 
     def first_two_records(source_id, direction)
       sort = direction == :latest ? -1 : 1
-      records = Record.where("fragments.source_id" => source_id, :status => 'active').sort("fragments.syndication_date" => sort)
+      records = Record.where("fragments.source_id" => source_id, :status => 'active')
+                      .sort("fragments.syndication_date" => sort)
       records.limit(2).to_a
     end
 

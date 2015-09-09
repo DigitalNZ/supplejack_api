@@ -21,7 +21,10 @@ module SupplejackApi
         @user = User.find(params[:id])
         @api_requests = LazyHighCharts::HighChart.new('graph') do |f|
           f.title(text: "API requests/day for the last 90 days")
-          f.series(name: 'API Requests', data: @user.requests_per_day(90), pointStart: 89.days.ago, pointInterval: 1.day)
+          f.series(name: 'API Requests', 
+                   data: @user.requests_per_day(90), 
+                   pointStart: 89.days.ago, 
+                   pointInterval: 1.day)
           f.xAxis(type: :datetime)
           f.yAxis(title: {text: "Number of Requests"}, min: 0)
         end

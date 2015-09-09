@@ -6,6 +6,8 @@
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
+  # rubocop:disable Metrics/LineLength
+  # FIXME: make log lines smaller
   class StatusController < ApplicationController
     
     skip_before_filter :authenticate_user!, only: [:show]
@@ -67,4 +69,5 @@ module SupplejackApi
       end    
     end
   end
+  # rubocop:enable Metrics/LineLength
 end

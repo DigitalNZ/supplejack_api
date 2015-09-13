@@ -3,17 +3,21 @@ module MetricsApi
     module Presenters
       class DisplayCollection
 
-        def initialize(metric)
-          @m = metric
+        def initialize(daily_item_metric)
+          @m = daily_item_metric
         end
 
         def to_json
+          @m.display_collection_metrics.map(&method(:display_collection_to_json))
+        end
+
+        def display_collection_to_json(dc_metric)
           {
-            id: @m.name,
-            total_active_records: @m.total_active_records,
-            total_new_records: @m.total_new_records,
-            category_counts: @m.category_counts,
-            copyright_counts: @m.copyright_counts
+            id: dc_metric.name,
+            total_active_records: dc_metric.total_active_records,
+            total_new_records: dc_metric.total_new_records,
+            category_counts: dc_metric.category_counts,
+            copyright_counts: dc_metric.copyright_counts
           }
         end
 

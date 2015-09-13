@@ -11,27 +11,29 @@ module MetricsApi
 
       def initialize(start_date, end_date, metrics)
         @start_date = start_date || Date.current
-        @end_date = end_date
-        @metrics = metrics
+        @end_date = end_date || Date.current
+        @metrics =  metrics || ['usage', 'display_collection']
       end
 
       def call
-        sub_metric_objects = @metrics.map do |metric|
-          metric_model = METRICS_TO_MODEL[metric]
-          presenter = (PRESENTER_BASE + metric.capitalize).constantize
-          
-          metric_model.created_between(@start_date, @end_date).map(&presenter)
-        end
-
-        metrics_information = SupplejackApi::DailyItemMetric.created_between(@start_date, @end_date).map do |metric|
-          {
+        metrics_information = SupplejackApi::DailyItemMetric.created_between(start_date, end_date).map do |metric|
+          base_object = {
             day: metric.day,
             total_active_records: metric.total_active_records,
             total_new_records: 0
           }
+
+          sub_metric_objects = metrics.map do |m|
+            metric_model = METRICS_TO_MODEL[m]
+            presenter = (PRESENTER_BASE + m.camelize).constantize
+
+            {metric: m, models: metric_model.created_on(metric.day).map(&presenter).flatten}
+          end
+
+          [base_object, sub_metric_objects]
         end
 
-        metrics_information.zip(sub_metric_objects).map(&MetricsApi::V1::Presenters::ApiResponse)
+        metrics_information.map(&MetricsApi::V1::Presenters::ApiResponse)
       end
     end
   end

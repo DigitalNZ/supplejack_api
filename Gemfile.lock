@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/boost/active_model_serializers
-  revision: d9cb4a976c323c8bcbdd7a9e5619b28a9f122f0b
+  revision: 74216ebc6e05fe4cad533acd6c3888f5ecc18d48
   specs:
     active_model_serializers (0.1.0)
       activemodel (>= 3.0)
@@ -210,7 +210,7 @@ GEM
     mime-types (1.25.1)
     mimemagic (0.1.9)
     mini_portile (0.6.2)
-    minitest (5.7.0)
+    minitest (5.8.0)
     mongoid (4.0.0)
       activemodel (~> 4.0)
       moped (~> 2.0.0)

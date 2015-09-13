@@ -18,6 +18,10 @@ module SupplejackApi
     field :user_set_views,   	 type: Integer, default: 0
     field :total,              type: Integer, default: 0
 
+    def self.created_on(date)
+      where(:created_at.gte => date.at_beginning_of_day.utc, :created_at.lte => date.at_end_of_day.utc)
+    end
+
     # rubocop:disable Metrics/MethodLength
     # FIXME: make method smaller
     def self.build_metrics

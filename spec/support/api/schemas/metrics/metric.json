@@ -18,8 +18,8 @@
     "total_new_records": {
       "type": "number"
     },
-    "record": {
-      "$ref": "records.json"
+    "display_collection": {
+      "$ref": "display_collections.json"
     },
     "usage": {
       "$ref": "usages.json"

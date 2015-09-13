@@ -1,5 +1,3 @@
-require 'pry'
-
 module SupplejackApi
   class MetricsApiController < ApplicationController
     API_VERSIONS = {
@@ -10,7 +8,7 @@ module SupplejackApi
       api_version = params[:version]
       api = API_VERSIONS[api_version].new(params[:start_date], params[:end_date], params[:metrics])
 
-      render json: api.call
+      render json: api.call.to_json(include_root: false)
     end
   end
 end

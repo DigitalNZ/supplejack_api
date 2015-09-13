@@ -1,6 +1,6 @@
 {
   "type": "array",
   "items": {
-    "$ref": "record.json"
+    "$ref": "display_collection.json"
   }
 }

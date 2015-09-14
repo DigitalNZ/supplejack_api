@@ -40,6 +40,12 @@ module SupplejackApi
 
           expect(response.status).to eq(404)
         end
+
+        it 'responds with 403 if api_key is invalid' do
+          get :endpoint, api_key: 'junk', version: 'v1'
+
+          expect(response.status).to eq(403)
+        end
       end
     end
   end

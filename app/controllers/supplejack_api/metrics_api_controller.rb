@@ -23,7 +23,7 @@ module SupplejackApi
 
       ex = api_response[:exception]
 
-      render json: {message: ex[:message]}, status: ex[:status]
+      render json: {errors: ex[:message]}, status: ex[:status]
     end
   end
 end

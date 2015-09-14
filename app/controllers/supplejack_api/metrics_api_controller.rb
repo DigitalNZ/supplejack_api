@@ -6,7 +6,7 @@ module SupplejackApi
 
     def endpoint
       api_version = params[:version]
-      api = API_VERSIONS[api_version].new(params[:start_date], params[:end_date], params[:metrics])
+      api = API_VERSIONS[api_version].new(params.dup)
 
       render json: api.call.to_json(include_root: false)
     end

@@ -9,10 +9,10 @@ module MetricsApi
 
       attr_reader :start_date, :end_date, :metrics
 
-      def initialize(start_date, end_date, metrics)
-        @start_date = start_date || Date.current
-        @end_date = end_date || Date.current
-        @metrics =  metrics || ['usage', 'display_collection']
+      def initialize(params)
+        @start_date = params[:start_date] || Date.current
+        @end_date = params[:end_date] || Date.current
+        @metrics = parse_metrics_param(params[:metrics]) || ['usage', 'display_collection']
       end
 
       def call
@@ -34,6 +34,14 @@ module MetricsApi
         end
 
         metrics_information.map(&MetricsApi::V1::Presenters::ApiResponse)
+      end
+
+      private
+
+      def parse_metrics_param(param)
+        return nil unless param.present?
+
+        param.split(',').map(&:strip)
       end
     end
   end

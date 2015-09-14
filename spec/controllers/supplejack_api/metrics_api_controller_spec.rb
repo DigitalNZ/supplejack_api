@@ -9,17 +9,37 @@ module SupplejackApi
       let(:api_key) {'apikey'}
       let!(:user) {FactoryGirl.create(:user, authentication_token: api_key, role: 'developer')}
 
-      before do
-        5.times do |n|
-          create(:daily_item_metric, day: (Date.current + 1.days) - n.days)
-          create(:usage_metrics, created_at: (Date.current + 1.days) - n.days)
+      context "sucessful requests" do
+        before do
+          5.times do |n|
+            create(:daily_item_metric, day: Date.current - n.days)
+            create(:usage_metrics, created_at: Date.current - n.days)
+          end
+        end
+
+        after do
+          expect(response.body).to match_response_schema('metrics/response')
+        end
+
+        it 'responds using the default parameters if none are supplied' do
+          get :endpoint, api_key: api_key, version: 'v1'
+        end
+
+        it 'retrieves metrics for a range of dates' do
+          get :endpoint, api_key: api_key, version: 'v1', start_date: Date.current - 5.days, end_date: Date.current
+
+          json = JSON.parse(response.body)
+
+          expect(json.length).to eq(5)
         end
       end
 
-      it 'responds using the default parameters if none are supplied' do
-        get :endpoint, api_key: api_key, version: 'v1'
+      context "failure requests" do
+        it 'responds with 404 when requesting metrics for a non-existent date' do
+          get :endpoint, api_key: api_key, version: 'v1', start_date: Date.current - 100.days
 
-        expect(response.body).to match_response_schema('metrics/response')
+          expect(response.status).to eq(404)
+        end
       end
     end
   end

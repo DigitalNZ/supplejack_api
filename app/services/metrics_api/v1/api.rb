@@ -16,7 +16,18 @@ module MetricsApi
       end
 
       def call
-        metrics_information = SupplejackApi::DailyItemMetric.created_between(start_date, end_date).map do |metric|
+        metric_models = SupplejackApi::DailyItemMetric.created_between(start_date, end_date)
+
+        unless metric_models.present?
+          return {
+            exception: {
+              message: 'No metric information was present for the date range you requested',
+              status: 404
+            }
+          }
+        end
+
+        metrics_information = metric_models.map do |metric|
           base_object = {
             day: metric.day,
             total_active_records: metric.total_active_records,

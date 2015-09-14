@@ -10,7 +10,7 @@ module MetricsApi
       attr_reader :start_date, :end_date, :metrics
 
       def initialize(params)
-        @start_date = params[:start_date] || Date.current
+        @start_date = params[:start_date] || Date.yesterday
         @end_date = params[:end_date] || Date.current
         @metrics = parse_metrics_param(params[:metrics]) || ['usage', 'display_collection']
       end

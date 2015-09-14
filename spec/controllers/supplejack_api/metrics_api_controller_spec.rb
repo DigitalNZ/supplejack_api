@@ -10,7 +10,7 @@ module SupplejackApi
       let!(:user) {FactoryGirl.create(:user, authentication_token: api_key, role: 'developer')}
 
       context "sucessful requests" do
-        before do
+        def build_models
           5.times do |n|
             create(:daily_item_metric, day: Date.current - n.days)
             create(:usage_metrics, created_at: Date.current - n.days)
@@ -22,15 +22,28 @@ module SupplejackApi
         end
 
         it 'responds using the default parameters if none are supplied' do
+          build_models
+
           get :endpoint, api_key: api_key, version: 'v1'
         end
 
         it 'retrieves metrics for a range of dates' do
+          build_models
+
           get :endpoint, api_key: api_key, version: 'v1', start_date: Date.current - 5.days, end_date: Date.current
 
           json = JSON.parse(response.body)
 
           expect(json.length).to eq(5)
+        end
+
+        it 'correctly retrieves metrics models that were created yesterday with default parameters' do
+          create(:daily_item_metric, day: Date.current - 1.day)
+          get :endpoint, api_key: api_key, version: 'v1'
+
+          json = JSON.parse(response.body)
+
+          expect(json.first['display_collection']).to be_present
         end
       end
 

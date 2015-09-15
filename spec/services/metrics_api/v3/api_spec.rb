@@ -1,5 +1,5 @@
 module MetricsApi
-  module V1
+  module V3
     describe Api do
       let!(:daily_item_metric){create(:daily_item_metric)}
       let(:api) do

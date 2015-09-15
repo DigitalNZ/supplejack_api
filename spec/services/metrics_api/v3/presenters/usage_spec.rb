@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module MetricsApi
-  module V1
+  module V3
     module Presenters
       describe Usage do
         let(:usage_metric){create(:usage_metrics)}

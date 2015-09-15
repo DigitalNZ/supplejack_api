@@ -1,5 +1,5 @@
 module MetricsApi
-  module V1
+  module V3
     module Presenters
       # Takes in metrics information and a list of sub metrics
       # (ie usage, display_collection metrics) and stitches them

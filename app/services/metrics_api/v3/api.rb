@@ -1,6 +1,6 @@
 module MetricsApi
-  module V1
-    # API entry point for V1 of the MetricsAPI
+  module V3
+    # API entry point for V3 of the MetricsAPI
     # 
     # It takes in the request parameters and 
     # generates the metrics JSON the API should 
@@ -8,7 +8,7 @@ module MetricsApi
     class Api
       # Base namespace for Presenters, append presenter name to it and call
       # constantize to get presenter instance
-      PRESENTER_BASE = "MetricsApi::V1::Presenters::"
+      PRESENTER_BASE = "MetricsApi::V3::Presenters::"
       # Mapping of metric names to the model that represents that metric
       METRICS_TO_MODEL = {
         'display_collection' => SupplejackApi::DailyItemMetric,
@@ -60,7 +60,7 @@ module MetricsApi
           [base_object, sub_metric_objects]
         end
 
-        metrics_information.map(&MetricsApi::V1::Presenters::ApiResponse)
+        metrics_information.map(&MetricsApi::V3::Presenters::ApiResponse)
       end
 
       private

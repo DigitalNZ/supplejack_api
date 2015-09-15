@@ -1,5 +1,5 @@
 module MetricsApi
-  module V1
+  module V3
     module Presenters
       # Presents a +SupplejackApi::UsageMetrics+ ready to be returned via the API
       class Usage

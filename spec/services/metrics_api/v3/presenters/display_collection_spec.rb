@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 module MetricsApi
-  module V1
+  module V3
     module Presenters
       describe DisplayCollection do
         let(:daily_item_metric){create(:daily_item_metric)}

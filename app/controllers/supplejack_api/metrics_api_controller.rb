@@ -1,7 +1,7 @@
 module SupplejackApi
   class MetricsApiController < ApplicationController
     API_VERSIONS = {
-      'v1' => MetricsApi::V1::Api
+      'v3' => MetricsApi::V3::Api
     }
 
     def endpoint

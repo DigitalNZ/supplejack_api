@@ -1,5 +1,5 @@
 module MetricsApi
-  module V1
+  module V3
     module Presenters
       # Presents a +SupplejackApi::DailyItemMetric+ as a list of 
       # +SupplejackApi::DisplayCollectionMetric+ objects converted 

@@ -1,7 +1,15 @@
 module MetricsApi
   module V1
+    # API entry point for V1 of the MetricsAPI
+    # 
+    # It takes in the request parameters and 
+    # generates the metrics JSON the API should 
+    # respond with
     class Api
+      # Base namespace for Presenters, append presenter name to it and call
+      # constantize to get presenter instance
       PRESENTER_BASE = "MetricsApi::V1::Presenters::"
+      # Mapping of metric names to the model that represents that metric
       METRICS_TO_MODEL = {
         'display_collection' => SupplejackApi::DailyItemMetric,
         'usage' => SupplejackApi::UsageMetrics
@@ -9,12 +17,20 @@ module MetricsApi
 
       attr_reader :start_date, :end_date, :metrics
 
+      # @param [Hash] params request parameters hash
+      # @option params [Date] :start_date (Date.yesterday) start of the range of metrics to retrieve
+      # @option params [Date] :end_date (Date.current) end of the range of metrics to retrieve
+      # @option params [String] :metrics ('usage,metrics') CSV string of sub metrics to include in response
       def initialize(params)
         @start_date = params[:start_date] || Date.yesterday
         @end_date = params[:end_date] || Date.current
         @metrics = parse_metrics_param(params[:metrics]) || ['usage', 'display_collection']
       end
 
+      # Generates an API response using the parameters passed in when the class is created.
+      # This response has already been presented and is ready to deliver to the client
+      #
+      # @return [Array<Hash>] the generated API response
       def call
         metric_models = SupplejackApi::DailyItemMetric.created_between(start_date, end_date)
 
@@ -49,6 +65,10 @@ module MetricsApi
 
       private
 
+      # Converts metrics parameter to an array from a CSV
+      #
+      # @param param [String] CSV metrics string
+      # @return [Array<String>] split metrics CSV
       def parse_metrics_param(param)
         return nil unless param.present?
 

@@ -1,6 +1,9 @@
 module MetricsApi
   module V1
     module Presenters
+      # Presents a +SupplejackApi::DailyItemMetric+ as a list of 
+      # +SupplejackApi::DisplayCollectionMetric+ objects converted 
+      # to hashes ready to be returned as part of an API response
       class DisplayCollection
 
         def initialize(daily_item_metric)

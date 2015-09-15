@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'faker'
 
 module SupplejackApi
-  describe MetricsApiController, type: :controller, focus: true do
+  describe MetricsApiController, type: :controller do
     routes { SupplejackApi::Engine.routes }
 
     describe 'GET endpoint' do

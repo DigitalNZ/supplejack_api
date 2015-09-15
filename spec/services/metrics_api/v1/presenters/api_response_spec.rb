@@ -3,7 +3,7 @@ require 'spec_helper'
 module MetricsApi
   module V1
     module Presenters
-      describe ApiResponse, focus: true do
+      describe ApiResponse do
         let(:sub_metric_objects) do
           [
             {

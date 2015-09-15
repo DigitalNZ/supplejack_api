@@ -1,6 +1,6 @@
 module MetricsApi
   module V1
-    describe Api, focus: true do
+    describe Api do
       let!(:daily_item_metric){create(:daily_item_metric)}
       let(:api) do
         Api.new({

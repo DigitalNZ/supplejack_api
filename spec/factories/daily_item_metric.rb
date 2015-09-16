@@ -8,7 +8,7 @@ module SupplejackApi
       end
 
       total_active_records 10
-      # total_new_records 1
+      total_new_records 1
       day {Date.current}
 
       after :create do |metric, evaluator|

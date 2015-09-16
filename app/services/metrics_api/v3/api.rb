@@ -47,7 +47,7 @@ module MetricsApi
           base_object = {
             day: metric.day,
             total_active_records: metric.total_active_records,
-            total_new_records: 0
+            total_new_records: metric.total_new_records
           }
 
           sub_metric_objects = metrics.map do |m|

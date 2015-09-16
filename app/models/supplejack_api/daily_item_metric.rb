@@ -19,6 +19,7 @@ module SupplejackApi
     accepts_nested_attributes_for :display_collection_metrics
   
     field :total_active_records,  type: Integer
+    field :total_new_records,     type: Integer
     field :day,                   type: Date
   
     index day: 1

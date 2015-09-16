@@ -178,10 +178,12 @@ module SupplejackApi
 
       total_active_records = records_to_check.count
       total_active_records += previous_metrics.try(:total_active_records) || 0
+      total_new_records = Record.active.created_on_day(date).count
 
       daily_item_metric = DailyItemMetric.create(
         day: date,
         total_active_records: total_active_records, 
+        total_new_records: total_new_records,
         display_collection_metrics_attributes: merged_display_collection_metrics
       )
       daily_item_metric.display_collection_metrics << missing_metrics

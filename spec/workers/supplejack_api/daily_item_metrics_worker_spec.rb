@@ -74,6 +74,10 @@ module SupplejackApi
           expect(full_run_result.total_active_records).to eq(30)
         end
 
+        it "counts the total number of new records" do
+          expect(full_run_result.total_new_records).to eq(20)
+        end
+
         it "has metrics for each display_collection" do
           expect(full_run_result.display_collection_metrics.length).to eq(2)
         end
@@ -109,6 +113,7 @@ module SupplejackApi
           @previous_metrics = DailyItemMetric.create(
             day: Date.current,
             total_active_records: 30,
+            total_new_records: 0,
             display_collection_metrics_attributes: [
               {
                 name: "pc1", 
@@ -152,6 +157,10 @@ module SupplejackApi
           expect(partial_run_result.total_active_records).to eq(50)
         end
 
+        it "counts the total number of new records" do
+          expect(partial_run_result.total_new_records).to eq(20)
+        end
+
         it "has active record counts for each display_collection" do
           display_collection_query(partial_run_result, [30, 30, 0]) {|pcm| pcm.total_active_records}
         end
@@ -180,6 +189,7 @@ module SupplejackApi
           DailyItemMetric.create(
             day: Date.current - 5.days,
             total_active_records: 30,
+            total_new_records: 0,
             display_collection_metrics_attributes: [
               {
                 name: "pc1", 

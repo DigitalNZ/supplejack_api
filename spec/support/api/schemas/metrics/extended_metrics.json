@@ -1,0 +1,19 @@
+{
+  "description": "container object for all extended metrics objects",
+  "type": "object",
+  "required": ["day"],
+  "properties": {
+    "day": {
+      "description": "Day this metric represents",
+      "type": "string",
+      "format": "date"          
+    },
+    "record": {
+      "description": "Record metadata metric",
+      "$ref": "record_metadata.json"
+    },
+    "view": {
+      "description": "Record view metadata metric",
+      "$ref": "view_metadata.json"
+    }
+  }

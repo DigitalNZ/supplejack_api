@@ -12,6 +12,8 @@ module SupplejackApi
   
     store_in collection: 'daily_metrics'
 
+    # TODO: these should not be embedded but their own documents
+    # this will require updating the daily_item_metrics_worker and it's spec
     embeds_many :display_collection_metrics, 
                 class_name: 'SupplejackApi::DisplayCollectionMetric', 
                 cascade_callbacks: true

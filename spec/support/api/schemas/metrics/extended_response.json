@@ -1,6 +1,6 @@
 {
   "type": "array",
   "items": {
-    "$ref": "display_collection.json"
+    "$ref": "extended_metrics.json" 
   }
 }

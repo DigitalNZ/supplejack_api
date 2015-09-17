@@ -1,5 +1,5 @@
 {
-  "description": "Metric object",
+  "description": "Contains metrics about a day, metrics that do not fall into a specific subcategory",
   "type": "object",
   "required": [
     "day",
@@ -8,21 +8,17 @@
   ],
   "properties": {
     "day": {
-      "description": "Day this metrics object refers to",
+      "description": "Day this metadata refers to",
       "type": "string",
       "format": "date"
     },
     "total_active_records": {
+      "description": "Number of active records in the system on this date",
       "type": "number"
     },
     "total_new_records": {
+      "description": "Number of records harvested on this date",
       "type": "number"
-    },
-    "display_collection": {
-      "$ref": "display_collections.json"
-    },
-    "usage": {
-      "$ref": "usages.json"
     }
   }
 }

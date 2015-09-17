@@ -1,0 +1,6 @@
+{
+  "type": "array",
+  "items": {
+    "$ref": "daily_metrics_metadata.json" 
+  }
+}

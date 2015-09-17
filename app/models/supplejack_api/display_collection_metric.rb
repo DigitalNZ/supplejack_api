@@ -24,7 +24,7 @@ module SupplejackApi
     field :category_counts,      type: Hash
     field :copyright_counts,     type: Hash
 
-    # MongoDB does not allow you to store hashes that have keys with perioids in the name
+    # MongoDB does not allow you to store hashes that have keys with peroids in the name
     # Some of the copyrights contain version numbers which prevents them from being stored 
     # as keys directly. This replaces periods with the unicode equivalent
     def replace_periods
@@ -32,7 +32,7 @@ module SupplejackApi
       self.copyright_counts = Hash[self.copyright_counts.map(&key_replacer(".", "\u2024"))] if self.copyright_counts
     end
 
-    # MongoDB does not allow you to store hashes that have keys with perioids in the name
+    # MongoDB does not allow you to store hashes that have keys with peroids in the name
     # Some of the copyrights contain version numbers which prevents them from being stored 
     # as keys directly. This replaces unicode periods with normal periods so this quirk 
     # doesn't affect the application code

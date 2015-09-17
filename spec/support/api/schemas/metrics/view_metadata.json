@@ -1,0 +1,34 @@
+{
+  "description": "Contains metadata about how records in a display_collection were viewed on a specific day",
+  "type": "object",
+  "required": [
+    "day",
+    "searches",
+    "record_views",
+    "user_set_views",
+    "total_views"
+  ],
+  "properties": {
+    "day": {
+      "description": "Day this metric represents",
+      "type": "string",
+      "format": "date"          
+    },
+    "searches": {
+      "description": "Number of times a record from this collection was part of a search result",
+      "type": "number"
+    },
+    "record_views": {
+      "description": "Number of times a record page for a record from this collection was viewed",
+      "type": "number"
+    },
+    "user_set_views": {
+      "description": "Number of times a record from this collection was viewed in a user set",
+      "type": "number"
+    },
+    "total_views": {
+      "description": "Cumulative count of all record views for this collection",
+      "type": "number"
+    }
+  }
+}

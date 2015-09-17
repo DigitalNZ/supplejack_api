@@ -15,6 +15,12 @@ module MetricsApi
           'record' => :name,
           'view' => :record_field_value
         }
+        # Mapping of metrics to the field on it's respective model that contains
+        # the date the metric is for
+        METRIC_TO_MODEL_DATE_KEY = {  
+          'record' => :day,
+          'view' => :created_at
+        }
         # Mapping of metric names to procs that should be called on the
         # metric model after it is retrieved
         POST_RETRIEVE_MODIFIERS = {
@@ -33,10 +39,10 @@ module MetricsApi
             model = METRICS_TO_MODEL[metric]
             modifier = POST_RETRIEVE_MODIFIERS[metric]
 
-            models_in_range = model.created_between(start_date, end_date)
+            models_in_range = model.created_between(start_date, end_date).to_a
             models_in_range.map!(&modifier) if modifier.present?
 
-            {metric: metric, models: models_in_range}
+            {metric: metric, models: models_in_range.flatten}
           end
 
           filtered_models = metrics_models.map do |metric_models|
@@ -44,14 +50,21 @@ module MetricsApi
             key = METRIC_TO_MODEL_KEY[metric]
 
             models_to_keep = metric_models[:models].select do |model|
-              metrics.include? model.send(key)
+              facets.include? model.send(key)
             end
 
             {metric: metric, models: models_to_keep}
           end
 
-          first, *rest = filtered_models
-          first.zip(*rest).map(&MetricsApi::V3::Presenters::ExtendedMetadata)
+          models_grouped_by_date = filtered_models.map do |model_group|
+            metric = model_group[:metric]
+            models = model_group[:models]
+            date_key = METRIC_TO_MODEL_DATE_KEY[metric]
+
+            {metric: metric, models: models.group_by{|m| m.send(date_key).to_date}}
+          end
+
+          MetricsApi::V3::Presenters::ExtendedMetadata.new(models_grouped_by_date).to_json
         end
 
         private

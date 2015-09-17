@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 module MetricsApi
   module V3
     module Endpoints
@@ -21,8 +23,8 @@ module MetricsApi
         describe "#call" do
           it 'retrieves a range of metrics' do
             create(:daily_item_metric)
-            create(:usage_metrics, record_field_value: 'dc1')
-            create(:usage_metrics, record_field_value: 'dc2')
+            create(:usage_metrics, record_field_value: 'dc1', created_at: Date.current.midday)
+            create(:usage_metrics, record_field_value: 'dc2', created_at: Date.current.midday)
 
             result = extended.call
 

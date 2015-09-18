@@ -2,7 +2,7 @@ module MetricsApi
   module V3
     module Presenters
       # Presents a +SupplejackApi::UsageMetrics+ ready to be returned via the API
-      class Usage
+      class View
 
         def initialize(metric)
           @m = metric

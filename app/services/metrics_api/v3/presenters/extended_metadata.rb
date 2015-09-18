@@ -2,14 +2,34 @@ module MetricsApi
   module V3
     module Presenters
       class ExtendedMetadata
-        attr_reader :models
+        PRESENTERS_BASE = "MetricsApi::V3::Presenters::"
 
-        def initialize(metric_models)
-          @models = metric_models
+        attr_reader :metrics, :start_date, :end_date
+
+        def initialize(metrics, start_date, end_date)
+          @metrics = metrics
+          @start_date = start_date
+          @end_date = end_date
         end
 
         def to_json
-          
+          (start_date..end_date).map do |date|
+            base = {day: date}
+            
+            todays_metrics = metrics.map do |metric|
+              relavent_models = metric[:models].select{|key| key == date}.values.first
+              presenter = (PRESENTERS_BASE + metric[:metric].camelize).constantize
+
+              binding.pry
+              next {metric[:metric] => []} unless relavent_models.present?
+
+              {metric[:metric] => relavent_models.map(&presenter)}
+            end
+
+            todays_metrics.each{|x| base.merge!(x)}
+
+            base
+          end
         end
 
         def self.to_proc

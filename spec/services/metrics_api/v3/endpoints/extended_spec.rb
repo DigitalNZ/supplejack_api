@@ -22,7 +22,8 @@ module MetricsApi
 
         describe "#call" do
           it 'retrieves a range of metrics' do
-            create(:daily_item_metric)
+            create(:faceted_metrics, name: 'dc1')
+            create(:faceted_metrics, name: 'dc2')
             create(:usage_metrics, record_field_value: 'dc1', created_at: Date.current.midday)
             create(:usage_metrics, record_field_value: 'dc2', created_at: Date.current.midday)
 

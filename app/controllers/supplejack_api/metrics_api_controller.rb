@@ -1,5 +1,7 @@
 module SupplejackApi
   class MetricsApiController < ApplicationController
+    skip_before_filter :authenticate_user!
+
     API_VERSIONS = {
       'v3' => MetricsApi::V3::Api
     }
@@ -18,9 +20,9 @@ module SupplejackApi
 
     private
 
-    def render_response(type)
+    def render_response(endpoint)
       api_version = params[:version]
-      api = API_VERSIONS[api_version].new(params.dup, type)
+      api = API_VERSIONS[api_version].new(params.dup, endpoint)
 
       api_response = api.call
 

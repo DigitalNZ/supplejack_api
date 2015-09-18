@@ -24,33 +24,16 @@ module SupplejackApi
     end
 
     def self.perform
-      worker = self.new
-      last_metrics = DailyItemMetric.last
-
-      if last_metrics.present? 
-        days_since_last_run = Date.current.mjd - last_metrics.day.mjd
-        if days_since_last_run > 1
-          # start from 2 so that we don't double up todays metrics
-          (2...days_since_last_run).each do |n|
-            worker.call(Date.current - n.days, DailyItemMetric.last)
-          end
-        end
-      end
-
-      # metrics are calculated after midnight so they are actually for yesterday
-      worker.call(Date.current - 1.day, DailyItemMetric.last)
+      self.new.call(Date.yesterday)
     end
 
-    def call(date, previous_metrics=nil)
+    def call(date)
       records = Record.active.created_before(date + 1.day)
-      records_to_check = previous_metrics.present? ? records.created_on_day(date) : records
-
-      collection_metrics = perform_map_reduce(records_to_check, date)
+      collection_metrics = perform_map_reduce(records, date)
 
       BuildMetricsData.new(@primary_key, @secondary_keys)
                       .call(collection_metrics, 
-                            previous_metrics, 
-                            records_to_check,
+                            records,
                             date)
     end
 
@@ -142,76 +125,42 @@ module SupplejackApi
       @secondary_keys = secondary_keys
     end
 
-    def call(collection_metrics, previous_metrics, records_to_check, date)
-      processed_collection_metrics = collection_metrics.map(&method(:process_collection_metrics))
+    def call(faceted_metrics, records_to_check, date)
+      processed_faceted_metrics = faceted_metrics.map(&method(:process_faceted_metrics))
 
-      build_full_metrics_data(previous_metrics, processed_collection_metrics, records_to_check, date)
+      build_full_metrics_data(processed_faceted_metrics, records_to_check, date)
     end
 
     private
 
-    def process_collection_metrics(pcm)
-      # unwrap pcm data
-      pcm = pcm[:value]
+    def process_faceted_metrics(faceted_metric)
+      # unwrap metric data
+      faceted_metric = faceted_metric[:value]
 
       hardcoded = {
-        name:                 pcm[:name],
-        total_active_records: pcm[:count],
-        total_new_records:    pcm[:newCount]
+        name:                 faceted_metric[:name],
+        total_active_records: faceted_metric[:count],
+        total_new_records:    faceted_metric[:newCount]
       }
 
-      custom = @secondary_keys.select{|key| pcm[key] != {}}
-                              .reduce({}){|a, e| a.merge({custom_key_to_field_key(e) => pcm[e]})}
+      custom = @secondary_keys.select{|key| faceted_metric[key] != {}}
+                              .reduce({}){|a, e| a.merge({custom_key_to_field_key(e) => faceted_metric[e]})}
 
       hardcoded.merge(custom)
     end
 
-    def build_full_metrics_data(previous_metrics, processed_display_collection_metrics, records_to_check, date)
-      previous_dcms = previous_metrics.try(:display_collection_metrics) || []
-      merged_display_collection_metrics = merge_display_collection_metrics(
-        processed_display_collection_metrics, 
-        previous_dcms
-      )
-      missing_metrics = previous_dcms.select do |m| 
-        !merged_display_collection_metrics.any?{|mtm| mtm[:name] == m[:name]}
-      end 
-
+    def build_full_metrics_data(processed_faceted_metrics, records_to_check, date)
       total_active_records = records_to_check.count
-      total_active_records += previous_metrics.try(:total_active_records) || 0
       total_new_records = Record.active.created_on_day(date).count
 
-      daily_item_metric = DailyItemMetric.create(
+      DailyItemMetric.create(
         day: date,
         total_active_records: total_active_records, 
         total_new_records: total_new_records,
-        display_collection_metrics_attributes: merged_display_collection_metrics
       )
-      daily_item_metric.display_collection_metrics << missing_metrics
-      daily_item_metric.save!
 
-      daily_item_metric
-    end
-
-    def merge_display_collection_metrics(metrics_to_merge, existing_metrics)
-      metrics_to_merge.each do |pcm|
-        existing_pcm = existing_metrics.detect{|x| x[:name] == pcm[:name]} || {}
-        pcm[:total_active_records] += existing_pcm.try(:total_active_records) || 0
-
-        pcm_group_updater = lambda do |accessor_symbol|
-          lambda do |category_metric|
-            name, count = category_metric
-            existing_cm = (existing_pcm[accessor_symbol] || {}).select{|x| x == name} || {}
-
-            [name, count + (existing_cm[name] || 0)]
-          end
-        end
-
-        @secondary_keys.each do |k|
-          key = custom_key_to_field_key(k)
-          next unless pcm[key]
-
-          pcm[key] = Hash[pcm[key].map(&pcm_group_updater.call(key))]
-        end
+      processed_faceted_metrics.each do |fm|
+        FacetedMetrics.create(fm.merge({day: date}))
       end
     end
 

@@ -6,7 +6,7 @@
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
-  class DisplayCollectionMetric
+  class FacetedMetrics
     include Mongoid::Document
     include Mongoid::Timestamps
 
@@ -14,10 +14,9 @@ module SupplejackApi
     after_save :replace_unicode_periods
     after_find :replace_unicode_periods
 
-    store_in collection: 'daily_metrics'
+    store_in collection: 'faceted_metrics'
 
-    embedded_in :daily_item_metric, class_name: 'SupplejackApi::DailyItemMetric'
-
+    field :day,                  type: Date
     field :name,                 type: String
     field :total_active_records, type: Integer
     field :total_new_records,    type: Integer
@@ -39,6 +38,14 @@ module SupplejackApi
     def replace_unicode_periods
       self.category_counts  = Hash[self.category_counts. map(&key_replacer("\u2024", "."))] if self.category_counts
       self.copyright_counts = Hash[self.copyright_counts.map(&key_replacer("\u2024", "."))] if self.copyright_counts
+    end
+
+    def self.created_on(date)
+      where(:day.gte => date.at_beginning_of_day, :day.lte => date.at_end_of_day)
+    end
+
+    def self.created_between(start_date, end_date)
+      where(:day.gte => start_date, :day.lte => end_date)
     end
 
     private

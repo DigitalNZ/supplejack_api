@@ -11,14 +11,6 @@ module SupplejackApi
     include Mongoid::Timestamps
   
     store_in collection: 'daily_metrics'
-
-    # TODO: these should not be embedded but their own documents
-    # this will require updating the daily_item_metrics_worker and it's spec
-    embeds_many :display_collection_metrics, 
-                class_name: 'SupplejackApi::DisplayCollectionMetric', 
-                cascade_callbacks: true
-
-    accepts_nested_attributes_for :display_collection_metrics
   
     field :total_active_records,  type: Integer
     field :total_new_records,     type: Integer

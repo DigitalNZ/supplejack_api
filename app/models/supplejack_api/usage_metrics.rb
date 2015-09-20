@@ -23,7 +23,7 @@ module SupplejackApi
     end
 
     def self.created_between(start_date, end_date)
-      where(:created_at.gte => start_date, :created_at.lte => end_date)
+      where(:created_at.gte => start_date.in_time_zone, :created_at.lte => end_date.in_time_zone)
     end
 
     # rubocop:disable Metrics/MethodLength

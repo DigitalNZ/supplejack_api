@@ -1,19 +1,23 @@
 {
-  "description": "Contains metadata about the records contained in a display_collection on a specific day",
+  "description": "Contains metadata about the records grouped by a facet on a specific day",
   "type": "object",
   "required": [
-    "day",
+    "total_active_records",
+    "total_new_records",
     "category_counts",
     "copyright_counts"
   ],
   "properties": {
-    "day": {
-      "description": "Day this metric represents",
-      "type": "string",
-      "format": "date"
+    "total_active_records": {
+      "desription": "Number of active records for this facet",
+      "type": "number"
+    },
+    "total_new_records": {
+      "desription": "Number of new records for this facet",
+      "type": "number"
     },
     "category_counts": {
-      "description": "Mapping of categoies to counts, object shape is dynamic so it has no schema",
+      "description": "Mapping of categories to counts, object shape is dynamic so it has no schema",
       "type": "object"
     },
     "copyright_counts": {

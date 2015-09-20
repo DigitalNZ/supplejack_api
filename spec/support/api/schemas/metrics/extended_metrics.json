@@ -10,11 +10,17 @@
     },
     "record": {
       "description": "Record metadata metric",
-      "$ref": "record_metadata.json"
+      "type": "array",
+      "items": {
+        "$ref": "record_metadata.json"
+      }
     },
     "view": {
       "description": "Record view metadata metric",
-      "$ref": "view_metadata.json"
+      "type": "array",
+      "items": {
+        "$ref": "view_metadata.json"
+      }
     }
   }
 }

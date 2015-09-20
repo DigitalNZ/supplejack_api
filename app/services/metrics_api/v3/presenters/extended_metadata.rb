@@ -20,7 +20,6 @@ module MetricsApi
               relavent_models = metric[:models].select{|key| key == date}.values.first
               presenter = (PRESENTERS_BASE + metric[:metric].camelize).constantize
 
-              binding.pry
               next {metric[:metric] => []} unless relavent_models.present?
 
               {metric[:metric] => relavent_models.map(&presenter)}

@@ -45,7 +45,7 @@ module SupplejackApi
     end
 
     def self.created_between(start_date, end_date)
-      where(:day.gte => start_date, :day.lte => end_date)
+      where(:day.gte => start_date.in_time_zone, :day.lte => end_date.in_time_zone)
     end
 
     private

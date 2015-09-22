@@ -8,7 +8,8 @@ module MetricsApi
 
         describe "#call" do
           it 'returns a list of all facets' do
-            create(:daily_item_metric)
+            create(:faceted_metrics, name: 'dc1')
+            create(:faceted_metrics, name: 'dc2')
 
             expect(facet.call).to eq(['dc1', 'dc2'])
           end

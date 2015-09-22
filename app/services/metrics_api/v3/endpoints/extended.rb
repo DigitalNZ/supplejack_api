@@ -28,7 +28,7 @@ module MetricsApi
 
         def initialize(params)
           @facets = parse_csv_param(params[:facets])
-          @start_date = parse_date_param(params[:start_date]) || Date.yesterday
+          @start_date = parse_date_param(params[:start_date]) || Date.current
           @end_date = parse_date_param(params[:end_date]) || Date.current
           @metrics = parse_csv_param(params[:metrics]) || ['record', 'view']
         end

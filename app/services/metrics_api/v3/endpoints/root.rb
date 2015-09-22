@@ -6,7 +6,7 @@ module MetricsApi
 
         def initialize(params)
           @start_date = params[:start_date] || Date.yesterday
-          @end_date = params[:end_date] || Date.current
+          @end_date = params[:end_date] || Date.yesterday
         end
 
         def call

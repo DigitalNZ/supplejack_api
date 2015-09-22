@@ -2,12 +2,17 @@
   "description": "Contains metadata about how records in a display_collection were viewed on a specific day",
   "type": "object",
   "required": [
+    "id",
     "searches",
     "record_page_views",
     "user_set_views",
     "total"
   ],
   "properties": {
+    "id": {
+      "description": "Facet name",
+      "type": "string"
+    },
     "searches": {
       "description": "Number of times a record from this collection was part of a search result",
       "type": "number"

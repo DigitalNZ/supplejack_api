@@ -2,18 +2,23 @@
   "description": "Contains metadata about the records grouped by a facet on a specific day",
   "type": "object",
   "required": [
+    "id",
     "total_active_records",
     "total_new_records",
     "category_counts",
     "copyright_counts"
   ],
   "properties": {
+    "id": {
+      "description": "Facet name",
+      "type": "string"
+    },
     "total_active_records": {
-      "desription": "Number of active records for this facet",
+      "description": "Number of active records for this facet",
       "type": "number"
     },
     "total_new_records": {
-      "desription": "Number of new records for this facet",
+      "description": "Number of new records for this facet",
       "type": "number"
     },
     "category_counts": {

@@ -62,8 +62,8 @@ module SupplejackApi
         it 'retrieves a range of extended metrics, filtered against the facet parameter' do
           create(:faceted_metrics, name: 'dc1', day: Date.yesterday)
           create(:faceted_metrics, name: 'dc2', day: Date.yesterday)
-          create(:usage_metrics, record_field_value: 'dc1', created_at: Date.yesterday)
-          create(:usage_metrics, created_at: Date.yesterday)
+          create(:usage_metrics, record_field_value: 'dc1', day: Date.yesterday)
+          create(:usage_metrics, day: Date.yesterday)
 
           get :extended, version: 'v3', facets: 'dc1', start_date: Date.yesterday, end_date: Date.yesterday
           json = JSON.parse(response.body)

@@ -17,12 +17,6 @@ module MetricsApi
           'record' => :name,
           'view' => :record_field_value
         }
-        # Mapping of metrics to the field on it's respective model that contains
-        # the date the metric is for
-        METRIC_TO_MODEL_DATE_KEY = {  
-          'record' => :day,
-          'view' => :created_at
-        }
         # Facet limit to return in response
         MAX_FACETS = 10
 
@@ -83,9 +77,8 @@ module MetricsApi
         def group_models_in_bundle_by_date(model_bundle)
           metric = model_bundle[:metric]
           models = model_bundle[:models]
-          date_key = METRIC_TO_MODEL_DATE_KEY[metric]
 
-          {metric: metric, models: models.group_by{|m| m.send(date_key).to_date}}
+          {metric: metric, models: models.group_by{|m| m.day.to_date}}
         end
 
         # Converts csv formatted parameter to an array

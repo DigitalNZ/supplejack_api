@@ -121,7 +121,7 @@ module SupplejackApi
       end
 
       it "should create usage metrics entries" do
-        SupplejackApi::UsageMetrics.should_receive(:create).with({:record_field_value=>"Voyager 1", :searches=>10, :gets=>8, :user_set_views=>2, :total=>20}).at_least(:once)
+        SupplejackApi::UsageMetrics.should_receive(:create).with({:record_field_value=>"Voyager 1", :searches=>10, :gets=>8, :user_set_views=>2, :total=>20, day: Date.current}).at_least(:once)
         SupplejackApi::UsageMetrics.build_metrics
       end
 

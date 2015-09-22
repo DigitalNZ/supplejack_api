@@ -71,11 +71,6 @@ module SupplejackApi
           expect(json.first['record'].count).to eq(1)
           expect(json.first['view'].count).to eq(1)
         end
-
-        it 'handles timezone conversions for mongo queries' do
-          create(:usage_metrics, record_field_value: 'dc1', day: Date.yesterday.midday)
-          create(:faceted_metrics, name: 'dc1', day: Date.yesterday)
-        end
       end
 
       context "failure requests" do

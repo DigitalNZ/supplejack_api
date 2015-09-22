@@ -74,7 +74,17 @@ module SupplejackApi
       end
 
       context "failure requests" do
+        it 'responds with a 400 status if the facets parameter is missing' do
+          get :extended, version: 'v3'
 
+          expect(response.status).to eq(400)
+        end
+
+        it 'responds with a 400 status if the number of facets requested in greater than 10' do
+          get :extended, version: 'v3', facets: '1,2,3,4,5,6,7,8,9,10,11'
+
+          expect(response.status).to eq(400)
+        end
       end
     end
 

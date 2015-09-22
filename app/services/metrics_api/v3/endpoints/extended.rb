@@ -23,6 +23,8 @@ module MetricsApi
           'record' => :day,
           'view' => :created_at
         }
+        # Facet limit to return in response
+        MAX_FACETS = 10
 
         def initialize(params)
           @facets = parse_csv_param(params[:facets])
@@ -32,37 +34,59 @@ module MetricsApi
         end
 
         def call
-          metrics_models = metrics.map do |metric|
-            model = METRICS_TO_MODEL[metric]
-
-            models_in_range = model.created_between(start_date, end_date).to_a
-
-            {metric: metric, models: models_in_range.flatten}
+          # TODO: Figure out a nicer way of handling error responses
+          unless facets.present?
+            return {
+              exception: {
+                status: 400,
+                message: 'facets parameter is required'
+              }
+            }
+          end
+          if facets.size > MAX_FACETS
+            return {
+              exception: {
+                status: 400,
+                message: "Only up to #{MAX_FACETS} may be requested at once"
+              }
+            }
           end
 
-          filtered_models = metrics_models.map do |metric_models|
-            metric = metric_models[:metric]
-            key = METRIC_TO_MODEL_KEY[metric]
-
-            models_to_keep = metric_models[:models].select do |model|
-              facets.include? model.send(key)
-            end
-
-            {metric: metric, models: models_to_keep}
-          end
-
-          models_grouped_by_date = filtered_models.map do |model_group|
-            metric = model_group[:metric]
-            models = model_group[:models]
-            date_key = METRIC_TO_MODEL_DATE_KEY[metric]
-
-            {metric: metric, models: models.group_by{|m| m.send(date_key).to_date}}
-          end
+          metrics_models = metrics.map(&method(:metric_to_model_bundle))
+          filtered_models = metrics_models.map(&method(:filter_model_bundle))
+          models_grouped_by_date = filtered_models.map(&method(:group_models_in_bundle_by_date))
 
           MetricsApi::V3::Presenters::ExtendedMetadata.new(models_grouped_by_date, start_date, end_date).to_json
         end
 
         private
+
+        def metric_to_model_bundle(metric)
+          model = METRICS_TO_MODEL[metric]
+
+          models_in_range = model.created_between(start_date, end_date).to_a
+
+          {metric: metric, models: models_in_range.flatten}
+        end
+
+        def filter_model_bundle(model_bundle)
+          metric = model_bundle[:metric]
+          key = METRIC_TO_MODEL_KEY[metric]
+
+          models_to_keep = model_bundle[:models].select do |model|
+            facets.include? model.send(key)
+          end
+
+          {metric: metric, models: models_to_keep}
+        end
+
+        def group_models_in_bundle_by_date(model_bundle)
+          metric = model_bundle[:metric]
+          models = model_bundle[:models]
+          date_key = METRIC_TO_MODEL_DATE_KEY[metric]
+
+          {metric: metric, models: models.group_by{|m| m.send(date_key).to_date}}
+        end
 
         # Converts csv formatted parameter to an array
         #

@@ -24,7 +24,6 @@ module SupplejackApi
     end
 
     def self.created_between(start_date, end_date)
-      binding.pry
       where(:day.gte => start_date.at_beginning_of_day, :day.lte => end_date.at_end_of_day)
     end
 

@@ -156,7 +156,7 @@ module SupplejackApi
       DailyItemMetric.create(
         day: date,
         total_active_records: total_active_records, 
-        total_new_records: total_new_records,
+        total_new_records: total_new_records
       )
 
       processed_faceted_metrics.each do |fm|

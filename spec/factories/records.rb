@@ -30,6 +30,7 @@ module SupplejackApi
       age             30
       birth_date      DateTime.now
       nz_citizen      true
+      display_collection 'test'
     end  
   end
 

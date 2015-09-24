@@ -8,29 +8,32 @@
 require "spec_helper"
 
 module SupplejackApi
-  describe DailyItemMetricsWorker do
+  describe DailyItemMetricsWorker, search: true do
+
+    after :each do
+      Sunspot.remove_all
+    end
 
     describe "#call" do
-      def build_records(first_batch_date, second_batch_date)
+      def build_records
         display_collection_one   = build(:record_fragment, display_collection: 'pc1', copyright: ['0'],      category: ['0'])
         display_collection_two   = build(:record_fragment, display_collection: 'pc2', copyright: ['1'],      category: ['1'])
         display_collection_three = build(:record_fragment, display_collection: 'pc1', copyright: ['0', '1'], category: ['0', '1'])
 
         10.times do
-          rec1 = build(:record, created_at: first_batch_date.midday)
-          rec2 = build(:record, created_at: first_batch_date.midday)
+          rec1 = build(:record, created_at: Date.current.midday)
+          rec2 = build(:record, created_at: Date.current.midday)
+          rec3 = build(:record, created_at: Date.yesterday.midday)
 
           rec1.fragments << display_collection_one
           rec2.fragments << display_collection_two
+          rec3.fragments << display_collection_three
           rec1.save
           rec2.save
+          rec3.save
         end
 
-        10.times do
-          rec = build(:record, created_at: second_batch_date.midday)
-          rec.fragments << display_collection_three
-          rec.save
-        end
+        Sunspot.commit
       end
 
       def facet_metrics_query(result, expected_results, &accessor_block)
@@ -47,8 +50,9 @@ module SupplejackApi
           r.fragments << f
           r.save
         end
+        Sunspot.commit
 
-        DailyItemMetricsWorker.new.call(Date.current)
+        DailyItemMetricsWorker.new.call
 
         expect(DailyItemMetric.last.total_active_records).to eq(10)
       end
@@ -58,17 +62,18 @@ module SupplejackApi
         record = build(:record, created_at: Date.current.midday)
         record.fragments << frag
         record.save!
+        Sunspot.commit
 
-        DailyItemMetricsWorker.new.call(Date.current)
+        DailyItemMetricsWorker.new.call
         expect(FacetedMetrics.created_on(Date.current).first.copyright_counts.first.first).to eq("1.0")
       end
 
       context "full run" do
         before do
           create(:record_with_fragment, status: "deleted") # inactive, should never show in counts
+          build_records
 
-          build_records(Date.current - 2.days, Date.current - 3.days) 
-          DailyItemMetricsWorker.new.call(Date.current - 2.days)
+          DailyItemMetricsWorker.new.call
         end
         let(:daily_item_metric){SupplejackApi::DailyItemMetric.last}
         let(:faceted_metrics)  {SupplejackApi::FacetedMetrics.all.to_a}
@@ -99,15 +104,6 @@ module SupplejackApi
 
         it "has a count of records per usage type in each display_collection" do
           facet_metrics_query(faceted_metrics, [20, 10]) {|facet, index| facet.copyright_counts[index.to_s]}
-        end
-
-        it "does not include Records created after the supplied date in the count" do
-          10.times do
-            create(:record_with_fragment, created_at: Date.current + 2.days)
-          end
-          DailyItemMetricsWorker.new.call(Date.current)
-
-          expect(DailyItemMetric.last.total_active_records).to eq(30)
         end
       end
     end

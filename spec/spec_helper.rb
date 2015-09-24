@@ -23,6 +23,7 @@ require 'sunspot_matchers'
 require 'mongoid-rspec'
 require 'simplecov'
 require 'rspec/active_model/mocks'
+require 'sunspot_test/rspec'
 
 require "codeclimate-test-reporter"
 CodeClimate::TestReporter.start
@@ -49,7 +50,7 @@ RSpec.configure do |config|
 
   config.before(:each) do
     DatabaseCleaner.clean
-    Sunspot.session = Sunspot::Rails::StubSessionProxy.new(Sunspot.session)
+    #Sunspot.session = Sunspot::Rails::StubSessionProxy.new(Sunspot.session)
     Timecop.return
 
     %w(record concept).each do |model|

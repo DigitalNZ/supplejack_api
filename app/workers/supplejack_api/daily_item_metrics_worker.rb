@@ -8,164 +8,104 @@
 module SupplejackApi
   class DailyItemMetricsWorker
 
+    attr_reader :primary_key, :secondary_keys
     @queue = :daily_item_metrics
 
     def initialize
       # configuration for metrics logging
       # the primary_key is what the records get grouped on
       # the secondary_keys are the fields counted, they must be multivalue fields
-      # if the secondary_keys are changed the DisplayCollectionMetric model must be updated
-      # so that the field names match the new secondary_key names
-      @primary_key = :display_collection
+      # if the secondary_keys are changed the FacetedMetrics model must be updated
+      # so that the field names match the new secondary_key names (the name must have '_counts' appended to it)
+      @primary_key = 'display_collection'
       @secondary_keys = [
-        :category,
-        :copyright
+        'category',
+        'copyright'
       ]
     end
 
     def self.perform
-      self.new.call(Date.yesterday)
+      self.new.call
     end
 
-    def call(date)
-      records = Record.active.created_before(date + 1.day)
-      collection_metrics = perform_map_reduce(records, date)
-
-      BuildMetricsData.new(@primary_key, @secondary_keys)
-                      .call(collection_metrics, 
-                            records,
-                            date)
-    end
-
-    private
- 
-    # rubocop:disable Metrics/MethodLength
-    def perform_map_reduce(records, date)
-      # this is inserted into the map/reduce JS so they can access the configuration variables
-      config_js = %(
-        var primaryKey = '#{@primary_key}';
-        var secondaryKeys = [#{@secondary_keys.reduce(''){|a, e| a + "'#{e}',"}.chomp(',')}];
-      )
-      map = %{
-        function() {
-          #{config_js}
-          var fragment = this.fragments[0];
-          if(fragment) {
-            //The month argument is 0 indexed in a Javascript Date object
-            var checkDate = new Date(#{date.year}, #{date.month - 1}, #{date.day})
-            var name = fragment[primaryKey] || 'Unknown';
-
-            var metrics = secondaryKeys.map(function(key) {
-              var map = {};
-              var items = fragment[key];
-
-              if(items) {
-                for(var i = 0;i < items.length;i++) {
-                  var itemKey = items[i];
-                  if(map[itemKey] == undefined)
-                    map[itemKey] = 0
-                  map[itemKey] += 1
-                }
-              }
-
-              return map;
-            });
-
-            var newCount = checkDate <= this.created_at ? 1 : 0;
-            var result = {name: name, newCount: newCount, count: 1};
-
-            for(var i = 0;i < metrics.length;i++) {
-              if(Object.keys(metrics[i]).length !== 0)
-                result[secondaryKeys[i]] = metrics[i];
-            }
-
-            if(name) {
-              emit(name, result);
-            }
-          }
-        }
-      }
-      reduce = %{
-        function(key, values) {
-          #{config_js}
-          var result = {name: key, count: 0, newCount: 0};
-          values.forEach(function(v) {
-            result.count += v.count;
-            result.newCount += v.newCount;
-
-            secondaryKeys.forEach(function(key) {
-              if(result[key] == undefined)
-                result[key] = {}
-
-              if(v[key] == undefined) return;
-
-              var keys = Object.keys(v[key]);
-              keys.forEach(function(oKey) {
-                if(result[key][oKey] == undefined)
-                  result[key][oKey] = 0
-                result[key][oKey] += v[key][oKey]
-              });
-            });
-          });
-
-          return result;
-        }
-      }
-
-      records.map_reduce(map, reduce).out(inline: true).to_a
-    end
-    # rubocop:enable Metrics/MethodLength
-
-  end
-  
-  class BuildMetricsData
-    
-    def initialize(primary_key, secondary_keys)
-      @primary_key = primary_key
-      @secondary_keys = secondary_keys
-    end
-
-    def call(faceted_metrics, records_to_check, date)
-      processed_faceted_metrics = faceted_metrics.map(&method(:process_faceted_metrics))
-
-      build_full_metrics_data(processed_faceted_metrics, records_to_check, date)
+    def call
+      facets = get_list_of_facets(primary_key)
+      partial_facets_data = facets.map(&method(:retrieve_facet_data))
+      full_facets_data = update_total_new_records(partial_facets_data)
+      create_metrics_records(full_facets_data)
     end
 
     private
 
-    def process_faceted_metrics(faceted_metric)
-      # unwrap metric data
-      faceted_metric = faceted_metric[:value]
+    def get_list_of_facets(primary_key)
+      # TODO: make this paginate
+      s = RecordSearch.new({facets: primary_key, facets_per_page: 150})
+      # HACK: We override SearchSerializable#facets_list in the api_app to 
+      # replace :display_collection with :primary_collection, this transparently fixes it
+      facets = remap_keys(facets_to_hash(s), {primary_collection: :display_collection})
 
-      hardcoded = {
-        name:                 faceted_metric[:name],
-        total_active_records: faceted_metric[:count],
-        total_new_records:    faceted_metric[:newCount]
-      }
-
-      custom = @secondary_keys.select{|key| faceted_metric[key] != {}}
-                              .reduce({}){|a, e| a.merge({custom_key_to_field_key(e) => faceted_metric[e]})}
-
-      hardcoded.merge(custom)
+      facets[primary_key.to_sym].keys
     end
 
-    def build_full_metrics_data(processed_faceted_metrics, records_to_check, date)
-      total_active_records = records_to_check.count
-      total_new_records = Record.active.created_on_day(date).count
+    def retrieve_facet_data(facet)
+      s = RecordSearch.new({facets: secondary_keys.join(','), and: {primary_key.to_sym => facet}})
+      facet_key_mappings = secondary_keys.reduce({}){|a, e| a.merge({e.to_sym => custom_key_to_field_name(e)})}
+      facet_metadata = remap_keys(facets_to_hash(s), facet_key_mappings)
+
+      {
+        id: facet,
+        day: Date.current,
+        total_active_records: s.total,
+        total_new_records: 0
+      }.merge(facet_metadata)
+    end
+
+    def update_total_new_records(facets)
+      facets = facets.dup
+      records = Record.active.created_on_day(Date.current)
+      counts_grouped_by_primary_key = records.group_by(&primary_key.to_sym).map{|k, v| [k, v.length]}
+
+      counts_grouped_by_primary_key.each do |primary_key, count|
+        facet_to_update = facets.find{|x| x[:id] == primary_key}
+        facet_to_update[:total_new_records] = count
+      end
+
+      facets
+    end
+
+    def create_metrics_records(facets)
+      active_records = Record.active
+      total_records = active_records.count
+      total_new_records = active_records.created_on_day(Date.current).count
 
       DailyItemMetric.create(
-        day: date,
-        total_active_records: total_active_records, 
+        day: Date.current,
+        total_active_records: total_records,
         total_new_records: total_new_records
       )
 
-      processed_faceted_metrics.each do |fm|
-        FacetedMetrics.create(fm.merge({day: date}))
+      facets.each{|x| FacetedMetrics.create(x)}
+    end
+    
+    def facets_to_hash(facets_response)
+      facets = {}
+      facets_response.facets.each do |facet|
+        rows = {}
+        facet.rows.each do |row|
+          rows[row.value] = row.count
+        end
+
+        facets.merge!({facet.name => rows})
       end
+      facets
     end
 
-    def custom_key_to_field_key(key) 
+    def custom_key_to_field_name(key) 
       "#{key}_counts".to_sym
+    end
+
+    def remap_keys(target, mappings)
+      Hash[target.map{|k, v| [mappings[k] || k, v]}]
     end
   end
 end

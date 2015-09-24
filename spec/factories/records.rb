@@ -8,14 +8,24 @@
 module SupplejackApi
   FactoryGirl.define do
     factory :record, class: SupplejackApi::Record do
+      transient do
+        display_collection 'test'
+        copyright ['0']
+        category ['0']
+      end
+
       internal_identifier   'nlnz:1234'
       record_id              54321
       status                 'active'
       source_url             'http://google.com/landing.html'
       record_type            0
   
-      factory :record_with_fragment do
-        fragments            { [FactoryGirl.build(:record_fragment)] }
+      factory :record_with_fragment do 
+        fragments            { [FactoryGirl.build(:record_fragment, 
+                                                  display_collection: display_collection, 
+                                                  copyright: copyright, 
+                                                  category: category
+                                                 )] }
       end    
     end
   

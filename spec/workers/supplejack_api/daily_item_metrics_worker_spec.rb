@@ -8,7 +8,7 @@
 require "spec_helper"
 
 module SupplejackApi
-  describe DailyItemMetricsWorker, search: true do
+  describe DailyItemMetricsWorker, search: true, slow: true do
 
     after :each do
       Sunspot.remove_all
@@ -16,21 +16,10 @@ module SupplejackApi
 
     describe "#call" do
       def build_records
-        display_collection_one   = build(:record_fragment, display_collection: 'pc1', copyright: ['0'],      category: ['0'])
-        display_collection_two   = build(:record_fragment, display_collection: 'pc2', copyright: ['1'],      category: ['1'])
-        display_collection_three = build(:record_fragment, display_collection: 'pc1', copyright: ['0', '1'], category: ['0', '1'])
-
         10.times do
-          rec1 = build(:record, created_at: Date.current.midday)
-          rec2 = build(:record, created_at: Date.current.midday)
-          rec3 = build(:record, created_at: Date.yesterday.midday)
-
-          rec1.fragments << display_collection_one
-          rec2.fragments << display_collection_two
-          rec3.fragments << display_collection_three
-          rec1.save
-          rec2.save
-          rec3.save
+          create(:record_with_fragment, display_collection: 'pc1', copyright: ['0'],      category: ['0'], created_at: Date.current.midday)
+          create(:record_with_fragment, display_collection: 'pc2', copyright: ['1'],      category: ['1'], created_at: Date.current.midday)
+          create(:record_with_fragment, display_collection: 'pc1', copyright: ['0', '1'], category: ['0', '1'], created_at: Date.yesterday.midday)
         end
 
         Sunspot.commit
@@ -45,10 +34,7 @@ module SupplejackApi
       it "handles records with missing categories/copyrights" do
         10.times do |n|
           c = n % 2 == 0 ? nil : ['0']
-          f = build(:record_fragment, copyright: c)
-          r = build(:record, created_at: Date.current.midday)
-          r.fragments << f
-          r.save
+          create(:record_with_fragment, created_at: Date.current.midday, copyright: c)
         end
         Sunspot.commit
 
@@ -58,17 +44,25 @@ module SupplejackApi
       end
 
       it "handles copyrights with periods in the name" do
-        frag = build(:record_fragment, copyright: ['1.0'], display_collection: 'test')
-        record = build(:record, created_at: Date.current.midday)
-        record.fragments << frag
-        record.save!
+        create(:record_with_fragment, copyright: ['1.0'], display_collection: 'test')
         Sunspot.commit
 
         DailyItemMetricsWorker.new.call
         expect(FacetedMetrics.created_on(Date.current).first.copyright_counts.first.first).to eq("1.0")
       end
 
-      context "full run" do
+      it "correctly paginates the facet list when there are more than 150 facets" do
+        200.times do |n|
+          create(:record_with_fragment, display_collection: n.to_s)
+        end
+        Sunspot.commit
+
+        DailyItemMetricsWorker.new.call
+
+        expect(FacetedMetrics.count).to eq(200)
+      end
+
+      context "metrics results" do
         before do
           create(:record_with_fragment, status: "deleted") # inactive, should never show in counts
           build_records

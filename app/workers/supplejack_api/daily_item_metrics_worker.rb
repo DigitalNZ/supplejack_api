@@ -28,6 +28,12 @@ module SupplejackApi
       self.new.call
     end
 
+    # Uses +SupplejackApi::RecordSearch+ to query the API for metrics information
+    # Metrics are grouped by the +@primary_key+ variable set in the constructor
+    # Metric information extracted from each record is determined by the +@secondary_keys+ variable
+    #
+    # The output of this worker is a +SupplejackApi::DailyItemMetric+ to represent metrics about the 
+    # overall system and one +SupplejackApi::FacetedMetrics+ for each set of records grouped by the +@primary_key+
     def call
       facets = get_list_of_facets(primary_key)
       partial_facets_data = facets.map(&method(:retrieve_facet_data))
@@ -38,13 +44,22 @@ module SupplejackApi
     private
 
     def get_list_of_facets(primary_key)
-      # TODO: make this paginate
-      s = RecordSearch.new({facets: primary_key, facets_per_page: 150})
-      # HACK: We override SearchSerializable#facets_list in the api_app to 
-      # replace :display_collection with :primary_collection, this transparently fixes it
-      facets = remap_keys(facets_to_hash(s), {primary_collection: :display_collection})
+      facets_list = []
+      facets_page = 1
+      loop do
+        s = RecordSearch.new({facets: primary_key, facets_per_page: 150, facets_page: facets_page})
+        # HACK: We override SearchSerializable#facets_list in the api_app to 
+        # replace :display_collection with :primary_collection, this transparently fixes it
+        facets = remap_keys(facets_to_hash(s), {primary_collection: :display_collection})[primary_key.to_sym]
 
-      facets[primary_key.to_sym].keys
+        # Gone past last page of facets
+        break if facets.length == 0
+
+        facets_list << facets.keys
+        facets_page += 1
+      end
+
+      facets_list.flatten
     end
 
     def retrieve_facet_data(facet)
@@ -67,6 +82,9 @@ module SupplejackApi
 
       counts_grouped_by_primary_key.each do |primary_key, count|
         facet_to_update = facets.find{|x| x[:id] == primary_key}
+        
+        next unless facet_to_update.present?
+
         facet_to_update[:total_new_records] = count
       end
 

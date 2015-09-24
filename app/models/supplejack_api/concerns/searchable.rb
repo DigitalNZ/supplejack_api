@@ -174,6 +174,24 @@ module SupplejackApi::Concerns::Searchable
       @field_list
     end
 
+    # Returns the facets part of the search results converted to a hash
+    #
+    # @return [Hash] facets in hash form, each facet is respresented as +facet_name => facet_values+
+    def facets_hash
+      facets = {}
+
+      self.facets.each do |facet|
+        rows = {}
+        facet.rows.each do |row|
+          rows[row.value] = row.count
+        end
+
+        facets.merge!({facet.name => rows})
+      end
+
+      facets
+    end
+
     # Returns all valid groups of fields
     # The groups are extracted from the "fields" parameter
     #

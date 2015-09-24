@@ -35,7 +35,7 @@ module SupplejackApi
     # The output of this worker is a +SupplejackApi::DailyItemMetric+ to represent metrics about the 
     # overall system and one +SupplejackApi::FacetedMetrics+ for each set of records grouped by the +@primary_key+
     def call
-      facets = get_list_of_facets(primary_key)
+      facets = FacetsHelper.get_list_of_facet_values(primary_key)
       partial_facets_data = facets.map(&method(:retrieve_facet_data))
       full_facets_data = update_total_new_records(partial_facets_data)
       create_metrics_records(full_facets_data)
@@ -43,29 +43,10 @@ module SupplejackApi
 
     private
 
-    def get_list_of_facets(primary_key)
-      facets_list = []
-      facets_page = 1
-      loop do
-        s = RecordSearch.new({facets: primary_key, facets_per_page: 150, facets_page: facets_page})
-        # HACK: We override SearchSerializable#facets_list in the api_app to 
-        # replace :display_collection with :primary_collection, this transparently fixes it
-        facets = remap_keys(facets_to_hash(s), {primary_collection: :display_collection})[primary_key.to_sym]
-
-        # Gone past last page of facets
-        break if facets.length == 0
-
-        facets_list << facets.keys
-        facets_page += 1
-      end
-
-      facets_list.flatten
-    end
-
     def retrieve_facet_data(facet)
       s = RecordSearch.new({facets: secondary_keys.join(','), and: {primary_key.to_sym => facet}})
       facet_key_mappings = secondary_keys.reduce({}){|a, e| a.merge({e.to_sym => custom_key_to_field_name(e)})}
-      facet_metadata = remap_keys(facets_to_hash(s), facet_key_mappings)
+      facet_metadata = Hash[s.facets_hash.map{|k, v| [facet_key_mappings[k] || k, v]}]
 
       {
         id: facet,
@@ -104,26 +85,9 @@ module SupplejackApi
 
       facets.each{|x| FacetedMetrics.create(x)}
     end
-    
-    def facets_to_hash(facets_response)
-      facets = {}
-      facets_response.facets.each do |facet|
-        rows = {}
-        facet.rows.each do |row|
-          rows[row.value] = row.count
-        end
-
-        facets.merge!({facet.name => rows})
-      end
-      facets
-    end
 
     def custom_key_to_field_name(key) 
       "#{key}_counts".to_sym
-    end
-
-    def remap_keys(target, mappings)
-      Hash[target.map{|k, v| [mappings[k] || k, v]}]
     end
   end
 end

@@ -89,6 +89,12 @@ module SupplejackApi
     end
 
     describe 'GET facets' do
+      before do
+        allow(SupplejackApi::FacetsHelper).to receive(:get_list_of_facet_values).with(any_args).and_return([
+          '1', '2', '3', '4', '5'
+        ])
+      end
+
       after do
         expect(response.body).to match_response_schema('metrics/facets_response')
       end

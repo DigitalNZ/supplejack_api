@@ -12,8 +12,8 @@ module MetricsApi
         end
 
         before do
-          @start_date = Date.current
-          @end_date = Date.current
+          @start_date = Date.current.strftime
+          @end_date = Date.current.strftime
         end
 
         describe "#call" do
@@ -24,7 +24,7 @@ module MetricsApi
           end
 
           it 'retrieves a range of metrics' do
-            @start_date = Date.current - 2.days
+            @start_date = (Date.current - 2.days).strftime
 
             result = root.call
 
@@ -34,11 +34,15 @@ module MetricsApi
           end
 
           it 'does not retrieve metrics outside of the range' do
-            @start_date = Date.current
-
             result = root.call
 
             expect(result.length).to eq(1)
+          end
+
+          it 'responds with Dates not DateTimes' do
+            result = root.call
+
+            expect(result.first[:day]).to eq(Date.current.strftime)
           end
         end
       end

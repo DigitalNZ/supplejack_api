@@ -9,7 +9,7 @@ module SupplejackApi
   class DailyItemMetric
     include Mongoid::Document
     include Mongoid::Timestamps
-  
+
     store_in collection: 'daily_metrics'
   
     field :total_active_records,  type: Integer

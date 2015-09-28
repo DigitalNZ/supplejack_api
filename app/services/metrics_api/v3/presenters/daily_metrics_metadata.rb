@@ -31,9 +31,9 @@ module MetricsApi
         attr_reader :day, :total_active_records, :total_new_records
 
         def initialize(metrics_information)
-          @day = metrics_information[:day]
-          @total_active_records = metrics_information[:total_active_records]
-          @total_new_records = metrics_information[:total_new_records]
+          @day = metrics_information.day
+          @total_active_records = metrics_information.total_active_records
+          @total_new_records = metrics_information.total_new_records
         end
       end
     end

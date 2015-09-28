@@ -49,7 +49,7 @@ module SupplejackApi
       facet_metadata = Hash[s.facets_hash.map{|k, v| [facet_key_mappings[k] || k, v]}]
 
       {
-        id: facet,
+        name: facet,
         day: Date.current,
         total_active_records: s.total,
         total_new_records: 0
@@ -62,7 +62,7 @@ module SupplejackApi
       counts_grouped_by_primary_key = records.group_by(&primary_key.to_sym).map{|k, v| [k, v.length]}
 
       counts_grouped_by_primary_key.each do |primary_key, count|
-        facet_to_update = facets.find{|x| x[:id] == primary_key}
+        facet_to_update = facets.find{|x| x[:name] == primary_key}
         
         next unless facet_to_update.present?
 

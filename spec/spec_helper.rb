@@ -8,7 +8,12 @@
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV['RAILS_ENV'] ||= 'test'
 
-require File.expand_path("../dummy/config/environment.rb",  __FILE__)
+begin
+  require 'pry'
+rescue LoadError
+end
+
+require File.expand_path("../dummy/config/environment.rb", __FILE__)
 require 'rails/application'
 require 'rails/mongoid'
 require 'rspec/rails'
@@ -18,11 +23,11 @@ require 'sunspot_matchers'
 require 'mongoid-rspec'
 require 'simplecov'
 require 'rspec/active_model/mocks'
-
+require 'sunspot_test/rspec'
 
 require "codeclimate-test-reporter"
 CodeClimate::TestReporter.start
-#SimpleCov.start
+# SimpleCov.start
 
 Rails.backtrace_cleaner.remove_silencers!
 
@@ -34,7 +39,8 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
   config.infer_base_class_for_anonymous_controllers = false
   config.order = "random"
-  config.filter_run focus: true
+  # Ignore focus on CI
+  config.filter_run focus: true unless ENV['CI']
   config.run_all_when_everything_filtered = true
 
   require 'database_cleaner'
@@ -44,7 +50,7 @@ RSpec.configure do |config|
 
   config.before(:each) do
     DatabaseCleaner.clean
-    Sunspot.session = Sunspot::Rails::StubSessionProxy.new(Sunspot.session)
+    #Sunspot.session = Sunspot::Rails::StubSessionProxy.new(Sunspot.session)
     Timecop.return
 
     %w(record concept).each do |model|

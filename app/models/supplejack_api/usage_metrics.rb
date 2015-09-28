@@ -17,6 +17,15 @@ module SupplejackApi
     field :gets,             	 type: Integer, default: 0
     field :user_set_views,   	 type: Integer, default: 0
     field :total,              type: Integer, default: 0
+    field :day,                type: Date
+
+    def self.created_on(date)
+      where(:day.gte => date.at_beginning_of_day, :created_at.lte => date.at_end_of_day)
+    end
+
+    def self.created_between(start_date, end_date)
+      where(:day.gte => start_date.at_beginning_of_day, :day.lte => end_date.at_end_of_day)
+    end
 
     # rubocop:disable Metrics/MethodLength
     # FIXME: make method smaller
@@ -50,7 +59,8 @@ module SupplejackApi
             searches: search_counts[field_value], 
             gets: get_counts[field_value],
             user_set_views: user_set_counts[field_value],
-            total: search_counts[field_value] + user_set_counts[field_value] + get_counts[field_value]
+            total: search_counts[field_value] + user_set_counts[field_value] + get_counts[field_value],
+            day: Date.current
           )
         else
           searches       = usage_metric_entry.searches       + search_counts[field_value]

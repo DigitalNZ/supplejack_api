@@ -13,6 +13,7 @@ module SupplejackApi
 			gets               8
 			user_set_views     2
 			total              20
+      day                Date.current
     end
   end
 end

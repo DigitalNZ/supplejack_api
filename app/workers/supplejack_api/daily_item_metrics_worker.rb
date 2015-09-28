@@ -58,7 +58,7 @@ module SupplejackApi
 
     def update_total_new_records(facets)
       facets = facets.dup
-      records = Record.active.created_on_day(Date.current)
+      records = Record.active.created_on(Date.current)
       counts_grouped_by_primary_key = records.group_by(&primary_key.to_sym).map{|k, v| [k, v.length]}
 
       counts_grouped_by_primary_key.each do |primary_key, count|
@@ -75,7 +75,7 @@ module SupplejackApi
     def create_metrics_records(facets)
       active_records = Record.active
       total_records = active_records.count
-      total_new_records = active_records.created_on_day(Date.current).count
+      total_new_records = active_records.created_on(Date.current).count
 
       DailyItemMetric.create(
         day: Date.current,

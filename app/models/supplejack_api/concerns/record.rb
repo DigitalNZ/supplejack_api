@@ -24,10 +24,12 @@ module SupplejackApi::Concerns::Record
     scope :deleted,         -> { where(status: 'deleted') }
     scope :suppressed,      -> { where(status: 'suppressed') }
     scope :solr_rejected,   -> { where(status: 'solr_rejected') }
-    scope :created_on_day,  ->(day) { where(:created_at.gte => day, :created_at.lte => day + 1.day)}
-    scope :created_before,  ->(day) { where(:created_at.lte => day) }
 
     build_model_fields
+
+    def self.created_on(day)
+      where(:created_at.gte => day.at_beginning_of_day, :created_at.lte => day.at_end_of_day)
+    end
 
     def self.find_multiple(ids)
       return [] unless ids.try(:any?)

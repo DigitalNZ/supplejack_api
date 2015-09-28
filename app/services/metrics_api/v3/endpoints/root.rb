@@ -2,11 +2,12 @@ module MetricsApi
   module V3
     module Endpoints
       class Root
+        include Helpers
         attr_reader :start_date, :end_date
 
         def initialize(params)
-          @start_date = params[:start_date] || Date.yesterday
-          @end_date = params[:end_date] || Date.yesterday
+          @start_date = parse_date_param(params[:start_date]) || Date.yesterday
+          @end_date = parse_date_param(params[:end_date]) || Date.yesterday
         end
 
         def call
@@ -22,14 +23,6 @@ module MetricsApi
           end
 
           models.map(&MetricsApi::V3::Presenters::DailyMetricsMetadata)
-        end
-
-        private
-
-        def parse_date(date_string)
-          return nil unless date_string.present?
-
-          Date.parse(date_string)
         end
       end
     end

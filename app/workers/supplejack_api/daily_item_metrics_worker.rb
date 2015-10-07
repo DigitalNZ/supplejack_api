@@ -73,15 +73,15 @@ module SupplejackApi
     end
 
     def create_metrics_records(facets)
+      merge_block = lambda do |a, e|
+        a.merge(e){|_, oldVal, newVal| oldVal + newVal}
+      end
+
       active_records = Record.active
       total_records = active_records.count
       total_new_records = active_records.created_on(Date.current).count
-      total_copyright_counts = facets.map{|x| x[:copyright_counts]}.reduce({}) do |a, e| 
-        a.merge(e){|_, oldVal, newVal| oldVal + newVal}
-      end
-      total_category_counts = facets.map{|x| x[:category_counts]}.reduce({}) do |a, e| 
-        a.merge(e){|_, oldVal, newVal| oldVal + newVal}
-      end
+      total_copyright_counts = facets.map{|x| x[:copyright_counts]}.reduce({}, &merge_block)
+      total_category_counts = facets.map{|x| x[:category_counts]}.reduce({}, &merge_block)
     
       FacetedMetrics.create(
         name: 'all',

@@ -10,10 +10,6 @@ module SupplejackApi
       render_response(:root)
     end
 
-    def extended
-      render_response(:extended)
-    end
-
     def facets
       render_response(:facets)
     end

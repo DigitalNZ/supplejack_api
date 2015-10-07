@@ -44,7 +44,6 @@ SupplejackApi::Engine.routes.draw do
 
   scope '/:version/metrics', version: /v3/, defaults: {format: 'json'} do
     get '/', to: 'metrics_api#root'
-    get '/extended', to: 'metrics_api#extended'
     get '/facets', to: 'metrics_api#facets'
   end
 

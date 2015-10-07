@@ -77,10 +77,10 @@ module SupplejackApi
       total_records = active_records.count
       total_new_records = active_records.created_on(Date.current).count
       total_copyright_counts = facets.map{|x| x[:copyright_counts]}.reduce({}) do |a, e| 
-        a.merge(e){|key, oldVal, newVal| oldVal + newVal}
+        a.merge(e){|_, oldVal, newVal| oldVal + newVal}
       end
       total_category_counts = facets.map{|x| x[:category_counts]}.reduce({}) do |a, e| 
-        a.merge(e){|key, oldVal, newVal| oldVal + newVal}
+        a.merge(e){|_, oldVal, newVal| oldVal + newVal}
       end
     
       FacetedMetrics.create(

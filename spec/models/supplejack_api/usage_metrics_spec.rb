@@ -120,17 +120,11 @@ module SupplejackApi
         SupplejackApi::UsageMetrics.build_metrics
       end
 
-      it "should create usage metrics entries" do
-        SupplejackApi::UsageMetrics.should_receive(:create).with({:record_field_value=>"Voyager 1", :searches=>10, :gets=>8, :user_set_views=>2, :total=>20, day: Date.current}).at_least(:once)
-        SupplejackApi::UsageMetrics.build_metrics
-      end
-
       it "creates a UsageMetrics with the summed values of all the unique record_field_values" do
         SupplejackApi::UsageMetrics.build_metrics
 
         all_metric = SupplejackApi::UsageMetrics.all.where(record_field_value: 'all').first
 
-        binding.pry
         expect(all_metric.total).to eq(20)
       end
 

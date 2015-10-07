@@ -39,8 +39,9 @@ module SupplejackApi
         Sunspot.commit
 
         DailyItemMetricsWorker.new.call
+        facet = SupplejackApi::FacetedMetrics.where(name: 'all').first
 
-        expect(DailyItemMetric.last.total_active_records).to eq(10)
+        expect(facet.total_active_records).to eq(10)
       end
 
       it "handles copyrights with periods in the name" do
@@ -59,7 +60,7 @@ module SupplejackApi
 
         DailyItemMetricsWorker.new.call
 
-        expect(FacetedMetrics.count).to eq(200)
+        expect(FacetedMetrics.count).to eq(201)
       end
 
       context "metrics results" do
@@ -69,7 +70,7 @@ module SupplejackApi
 
           DailyItemMetricsWorker.new.call
         end
-        let(:faceted_metrics)  {SupplejackApi::FacetedMetrics.all.to_a}
+        let(:faceted_metrics)  {SupplejackApi::FacetedMetrics.all.where(:name.ne => 'all').to_a}
 
         it "has metrics for each facet" do
           expect(faceted_metrics.length).to eq(2)
@@ -94,7 +95,6 @@ module SupplejackApi
         it "creates an All facet that contains the summed metrics of for all the individual facets" do
           all_metric = SupplejackApi::FacetedMetrics.where(name: 'all').first
           
-          binding.pry
           expect(all_metric.total_active_records).to eq(30)
           expect(all_metric.total_new_records).to eq(20)
           expect(all_metric.copyright_counts['0']).to eq(20)

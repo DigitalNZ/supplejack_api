@@ -125,6 +125,15 @@ module SupplejackApi
         SupplejackApi::UsageMetrics.build_metrics
       end
 
+      it "creates a UsageMetrics with the summed values of all the unique record_field_values" do
+        SupplejackApi::UsageMetrics.build_metrics
+
+        all_metric = SupplejackApi::UsageMetrics.all.where(record_field_value: 'all').first
+
+        binding.pry
+        expect(all_metric.total).to eq(20)
+      end
+
       it "should update usage metrics entry when it already exist for the field value" do
         SupplejackApi::UsageMetrics.stub(:where) { [ FactoryGirl.build(:usage_metrics, :record_field_value=>"Voyager 1", :searches=>10, :gets=>8, :user_set_views=>2, :total=>20) ] }
         SupplejackApi::UsageMetrics.any_instance.should_receive(:update).with({:searches=>20, :gets=>16, :user_set_views=>4, :total=>40}).at_least(:once)

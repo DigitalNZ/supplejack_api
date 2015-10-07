@@ -76,8 +76,9 @@ module SupplejackApi
             total: total
           )
         end
-      end    	
+      end  
 
+      update_or_create_all_facet(search_counts, get_counts, user_set_counts)
       # Deleting all the RequestLogs just counted
       Rails.logger.info "UsageMetrics:[#{Time.zone.now}]: Deleting RequestLogs"
       (search_ids + get_ids + user_set_ids).each do |id|
@@ -86,6 +87,24 @@ module SupplejackApi
       Rails.logger.info "UsageMetrics:[#{Time.zone.now}]: Complete"
     end
     # rubocop:enable Metrics/MethodLength
+    
+    def self.update_or_create_all_facet(search_counts, get_counts, user_set_counts)
+      all_metric_entry = SupplejackApi::UsageMetrics.find_or_create_by(record_field_value: 'all') do |entry|
+        entry.record_field_value = 'all'
+        entry.day = Date.current
+      end
+
+      search_counts = search_counts.values.sum
+      get_counts = get_counts.values.sum
+      user_set_counts = user_set_counts.values.sum
+
+      all_metric_entry.searches += search_counts
+      all_metric_entry.gets += get_counts
+      all_metric_entry.user_set_views += user_set_counts
+      all_metric_entry.total += search_counts + get_counts + user_set_counts
+
+      all_metric_entry.save
+    end
 
     def self.build_hash_for(request_type)
       request_logs = SupplejackApi::RequestLog.where(request_type: request_type)

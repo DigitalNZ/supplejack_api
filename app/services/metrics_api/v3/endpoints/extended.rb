@@ -28,34 +28,6 @@ module MetricsApi
         end
 
         def call
-          # HACK: need this for API, will implement properly later
-          if facets.first == "all"
-            return (start_date..end_date).map do |date|
-              {
-                id: 'all',
-                day: date,
-                view: [
-                  {
-                    id: 'all',
-                    searches: 0,
-                    record_page_views: 0,
-                    user_set_views: 0,
-                    total: 10
-                  }
-                ],
-                record: [
-                  {
-                    id: 'all',
-                    total_active_records: 1,
-                    total_new_records: 1,
-                    category_counts: {'test' => 1},
-                    copyright_counts: {'test' => 1}
-                  }
-                ]
-              }
-            end
-          end
-
           # TODO: Figure out a nicer way of handling error responses
           unless facets.present?
             return {

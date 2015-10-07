@@ -3,26 +3,92 @@ module MetricsApi
     module Endpoints
       class Root
         include Helpers
-        attr_reader :start_date, :end_date
+
+        attr_accessor :facets, :start_date, :end_date, :metrics
+
+        # Mapping of metric names to the model that represents that metric
+        METRICS_TO_MODEL = {
+          'record' => SupplejackApi::FacetedMetrics,
+          'view' => SupplejackApi::UsageMetrics
+        }
+        # Mapping of metrics to the field on it's respective model that contains
+        # the value to filter against
+        METRIC_TO_MODEL_KEY = {
+          'record' => :name,
+          'view' => :record_field_value
+        }
+        # Facet limit to return in response
+        MAX_FACETS = 10
 
         def initialize(params)
+          @facets = parse_csv_param(params[:facets])
           @start_date = parse_date_param(params[:start_date]) || Date.yesterday
           @end_date = parse_date_param(params[:end_date]) || Date.yesterday
+          @metrics = parse_csv_param(params[:metrics]) || ['record', 'view']
         end
 
         def call
-          models = SupplejackApi::DailyItemMetric.created_between(start_date, end_date)
-
-          if models.empty?
+          # TODO: Figure out a nicer way of handling error responses
+          unless facets.present?
             return {
               exception: {
-                message: 'No metrics for the date range requested',
-                status: 404
+                status: 400,
+                message: 'facets parameter is required'
+              }
+            }
+          end
+          if facets.size > MAX_FACETS
+            return {
+              exception: {
+                status: 400,
+                message: "Only up to #{MAX_FACETS} may be requested at once"
               }
             }
           end
 
-          models.map(&MetricsApi::V3::Presenters::DailyMetricsMetadata)
+          metrics_models = metrics.map(&method(:metric_to_model_bundle))
+          filtered_models = metrics_models.map(&method(:filter_model_bundle))
+          models_grouped_by_date = filtered_models.map(&method(:group_models_in_bundle_by_date))
+
+          MetricsApi::V3::Presenters::ExtendedMetadata.new(models_grouped_by_date, start_date, end_date).to_json
+        end
+
+        private
+
+        def metric_to_model_bundle(metric)
+          model = METRICS_TO_MODEL[metric]
+
+          models_in_range = model.created_between(start_date, end_date).to_a
+
+          {metric: metric, models: models_in_range.flatten}
+        end
+
+        def filter_model_bundle(model_bundle)
+          metric = model_bundle[:metric]
+          key = METRIC_TO_MODEL_KEY[metric]
+
+          models_to_keep = model_bundle[:models].select do |model|
+            facets.include? model.send(key)
+          end
+
+          {metric: metric, models: models_to_keep}
+        end
+
+        def group_models_in_bundle_by_date(model_bundle)
+          metric = model_bundle[:metric]
+          models = model_bundle[:models]
+
+          {metric: metric, models: models.group_by{|m| m.day.to_date}}
+        end
+
+        # Converts csv formatted parameter to an array
+        #
+        # @param param [String] CSV string
+        # @return [Array<String>] split CSV
+        def parse_csv_param(param)
+          return nil unless param.present?
+
+          param.split(',').map(&:strip)
         end
       end
     end

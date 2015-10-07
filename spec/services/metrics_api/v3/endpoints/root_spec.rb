@@ -4,45 +4,43 @@ module MetricsApi
   module V3
     module Endpoints
       describe Root do
-        let(:root) do
+        let(:extended) do
           Root.new({
+            facets: @facets,
             start_date: @start_date,
-            end_date: @end_date
+            end_date: @end_date,
+            metrics: @metrics
           })
         end
 
         before do
+          @facets = 'dc1,dc2'
           @start_date = Date.current.strftime
           @end_date = Date.current.strftime
+          @metrics = 'view,record'
+
+          create(:faceted_metrics, name: 'dc1')
+          create(:faceted_metrics, name: 'dc2')
+          create(:usage_metrics, record_field_value: 'dc1', created_at: Date.current.midday)
+          create(:usage_metrics, record_field_value: 'dc2', created_at: Date.current.midday)
         end
 
         describe "#call" do
-          before do
-            3.times do |n|
-              create(:daily_item_metric, day: Date.current - n.days)
-            end
-          end
-
           it 'retrieves a range of metrics' do
-            @start_date = (Date.current - 2.days).strftime
+            result = extended.call
 
-            result = root.call
-
-            3.times do |i|
-              expect(Date.parse(result[i][:day])).to eq(Date.current - i.days)
-            end
+            expect(result.first[:day]).to eq(Date.current)
+            expect(result.first["record"].length).to eq(2)
+            expect(result.first["view"].length).to eq(2)
           end
 
-          it 'does not retrieve metrics outside of the range' do
-            result = root.call
+          it 'filters metrics based on the facets argument' do
+            @facets = 'dc1'
+            result = extended.call
 
-            expect(result.length).to eq(1)
-          end
-
-          it 'responds with Dates not DateTimes' do
-            result = root.call
-
-            expect(result.first[:day]).to eq(Date.current.strftime)
+            expect(result.first[:day]).to eq(Date.current)
+            expect(result.first["record"].length).to eq(1)
+            expect(result.first["view"].length).to eq(1)
           end
         end
       end

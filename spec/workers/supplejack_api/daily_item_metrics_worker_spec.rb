@@ -69,16 +69,7 @@ module SupplejackApi
 
           DailyItemMetricsWorker.new.call
         end
-        let(:daily_item_metric){SupplejackApi::DailyItemMetric.last}
         let(:faceted_metrics)  {SupplejackApi::FacetedMetrics.all.to_a}
-
-        it "counts the total number of active records" do
-          expect(daily_item_metric.total_active_records).to eq(30)
-        end
-
-        it "counts the total number of new records" do
-          expect(daily_item_metric.total_new_records).to eq(20)
-        end
 
         it "has metrics for each facet" do
           expect(faceted_metrics.length).to eq(2)
@@ -98,6 +89,15 @@ module SupplejackApi
 
         it "has a count of records per usage type in each display_collection" do
           facet_metrics_query(faceted_metrics, [20, 10]) {|facet, index| facet.copyright_counts[index.to_s]}
+        end
+
+        it "creates an All facet that contains the summed metrics of for all the individual facets" do
+          all_metric = SupplejackApi::FacetedMetrics.where(name: 'all').first
+          
+          binding.pry
+          expect(all_metric.total_active_records).to eq(30)
+          expect(all_metric.total_new_records).to eq(20)
+          expect(all_metric.copyright_counts['0']).to eq(20)
         end
       end
     end

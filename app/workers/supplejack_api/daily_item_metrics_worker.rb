@@ -76,11 +76,20 @@ module SupplejackApi
       active_records = Record.active
       total_records = active_records.count
       total_new_records = active_records.created_on(Date.current).count
-
-      DailyItemMetric.create(
+      total_copyright_counts = facets.map{|x| x[:copyright_counts]}.reduce({}) do |a, e| 
+        a.merge(e){|key, oldVal, newVal| oldVal + newVal}
+      end
+      total_category_counts = facets.map{|x| x[:category_counts]}.reduce({}) do |a, e| 
+        a.merge(e){|key, oldVal, newVal| oldVal + newVal}
+      end
+    
+      FacetedMetrics.create(
+        name: 'all',
         day: Date.current,
         total_active_records: total_records,
-        total_new_records: total_new_records
+        total_new_records: total_new_records,
+        copyright_counts: total_copyright_counts,
+        category_counts: total_category_counts
       )
 
       facets.each{|x| FacetedMetrics.create(x)}

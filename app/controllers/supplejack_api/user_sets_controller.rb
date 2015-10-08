@@ -12,6 +12,7 @@ module SupplejackApi
 
     before_filter :find_user_set, only: [:update, :destroy]
     before_filter :authenticate_admin!, only: [:admin_index, :public_index]
+    after_action :create_set_interaction, only: :update
 
     def index
       @user_sets = current_user.user_sets
@@ -76,6 +77,13 @@ module SupplejackApi
     end
 
     private
+
+    def create_set_interaction
+      record_ids = params[:set][:records].map{|x| x[:record_id]}
+      display_collections = record_ids.map{|id| SupplejackApi::Record.custom_find(id).send(:display_collection)}.compact
+
+      display_collections.each{|dc| SetInteraction.create(interaction_type: :creation, display_collection: dc)}
+    end
 
     def serializable_array(user_sets, options={})
       options.reverse_merge!(root: false, items: false, user: false, total: false)

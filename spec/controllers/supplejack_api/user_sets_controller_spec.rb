@@ -195,6 +195,16 @@ module SupplejackApi
         expect(response.code).to eq("422")
         expect(response.body).to eq({errors: {records: ["The records array is not in a valid format."]}}.to_json)
       end
+
+      it "creates a new SetInteraction model to log the interaction" do
+        create(:record_with_fragment, record_id: 12, display_collection: 'test')
+        new_items = [{"record_id" => "12", "position" => "2"}]
+
+        post :update, id: @user_set.id.to_s, set: {records: new_items}
+
+        expect(SetInteraction.first).to be_present
+        expect(SetInteraction.first.display_collection).to eq('test')
+      end
     end
 
     describe "DELETE 'destroy'" do

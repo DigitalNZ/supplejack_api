@@ -80,7 +80,8 @@ module SupplejackApi
 
     def create_set_interaction
       record_ids = params[:set][:records].map{|x| x[:record_id]}
-      display_collections = record_ids.map{|id| SupplejackApi::Record.custom_find(id).send(:display_collection)}.compact
+      new_record_ids = record_ids.reject{|id| @user_set.set_items.any?{|set_item| set_item.record_id == id}}
+      display_collections = new_record_ids.map{|id| SupplejackApi::Record.custom_find(id).display_collection}
 
       display_collections.each{|dc| SetInteraction.create(interaction_type: :creation, display_collection: dc)}
     end

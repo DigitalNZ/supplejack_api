@@ -12,7 +12,10 @@ module SupplejackApi
       description     "Ugly dogs and cats"
       user
       factory :user_set_with_set_item do
-        set_items { [FactoryGirl.build(:set_item)] }
+        after(:create) do |user_set|
+          user_set.set_items.build(attributes_for(:set_item))
+          user_set.save
+        end
       end
     end
 

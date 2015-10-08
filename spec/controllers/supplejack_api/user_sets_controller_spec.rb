@@ -156,54 +156,73 @@ module SupplejackApi
       before(:each) do
         @user_set = FactoryGirl.create(:user_set, user_id: @user.id)
         allow(@user_set).to receive(:update_attributes_and_embedded) { true }
-        allow(controller.current_user.user_sets).to receive(:custom_find) { @user_set }
       end
 
-      it "finds the @user_set through the user" do
-        expect(controller.current_user.user_sets).to receive(:custom_find).with(@user_set.id.to_s) { @user_set }
-        put :update, id: @user_set.id.to_s, set: {records: [{record_id: 13, position: 2}]}
+      context 'normal operations' do
+        before(:each) do
+          allow(controller.current_user.user_sets).to receive(:custom_find) { @user_set }
+        end
+
+        it "finds the @user_set through the user" do
+          expect(controller.current_user.user_sets).to receive(:custom_find).with(@user_set.id.to_s) { @user_set }
+          put :update, id: @user_set.id.to_s, set: {records: [{record_id: 13, position: 2}]}
+        end
+
+        it "returns a 404 error when the set is not found" do
+          allow(controller.current_user.user_sets).to receive(:custom_find) { nil }
+          put :update, id: @user_set.id.to_s
+          expect(response.code).to eq("404")
+          expect(response.body).to eq({errors: "Set with id: #{@user_set.id.to_s} was not found."}.to_json)
+        end
+
+        it "updates the attributes of the @user_set" do
+          expect(@user_set).to receive(:update_attributes_and_embedded).with({"records" => [{"record_id" => "13", "position" => "2"}]}, @user)
+          put :update, id: @user_set.id.to_s, set: {records: [{record_id: 13, position: 2}]}
+        end
+
+        it "updates the approved attribute of a @user_set" do
+          expect(@user_set).to receive(:update_attributes_and_embedded).with({"approved" => true}, @user)
+          put :update, id: @user_set.id.to_s, set: {approved: true}
+        end
+
+        it "returns a 406 error when the set is invalid" do
+          allow(@user_set).to receive(:update_attributes_and_embedded) { false }
+          allow(@user_set).to receive(:errors).and_return({name: ["can't be blank"]})
+          post :update, id: @user_set.id.to_s, set: {name: nil}
+          expect(response.code).to eq("422")
+          expect(response.body).to eq({errors: {name: ["can't be blank"]}}.to_json)
+        end
+
+        it "rescues from a :records format error and renders the error" do
+          allow(@user_set).to receive(:update_attributes_and_embedded).and_raise(UserSet::WrongRecordsFormat)
+          post :update, id: @user_set.id.to_s, set: {name: nil}
+          expect(response.code).to eq("422")
+          expect(response.body).to eq({errors: {records: ["The records array is not in a valid format."]}}.to_json)
+        end
       end
 
-      it "returns a 404 error when the set is not found" do
-        allow(controller.current_user.user_sets).to receive(:custom_find) { nil }
-        put :update, id: @user_set.id.to_s
-        expect(response.code).to eq("404")
-        expect(response.body).to eq({errors: "Set with id: #{@user_set.id.to_s} was not found."}.to_json)
-      end
+      context 'SetInteractions' do
+        it "creates a new SetInteraction model to log the interaction" do
+          create(:record_with_fragment, record_id: 12, display_collection: 'test')
+          new_items = [{"record_id" => "12", "position" => "2"}]
 
-      it "updates the attributes of the @user_set" do
-        expect(@user_set).to receive(:update_attributes_and_embedded).with({"records" => [{"record_id" => "13", "position" => "2"}]}, @user)
-        put :update, id: @user_set.id.to_s, set: {records: [{record_id: 13, position: 2}]}
-      end
+          post :update, id: @user_set.id.to_s, set: {records: new_items}
 
-      it "updates the approved attribute of a @user_set" do
-        expect(@user_set).to receive(:update_attributes_and_embedded).with({"approved" => true}, @user)
-        put :update, id: @user_set.id.to_s, set: {approved: true}
-      end
+          expect(SetInteraction.first).to be_present
+          expect(SetInteraction.first.display_collection).to eq('test')
+        end
 
-      it "returns a 406 error when the set is invalid" do
-        allow(@user_set).to receive(:update_attributes_and_embedded) { false }
-        allow(@user_set).to receive(:errors).and_return({name: ["can't be blank"]})
-        post :update, id: @user_set.id.to_s, set: {name: nil}
-        expect(response.code).to eq("422")
-        expect(response.body).to eq({errors: {name: ["can't be blank"]}}.to_json)
-      end
+        it "only counts new items when creating SetInteraction model" do
+          create(:record_with_fragment, record_id: 12, display_collection: 'test')
+          create(:record_with_fragment, record_id: 12345, display_collection: 'test')
+          existing_set = create(:user_set_with_set_item)
+          existing_items = existing_set.set_items.to_a.map{|x| {record_id: x.record_id, position: x.position}}
+          new_item = {"record_id" => "12", "position" => "2"}
 
-      it "rescues from a :records format error and renders the error" do
-        allow(@user_set).to receive(:update_attributes_and_embedded).and_raise(UserSet::WrongRecordsFormat)
-        post :update, id: @user_set.id.to_s, set: {name: nil}
-        expect(response.code).to eq("422")
-        expect(response.body).to eq({errors: {records: ["The records array is not in a valid format."]}}.to_json)
-      end
+          post :update, id: existing_set.id.to_s, set: {records: existing_items << new_item}
 
-      it "creates a new SetInteraction model to log the interaction" do
-        create(:record_with_fragment, record_id: 12, display_collection: 'test')
-        new_items = [{"record_id" => "12", "position" => "2"}]
-
-        post :update, id: @user_set.id.to_s, set: {records: new_items}
-
-        expect(SetInteraction.first).to be_present
-        expect(SetInteraction.first.display_collection).to eq('test')
+          expect(SetInteraction.count).to eq(1)
+        end
       end
     end
 

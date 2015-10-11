@@ -8,13 +8,6 @@ module SupplejackApi
       end
 
       def process(request_logs)
-        build_metrics(request_logs)
-      end
-
-      private
-
-      # FIXME: make method smaller
-      def build_metrics(request_logs)
         search_counts,   search_ids   = build_hash_for(request_logs, "search")
         get_counts,      get_ids      = build_hash_for(request_logs, "get")
         user_set_counts, user_set_ids = build_hash_for(request_logs, "user_set")
@@ -30,6 +23,8 @@ module SupplejackApi
 
         SupplejackApi::RequestLog.where(id: [search_ids, get_ids, user_set_ids].flatten).delete_all
       end
+
+      private
 
       def process_facet(facet, search_counts, get_counts, user_set_counts)
           usage_metric_entry = SupplejackApi::UsageMetrics.find_or_create_by(

@@ -16,7 +16,7 @@ module SupplejackApi
     def self.perform
       @interaction_updaters.each do |interaction_updater|
         models_to_process = interaction_updater.model.all.to_a
-        interaction_updater.process(models_to_process)
+        models_to_process.delete_all if interaction_updater.process(models_to_process)
       end
     end
 

@@ -7,11 +7,11 @@ module SupplejackApi
 
       before do
         @request_logs = ['search', 'get', 'user_set'].map do |request_type|
-          create(:request_log, request_type: request_type, log_values: ['test'])
+          create(:record_interaction, request_type: request_type, log_values: ['test'])
         end
       end
 
-      it 'takes an array of RequestLogs and creates a UsageMetrics model' do
+      it 'takes an array of Record interactions and creates a UsageMetrics model' do
         updater.process(@request_logs)
         metric = SupplejackApi::UsageMetrics.first 
 

@@ -12,7 +12,9 @@ module SupplejackApi
 
     before_filter :find_user_set, only: [:update, :destroy]
     before_filter :authenticate_admin!, only: [:admin_index, :public_index]
+    before_action :set_existing_user_set_items, only: :update
     after_action :create_set_interaction, only: :update
+    after_action :create_set_record_view, only: :show
 
     def index
       @user_sets = current_user.user_sets
@@ -47,7 +49,6 @@ module SupplejackApi
     def show
       @user_set = UserSet.custom_find(params[:id])
       if @user_set
-        SupplejackApi::RequestLog.create_user_set(@user_set, params[:request_logger_field]) if params[:request_logger]
         render json: UserSetSerializer.new(@user_set, user: current_user)
       else
         render json: {errors: "Set with id: #{params[:id]} was not found."}, status: :not_found
@@ -78,12 +79,29 @@ module SupplejackApi
 
     private
 
-    def create_set_interaction
-      record_ids = params[:set][:records].map{|x| x[:record_id]}
-      new_record_ids = record_ids.reject{|id| @user_set.set_items.any?{|set_item| set_item.record_id == id}}
-      display_collections = new_record_ids.map{|id| SupplejackApi::Record.custom_find(id).display_collection}
+    def set_existing_user_set_items
+      return unless @user_set
+      
+      @existing_user_set_items = @user_set.set_items.dup
+    end
 
-      display_collections.each{|dc| SetInteraction.create(interaction_type: :creation, display_collection: dc)}
+    def create_set_interaction
+      return unless params[:set].key? :records
+
+      record_ids = params[:set][:records].map{|x| x[:record_id]}
+      new_record_ids = record_ids.reject{|id| @existing_user_set_items.any?{|set_item| set_item.record_id.to_s == id}}
+      display_collections = SupplejackApi::Record.find_multiple(new_record_ids).map(&:display_collection)
+
+      display_collections.each{|dc| InteractionModels::Set.create(interaction_type: :creation, display_collection: dc)}
+    end
+
+    def create_set_record_view
+      return unless @user_set
+
+      SupplejackApi::InteractionModels::Record.create_user_set(
+        @user_set, 
+        params[:request_logger_field]
+      ) if params[:request_logger]
     end
 
     def serializable_array(user_sets, options={})

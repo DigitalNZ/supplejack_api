@@ -11,6 +11,9 @@ module SupplejackApi
     before_action :set_concept_param, only: :index
     respond_to :json, :xml, :rss
 
+    after_action :log_search, only: :index
+    after_action :log_record_view, only: :show
+
     def index
       @search = SupplejackApi::RecordSearch.new(params)
       @search.request_url = request.original_url
@@ -18,7 +21,6 @@ module SupplejackApi
 
       begin
         if @search.valid?          
-          SupplejackApi::RequestLog.create_search(@search, params[:request_logger_field]) if params[:request_logger]
           respond_with @search, serializer: RecordSearchSerializer
         else
           render request.format.to_sym => { errors: @search.errors }, status: :bad_request
@@ -37,7 +39,6 @@ module SupplejackApi
     def show
       begin
         @record = SupplejackApi::Record.custom_find(params[:id], current_user, params[:search])
-        SupplejackApi::RequestLog.create_find(@record, params[:request_logger_field]) if params[:request_logger]
         respond_with @record, serializer: RecordSerializer
       rescue Mongoid::Errors::DocumentNotFound
         render request.format.to_sym => { errors: "Record with ID #{params[:id]} was not found" }, status: :not_found
@@ -61,6 +62,22 @@ module SupplejackApi
     end
 
     private
+
+    def log_search
+      return unless @search.valid?
+
+      SupplejackApi::InteractionModels::Record.create_search(
+        @search, 
+        params[:request_logger_field]
+      ) if params[:request_logger]
+    end
+
+    def log_record_view
+      SupplejackApi::InteractionModels::Record.create_find(
+        @record, 
+        params[:request_logger_field]
+      ) if params[:request_logger]
+    end
 
     def set_concept_param
       if params[:concept_id].present?

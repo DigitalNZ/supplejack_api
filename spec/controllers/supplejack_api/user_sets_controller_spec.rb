@@ -30,7 +30,7 @@ module SupplejackApi
     end
 
     describe "GET 'admin_index'" do
-      context "authentication succedded" do
+      context "authentication succeeded" do
         before :each do
           allow(controller).to receive(:authenticate_admin!) { true }
           @normal_user = double(User, user_sets: []).as_null_object
@@ -201,15 +201,20 @@ module SupplejackApi
         end
       end
 
-      context 'SetInteractions' do
-        it "creates a new SetInteraction model to log the interaction" do
+      context 'Set Interactions' do
+        before do
+          @user = FactoryGirl.create(:user, authentication_token: "abc123", role: 'admin')
+          allow(controller).to receive(:current_user) { @user }
+        end
+
+        it "creates a new Set Interaction model to log the interaction" do
           create(:record_with_fragment, record_id: 12, display_collection: 'test')
           new_items = [{"record_id" => "12", "position" => "2"}]
 
           post :update, id: @user_set.id.to_s, set: {records: new_items}
 
-          expect(SetInteraction.first).to be_present
-          expect(SetInteraction.first.display_collection).to eq('test')
+          expect(InteractionModels::Set.first).to be_present
+          expect(InteractionModels::Set.first.display_collection).to eq('test')
         end
 
         it "only counts new items when creating SetInteraction model" do
@@ -221,7 +226,7 @@ module SupplejackApi
 
           post :update, id: existing_set.id.to_s, set: {records: existing_items << new_item}
 
-          expect(SetInteraction.count).to eq(1)
+          expect(InteractionModels::Set.count).to eq(1)
         end
       end
     end

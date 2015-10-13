@@ -17,41 +17,35 @@ module SupplejackApi
       field :log_values,   type: Array
 
       def self.create_search(object, field)
-        begin
-          results = object.results.map(&field.to_sym).flatten
-          self.create(request_type: "search", log_values: results) unless results.empty?
-        rescue
-          Rails.logger.warn "[RecordInteraction] Field #{field} does not exist"
-        end
+        results = object.results.map(&field.to_sym).flatten
+        self.create(request_type: "search", log_values: results) unless results.empty?
+      rescue
+        Rails.logger.warn "[RecordInteraction] Field #{field} does not exist"
       end
 
       def self.create_find(object, field)
-        begin
-          result = object.send(field.to_sym)
-          result = [result] unless result.is_a? Array
-          self.create(request_type: "get", log_values: result) unless result.empty?
-        rescue
-          Rails.logger.warn "[RecordInteraction] Field #{field} does not exist"
-        end
+        result = object.send(field.to_sym)
+        result = [result] unless result.is_a? Array
+        self.create(request_type: "get", log_values: result) unless result.empty?
+      rescue
+        Rails.logger.warn "[RecordInteraction] Field #{field} does not exist"
       end
 
       def self.create_user_set(object, field)
-        begin
-          results = [] 
-          unless object.set_items.empty?
-            object.set_items.each do |item|
-              record = SupplejackApi::Record.custom_find(item.record_id)
-              if record
-                result = record.send(field.to_sym)
-                results << result if result
-              end
+        results = [] 
+        unless object.set_items.empty?
+          object.set_items.each do |item|
+            record = SupplejackApi::Record.custom_find(item.record_id)
+            if record
+              result = record.send(field.to_sym)
+              results << result if result
             end
           end
+        end
 
-          self.create(request_type: "user_set", log_values: results.flatten) unless results.empty?
-        rescue
-          Rails.logger.warn "[RecordInteraction] Field #{field} does not exist"
-        end    	
+        self.create(request_type: "user_set", log_values: results.flatten) unless results.empty?
+      rescue
+        Rails.logger.warn "[RecordInteraction] Field #{field} does not exist"
       end
 
     end

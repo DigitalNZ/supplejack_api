@@ -7,10 +7,10 @@ module SupplejackApi
         @model = SupplejackApi::InteractionModels::Record
       end
 
-      def process(request_logs)
-        search_counts = build_hash_for(request_logs, "search")
-        get_counts = build_hash_for(request_logs, "get")
-        user_set_counts = build_hash_for(request_logs, "user_set")
+      def process(record_interactions)
+        search_counts = build_hash_for(record_interactions, "search")
+        get_counts = build_hash_for(record_interactions, "get")
+        user_set_counts = build_hash_for(record_interactions, "user_set")
 
         unique_facets = (search_counts.keys + get_counts.keys + user_set_counts.keys).uniq
 
@@ -72,11 +72,11 @@ module SupplejackApi
         all_metric_entry.save
       end
 
-      def build_hash_for(request_logs, request_type)
-        filtered_request_logs = request_logs.select{|rl| rl.request_type == request_type}
+      def build_hash_for(record_interactions, request_type)
+        filtered_record_interactions = record_interactions.select{|rl| rl.request_type == request_type}
         counts_by_facet = {}
 
-        filtered_request_logs.each do |rl|
+        filtered_record_interactions.each do |rl|
           next unless rl.log_values.present?
 
           rl.log_values.each do |facet|

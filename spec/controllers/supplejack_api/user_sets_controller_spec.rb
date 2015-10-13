@@ -214,7 +214,7 @@ module SupplejackApi
           post :update, id: @user_set.id.to_s, set: {records: new_items}
 
           expect(InteractionModels::Set.first).to be_present
-          expect(InteractionModels::Set.first.display_collection).to eq('test')
+          expect(InteractionModels::Set.first.facet).to eq('test')
         end
 
         it "only counts new items when creating SetInteraction model" do

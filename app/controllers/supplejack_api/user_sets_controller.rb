@@ -92,7 +92,7 @@ module SupplejackApi
       new_record_ids = record_ids.reject{|id| @existing_user_set_items.any?{|set_item| set_item.record_id.to_s == id}}
       display_collections = SupplejackApi::Record.find_multiple(new_record_ids).map(&:display_collection)
 
-      display_collections.each{|dc| InteractionModels::Set.create(interaction_type: :creation, display_collection: dc)}
+      display_collections.each{|dc| InteractionModels::Set.create(interaction_type: :creation, facet: dc)}
     end
 
     def create_set_record_view

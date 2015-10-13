@@ -6,7 +6,7 @@ module SupplejackApi
 
       # Potential values are :creation and :view
       field :interaction_type,   type: Symbol
-      field :display_collection, type: String
+      field :facet, type: String
     end
   end
 end

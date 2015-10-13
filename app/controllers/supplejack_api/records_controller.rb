@@ -7,12 +7,11 @@
 
 module SupplejackApi
   class RecordsController < ApplicationController
+    include SupplejackApi::Concerns::RecordsControllerMetrics
+
     skip_before_action :authenticate_user!, :only => [:source, :status]
     before_action :set_concept_param, only: :index
     respond_to :json, :xml, :rss
-
-    after_action :log_search, only: :index
-    after_action :log_record_view, only: :show
 
     def index
       @search = SupplejackApi::RecordSearch.new(params)
@@ -62,22 +61,6 @@ module SupplejackApi
     end
 
     private
-
-    def log_search
-      return unless @search.valid?
-
-      SupplejackApi::InteractionModels::Record.create_search(
-        @search, 
-        params[:request_logger_field]
-      ) if params[:request_logger]
-    end
-
-    def log_record_view
-      SupplejackApi::InteractionModels::Record.create_find(
-        @record, 
-        params[:request_logger_field]
-      ) if params[:request_logger]
-    end
 
     def set_concept_param
       if params[:concept_id].present?

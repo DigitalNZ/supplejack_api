@@ -6,11 +6,11 @@
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
-  class UsageMetricsWorker
+  class InteractionMetricsWorker
 
     # Contains list of +InteractionUpdater+ classes to be executed by worker
     @interaction_updaters = []
-    
+
     @queue = :usage_metrics
 
     def self.perform
@@ -23,21 +23,23 @@ module SupplejackApi
     def self.register_interaction_updater(interaction_updater)
       @interaction_updaters << interaction_updater
     end
-  end
 
-  # Interface for interaction updaters
-  # Interaction updaters are tied to a specific interaction model
-  # and know how to turn a list of interaction models into a model
-  # that represents a single day of interactions for that model
-  class InteractionUpdater
-    # Model class that logs interactions for this updater to process
-    attr_reader :model
-
-    # Takes in an array of interaction models and converts them into
-    # a model that represents days worth of interactions
+    # Interface for interaction updaters
+    # Interaction updaters are tied to a specific interaction model
+    # and know how to turn a list of interaction models into a model
+    # that represents a single day of interactions for that model
     #
-    # @param models [Array<Any>] list of interaction models to process
-    # @return Nothing
-    def process(_); end
+    # Interaction updaters are registered in config/initializers/interaction_updaters.rb
+    class InteractionUpdater
+      # Model class that logs interactions for this updater to process
+      attr_reader :model
+
+      # Takes in an array of interaction models and converts them into
+      # a model that represents days worth of interactions
+      #
+      # @param models [Array<Any>] list of interaction models to process
+      # @return Nothing
+      def process(_); end
+    end
   end
 end

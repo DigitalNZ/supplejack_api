@@ -2,6 +2,8 @@ module SupplejackApi
   module InteractionUpdaters
     class SetMetrics
 
+      attr_reader :model
+
       def initialize
         @model = SupplejackApi::InteractionModels::Set
       end
@@ -21,6 +23,8 @@ module SupplejackApi
           metric.total_records_added += set_interactions.count{|x| x.facet == facet}
           metric.save!
         end
+
+        true
       end
     end
   end

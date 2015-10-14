@@ -12,6 +12,10 @@ module SupplejackApi
     module QueryableByDay
       extend ActiveSupport::Concern
 
+      included do
+        index day: 1
+      end
+
       module ClassMethods
         def created_on(date)
           where(:day.gte => date.at_beginning_of_day, :day.lte => date.at_end_of_day)

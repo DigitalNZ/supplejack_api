@@ -15,13 +15,13 @@ module SupplejackApi
 
     def self.perform
       @interaction_updaters.each do |interaction_updater|
-        models_to_process = interaction_updater.model.all.to_a
-        models_to_process.delete_all if interaction_updater.process(models_to_process)
+        models_to_process = interaction_updater.model.all
+        models_to_process.delete_all if interaction_updater.process(models_to_process.to_a)
       end
     end
 
     def self.register_interaction_updater(interaction_updater)
-      @interaction_updaters << interaction_updater
+      @interaction_updaters << interaction_updater.new
     end
 
     # Interface for interaction updaters

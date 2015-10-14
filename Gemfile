@@ -39,5 +39,8 @@ group :test do
 end
 
 group :test, :development do
-  gem 'pry-byebug' if RUBY_VERSION =~ /2/
+  if RUBY_VERSION =~ /2/
+    gem 'pry-byebug' 
+    gem 'pry-rails'
+  end
 end

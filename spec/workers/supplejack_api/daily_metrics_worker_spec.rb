@@ -8,7 +8,7 @@
 require "spec_helper"
 
 module SupplejackApi
-  describe DailyItemMetricsWorker, search: true, slow: true do
+  describe DailyMetricsWorker, search: true, slow: true do
 
     after :each do
       Sunspot.remove_all
@@ -38,7 +38,7 @@ module SupplejackApi
         end
         Sunspot.commit
 
-        DailyItemMetricsWorker.new.call
+        DailyMetricsWorker.new.call
         facet = SupplejackApi::FacetedMetrics.where(name: 'all').first
 
         expect(facet.total_active_records).to eq(10)
@@ -48,7 +48,7 @@ module SupplejackApi
         create(:record_with_fragment, copyright: ['1.0'], display_collection: 'test')
         Sunspot.commit
 
-        DailyItemMetricsWorker.new.call
+        DailyMetricsWorker.new.call
         expect(FacetedMetrics.created_on(Date.current).first.copyright_counts.first.first).to eq("1.0")
       end
 
@@ -58,17 +58,17 @@ module SupplejackApi
         end
         Sunspot.commit
 
-        DailyItemMetricsWorker.new.call
+        DailyMetricsWorker.new.call
 
         expect(FacetedMetrics.count).to eq(201)
       end
 
-      context "metrics results" do
+      context "faceted metrics" do
         before do
           create(:record_with_fragment, status: "deleted") # inactive, should never show in counts
           build_records
 
-          DailyItemMetricsWorker.new.call
+          DailyMetricsWorker.new.call
         end
         let(:faceted_metrics)  {SupplejackApi::FacetedMetrics.all.where(:name.ne => 'all').to_a}
 
@@ -98,6 +98,41 @@ module SupplejackApi
           expect(all_metric.total_active_records).to eq(30)
           expect(all_metric.total_new_records).to eq(20)
           expect(all_metric.copyright_counts['0']).to eq(20)
+        end
+      end
+
+      context "daily metrics" do
+        let(:metric) do
+          # Lazy generate metrics
+          DailyMetricsWorker.new.call
+
+          SupplejackApi::DailyMetrics.first
+        end
+
+        it 'creates a DailyMetrics model' do
+          expect(metric).to be_present
+        end
+
+        it 'sets the day field to the current day' do
+          expect(metric.day).to eq(Date.current)
+        end
+
+        context "set metrics" do
+          it 'counts the number of sets in the system' do
+            create(:user_set)
+
+            DailyMetricsWorker.new.call
+
+            expect(metric.total_public_sets).to eq(1)
+          end
+
+          it 'does not count non-public sets' do
+            create(:user_set, privacy: 'private')
+
+            DailyMetricsWorker.new.call
+
+            expect(metric.total_public_sets).to eq(0)
+          end
         end
       end
     end

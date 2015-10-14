@@ -6,7 +6,7 @@
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
-  class DailyItemMetricsWorker
+  class DailyMetricsWorker
 
     attr_reader :primary_key, :secondary_keys
     @queue = :daily_item_metrics
@@ -39,6 +39,7 @@ module SupplejackApi
       partial_facets_data = facets.map(&method(:retrieve_facet_data))
       full_facets_data = update_total_new_records(partial_facets_data)
       create_metrics_records(full_facets_data)
+      create_daily_metrics
     end
 
     private
@@ -93,6 +94,15 @@ module SupplejackApi
       )
 
       facets.each{|x| FacetedMetrics.create(x)}
+    end
+
+    def create_daily_metrics
+      public_user_sets_count = SupplejackApi::UserSet.public.excluding_favorites.count
+
+      DailyMetrics.create(
+        day: Date.current,
+        total_public_sets: public_user_sets_count
+      )
     end
 
     def custom_key_to_field_name(key) 

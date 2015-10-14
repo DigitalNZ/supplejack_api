@@ -6,9 +6,10 @@
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
-  class DailyItemMetric
+  class DailyMetrics
     include Mongoid::Document
     include Mongoid::Timestamps
+    include SupplejackApi::Concerns::QueryableByDay
 
     store_in collection: 'daily_metrics'
   
@@ -17,13 +18,5 @@ module SupplejackApi
     field :day,                   type: Date
   
     index day: 1
-
-    def self.created_on(date)
-      where(:day.gte => date.at_beginning_of_day, :day.lte => date.at_end_of_day)
-    end
-
-    def self.created_between(start_date, end_date)
-      where(:day.gte => start_date, :day.lte => end_date)
-    end
   end
 end

@@ -9,6 +9,7 @@ module SupplejackApi
   class UsageMetrics
     include Mongoid::Document
     include Mongoid::Timestamps
+    include SupplejackApi::Concerns::QueryableByDay
 
     store_in collection: 'usage_metrics'
 
@@ -18,13 +19,5 @@ module SupplejackApi
     field :user_set_views,   	 type: Integer, default: 0
     field :total,              type: Integer, default: 0
     field :day,                type: Date
-
-    def self.created_on(date)
-      where(:day.gte => date.at_beginning_of_day, :created_at.lte => date.at_end_of_day)
-    end
-
-    def self.created_between(start_date, end_date)
-      where(:day.gte => start_date.at_beginning_of_day, :day.lte => end_date.at_end_of_day)
-    end
   end
 end

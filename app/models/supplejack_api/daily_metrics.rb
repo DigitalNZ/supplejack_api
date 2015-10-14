@@ -13,10 +13,7 @@ module SupplejackApi
 
     store_in collection: 'daily_metrics'
   
-    field :total_active_records,  type: Integer
-    field :total_new_records,     type: Integer
-    field :day,                   type: Date
-  
-    index day: 1
+    field :total_public_sets, type: Integer
+    field :day,               type: Date
   end
 end

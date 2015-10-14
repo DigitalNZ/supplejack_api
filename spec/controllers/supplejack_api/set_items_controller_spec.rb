@@ -23,9 +23,26 @@ module SupplejackApi
 
     describe "POST 'create'" do
       it 'creates the set item through the @user_set' do
-        expect(@user_set.set_items).to receive(:build).with({'record_id' => '2'}) { @set_item }
+        create(:record_with_fragment, record_id: 12345)
+        expect(@user_set.set_items).to receive(:build).with({'record_id' => '12345'}) { @set_item }
         expect(@user_set).to receive(:save).and_return(true)
-        post :create, user_set_id: @user_set.id, record: { record_id: '2' }, format: :json
+        post :create, user_set_id: @user_set.id, record: { record_id: '12345' }, format: :json
+      end
+
+      context 'Set Interactions' do
+        before do
+          @user = FactoryGirl.create(:user, authentication_token: "abc123", role: 'admin')
+          allow(controller).to receive(:current_user) { @user }
+        end
+
+        it "creates a new Set Interaction model to log the interaction" do
+          create(:record_with_fragment, record_id: 12, display_collection: 'test')
+
+          post :create, user_set_id: @user_set.id, record: {record_id: 12}
+
+          expect(InteractionModels::Set.first).to be_present
+          expect(InteractionModels::Set.first.facet).to eq('test')
+        end
       end
     end
     

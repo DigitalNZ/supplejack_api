@@ -201,34 +201,6 @@ module SupplejackApi
         end
       end
 
-      context 'Set Interactions' do
-        before do
-          @user = FactoryGirl.create(:user, authentication_token: "abc123", role: 'admin')
-          allow(controller).to receive(:current_user) { @user }
-        end
-
-        it "creates a new Set Interaction model to log the interaction" do
-          create(:record_with_fragment, record_id: 12, display_collection: 'test')
-          new_items = [{"record_id" => "12", "position" => "2"}]
-
-          post :update, id: @user_set.id.to_s, set: {records: new_items}
-
-          expect(InteractionModels::Set.first).to be_present
-          expect(InteractionModels::Set.first.facet).to eq('test')
-        end
-
-        it "only counts new items when creating SetInteraction model" do
-          create(:record_with_fragment, record_id: 12, display_collection: 'test')
-          create(:record_with_fragment, record_id: 12345, display_collection: 'test')
-          existing_set = create(:user_set_with_set_item)
-          existing_items = existing_set.set_items.to_a.map{|x| {record_id: x.record_id, position: x.position}}
-          new_item = {"record_id" => "12", "position" => "2"}
-
-          post :update, id: existing_set.id.to_s, set: {records: existing_items << new_item}
-
-          expect(InteractionModels::Set.count).to eq(1)
-        end
-      end
     end
 
     describe "DELETE 'destroy'" do
@@ -254,7 +226,5 @@ module SupplejackApi
         delete :destroy, id: @user_set.id.to_s, format: :json
       end
     end
-
   end
-
 end

@@ -11,7 +11,7 @@ module SupplejackApi
     # Contains list of +InteractionUpdater+ classes to be executed by worker
     @interaction_updaters = []
 
-    @queue = :usage_metrics
+    @queue = :interaction_metrics
 
     def self.perform
       @interaction_updaters.each do |interaction_updater|

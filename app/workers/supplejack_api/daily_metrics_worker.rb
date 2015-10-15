@@ -9,7 +9,7 @@ module SupplejackApi
   class DailyMetricsWorker
 
     attr_reader :primary_key, :secondary_keys
-    @queue = :daily_item_metrics
+    @queue = :daily_metrics
 
     def initialize
       # configuration for metrics logging

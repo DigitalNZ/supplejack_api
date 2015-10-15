@@ -121,15 +121,11 @@ module SupplejackApi
           it 'counts the number of sets in the system' do
             create(:user_set)
 
-            DailyMetricsWorker.new.call
-
             expect(metric.total_public_sets).to eq(1)
           end
 
           it 'does not count non-public sets' do
             create(:user_set, privacy: 'private')
-
-            DailyMetricsWorker.new.call
 
             expect(metric.total_public_sets).to eq(0)
           end

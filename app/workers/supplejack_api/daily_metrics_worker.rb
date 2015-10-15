@@ -97,7 +97,7 @@ module SupplejackApi
     end
 
     def create_daily_metrics
-      public_user_sets_count = SupplejackApi::UserSet.public.excluding_favorites.count
+      public_user_sets_count = SupplejackApi::UserSet.publicly_viewable.excluding_favorites.count
 
       DailyMetrics.create(
         day: Date.current,

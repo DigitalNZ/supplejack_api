@@ -22,13 +22,13 @@ test:
     default:
       database: supplejack_api_test
       hosts:
-        - localhost:27017
+        - db:27017
       options:
         read: :nearest
 
     strong:
       database: supplejack_api_test
       hosts:
-        - localhost:27017
+        - db:27017
       options:
         read: :nearest

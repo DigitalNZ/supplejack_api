@@ -7,10 +7,11 @@
 
 module SupplejackApi
   class UserSetsController < ApplicationController
+    include Concerns::UserSetsControllerMetrics
 
     respond_to :json
 
-    before_filter :find_user_set, only: [:update, :destroy]
+    prepend_before_filter :find_user_set, only: [:update, :destroy]
     before_filter :authenticate_admin!, only: [:admin_index, :public_index]
 
     def index
@@ -46,7 +47,6 @@ module SupplejackApi
     def show
       @user_set = UserSet.custom_find(params[:id])
       if @user_set
-        SupplejackApi::RequestLog.create_user_set(@user_set, params[:request_logger_field]) if params[:request_logger]
         render json: UserSetSerializer.new(@user_set, user: current_user)
       else
         render json: {errors: "Set with id: #{params[:id]} was not found."}, status: :not_found

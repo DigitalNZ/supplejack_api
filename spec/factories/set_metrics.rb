@@ -7,21 +7,10 @@
 
 module SupplejackApi
   FactoryGirl.define do
-    factory :user_set, class: SupplejackApi::UserSet do
-      name            "Dogs and cats"
-      description     "Ugly dogs and cats"
-      user
-      factory :user_set_with_set_item do
-        after(:create) do |user_set|
-          user_set.set_items.build(attributes_for(:set_item))
-          user_set.save
-        end
-      end
-    end
-
-    factory :set_item, class: SupplejackApi::SetItem do
-      record_id 12345
-      position  1
+    factory :set_metrics, class: SupplejackApi::SetMetrics do
+      day Date.current
+      facet 'test'
+      total_records_added 1
     end
   end
 end

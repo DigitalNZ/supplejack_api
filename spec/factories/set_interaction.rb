@@ -6,12 +6,10 @@
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
-  class UsageMetricsWorker
-    
-    @queue = :usage_metrics
-
-    def self.perform
-      SupplejackApi::UsageMetrics.build_metrics
+  FactoryGirl.define do
+    factory :set_interaction, class: SupplejackApi::InteractionModels::Set do
+      facet 'test'
+      interaction_type :creation
     end
   end
 end

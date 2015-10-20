@@ -6,10 +6,12 @@
 # the Department of Internal Affairs. http//digitalnz.org/supplejack
 
 module SupplejackApi
-  FactoryGirl.define do
-    factory :request_log, class: SupplejackApi::RequestLog do
-			request_type 'search'
-			log_values   ['Voyager 1', 'Sputnik', 'Explorer']
+  module InteractionModels
+    FactoryGirl.define do
+      factory :record_interaction, class: SupplejackApi::InteractionModels::Record do
+        request_type 'search'
+        log_values   ['Voyager 1', 'Sputnik', 'Explorer']
+      end
     end
   end
 end

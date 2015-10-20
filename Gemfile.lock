@@ -253,6 +253,8 @@ GEM
     pry-byebug (3.2.0)
       byebug (~> 5.0)
       pry (~> 0.10)
+    pry-rails (0.3.4)
+      pry (>= 0.9.10)
     rack (1.5.5)
     rack-protection (1.5.3)
       rack
@@ -426,6 +428,7 @@ DEPENDENCIES
   mongoid-tree
   mongoid_auto_inc!
   pry-byebug
+  pry-rails
   rb-fsevent
   resque-scheduler
   rspec-activemodel-mocks (~> 1.0.1)

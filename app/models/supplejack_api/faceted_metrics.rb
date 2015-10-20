@@ -9,6 +9,7 @@ module SupplejackApi
   class FacetedMetrics
     include Mongoid::Document
     include Mongoid::Timestamps
+    include SupplejackApi::Concerns::QueryableByDay
 
     before_save :replace_periods
     after_save :replace_unicode_periods
@@ -38,14 +39,6 @@ module SupplejackApi
     def replace_unicode_periods
       self.category_counts  = Hash[self.category_counts. map(&key_replacer("\u2024", "."))] if self.category_counts
       self.copyright_counts = Hash[self.copyright_counts.map(&key_replacer("\u2024", "."))] if self.copyright_counts
-    end
-
-    def self.created_on(date)
-      where(:day.gte => date.at_beginning_of_day, :day.lte => date.at_end_of_day)
-    end
-
-    def self.created_between(start_date, end_date)
-      where(:day.gte => start_date.in_time_zone, :day.lte => end_date.in_time_zone)
     end
 
     private

@@ -25,6 +25,9 @@ module SupplejackApi::Concerns::UserSet
     field :featured,          type: Boolean,  default: false
     field :featured_at,       type: DateTime
 
+    scope :excluding_favorites, -> {where(:name.ne => 'Favorites')}
+    scope :publicly_viewable,              -> {where(privacy: 'public')}
+
     index 'set_items.record_id' => 1
     index featured: 1
 

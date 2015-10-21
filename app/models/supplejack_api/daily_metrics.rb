@@ -9,11 +9,11 @@ module SupplejackApi
   class DailyMetrics
     include Mongoid::Document
     include Mongoid::Timestamps
-    include SupplejackApi::Concerns::QueryableByDay
+    include SupplejackApi::Concerns::QueryableByDate
 
     store_in collection: 'daily_metrics'
   
     field :total_public_sets, type: Integer
-    field :day,               type: Date
+    field :date,               type: Date
   end
 end

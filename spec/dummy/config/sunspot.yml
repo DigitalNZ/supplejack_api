@@ -14,7 +14,7 @@ development:
 
 test:
   solr:
-    hostname: localhost
+    hostname: solr
     port: 8983
     path: /solr
     log_level: DEBUG

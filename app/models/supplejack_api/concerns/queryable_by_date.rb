@@ -9,20 +9,20 @@ module SupplejackApi
   module Concerns
     # Contains convenience methods for querying documents by their day field
     # This concern assumes documents have the field 'day' of type +Date+
-    module QueryableByDay
+    module QueryableByDate
       extend ActiveSupport::Concern
 
       included do
-        index day: 1
+        index date: 1
       end
 
       module ClassMethods
         def created_on(date)
-          where(:day.gte => date.at_beginning_of_day, :day.lte => date.at_end_of_day)
+          where(:date.gte => date.at_beginning_of_day, :date.lte => date.at_end_of_day)
         end
 
         def created_between(start_date, end_date)
-          where(:day.gte => start_date, :day.lte => end_date)
+          where(:date.gte => start_date, :date.lte => end_date)
         end
       end
     end

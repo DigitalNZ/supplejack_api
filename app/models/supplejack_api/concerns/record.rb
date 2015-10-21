@@ -27,8 +27,8 @@ module SupplejackApi::Concerns::Record
 
     build_model_fields
 
-    def self.created_on(day)
-      where(:created_at.gte => day.at_beginning_of_day, :created_at.lte => day.at_end_of_day)
+    def self.created_on(date)
+      where(:created_at.gte => date.at_beginning_of_day, :created_at.lte => date.at_end_of_day)
     end
 
     def self.find_multiple(ids)

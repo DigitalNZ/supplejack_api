@@ -6,7 +6,7 @@
     "searches",
     "record_page_views",
     "user_set_views",
-    "total"
+    "total_views"
   ],
   "properties": {
     "id": {
@@ -25,7 +25,7 @@
       "description": "Number of times a record from this collection was viewed in a user set",
       "type": "number"
     },
-    "total": {
+    "total_views": {
       "description": "Cumulative count of all record views for this collection",
       "type": "number"
     }

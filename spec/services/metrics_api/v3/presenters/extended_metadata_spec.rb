@@ -27,7 +27,7 @@ module MetricsApi
                   create(:faceted_metrics),
                 ],
                 Date.yesterday => [
-                  create(:faceted_metrics, day: Date.yesterday)
+                  create(:faceted_metrics, date: Date.yesterday)
                 ]
               }
             }
@@ -38,8 +38,8 @@ module MetricsApi
           json = presenter.to_json
 
           expect(json.length).to eq(2)
-          expect(json.first[:day]).to eq(Date.yesterday)
-          expect(json.last[:day]).to eq(Date.current)
+          expect(json.first[:date]).to eq(Date.yesterday)
+          expect(json.last[:date]).to eq(Date.current)
           expect(json.first['record'].length).to eq(1)
           expect(json.first['view'].length).to eq(1)
         end

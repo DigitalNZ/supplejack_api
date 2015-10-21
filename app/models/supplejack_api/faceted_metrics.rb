@@ -9,7 +9,7 @@ module SupplejackApi
   class FacetedMetrics
     include Mongoid::Document
     include Mongoid::Timestamps
-    include SupplejackApi::Concerns::QueryableByDay
+    include SupplejackApi::Concerns::QueryableByDate
 
     before_save :replace_periods
     after_save :replace_unicode_periods
@@ -17,7 +17,7 @@ module SupplejackApi
 
     store_in collection: 'faceted_metrics'
 
-    field :day,                  type: Date
+    field :date,                 type: Date
     field :name,                 type: String
     field :total_active_records, type: Integer
     field :total_new_records,    type: Integer

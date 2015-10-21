@@ -12,15 +12,15 @@ module SupplejackApi
         unique_facets = set_interactions.map(&:facet).uniq
 
         unique_facets.each do |facet|
-          metric = SupplejackApi::SetMetrics.find_or_create_by(
-            day: Date.current,
-            facet: facet
-          ) do |sm|
-            sm.day = Date.current
-            sm.facet = facet
+          metric = SupplejackApi::UsageMetrics.find_or_create_by(
+            date: Date.current,
+            record_field_value: facet
+          ) do |um|
+            um.date = Date.current
+            um.record_field_value = facet
           end
 
-          metric.total_records_added += set_interactions.count{|x| x.facet == facet}
+          metric.records_added_to_user_sets += set_interactions.count{|x| x.facet == facet}
           metric.save!
         end
 

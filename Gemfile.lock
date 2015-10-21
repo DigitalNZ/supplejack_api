@@ -371,7 +371,7 @@ GEM
     sunspot (2.2.0)
       pr_geohash (~> 1.0)
       rsolr (~> 1.0.7)
-    sunspot_matchers (2.1.1.2)
+    sunspot_matchers (2.2.0.4)
     sunspot_rails (2.2.0)
       nokogiri
       rails (>= 3)
@@ -436,7 +436,7 @@ DEPENDENCIES
   rspec-rails (~> 3.1.0)
   rubocop
   simplecov
-  sunspot_matchers (~> 2.1.1.0)
+  sunspot_matchers (~> 2.2.0.0)
   sunspot_test (~> 0.4.0)
   supplejack_api!
   timecop (~> 0.4.6)

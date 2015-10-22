@@ -23,14 +23,21 @@ module SupplejackApi
       end
 
       it 'updates an existing UsageMetrics model if one exists' do
-        create(:usage_metrics, record_field_value: 'test', searches: 1, gets: 1, user_set_views: 1, total: 3, day: Date.current)
+        create(:usage_metrics, 
+          record_field_value: 'test', 
+          searches: 1, 
+          gets: 1, 
+          user_set_views: 1, 
+          total_views: 3, 
+          date: Date.current
+        )
         updater.process(@request_logs)
         metric = SupplejackApi::UsageMetrics.first
 
         expect(metric.searches      ).to eq(2)
         expect(metric.gets          ).to eq(2)
         expect(metric.user_set_views).to eq(2)
-        expect(metric.total         ).to eq(6)
+        expect(metric.total_views   ).to eq(6)
       end
     end
   end

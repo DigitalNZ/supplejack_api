@@ -1,10 +1,10 @@
 {
   "description": "container object for all extended metrics objects",
   "type": "object",
-  "required": ["day"],
+  "required": ["date"],
   "properties": {
-    "day": {
-      "description": "Day this metric represents",
+    "date": {
+      "description": "dayDate this metric represents",
       "type": "string",
       "format": "date"          
     },

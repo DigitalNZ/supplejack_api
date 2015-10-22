@@ -7,13 +7,10 @@
 
 $:.push File.expand_path('../lib', __FILE__)
 
-# Maintain your gem's version:
-require 'supplejack_api/version'
-
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
   s.name        = 'supplejack_api'
-  s.version     = SupplejackApi::VERSION
+  s.version     = '1'
   s.authors     = ['DigitalNZ']
   s.email       = ['info@digitalnz.org']
   s.homepage    = 'http://digitalnz.org'
@@ -73,7 +70,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'database_cleaner', '~> 0.8.0'
   s.add_development_dependency 'mongoid-rspec', '~> 2.0.0.rc1'
   s.add_development_dependency 'json_spec', '~> 1.1.4'
-  s.add_development_dependency 'sunspot_matchers', '~> 2.1.1.0'
+  s.add_development_dependency 'sunspot_matchers', '~> 2.2.0.0'
   s.add_development_dependency 'timecop', '~> 0.4.6'
   s.add_development_dependency 'binding_of_caller', '~> 0.7.1'
   s.add_development_dependency 'rb-fsevent', '~> 0.9.1'

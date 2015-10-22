@@ -28,10 +28,10 @@ module SupplejackApi
 
       def process_facet(facet, search_counts, get_counts, user_set_counts)
         usage_metric_entry = SupplejackApi::UsageMetrics.find_or_create_by(
-          :day => Date.current, 
+          :date => Date.current, 
           :record_field_value => facet
         ) do |metric|
-          metric.day = Date.current
+          metric.date = Date.current
           metric.record_field_value = facet
         end
 
@@ -50,14 +50,14 @@ module SupplejackApi
           searches: searches,
           gets: gets,
           user_set_views: user_set_views,
-          total: total
+          total_views: total
         )
       end
 
       def update_or_create_all_facet(search_counts, get_counts, user_set_counts)
         all_metric_entry = SupplejackApi::UsageMetrics.find_or_create_by(record_field_value: 'all') do |entry|
           entry.record_field_value = 'all'
-          entry.day = Date.current
+          entry.date = Date.current
         end
 
         search_counts = search_counts.values.sum
@@ -67,7 +67,7 @@ module SupplejackApi
         all_metric_entry.searches += search_counts
         all_metric_entry.gets += get_counts
         all_metric_entry.user_set_views += user_set_counts
-        all_metric_entry.total += search_counts + get_counts + user_set_counts
+        all_metric_entry.total_views += search_counts + get_counts + user_set_counts
 
         all_metric_entry.save
       end

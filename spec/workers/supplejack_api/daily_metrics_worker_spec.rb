@@ -10,6 +10,10 @@ require "spec_helper"
 module SupplejackApi
   describe DailyMetricsWorker, search: true, slow: true do
 
+    before :each do
+      Sunspot.session = Sunspot.session.original_session
+    end
+
     after :each do
       Sunspot.remove_all
     end
@@ -113,8 +117,8 @@ module SupplejackApi
           expect(metric).to be_present
         end
 
-        it 'sets the day field to the current day' do
-          expect(metric.day).to eq(Date.current)
+        it 'sets the date field to the current day' do
+          expect(metric.date).to eq(Date.current)
         end
 
         context "set metrics" do

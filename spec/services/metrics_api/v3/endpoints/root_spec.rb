@@ -29,7 +29,7 @@ module MetricsApi
           it 'retrieves a range of metrics' do
             result = extended.call
 
-            expect(result.first[:day]).to eq(Date.current)
+            expect(result.first[:date]).to eq(Date.current)
             expect(result.first["record"].length).to eq(2)
             expect(result.first["view"].length).to eq(2)
           end
@@ -38,7 +38,7 @@ module MetricsApi
             @facets = 'dc1'
             result = extended.call
 
-            expect(result.first[:day]).to eq(Date.current)
+            expect(result.first[:date]).to eq(Date.current)
             expect(result.first["record"].length).to eq(1)
             expect(result.first["view"].length).to eq(1)
           end

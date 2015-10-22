@@ -1,0 +1,10 @@
+api:
+  build: .
+  volumes:
+    - .:/app
+  links:
+    - db
+db:
+  image: library/mongo:2.6
+  ports:
+    - "27017:27017"

@@ -78,7 +78,7 @@ module MetricsApi
           metric = model_bundle[:metric]
           models = model_bundle[:models]
 
-          {metric: metric, models: models.group_by{|m| m.day.to_date}}
+          {metric: metric, models: models.group_by{|m| m.date.to_date}}
         end
 
         # Converts csv formatted parameter to an array

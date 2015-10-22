@@ -51,7 +51,7 @@ module SupplejackApi
 
       {
         name: facet,
-        day: Date.current,
+        date: Date.current,
         total_active_records: s.total,
         total_new_records: 0
       }.merge(facet_metadata)
@@ -86,7 +86,7 @@ module SupplejackApi
     
       FacetedMetrics.create(
         name: 'all',
-        day: Date.current,
+        date: Date.current,
         total_active_records: total_records,
         total_new_records: total_new_records,
         copyright_counts: total_copyright_counts,
@@ -100,7 +100,7 @@ module SupplejackApi
       public_user_sets_count = SupplejackApi::UserSet.publicly_viewable.excluding_favorites.count
 
       DailyMetrics.create(
-        day: Date.current,
+        date: Date.current,
         total_public_sets: public_user_sets_count
       )
     end

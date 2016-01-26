@@ -442,6 +442,3 @@ DEPENDENCIES
   timecop (~> 0.4.6)
   xml_spec!
   yard
-
-BUNDLED WITH
-   1.10.6

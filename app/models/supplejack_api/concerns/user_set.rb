@@ -183,7 +183,7 @@ module SupplejackApi::Concerns::UserSet
     end
 
     def tag_list=(tags_string)
-      tags_string = tags_string.to_s.gsub(/[^A-Za-z0-9 ,_-]/, "")
+      tags_string = tags_string.to_s.gsub(/[^A-Za-z0-9\p{Word} ,_-]/, "")
       self.tags = tags_string.to_s.split(',').map(&:strip).reject(&:blank?)
     end
 

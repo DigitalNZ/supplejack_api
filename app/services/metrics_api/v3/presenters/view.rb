@@ -14,7 +14,8 @@ module MetricsApi
             searches: @m.searches,
             record_page_views: @m.gets,
             user_set_views: @m.user_set_views,
-            total_views: @m.total_views
+            total_views: @m.total_views,
+            records_added_to_user_sets: @m.records_added_to_user_sets
           }
         end
 

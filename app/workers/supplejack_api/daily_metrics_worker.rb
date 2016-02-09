@@ -86,7 +86,7 @@ module SupplejackApi
     
       FacetedMetrics.create(
         name: 'all',
-        date: Date.current,
+        date: Time.zone.today,
         total_active_records: total_records,
         total_new_records: total_new_records,
         copyright_counts: total_copyright_counts,

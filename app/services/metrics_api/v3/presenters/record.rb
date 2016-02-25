@@ -1,9 +1,6 @@
 module MetricsApi
   module V3
     module Presenters
-      # Presents a +SupplejackApi::DailyItemMetric+ as a list of 
-      # +SupplejackApi::DisplayCollectionMetric+ objects converted 
-      # to hashes ready to be returned as part of an API response
       class Record
 
         def initialize(faceted_metrics)

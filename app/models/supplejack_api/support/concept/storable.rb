@@ -22,9 +22,9 @@ module SupplejackApi
 
           # Both of these fields are required in SJ API Core
           # No need to configure in *Schema
-          field           :concept_type,         type: String 
+          field           :concept_type,         type: String
           auto_increment  :concept_id
-          
+
           index({ concept_id: 1 }, { unique: true })
 
           ConceptSchema.model_fields.each do |name, option|
@@ -46,7 +46,7 @@ module SupplejackApi
         end
 
         def site_id
-          [ENV['HTTP_HOST'], 'concepts', self.concept_id].join('/')
+          [ENV['CONCEPT_HTTP_HOST'], 'concepts', self.concept_id].join('/')
         end
 
         def context

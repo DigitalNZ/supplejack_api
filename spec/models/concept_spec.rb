@@ -98,7 +98,7 @@ module SupplejackApi
 
     describe '#site_id' do
       it 'returns the site_id of the concept' do
-        expect(concept.site_id).to eq "#{ENV['HTTP_HOST']}/concepts/1"
+        expect(concept.site_id).to eq "#{ENV['CONCEPT_HTTP_HOST']}/concepts/1"
       end
     end
 

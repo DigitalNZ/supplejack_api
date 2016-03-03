@@ -14,6 +14,10 @@ module SupplejackApi
     @queue = :interaction_metrics
 
     def self.perform
+      if Rails.env.production?
+        return unless `hostname`.chromp == "dnz03.natlib.govt.nz"
+      end
+
       @interaction_updaters.each do |interaction_updater|
         models_to_process = interaction_updater.model.all
         models_to_process.delete_all if interaction_updater.process(models_to_process.to_a)

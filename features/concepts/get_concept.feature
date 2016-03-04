@@ -5,6 +5,7 @@
 # Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
+@search
 Feature: Get Concept
 
   Background:
@@ -24,6 +25,9 @@ Feature: Get Concept
       """
       {
         "skos": "http://www.w3.org/2004/02/skos/core#",
+        "source_authority": {
+          "@id": "foaf:source_authority"
+        },
         "rdaGr2": "http://rdvocab.info/ElementsGr2/",
         "foaf": "http://xmlns.com/foaf/0.1/",
         "owl": "http://www.w3.org/2002/07/owl#",
@@ -68,3 +72,9 @@ Feature: Get Concept
         }
     }
     """
+
+    Scenario: Filter concepts by source_authority
+      When I get a concept
+      And I filter a concept by source_authortiy
+      Then the JSON should be a hash
+      And the JSON at "concept_search/results/0/name" should be "Colin McCahon"

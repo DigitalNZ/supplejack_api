@@ -10,13 +10,14 @@ module SupplejackApi
     extend ActiveSupport::Concern
 
     ALLOWED_ATTRIBUTES = {
-      field: [:type, :search_value, :search_boost, :multi_value, :search_as, :store, 
+      field: [:type, :search_value, :search_boost, :multi_value, :search_as, :store,
               :solr_name, :namespace, :namespace_field, :default_value, :date_format],
       group: [:fields, :includes],
       role: [:default, :field_restrictions, :record_restrictions, :admin],
       namespace: [:url],
       mongo_index: [:fields, :index_options],
-      model_field: [:type, :field_options, :validation, :index_fields, :index_options]
+      model_field: [:type, :field_options, :validation, :index_fields, :index_options,
+                    :search_value, :search_as, :store, :namespace]
     }
 
     included do
@@ -35,7 +36,7 @@ module SupplejackApi
       def field(type, name, options={}, &block)
           self.fields ||= {}
           options.merge!(type: type)
-          
+
           field = Field.new(name, options, &block)
           self.fields[name] = field
       end
@@ -77,7 +78,7 @@ module SupplejackApi
       def model_field(name, options={}, &block)
         self.model_fields ||= {}
 
-        model_field = ModelField.new(name, options)
+        model_field = ModelField.new(name, options, &block)
         self.model_fields[name] = model_field
       end
     end

@@ -25,6 +25,20 @@ module SupplejackApi
       hash['@type'] = object.concept_type
       hash['@id'] = object.site_id
 
+      if default? || verbose?
+        groups = (options[:groups] & ConceptSchema.groups.keys) || []
+        fields = Set.new
+
+        groups.each do |group|
+          fields.merge(ConceptSchema.groups[group].try(:fields)) rescue {}
+        end
+
+        fields.each do |field|
+          # Doesn't allow the real record id to be overwritten by mongo id
+          hash[field] = (field == :id) ? hash[field] : field_value(field, options)
+        end
+      end
+
       include_individual_fields!(hash)
       include_context_fields!(hash)
       include_reverse_fields!(hash) if reverse?
@@ -65,6 +79,23 @@ module SupplejackApi
       key = concept.edm_type
       include!(:records, node: hash['@reverse'], key: key)
       hash
+    end
+
+    def field_value(field, options={})
+      value = nil
+      if ConceptSchema.fields[field].try(:search_value) && ConceptSchema.fields[field].try(:store) == false
+        value = ConceptSchema.fields[field].search_value.call(object)
+      else
+        value = object.public_send(field)
+      end
+
+      value = ConceptSchema.fields[field].try(:default_value) if value.nil? rescue nil
+
+      if ConceptSchema.fields[field].try(:date_format)
+        value = format_date(value, ConceptSchema.fields[field].try(:date_format))
+      end
+
+      value
     end
   end
 end

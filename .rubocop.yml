@@ -20,3 +20,7 @@ Metrics/LineLength:
 Metrics/MethodLength:
   Max: 25
 
+Style/RescueModifier:
+  Description: 'Avoid using rescue in its modifier form.'
+  StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-rescue-modifiers'
+  Enabled: false

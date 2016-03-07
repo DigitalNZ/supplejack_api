@@ -81,7 +81,7 @@ module SupplejackApi
       hash
     end
 
-    def field_value(field, options={})
+    def field_value(field)
       value = nil
       if ConceptSchema.fields[field].try(:search_value) && ConceptSchema.fields[field].try(:store) == false
         value = ConceptSchema.fields[field].search_value.call(object)

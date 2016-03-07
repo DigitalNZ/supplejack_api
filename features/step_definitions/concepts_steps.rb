@@ -1,8 +1,8 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 Given(/^these concepts:$/) do |table|
@@ -23,6 +23,7 @@ end
 
 Given(/^I have a concept$/) do
   @concept = FactoryGirl.create(:concept)
+  @concept.source_authorities << FactoryGirl.create(:source_authority)
   @concept.save
 end
 
@@ -38,4 +39,9 @@ end
 
 When(/^I get a concept with "(.*?)" field$/) do |field|
   visit(concept_url(@concept.concept_id, format: 'json', api_key: @user.api_key, fields: field))
+end
+
+When(/^I filter a concept by source_authortiy/) do
+  request_url = concepts_url({ format: 'json', api_key: @user.api_key, and: { source_authority: @concept.source_authorities.first.internal_identifier } })
+  visit request_url
 end

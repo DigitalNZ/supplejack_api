@@ -35,7 +35,28 @@ class ConceptSchema
 
   group :source_authorities
   group :reverse
-  
+
+  group :default do
+    fields [
+      :name,
+      :title
+    ]
+  end
+
+  group :verbose do
+    fields [
+      :name,
+      :prefLabel,
+      :altLabel,
+      :dateOfBirth,
+      :dateOfDeath,
+      :biographicalInformation,
+      :sameAs,
+      :title
+    ]
+  end
+
+  # Concept
   model_field :name, field_options: { type: String }, search_as: [:fulltext], search_boost: 6, namespace: :foaf
   model_field :prefLabel, field_options: { type: String }, namespace: :skos
   model_field :altLabel, field_options: { type: Array }, search_as: [:fulltext], search_boost: 2, namespace: :skos
@@ -43,10 +64,20 @@ class ConceptSchema
   model_field :dateOfDeath, field_options: { type: Date }, namespace: :rdaGr2
   model_field :biographicalInformation, field_options: { type: String }, search_as: [:fulltext], search_boost: 1,  namespace: :rdaGr2
   model_field :sameAs, field_options: { type: Array }, namespace: :owl
-  
+
   # Use store: false to display the fields in the /schema
   model_field :title, store: false, namespace: :dc
   model_field :date, store: false, namespace: :dc
   model_field :description, store: false, namespace: :dc
   model_field :agents, store: false, namespace: :edm
+  model_field :source_authority do
+    search_as [:filter]
+    store false
+    type :string
+    multi_value true
+    namespace :foaf
+    search_value do |concept|
+      concept.source_authorities.map(&:internal_identifier)
+    end
+  end
 end

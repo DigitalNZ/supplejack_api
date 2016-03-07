@@ -17,12 +17,12 @@ module SupplejackApi
       attributes.delete_if {|k, v| concept_fields.include?(k.to_s) }
 
       @concept = FactoryGirl.build(:concept, concept_attributes)
-      @concept.id = "http://localhost/concepts/#{@concept.concept_id}" 
+      @concept.id = "http://localhost/concepts/#{@concept.concept_id}"
       @serializer = ConceptSerializer.new(@concept, options)
     end
 
     describe '#include_context_fields!' do
-      before { 
+      before {
         @hash = {'@context' => {}, name: 'McCahon'}
       }
 
@@ -52,7 +52,10 @@ module SupplejackApi
               },
               :agents => {
                 '@id'=>'edm:agents'
-              }
+              },
+              :source_authority=> {
+                '@id' => 'foaf:source_authority'
+              },
           },
           :name => 'McCahon'
         }

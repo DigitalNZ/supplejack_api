@@ -55,7 +55,10 @@ module SupplejackApi
       end
 
       def update_or_create_all_facet(search_counts, get_counts, user_set_counts)
-        all_metric_entry = SupplejackApi::UsageMetrics.find_or_create_by(record_field_value: 'all') do |entry|
+        all_metric_entry = SupplejackApi::UsageMetrics.find_or_create_by(
+          record_field_value: 'all', 
+          date: Date.current
+        ) do |entry|
           entry.record_field_value = 'all'
           entry.date = Date.current
         end

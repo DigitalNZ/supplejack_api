@@ -14,6 +14,10 @@ module SupplejackApi
       render_response(:facets)
     end
 
+    def global
+      render_response(:global)
+    end
+
     private
 
     def render_response(endpoint)

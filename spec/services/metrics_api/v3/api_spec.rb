@@ -1,3 +1,5 @@
+require 'spec_helper'
+
 module MetricsApi
   module V3
     describe Api do

@@ -9,11 +9,11 @@ module SupplejackApi
   FactoryGirl.define do
     factory :usage_metrics, class: SupplejackApi::UsageMetrics do
 			record_field_value         "Voyager 1"
-			searches                   10
-			gets                       8
-			user_set_views             2
-			total_views                20
-      records_added_to_user_sets 0
+			searches                   1
+			gets                       1
+			user_set_views             1
+			total_views                1
+      records_added_to_user_sets 1
       date                       Date.current
     end
   end

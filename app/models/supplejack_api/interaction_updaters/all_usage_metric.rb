@@ -6,7 +6,9 @@ module SupplejackApi
       attr_reader :model
 
       def initialize
-        @model = OpenStruct.new(all: [])
+        # Slightly nonstandard model, so mock ActiveRecord interactions 
+        # that the InteractionMetricsWorker performs
+        @model = OpenStruct.new(all: OpenStruct.new(delete_all: true))
       end
 
       def process(*)

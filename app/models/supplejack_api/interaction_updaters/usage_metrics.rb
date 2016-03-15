@@ -19,8 +19,6 @@ module SupplejackApi
           process_facet(facet, search_counts, get_counts, user_set_counts)
         end
 
-        update_or_create_all_facet(search_counts, get_counts, user_set_counts)
-
         true
       end
 
@@ -52,27 +50,6 @@ module SupplejackApi
           user_set_views: user_set_views,
           total_views: total
         )
-      end
-
-      def update_or_create_all_facet(search_counts, get_counts, user_set_counts)
-        all_metric_entry = SupplejackApi::UsageMetrics.find_or_create_by(
-          record_field_value: 'all', 
-          date: Date.current
-        ) do |entry|
-          entry.record_field_value = 'all'
-          entry.date = Date.current
-        end
-
-        search_counts = search_counts.values.sum
-        get_counts = get_counts.values.sum
-        user_set_counts = user_set_counts.values.sum
-
-        all_metric_entry.searches += search_counts
-        all_metric_entry.gets += get_counts
-        all_metric_entry.user_set_views += user_set_counts
-        all_metric_entry.total_views += search_counts + get_counts + user_set_counts
-
-        all_metric_entry.save
       end
 
       def build_hash_for(record_interactions, request_type)

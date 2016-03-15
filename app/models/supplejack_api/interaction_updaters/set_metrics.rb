@@ -19,19 +19,10 @@ module SupplejackApi
             um.date = Date.current
             um.record_field_value = facet
           end
-          all_metric = SupplejackApi::UsageMetrics.find_or_create_by(
-            date: Date.current,
-            record_field_value: 'all'
-          ) do |um|
-            um.date = Date.current
-            um.record_field_value = 'all'
-          end
 
           records_added = set_interactions.count{|x| x.facet == facet} 
-          [all_metric, metric].each do |m|
-            m.records_added_to_user_sets += records_added
-            m.save!
-          end
+          metric.records_added_to_user_sets += records_added
+          metric.save!
         end
 
         true

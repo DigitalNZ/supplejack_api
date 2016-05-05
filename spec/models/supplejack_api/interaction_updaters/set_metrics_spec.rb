@@ -20,12 +20,6 @@ module SupplejackApi
         expect(metric.records_added_to_user_sets).to eq(2)
       end
 
-      it 'creates a UsageMetrics model for all unique facets' do
-        updater.process(@set_interactions)
-
-        expect(SupplejackApi::UsageMetrics.count).to eq(2)
-      end
-
       it 'updates an existing UsageMetrics model if one exists' do
         create(:usage_metrics, record_field_value: 'test1', records_added_to_user_sets: 2, date: Date.current)
         updater.process(@set_interactions)

@@ -20,7 +20,8 @@ module SupplejackApi
             um.record_field_value = facet
           end
 
-          metric.records_added_to_user_sets += set_interactions.count{|x| x.facet == facet}
+          records_added = set_interactions.count{|x| x.facet == facet} 
+          metric.records_added_to_user_sets += records_added
           metric.save!
         end
 

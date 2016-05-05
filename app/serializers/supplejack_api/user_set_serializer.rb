@@ -8,7 +8,7 @@
 module SupplejackApi
   class UserSetSerializer < ActiveModel::Serializer
 
-    attributes :name, :count, :priority, :featured, :approved, :created_at, :updated_at
+    attributes :name, :count, :priority, :featured, :approved, :created_at, :updated_at, :tags
     has_one :record, serializer: UserSetRecordSerializer
     root :set
 

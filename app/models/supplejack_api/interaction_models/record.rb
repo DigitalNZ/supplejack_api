@@ -16,7 +16,6 @@ module SupplejackApi
       field :request_type, type: String
       field :log_values,   type: Array
 
-      # Remove from the client what sets the request_logger field
       @field = :display_collection
 
       def self.create_search(object)
@@ -40,7 +39,7 @@ module SupplejackApi
           object.set_items.each do |item|
             record = SupplejackApi::Record.custom_find(item.record_id)
             if record
-              result = record.send(field.to_sym)
+              result = record.send(@field)
               results << result if result
             end
           end

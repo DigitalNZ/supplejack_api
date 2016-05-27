@@ -1,8 +1,8 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
@@ -19,15 +19,15 @@ module SupplejackApi
       @search.scope = current_user
 
       begin
-        if @search.valid?          
+        if @search.valid?
           respond_with @search, serializer: RecordSearchSerializer
         else
           render request.format.to_sym => { errors: @search.errors }, status: :bad_request
         end
       rescue RSolr::Error::Http => e
-        render request.format.to_sym => { errors: solr_error_message(e) }, status: :bad_request 
+        render request.format.to_sym => { errors: solr_error_message(e) }, status: :bad_request
       rescue Sunspot::UnrecognizedFieldError => e
-        render request.format.to_sym => { errors: e.to_s }, status: :bad_request 
+        render request.format.to_sym => { errors: e.to_s }, status: :bad_request
       end
     end
 

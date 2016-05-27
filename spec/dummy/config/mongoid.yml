@@ -22,7 +22,7 @@ test:
     default:
       database: supplejack_api_test
       hosts:
-        - <%= ENV['MONGOID_HOSTS'].gsub(/\s+/, "").split(',') %>
+        - 127.0.0.1:27017
         - db:27017
       options:
         read: :nearest
@@ -30,7 +30,7 @@ test:
     strong:
       database: supplejack_api_test
       hosts:
-        - <%= ENV['MONGOID_HOSTS'].gsub(/\s+/, "").split(',') %>
+        - 127.0.0.1:27017
         - db:27017
       options:
         read: :nearest

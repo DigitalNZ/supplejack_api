@@ -26,6 +26,7 @@ module SupplejackApi
       end
 
       def self.create_find(object)
+        return if object.nil?
         result = object.send(@field)
         result = [result] unless result.is_a? Array
         self.create(request_type: "get", log_values: result) unless result.empty?

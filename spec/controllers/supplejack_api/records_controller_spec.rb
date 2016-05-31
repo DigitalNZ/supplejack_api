@@ -99,7 +99,7 @@ module SupplejackApi
         allow(controller).to receive(:current_user) { @user }
         allow(RecordSchema).to receive(:roles) { {developer: developer_restriction} }
       end
-      
+
       it 'should find multiple records and assign them' do
         @records = [create(:record), create(:record)]
         allow(Record).to receive(:find_multiple) { @records }
@@ -140,5 +140,4 @@ module SupplejackApi
       end
     end
   end
-
 end

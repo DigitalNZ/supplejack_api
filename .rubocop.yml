@@ -8,7 +8,8 @@ AllCops:
     - 'script/**/*'
     - 'features/**/*'
     - 'lib/generators/**/*'
-  RunRailsCops: true
+  Rails:
+    Enabled: true
   DisplayStyleGuide: true
   # prevent bug caused by https://github.com/bbatsov/rubocop/issues/2213 on travis
   # TODO remove

@@ -34,6 +34,9 @@ module SupplejackApi
         Rails.logger.warn "[RecordInteraction] Field #{field} does not exist"
       end
 
+      # Creates one Interaction Model that contains set items in a set
+      #
+      # @param object [SupplejackApi::UserSet]
       def self.create_user_set(object)
         results = []
         unless object.set_items.empty?

@@ -29,7 +29,7 @@ module SupplejackApi
         attributes[:status] ||= "active"
 
         self.class.fields.each do |name, field|
-          if attributes.has_key?(name.to_sym)
+          if attributes.key?(name.to_sym)
             value = Array(attributes[name.to_sym]).first
             self.send("#{name}=", value)
           end

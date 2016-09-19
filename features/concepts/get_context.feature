@@ -18,6 +18,9 @@ Feature: Get Context
       {
         "foaf": "http://xmlns.com/foaf/0.1/",
         "skos": "http://www.w3.org/2004/02/skos/core#",
+        "source_authority": {
+          "@id": "foaf:source_authority"
+        },
         "rdaGr2": "http://rdvocab.info/ElementsGr2/",
         "owl": "http://www.w3.org/2002/07/owl#",
         "dc": "http://purl.org/dc/elements/1.1/",

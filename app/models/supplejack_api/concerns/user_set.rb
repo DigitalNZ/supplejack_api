@@ -99,7 +99,7 @@ module SupplejackApi::Concerns::UserSet
         end
       end
 
-      if new_attributes.has_key?(:featured)
+      if new_attributes.key?(:featured)
         featured_value = new_attributes.delete(:featured)
         if user.try(:can_change_featured_sets?)
           self.featured = featured_value
@@ -213,6 +213,6 @@ module SupplejackApi::Concerns::UserSet
       end
     end
 
-    class WrongRecordsFormat < Exception; end
+    class WrongRecordsFormat < RuntimeError; end
   end
 end

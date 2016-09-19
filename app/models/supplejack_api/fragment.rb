@@ -53,7 +53,7 @@ module SupplejackApi
       mutable_fields = self.class.mutable_fields.dup
       mutable_fields.delete("priority") if self.primary?
       self.raw_attributes.each do |name, value|
-        self[name] = nil if mutable_fields.has_key?(name)
+        self[name] = nil if mutable_fields.key?(name)
       end
     end
 

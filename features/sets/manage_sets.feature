@@ -23,7 +23,10 @@ Feature: Manage sets
       "set": {
         "name": "Dogs and cats",
         "description": "Ugly dogs and cats",
-        "privacy": "hidden"
+        "privacy": "hidden",
+        "records": [{
+          "record_id": 55
+        }]
       }
     }
     """
@@ -32,7 +35,7 @@ Feature: Manage sets
       | name        | Dogs and cats       |
       | description | Ugly dogs and cats  |
       | privacy     | hidden              |
-      | count       | 0                   |
+      | count       | 1                   |
 
   Scenario: Update a set
     Given I have a set with name "Dogs and cats"

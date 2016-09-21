@@ -1,8 +1,8 @@
+# frozen_string_literal: true
 module MetricsApi
   module V3
     module Presenters
       class Record
-
         def initialize(faceted_metrics)
           @m = faceted_metrics
         end
@@ -18,7 +18,7 @@ module MetricsApi
         end
 
         def self.to_proc
-          ->(metric){self.new(metric).to_json}
+          ->(metric) { new(metric).to_json }
         end
       end
     end

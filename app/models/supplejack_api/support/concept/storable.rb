@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -11,9 +12,9 @@ module SupplejackApi
       module Storable
         extend ActiveSupport::Concern
 
-      	included do
+        included do
           include Mongoid::Document
-      		include Mongoid::Timestamps
+          include Mongoid::Timestamps
           include Mongoid::Attributes::Dynamic
 
           store_in collection: 'concepts'
@@ -25,7 +26,7 @@ module SupplejackApi
           field           :concept_type,         type: String
           auto_increment  :concept_id
 
-          index({ concept_id: 1 }, { unique: true })
+          index({ concept_id: 1 }, unique: true)
 
           ConceptSchema.model_fields.each do |name, option|
             next if option.store == false
@@ -37,7 +38,7 @@ module SupplejackApi
 
           def records
             # Limit the number of records by 50
-            SupplejackApi::Record.where(concept_ids: self.id).limit(50).to_a
+            SupplejackApi::Record.where(concept_ids: id).limit(50).to_a
           end
         end # included
 
@@ -46,13 +47,12 @@ module SupplejackApi
         end
 
         def site_id
-          [ENV['CONCEPT_HTTP_HOST'], 'concepts', self.concept_id].join('/')
+          [ENV['CONCEPT_HTTP_HOST'], 'concepts', concept_id].join('/')
         end
 
         def context
           [ENV['HTTP_HOST'], 'schema'].join('/')
         end
-
       end # module
     end
   end

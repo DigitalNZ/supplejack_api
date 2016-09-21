@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -9,7 +10,7 @@ module SupplejackApi
   class RecordsController < ApplicationController
     include SupplejackApi::Concerns::RecordsControllerMetrics
 
-    skip_before_action :authenticate_user!, :only => [:source, :status]
+    skip_before_action :authenticate_user!, only: [:source, :status]
     before_action :set_concept_param, only: :index
     respond_to :json, :xml, :rss
 
@@ -36,12 +37,10 @@ module SupplejackApi
     end
 
     def show
-      begin
-        @record = SupplejackApi::Record.custom_find(params[:id], current_user, params[:search])
-        respond_with @record, serializer: RecordSerializer
-      rescue Mongoid::Errors::DocumentNotFound
-        render request.format.to_sym => { errors: "Record with ID #{params[:id]} was not found" }, status: :not_found
-      end
+      @record = SupplejackApi::Record.custom_find(params[:id], current_user, params[:search])
+      respond_with @record, serializer: RecordSerializer
+    rescue Mongoid::Errors::DocumentNotFound
+      render request.format.to_sym => { errors: "Record with ID #{params[:id]} was not found" }, status: :not_found
     end
 
     def multiple
@@ -55,8 +54,8 @@ module SupplejackApi
     def default_serializer_options
       default_options = {}
       @search ||= SupplejackApi::RecordSearch.new(params)
-      default_options.merge!({:fields => @search.field_list}) if @search.field_list.present?
-      default_options.merge!({:groups => @search.group_list}) if @search.group_list.present?
+      default_options[:fields] = @search.field_list if @search.field_list.present?
+      default_options[:groups] = @search.group_list if @search.group_list.present?
       default_options
     end
 

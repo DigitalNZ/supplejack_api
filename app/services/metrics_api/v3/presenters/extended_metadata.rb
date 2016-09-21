@@ -1,8 +1,9 @@
+# frozen_string_literal: true
 module MetricsApi
   module V3
     module Presenters
       class ExtendedMetadata
-        PRESENTERS_BASE = "MetricsApi::V3::Presenters::"
+        PRESENTERS_BASE = 'MetricsApi::V3::Presenters::'
 
         attr_reader :metrics, :start_date, :end_date
 
@@ -14,25 +15,25 @@ module MetricsApi
 
         def to_json
           (start_date..end_date).map do |date|
-            base = {date: date}
-            
+            base = { date: date }
+
             todays_metrics = metrics.map do |metric|
-              relavent_models = metric[:models].select{|key| key == date}.values.first
+              relavent_models = metric[:models].select { |key| key == date }.values.first
               presenter = (PRESENTERS_BASE + metric[:metric].camelize).constantize
 
-              next {metric[:metric] => []} unless relavent_models.present?
+              next { metric[:metric] => [] } unless relavent_models.present?
 
-              {metric[:metric] => relavent_models.map(&presenter)}
+              { metric[:metric] => relavent_models.map(&presenter) }
             end
 
-            todays_metrics.each{|x| base.merge!(x)}
+            todays_metrics.each { |x| base.merge!(x) }
 
             base
           end
         end
 
         def self.to_proc
-          ->(models){self.new(models).to_json}
+          ->(models) { new(models).to_json }
         end
       end
     end

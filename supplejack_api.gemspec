@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -5,7 +6,7 @@
 # Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
-$:.push File.expand_path('../lib', __FILE__)
+$LOAD_PATH.push File.expand_path('../lib', __FILE__)
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
@@ -18,7 +19,7 @@ Gem::Specification.new do |s|
   s.description = 'Supplejack API'
   s.license     = 'MIT'
 
-  s.files = Dir["{app,config,db,lib}/**/*"] + ['Rakefile', 'README.md']
+  s.files = Dir['{app,config,db,lib}/**/*'] + ['Rakefile', 'README.md']
   s.test_files = Dir['spec/**/*']
 
   s.add_dependency 'rails', '~> 4.1.0'
@@ -41,7 +42,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'figaro', '~> 0.7.0'
   s.add_dependency 'jquery-rails', '~> 3.1.0'
   s.add_dependency 'sass-rails', '~> 4.0.3'
-  s.add_dependency 'coffee-rails','~> 4.0.0'
+  s.add_dependency 'coffee-rails', '~> 4.0.0'
   s.add_dependency 'uglifier', '~> 2.5.0'
   s.add_dependency 'therubyracer', '~> 0.12.0'
   s.add_dependency 'compass-rails', '~> 1.0.3'

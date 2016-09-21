@@ -1,8 +1,8 @@
+# frozen_string_literal: true
 module MetricsApi
   module V3
     module Presenters
       class DailyMetric
-
         def initialize(daily_metric)
           @dm = daily_metric
         end
@@ -15,7 +15,7 @@ module MetricsApi
         end
 
         def self.to_proc
-          ->(metric){self.new(metric).to_json}
+          ->(metric) { new(metric).to_json }
         end
       end
     end

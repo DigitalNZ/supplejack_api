@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -7,18 +8,17 @@
 
 module SupplejackApi
   class UserSetSerializer < ActiveModel::Serializer
-
     attributes :name, :count, :priority, :featured, :approved, :created_at, :updated_at, :tags
     has_one :record, serializer: UserSetRecordSerializer
     root :set
 
     def serializable_hash
-      hash = { id: object.id.to_s}
+      hash = { id: object.id.to_s }
       hash.merge! attributes
 
       options.reverse_merge!(items: true)
 
-      include!(:record, :node => hash)
+      include!(:record, node: hash)
 
       if options[:items]
         hash[:description] = object.description
@@ -31,9 +31,7 @@ module SupplejackApi
         hash[:records] = simple_records
       end
 
-      if options[:user]
-        hash[:user] = user
-      end
+      hash[:user] = user if options[:user]
 
       hash
     end
@@ -43,10 +41,10 @@ module SupplejackApi
     #
     # The values to be added from the record are stored in SetItem::ATTRIBUTES
     #
-    def records(amount=nil)
+    def records(amount = nil)
       attributes = [:record_id, :position] + SetItem::ATTRIBUTES
       object.items_with_records(amount).map do |item|
-        Hash[attributes.map {|attr| [attr, item.send(attr)]}]
+        Hash[attributes.map { |attr| [attr, item.send(attr)] }]
       end
     end
 
@@ -54,7 +52,7 @@ module SupplejackApi
     #
     def simple_records
       object.set_items.map do |item|
-        {record_id: item.record_id, position: item.position}
+        { record_id: item.record_id, position: item.position }
       end
     end
 
@@ -66,7 +64,7 @@ module SupplejackApi
     # to make requests on the user's behalf.
     #
     def user
-      hash = {name: object.user.try(:name)}
+      hash = { name: object.user.try(:name) }
 
       admin = options[:user]
       if admin && admin.respond_to?(:admin?) && admin.try(:admin?)
@@ -76,5 +74,4 @@ module SupplejackApi
       hash
     end
   end
-
 end

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module MetricsApi
   module V3
     module Endpoints
@@ -10,13 +11,13 @@ module MetricsApi
         METRICS_TO_MODEL = {
           'record' => SupplejackApi::FacetedMetrics,
           'view' => SupplejackApi::UsageMetrics
-        }
+        }.freeze
         # Mapping of metrics to the field on it's respective model that contains
         # the value to filter against
         METRIC_TO_MODEL_KEY = {
           'record' => :name,
           'view' => :record_field_value
-        }
+        }.freeze
         # Facet limit to return in response
         MAX_FACETS = 10
 
@@ -24,7 +25,7 @@ module MetricsApi
           @facets = parse_csv_param(params[:facets])
           @start_date = parse_date_param(params[:start_date]) || Date.yesterday
           @end_date = parse_date_param(params[:end_date]) || Date.yesterday
-          @metrics = parse_csv_param(params[:metrics]) || ['record', 'view']
+          @metrics = parse_csv_param(params[:metrics]) || %w(record view)
         end
 
         def call
@@ -60,7 +61,7 @@ module MetricsApi
 
           models_in_range = model.created_between(start_date, end_date).to_a
 
-          {metric: metric, models: models_in_range.flatten}
+          { metric: metric, models: models_in_range.flatten }
         end
 
         def filter_model_bundle(model_bundle)
@@ -71,14 +72,14 @@ module MetricsApi
             facets.include? model.send(key)
           end
 
-          {metric: metric, models: models_to_keep}
+          { metric: metric, models: models_to_keep }
         end
 
         def group_models_in_bundle_by_date(model_bundle)
           metric = model_bundle[:metric]
           models = model_bundle[:models]
 
-          {metric: metric, models: models.group_by{|m| m.date.to_date}}
+          { metric: metric, models: models.group_by { |m| m.date.to_date } }
         end
 
         # Converts csv formatted parameter to an array

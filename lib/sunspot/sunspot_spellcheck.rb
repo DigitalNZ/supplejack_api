@@ -1,8 +1,9 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# frozen_string_literal: true
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module Sunspot
@@ -17,9 +18,9 @@ module Sunspot
       def to_params
         options = {}
         @options.each do |key, val|
-          options["spellcheck." + Sunspot::Util.method_case(key)] = val
+          options['spellcheck.' + Sunspot::Util.method_case(key)] = val
         end
-        { :spellcheck => true }.merge(options)
+        { spellcheck: true }.merge(options)
       end
     end
   end
@@ -28,7 +29,7 @@ end
 module Sunspot
   module Query
     class CommonQuery
-      def spellcheck options = {}
+      def spellcheck(options = {})
         @components << Spellcheck.new(options)
       end
     end
@@ -41,11 +42,11 @@ module Sunspot
       attr_accessor :solr_result
 
       def raw_suggestions
-        ["spellcheck", "suggestions"].inject(@solr_result){|h,k| h && h[k]}
+        %w(spellcheck suggestions).inject(@solr_result) { |h, k| h && h[k] }
       end
 
       def suggestions
-        suggestions = ["spellcheck", "suggestions"].inject(@solr_result){|h,k| h && h[k]}
+        suggestions = %w(spellcheck suggestions).inject(@solr_result) { |h, k| h && h[k] }
         return nil unless suggestions.is_a?(Array)
 
         suggestions_hash = {}
@@ -54,17 +55,17 @@ module Sunspot
           index += 1
           next unless sug.is_a?(String)
           break unless suggestions.count > index + 1
-          suggestions_hash[sug] = suggestions[index+1].try(:[], "suggestion") || suggestions[index+1]
+          suggestions_hash[sug] = suggestions[index + 1].try(:[], 'suggestion') || suggestions[index + 1]
         end
         suggestions_hash
       end
 
       def all_suggestions
-        suggestions.inject([]){|all, current| all += current}
+        suggestions.inject([]) { |all, current| all += current }
       end
 
       def collation
-        suggestions.try(:[], "collation")
+        suggestions.try(:[], 'collation')
       end
     end
   end
@@ -73,7 +74,7 @@ end
 module Sunspot
   module DSL
     class StandardQuery
-      def spellcheck options = {}
+      def spellcheck(options = {})
         @query.spellcheck(options)
       end
     end
@@ -86,7 +87,11 @@ module Sunspot
       def method_case(string_or_symbol)
         string = string_or_symbol.to_s
         first = true
-        string.split('_').map! { |word| word = first ? word : word.capitalize; first = false; word }.join
+        string.split('_').map! do |word|
+          word = first ? word : word.capitalize
+          first = false
+          word
+        end.join
       end
     end
   end

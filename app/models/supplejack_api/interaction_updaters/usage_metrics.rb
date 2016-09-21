@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module SupplejackApi
   module InteractionUpdaters
     class UsageMetrics
@@ -8,9 +9,9 @@ module SupplejackApi
       end
 
       def process(record_interactions)
-        search_counts = build_hash_for(record_interactions, "search")
-        get_counts = build_hash_for(record_interactions, "get")
-        user_set_counts = build_hash_for(record_interactions, "user_set")
+        search_counts = build_hash_for(record_interactions, 'search')
+        get_counts = build_hash_for(record_interactions, 'get')
+        user_set_counts = build_hash_for(record_interactions, 'user_set')
 
         unique_facets = (search_counts.keys + get_counts.keys + user_set_counts.keys).uniq
 
@@ -26,8 +27,8 @@ module SupplejackApi
 
       def process_facet(facet, search_counts, get_counts, user_set_counts)
         usage_metric_entry = SupplejackApi::UsageMetrics.find_or_create_by(
-          :date => Date.current, 
-          :record_field_value => facet
+          date: Date.current,
+          record_field_value: facet
         ) do |metric|
           metric.date = Date.current
           metric.record_field_value = facet
@@ -53,7 +54,7 @@ module SupplejackApi
       end
 
       def build_hash_for(record_interactions, request_type)
-        filtered_record_interactions = record_interactions.select{|rl| rl.request_type == request_type}
+        filtered_record_interactions = record_interactions.select { |rl| rl.request_type == request_type }
         counts_by_facet = {}
 
         filtered_record_interactions.each do |rl|

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -5,6 +6,8 @@
 # Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
+# TODO: Remove custom_search stuff to slim the class?
+# rubocop:disable Metrics/ClassLength
 module SupplejackApi
   class User
     include Mongoid::Document
@@ -40,7 +43,7 @@ module SupplejackApi
 
     field :daily_requests,    type: Integer,  default: 0
     field :monthly_requests,  type: Integer,  default: 0
-    field :max_requests,      type: Integer,  default: 10000
+    field :max_requests,      type: Integer,  default: 10_000
     field :role,              type: String,   default: 'developer'
 
     field :daily_activity,        type: Hash
@@ -51,23 +54,23 @@ module SupplejackApi
 
     scope :with_daily_activity, -> { where(daily_activity_stored: false) }
 
-    alias_method :api_key, :authentication_token
+    alias api_key authentication_token
 
     before_save :ensure_authentication_token
 
     has_many :user_sets, dependent: :destroy, autosave: true, class_name: 'SupplejackApi::UserSet' do
       def custom_find(id)
-        if BSON::ObjectId.legal?(id.to_s)
-          user_set = find(id) rescue nil
-        else
-          user_set = where(url: id).first
-        end
+        user_set = if BSON::ObjectId.legal?(id.to_s)
+                     find(id) rescue nil
+                   else
+                     where(url: id).first
+                   end
       end
     end
 
     def sets=(attrs_array)
       return false unless attrs_array.try(:any?)
-      attrs_array.each {|attrs| self.user_sets.build(attrs)}
+      attrs_array.each { |attrs| user_sets.build(attrs) }
     end
 
     def name
@@ -76,7 +79,7 @@ module SupplejackApi
     end
 
     def updated_today?
-      self.updated_at > Time.now.beginning_of_day
+      updated_at > Time.now.beginning_of_day
     end
 
     def check_daily_requests
@@ -86,10 +89,10 @@ module SupplejackApi
         self.daily_requests = 1
       end
 
-      if self.daily_requests == (self.max_requests * 0.9).floor
+      if daily_requests == (max_requests * 0.9).floor
         SupplejackApi::RequestLimitMailer.at90percent(self).deliver
         SupplejackApi::RequestLimitMailer.at90percent_admin(self).deliver
-      elsif self.daily_requests == self.max_requests
+      elsif daily_requests == max_requests
         SupplejackApi::RequestLimitMailer.at100percent(self).deliver
         SupplejackApi::RequestLimitMailer.at100percent_admin(self).deliver
       end
@@ -101,11 +104,13 @@ module SupplejackApi
     end
 
     def update_tracked_fields(request)
-      old_current, new_current = self.current_sign_in_at, Time.now.utc
+      old_current = current_sign_in_at
+      new_current = Time.now.utc
       self.last_sign_in_at     = old_current || new_current
       self.current_sign_in_at  = new_current
 
-      old_current, new_current = self.current_sign_in_ip, request.ip
+      old_current = current_sign_in_ip
+      new_current = request.ip
       self.last_sign_in_ip     = old_current || new_current
       self.current_sign_in_ip  = new_current
 
@@ -115,14 +120,16 @@ module SupplejackApi
 
     def update_daily_activity(request)
       # Get the controller name and strips out the `supplejack_api/` namespace
-      controller = request.params[:controller].to_s.gsub(/supplejack_api\//, '')
+      controller = request.params[:controller].to_s.gsub(%r{ supplejack_api/ }, '')
       action = request.params[:action].to_s
 
       if controller == 'records' && action == 'index'
-        controller, action = 'search', 'records'
+        controller = 'search'
+        action = 'records'
       # TODO: Custom Search is deprecated. Evaluate for removal
       elsif controller == 'custom_searches' && action == 'records'
-        controller, action = 'search', 'custom_search'
+        controller = 'search'
+        action = 'custom_search'
       elsif controller == 'set_items'
         controller = 'user_sets'
         action = "#{action}_item"
@@ -149,19 +156,19 @@ module SupplejackApi
 
     def calculate_last_30_days_requests
       count = 0
-      self.user_activities.gt(created_at: Time.now-30.days).each {|activity| count += activity.total.to_i}
+      user_activities.gt(created_at: Time.now - 30.days).each { |activity| count += activity.total.to_i }
       self.monthly_requests = count
     end
 
-    def requests_per_day(days=30)
+    def requests_per_day(days = 30)
       today = Time.zone.now.to_date
-      user_activities = self.user_activities.gt(created_at: today-days.days).asc(:created_at).to_a
+      user_activities = self.user_activities.gt(created_at: today - days.days).asc(:created_at).to_a
 
       requests = []
       date = today - days.days
       while date < today
-        date = date + 1.days
-        requests << (user_activities.find {|ua| ua.created_at.to_date == date}.try(:total) || 0)
+        date += 1.days
+        requests << (user_activities.find { |ua| ua.created_at.to_date == date }.try(:total) || 0)
       end
       requests
     end
@@ -183,11 +190,11 @@ module SupplejackApi
     end
 
     def self.custom_find(id)
-      if id.to_s.length == 24
-        user = self.find(id)
-      else
-        user = self.find_by_api_key(id)
-      end
+      user = if id.to_s.length == 24
+               find(id)
+             else
+               find_by_api_key(id)
+             end
 
       raise Mongoid::Errors::DocumentNotFound.new(self, id, id) unless user
       user
@@ -200,6 +207,5 @@ module SupplejackApi
     def can_change_featured_sets?
       admin?
     end
-
   end
 end

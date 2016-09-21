@@ -11,9 +11,8 @@ AllCops:
   Rails:
     Enabled: true
   DisplayStyleGuide: true
-  # prevent bug caused by https://github.com/bbatsov/rubocop/issues/2213 on travis
-  # TODO remove
-  UseCache: false
+  DisplayCopNames: true
+  TargetRubyVersion: 2.3
 Style/ExtraSpacing:
   Enabled: false
 Metrics/LineLength:
@@ -21,6 +20,16 @@ Metrics/LineLength:
 Metrics/MethodLength:
   Max: 25
 
+Style/IndentHash:
+  EnforcedStyle: consistent
+Style/IndentArray:
+  EnforcedStyle: consistent
+Style/RegexpLiteral:
+  EnforcedStyle: slashes
+# Currently broken due to a bug when autocorrecting
+# https://github.com/bbatsov/rubocop/issues/3510
+Style/SafeNavigation:
+  Enabled: false
 Style/RescueModifier:
   Description: 'Avoid using rescue in its modifier form.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-rescue-modifiers'

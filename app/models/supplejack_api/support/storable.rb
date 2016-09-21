@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -10,9 +11,9 @@ module SupplejackApi
     module Storable
       extend ActiveSupport::Concern
 
-    	included do
+      included do
         include Mongoid::Document
-    		include Mongoid::Timestamps
+        include Mongoid::Timestamps
         include Mongoid::Attributes::Dynamic
 
         # Both of these fields are required in SJ API Core
@@ -20,11 +21,11 @@ module SupplejackApi
         field :internal_identifier,         type: String
         field :status,                      type: String
         field :record_type,                 type: Integer,      default: 0
-        
+
         index status: 1
-        index({ internal_identifier: 1}, { unique: true, drop_dups: true })
+        index({ internal_identifier: 1 }, unique: true, drop_dups: true)
         index record_type: 1
-        index({ record_id: 1 }, { unique: true })
+        index({ record_id: 1 }, unique: true)
 
         def self.build_model_fields
           if RecordSchema.model_fields.present?

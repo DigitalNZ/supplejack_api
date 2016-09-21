@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module SupplejackApi::Concerns::RecordSerializable
   extend ActiveSupport::Concern
 
@@ -7,12 +8,12 @@ module SupplejackApi::Concerns::RecordSerializable
   RecordSchema.groups.keys.each do |group|
     define_method("#{group}?") do
       return false unless options[:groups].try(:any?)
-      self.options[:groups].include?(group)
+      options[:groups].include?(group)
     end
   end
 
-  def to_xml(*args)
-    serializable_hash.to_xml(root: "record")
+  def to_xml(*_args)
+    serializable_hash.to_xml(root: 'record')
   end
 
   def remove_restricted_fields!(hash)
@@ -20,24 +21,23 @@ module SupplejackApi::Concerns::RecordSerializable
       restrictions.each do |condition, restricted_fields|
         if field_restricted?(conditional_field, condition)
           remove_field_values(restricted_fields, hash)
-       end
-     end
-   end
+        end
+      end
+    end
   end
 
   # REFACTOR -- Used in concept_serializer.rb too
-  def field_value(field, options={})
-    value = nil
-    if RecordSchema.fields[field].try(:search_value) && RecordSchema.fields[field].try(:store) == false
-      value = RecordSchema.fields[field].search_value.call(object)
-    else
-      value = object.public_send(field)
-    end
+  def field_value(field, _options = {})
+    value = if RecordSchema.fields[field].try(:search_value) && RecordSchema.fields[field].try(:store) == false
+              RecordSchema.fields[field].search_value.call(object)
+            else
+              object.public_send(field)
+            end
 
     value = RecordSchema.fields[field].try(:default_value) if value.nil? rescue nil
 
     if RecordSchema.fields[field].try(:date_format)
-      value = format_date(value, RecordSchema.fields[field].try(:date_format)) 
+      value = format_date(value, RecordSchema.fields[field].try(:date_format))
     end
 
     value
@@ -62,12 +62,12 @@ module SupplejackApi::Concerns::RecordSerializable
   end
 
   def field_restricted?(conditional_field, condition)
-    field_values = self.field_value(conditional_field).to_a
+    field_values = field_value(conditional_field).to_a
     restricted = false
 
     field_values.each do |value|
       if (condition.is_a?(Regexp) && value.match(condition)) ||
-        (condition.is_a?(String) && value.include?(condition))
+         (condition.is_a?(String) && value.include?(condition))
         restricted = true
       end
       break if restricted
@@ -108,13 +108,12 @@ module SupplejackApi::Concerns::RecordSerializable
   end
 
   def include_individual_fields!(hash)
-    if self.options[:fields].present?
-      self.options[:fields].each do |field|
+    if options[:fields].present?
+      options[:fields].each do |field|
         hash[field] = record.send(field)
       end
     end
 
     hash
   end
-
 end

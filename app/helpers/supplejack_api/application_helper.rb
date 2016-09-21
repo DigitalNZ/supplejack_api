@@ -28,11 +28,12 @@ module SupplejackApi
     end
 
     def extract_sort_info
-      if params[:order].to_s =~ /^([\w\_\.]+)_(desc|asc)$/
-        @sort_column = Regexp.last_match(1)
-        @sort_direction = Regexp.last_match(2)
-        return [@sort_column, @sort_direction]
-      end
+      return unless params[:order].to_s =~ /^([\w\_\.]+)_(desc|asc)$/
+
+      @sort_column = Regexp.last_match(1)
+      @sort_direction = Regexp.last_match(2)
+
+      [@sort_column, @sort_direction]
     end
   end
 end

@@ -14,10 +14,10 @@ module SupplejackApi
       before_filter :restrict_to_admin_users!
 
       def restrict_to_admin_users!
-        unless current_admin_user.admin?
-          sign_out
-          redirect_to new_admin_user_session_path, alert: t('admin.not_a_admin')
-        end
+        return if current_admin_user.admin?
+
+        sign_out
+        redirect_to new_admin_user_session_path, alert: t('admin.not_a_admin')
       end
     end
   end

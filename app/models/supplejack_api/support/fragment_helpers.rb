@@ -24,15 +24,15 @@ module SupplejackApi
       end
 
       def validate_unique_source_ids
-        if duplicate_source_ids?
-          errors.add(:base, "fragment source_ids must be unique, source_ids: #{source_ids}")
-          klass_name = fragment_class.to_s.demodulize.gsub(/Fragment/, '')
-          klass_id = "#{klass_name.downcase}_id"
-          log_message = "#{klass_name} with #{klass_id}:#{send(klass_id)},"
-          log_message += " internal_identifier:#{internal_identifier} failed validation."
-          log_message += "  Fragment source_ids must be unique, source_ids: #{source_ids}"
-          ValidationLogger.logger.error(log_message)
-        end
+        return unless duplicate_source_ids?
+
+        errors.add(:base, "fragment source_ids must be unique, source_ids: #{source_ids}")
+        klass_name = fragment_class.to_s.demodulize.gsub(/Fragment/, '')
+        klass_id = "#{klass_name.downcase}_id"
+        log_message = "#{klass_name} with #{klass_id}:#{send(klass_id)},"
+        log_message += " internal_identifier:#{internal_identifier} failed validation."
+        log_message += "  Fragment source_ids must be unique, source_ids: #{source_ids}"
+        ValidationLogger.logger.error(log_message)
       end
 
       def primary_fragment(attributes = {})
@@ -47,30 +47,31 @@ module SupplejackApi
       def merge_fragments
         self.merged_fragment = nil
 
-        if fragments.size > 1
-          self.merged_fragment = fragment_class.new
+        return unless fragments.size > 1
 
-          fragment_class.mutable_fields.each do |name, field_type|
-            if field_type == Array
-              values = Set.new
-              sorted_fragments.each do |s|
-                values += Array(s.public_send(name))
-              end
-              merged_fragment.public_send("#{name}=", values.to_a)
-            else
-              values = sorted_fragments.to_a.map { |s| s.public_send(name) }
-              merged_fragment.public_send("#{name}=", values.compact.first)
+        self.merged_fragment = fragment_class.new
+
+        fragment_class.mutable_fields.each do |name, field_type|
+          if field_type == Array
+            values = Set.new
+            sorted_fragments.each do |s|
+              values += Array(s.public_send(name))
             end
+            merged_fragment.public_send("#{name}=", values.to_a)
+          else
+            values = sorted_fragments.to_a.map { |s| s.public_send(name) }
+            merged_fragment.public_send("#{name}=", values.compact.first)
           end
-
-          merged_fragment.unset(:priority)
         end
+
+        merged_fragment.unset(:priority)
       end
 
       # Fetch the attribute from the underlying
       # merged_fragment or only fragment.
       # Means that record.{attribute} (ie. record.name) works for convenience
       # and abstracts away the fact that fragments exist
+      # rubocop:disable Style/MethodMissing
       def method_missing(symbol, *_args)
         type = fragment_class.mutable_fields[symbol.to_s]
 
@@ -81,6 +82,7 @@ module SupplejackApi
         end
         type == Array ? Array(value) : value
       end
+      # rubocop:enable Style/MethodMissing
 
       def sorted_fragments
         fragments.sort_by { |s| s.priority || Integer::INT32_MAX }

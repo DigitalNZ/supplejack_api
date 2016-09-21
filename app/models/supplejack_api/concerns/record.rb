@@ -46,49 +46,49 @@ module SupplejackApi::Concerns::Record
     # rubocop:disable Metrics/MethodLength
     # FIXME: make me smaller!
     def find_next_and_previous_records(scope, options = {})
-      if options.try(:any?)
-        search = ::SupplejackApi::RecordSearch.new(options)
-        search.scope = scope
+      return unless options.try(:any?)
 
-        return nil unless search.valid?
+      search = ::SupplejackApi::RecordSearch.new(options)
+      search.scope = scope
 
-        # Find the index in the array for the current record
-        record_index = search.hits.find_index { |i| i.primary_key == id.to_s }
-        total_pages = (search.total.to_f / search.per_page).ceil
+      return nil unless search.valid?
 
-        self.next_page = search.page
-        self.previous_page = search.page
+      # Find the index in the array for the current record
+      record_index = search.hits.find_index { |i| i.primary_key == id.to_s }
+      total_pages = (search.total.to_f / search.per_page).ceil
 
-        if record_index
-          if record_index.zero?
-            unless search.page == 1
-              previous_page_search = ::SupplejackApi::RecordSearch.new(options.merge(page: search.page - 1))
-              previous_primary_key = previous_page_search.hits[-1].try(:primary_key)
-              self.previous_page = search.page - 1
-            end
-          else
-            previous_primary_key = search.hits[record_index - 1].try(:primary_key)
-          end
+      self.next_page = search.page
+      self.previous_page = search.page
 
-          if previous_primary_key.present?
-            self.previous_record = SupplejackApi::Record.find(previous_primary_key).try(:record_id) rescue nil
-          end
+      return unless record_index
 
-          if record_index == search.hits.size - 1
-            unless search.page >= total_pages
-              next_page_search = ::SupplejackApi::RecordSearch.new(options.merge(page: search.page + 1))
-              next_primary_key = next_page_search.hits[0].try(:primary_key)
-              self.next_page = search.page + 1
-            end
-          else
-            next_primary_key = search.hits[record_index + 1].try(:primary_key)
-          end
-
-          if next_primary_key.present?
-            self.next_record = ::SupplejackApi::Record.find(next_primary_key).try(:record_id) rescue nil
-          end
+      if record_index.zero?
+        unless search.page == 1
+          previous_page_search = ::SupplejackApi::RecordSearch.new(options.merge(page: search.page - 1))
+          previous_primary_key = previous_page_search.hits[-1].try(:primary_key)
+          self.previous_page = search.page - 1
         end
+      else
+        previous_primary_key = search.hits[record_index - 1].try(:primary_key)
       end
+
+      if previous_primary_key.present?
+        self.previous_record = SupplejackApi::Record.find(previous_primary_key).try(:record_id) rescue nil
+      end
+
+      if record_index == search.hits.size - 1
+        unless search.page >= total_pages
+          next_page_search = ::SupplejackApi::RecordSearch.new(options.merge(page: search.page + 1))
+          next_primary_key = next_page_search.hits[0].try(:primary_key)
+          self.next_page = search.page + 1
+        end
+      else
+        next_primary_key = search.hits[record_index + 1].try(:primary_key)
+      end
+
+      return unless next_primary_key.present?
+
+      self.next_record = ::SupplejackApi::Record.find(next_primary_key).try(:record_id) rescue nil
     end
     # rubocop:enable Metrics/MethodLength
 

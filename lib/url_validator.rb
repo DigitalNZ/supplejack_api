@@ -32,7 +32,7 @@ class UrlValidator < ActiveModel::EachValidator
     ip_host = '[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}'
     port = '(:\d{1,5})?'
 
-    regex = /^#{protocol}:\/\/((#{host})|(#{ip_host}))#{port}\/.*)?$/ix
+    regex = %r{ ^#{protocol}:\/\/((#{host})|(#{ip_host}))#{port}\/.*)?$ }ix
     !!value.match(regex)
   end
 end

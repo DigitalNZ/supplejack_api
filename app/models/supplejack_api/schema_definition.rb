@@ -128,10 +128,10 @@ module SupplejackApi
 
     class Group < SchemaObject
       def include_groups_from(existing_groups)
-        if @options[:includes].present?
-          included_fields = @options[:includes].collect { |g| existing_groups[g].fields }
-          @options[:fields] = included_fields.flatten | @options[:fields]
-        end
+        return unless @options[:includes].present?
+
+        included_fields = @options[:includes].collect { |g| existing_groups[g].fields }
+        @options[:fields] = included_fields.flatten | @options[:fields]
       end
     end
 

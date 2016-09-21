@@ -82,7 +82,6 @@ module SupplejackApi
     end
 
     def field_value(field)
-      value = nil
       value = if ConceptSchema.fields[field].try(:search_value) && ConceptSchema.fields[field].try(:store) == false
                 ConceptSchema.fields[field].search_value.call(object)
               else

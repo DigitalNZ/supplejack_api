@@ -89,7 +89,9 @@ module SupplejackApi
     end
 
     rescue_from UserSet::WrongRecordsFormat do |_exception|
-      render json: { errors: { records: ['The records array is not in a valid format.'] } }, status: :unprocessable_entity
+      render json: {
+        errors: { records: ['The records array is not in a valid format.'] }
+      }, status: :unprocessable_entity
     end
   end
 end

@@ -27,9 +27,9 @@ module SupplejackApi
     after_destroy :reindex_record
 
     def not_adding_set_to_itself
-      if user_set.record && record_id == user_set.record.record_id
-        errors.add(:set, 'can\'t be added to itself')
-      end
+      return unless user_set.record && record_id == user_set.record.record_id
+
+      errors.add(:set, "can't be added to itself")
     end
 
     # Dynamically define methods for the attributes that get added to the set_item from
@@ -44,10 +44,10 @@ module SupplejackApi
     # Set the default position as the last in the set, if not defined.
     #
     def set_position
-      unless position
-        positions = user_set.set_items.map(&:position)
-        self.position = positions.compact.max.to_i + 1
-      end
+      return if position
+
+      positions = user_set.set_items.map(&:position)
+      self.position = positions.compact.max.to_i + 1
     end
 
     def reindex_record

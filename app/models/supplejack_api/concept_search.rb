@@ -22,6 +22,7 @@ module SupplejackApi
         debug: nil
       )
     end
+
     # FIXME: make me smaller!
     def search_builder
       @search_builder ||= Sunspot.new_search(SupplejackApi::Concept) do

@@ -21,14 +21,13 @@ module SupplejackApi::Concerns::RecordSerializable
       restrictions.each do |condition, restricted_fields|
         if field_restricted?(conditional_field, condition)
           remove_field_values(restricted_fields, hash)
-       end
+        end
       end
     end
   end
 
   # REFACTOR -- Used in concept_serializer.rb too
   def field_value(field, _options = {})
-    value = nil
     value = if RecordSchema.fields[field].try(:search_value) && RecordSchema.fields[field].try(:store) == false
               RecordSchema.fields[field].search_value.call(object)
             else

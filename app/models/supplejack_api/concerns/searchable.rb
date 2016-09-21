@@ -62,6 +62,7 @@ module SupplejackApi::Concerns::Searchable
     end
 
     # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/AbcSize
     # FIXME: Make this method smaller, it's triple the max method length
     def search_builder
       search_model = self
@@ -144,6 +145,7 @@ module SupplejackApi::Concerns::Searchable
 
       @search_builder
     end
+    # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/MethodLength
 
     # Return an array of valid facets
@@ -324,10 +326,12 @@ module SupplejackApi::Concerns::Searchable
       }
     end
 
+    # rubocop:disable Style/MethodMissing
     def method_missing(symbol, *args)
       return nil unless solr_search_object.respond_to?(:hits)
       solr_search_object.send(symbol, *args)
     end
+    # rubocop:enable Style/MethodMissing
 
     def execute_solr_search
       search = search_builder

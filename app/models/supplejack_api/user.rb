@@ -6,6 +6,8 @@
 # Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
+# TODO: Remove custom_search stuff to slim the class?
+# rubocop:disable Metrics/ClassLength
 module SupplejackApi
   class User
     include Mongoid::Document
@@ -118,7 +120,7 @@ module SupplejackApi
 
     def update_daily_activity(request)
       # Get the controller name and strips out the `supplejack_api/` namespace
-      controller = request.params[:controller].to_s.gsub(/supplejack_api\//, '')
+      controller = request.params[:controller].to_s.gsub(%r{ supplejack_api/ }, '')
       action = request.params[:action].to_s
 
       if controller == 'records' && action == 'index'

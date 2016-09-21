@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module SupplejackApi::Concerns::UserSet
   extend ActiveSupport::Concern
 
@@ -25,8 +26,8 @@ module SupplejackApi::Concerns::UserSet
     field :featured,          type: Boolean,  default: false
     field :featured_at,       type: DateTime
 
-    scope :excluding_favorites, -> {where(:name.ne => 'Favorites')}
-    scope :publicly_viewable,              -> {where(privacy: 'public')}
+    scope :excluding_favorites, -> { where(:name.ne => 'Favorites') }
+    scope :publicly_viewable,              -> { where(privacy: 'public') }
 
     index 'set_items.record_id' => 1
     index featured: 1
@@ -34,7 +35,7 @@ module SupplejackApi::Concerns::UserSet
     attr_accessible :name, :description, :privacy, :priority, :tags, :tag_list, :records, :approved
 
     validates :name, presence: true
-    validates :privacy, inclusion: {in: ['public', 'hidden', 'private']}
+    validates :privacy, inclusion: { in: %w(public hidden private) }
 
     before_validation :set_default_privacy
     before_save :calculate_count
@@ -52,17 +53,17 @@ module SupplejackApi::Concerns::UserSet
     # Find a set based on the MongoDB ObjectID or the set url.
     #
     def self.custom_find(id)
-      if id.to_s.length == 24
-        user_set = find(id) rescue nil
-      else
-        user_set = where(url: id).first
-      end
+      user_set = if id.to_s.length == 24
+                   find(id) rescue nil
+                 else
+                   where(url: id).first
+                 end
     end
 
-    def self.public_sets(options={})
+    def self.public_sets(options = {})
       options.reverse_merge!(page: 1, per_page: 100)
       page = options[:page].to_i
-      page = page == 0 ? 1 : page
+      page = page.zero? ? 1 : page
       where(privacy: 'public', :name.ne => 'Favourites').desc(:created_at).page(page)
     end
 
@@ -70,7 +71,7 @@ module SupplejackApi::Concerns::UserSet
       where(privacy: 'public', :name.ne => 'Favourites').count
     end
 
-    def self.featured_sets(num=16)
+    def self.featured_sets(num = 16)
       sets = where(privacy: 'public', featured: true).desc(:featured_at).limit(num).to_a
       sets.delete_if { |s| s.records(1).try(:empty?) }
       sets
@@ -80,7 +81,7 @@ module SupplejackApi::Concerns::UserSet
     # of hashes with the set_items information and a optional "featured"
     # attribute which only the administrator is allowed to modify
     #
-    def update_attributes_and_embedded(new_attributes={}, user=nil)
+    def update_attributes_and_embedded(new_attributes = {}, user = nil)
       new_attributes = new_attributes.try(:symbolize_keys) || {}
 
       if set_items = new_attributes.delete(:records)
@@ -88,8 +89,8 @@ module SupplejackApi::Concerns::UserSet
           begin
             new_set_items = []
             set_items.each do |set_item_hash|
-              set_item = self.set_items.find_or_initialize_by(record_id: set_item_hash["record_id"])
-              set_item.position = set_item_hash["position"]
+              set_item = self.set_items.find_or_initialize_by(record_id: set_item_hash['record_id'])
+              set_item.position = set_item_hash['position']
               new_set_items << set_item if set_item.valid?
             end
             self.set_items = new_set_items
@@ -103,12 +104,12 @@ module SupplejackApi::Concerns::UserSet
         featured_value = new_attributes.delete(:featured)
         if user.try(:can_change_featured_sets?)
           self.featured = featured_value
-          self.featured_at = Time.now if self.featured_changed?
+          self.featured_at = Time.now if featured_changed?
         end
       end
 
       self.attributes = new_attributes
-      self.save
+      save
     end
 
     def calculate_count
@@ -120,46 +121,46 @@ module SupplejackApi::Concerns::UserSet
     end
 
     def record_status
-      self.privacy == 'public' && approved ? 'active' : 'suppressed'
-    end 
+      privacy == 'public' && approved ? 'active' : 'suppressed'
+    end
 
     # Remove HTML tags from the name, description and tags
     #
     def strip_html_tags
       [:name, :description].each do |attr|
-        self.send("#{attr}=", strip_tags(self[attr])) if self[attr].present?
+        send("#{attr}=", strip_tags(self[attr])) if self[attr].present?
       end
 
-      self.tags = self[:tags].map {|t| strip_tags(t) } if self.tags.try(:any?)
+      self.tags = self[:tags].map { |t| strip_tags(t) } if tags.try(:any?)
     end
 
     def update_record
-      if self.set_items.empty?
-        self.suppress_record
+      if set_items.empty?
+        suppress_record
         return nil
       end
 
-      self.record = SupplejackApi::Record.new if self.record.nil?
+      self.record = SupplejackApi::Record.new if record.nil?
 
-      self.record.status = record_status
-      self.record.internal_identifier = "user_set_#{id}"
+      record.status = record_status
+      record.internal_identifier = "user_set_#{id}"
 
-      primary_fragment = self.record.primary_fragment
+      primary_fragment = record.primary_fragment
 
-      self.record.save!
+      record.save!
     end
 
     def delete_record
-      if self.record
-        self.record.status = 'deleted' 
-        self.record.save!
+      if record
+        record.status = 'deleted'
+        record.save!
       end
     end
 
     def suppress_record
-      if self.record
-        self.record.status = 'suppressed' 
-        self.record.save!
+      if record
+        record.status = 'suppressed'
+        record.save!
       end
     end
 
@@ -169,11 +170,11 @@ module SupplejackApi::Concerns::UserSet
 
     # Return a array of actual Record objects
     #
-    def records(amount=nil)
+    def records(amount = nil)
       @records ||= begin
-        ids_to_fetch = self.record_ids || []
+        ids_to_fetch = record_ids || []
         records = SupplejackApi::Record.find_multiple(ids_to_fetch)
-        records = records[0..amount.to_i-1] if amount
+        records = records[0..amount.to_i - 1] if amount
         records
       end
     end
@@ -183,12 +184,12 @@ module SupplejackApi::Concerns::UserSet
     end
 
     def tag_list=(tags_string)
-      tags_string = tags_string.to_s.gsub(/[^A-Za-z0-9\p{Word} ,_-]/, "")
+      tags_string = tags_string.to_s.gsub(/[^A-Za-z0-9\p{Word} ,_-]/, '')
       self.tags = tags_string.to_s.split(',').map(&:strip).reject(&:blank?)
     end
 
     def tag_list
-      self.tags.join(", ") if self.tags.present?
+      tags.join(', ') if tags.present?
     end
 
     # Return a array of SetItem objects with the actual Record object attached through
@@ -196,11 +197,11 @@ module SupplejackApi::Concerns::UserSet
     #
     # The set items are sorted by position.
     #
-    def items_with_records(amount=nil)
+    def items_with_records(amount = nil)
       records = self.records(amount)
 
-      items_with_records = self.set_items.map do |set_item|
-        set_item.record = records.detect {|r| r.record_id == set_item.record_id}
+      items_with_records = set_items.map do |set_item|
+        set_item.record = records.detect { |r| r.record_id == set_item.record_id }
         set_item
       end
 

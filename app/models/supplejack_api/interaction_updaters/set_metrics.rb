@@ -1,7 +1,7 @@
+# frozen_string_literal: true
 module SupplejackApi
   module InteractionUpdaters
     class SetMetrics
-
       attr_reader :model
 
       def initialize
@@ -20,7 +20,7 @@ module SupplejackApi
             um.record_field_value = facet
           end
 
-          records_added = set_interactions.count{|x| x.facet == facet} 
+          records_added = set_interactions.count { |x| x.facet == facet }
           metric.records_added_to_user_sets += records_added
           metric.save!
         end

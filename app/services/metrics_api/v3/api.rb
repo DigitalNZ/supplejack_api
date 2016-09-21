@@ -1,12 +1,13 @@
+# frozen_string_literal: true
 module MetricsApi
   module V3
     # API entry point for V3 of the MetricsAPI
-    # 
-    # It takes in the request parameters and 
-    # generates the metrics JSON the API should 
+    #
+    # It takes in the request parameters and
+    # generates the metrics JSON the API should
     # respond with
     class Api
-      ENDPOINT_BASE = "MetricsApi::V3::Endpoints::"
+      ENDPOINT_BASE = 'MetricsApi::V3::Endpoints::'
 
       attr_reader :params, :endpoint
 

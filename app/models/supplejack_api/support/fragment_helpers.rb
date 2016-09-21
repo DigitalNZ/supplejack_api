@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -10,7 +11,7 @@ module SupplejackApi
     module FragmentHelpers
       extend ActiveSupport::Concern
 
-      included do 
+      included do
         validate :validate_unique_source_ids
       end
 
@@ -24,29 +25,29 @@ module SupplejackApi
 
       def validate_unique_source_ids
         if duplicate_source_ids?
-          self.errors.add(:base, "fragment source_ids must be unique, source_ids: #{source_ids}")
+          errors.add(:base, "fragment source_ids must be unique, source_ids: #{source_ids}")
           klass_name = fragment_class.to_s.demodulize.gsub(/Fragment/, '')
           klass_id = "#{klass_name.downcase}_id"
-          log_message = "#{klass_name} with #{klass_id}:#{self.send(klass_id)},"
-          log_message += " internal_identifier:#{self.internal_identifier} failed validation."
+          log_message = "#{klass_name} with #{klass_id}:#{send(klass_id)},"
+          log_message += " internal_identifier:#{internal_identifier} failed validation."
           log_message += "  Fragment source_ids must be unique, source_ids: #{source_ids}"
           ValidationLogger.logger.error(log_message)
         end
       end
 
-      def primary_fragment(attributes={})
-        primary = self.fragments.where(priority: 0).first
-        primary ? primary : self.fragments.build(attributes.merge(priority: 0))
+      def primary_fragment(attributes = {})
+        primary = fragments.where(priority: 0).first
+        primary ? primary : fragments.build(attributes.merge(priority: 0))
       end
 
-      def primary_fragment!(attributes={})
-        self.primary_fragment(attributes).tap {|s| s.save }
+      def primary_fragment!(attributes = {})
+        primary_fragment(attributes).tap(&:save)
       end
 
       def merge_fragments
         self.merged_fragment = nil
 
-        if self.fragments.size > 1
+        if fragments.size > 1
           self.merged_fragment = fragment_class.new
 
           fragment_class.mutable_fields.each do |name, field_type|
@@ -55,14 +56,14 @@ module SupplejackApi
               sorted_fragments.each do |s|
                 values += Array(s.public_send(name))
               end
-              self.merged_fragment.public_send("#{name}=", values.to_a)
+              merged_fragment.public_send("#{name}=", values.to_a)
             else
-              values = sorted_fragments.to_a.map {|s| s.public_send(name) }
-              self.merged_fragment.public_send("#{name}=", values.compact.first)
+              values = sorted_fragments.to_a.map { |s| s.public_send(name) }
+              merged_fragment.public_send("#{name}=", values.compact.first)
             end
           end
 
-          self.merged_fragment.unset(:priority)
+          merged_fragment.unset(:priority)
         end
       end
 
@@ -70,23 +71,23 @@ module SupplejackApi
       # merged_fragment or only fragment.
       # Means that record.{attribute} (ie. record.name) works for convenience
       # and abstracts away the fact that fragments exist
-      def method_missing(symbol, *args, &block)
+      def method_missing(symbol, *_args)
         type = fragment_class.mutable_fields[symbol.to_s]
 
-        if self.merged_fragment
-          value = self.merged_fragment.public_send(symbol)
-        elsif self.fragments.first
-          value = self.fragments.first.public_send(symbol)
+        if merged_fragment
+          value = merged_fragment.public_send(symbol)
+        elsif fragments.first
+          value = fragments.first.public_send(symbol)
         end
-        (type == Array) ? Array(value) : value
+        type == Array ? Array(value) : value
       end
 
       def sorted_fragments
-        self.fragments.sort_by {|s| s.priority || Integer::INT32_MAX }
+        fragments.sort_by { |s| s.priority || Integer::INT32_MAX }
       end
 
       def find_fragment(source_id)
-        self.fragments.where(source_id: source_id).first
+        fragments.where(source_id: source_id).first
       end
     end
   end

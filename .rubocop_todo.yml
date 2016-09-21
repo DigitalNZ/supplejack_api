@@ -14,65 +14,10 @@ Lint/AssignmentInCondition:
     - 'app/models/supplejack_api/support/harvestable.rb'
     - 'app/models/supplejack_api/user_activity.rb'
 
-# Offense count: 4
-# Cop supports --auto-correct.
-# Configuration parameters: AlignWith, SupportedStyles.
-# SupportedStyles: either, start_of_block, start_of_line
-Lint/BlockAlignment:
-  Exclude:
-    - 'app/models/supplejack_api/support/concept/storable.rb'
-    - 'app/models/supplejack_api/support/storable.rb'
-    - 'app/serializers/supplejack_api/concerns/record_serializable.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: AlignWith, SupportedStyles, AutoCorrect.
-# SupportedStyles: keyword, variable, start_of_line
-Lint/EndAlignment:
-  Enabled: false
-
 # Offense count: 1
 Lint/EnsureReturn:
   Exclude:
     - 'app/models/supplejack_api/concerns/searchable.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Lint/StringConversionInInterpolation:
-  Exclude:
-    - 'app/models/supplejack_api/concept.rb'
-
-# Offense count: 15
-# Cop supports --auto-correct.
-# Configuration parameters: AllowUnusedKeywordArguments.
-Lint/UnusedBlockArgument:
-  Exclude:
-    - 'app/controllers/supplejack_api/user_sets_controller.rb'
-    - 'app/models/supplejack_api/concept.rb'
-    - 'app/models/supplejack_api/concept_search.rb'
-    - 'app/models/supplejack_api/fragment.rb'
-    - 'app/models/supplejack_api/support/concept/searchable.rb'
-    - 'app/models/supplejack_api/support/harvestable.rb'
-    - 'app/models/supplejack_api/support/searchable.rb'
-    - 'app/models/supplejack_api/support/status_logger.rb'
-    - 'app/models/supplejack_api/support/validation_logger.rb'
-    - 'app/models/supplejack_api/user_activity.rb'
-    - 'app/serializers/supplejack_api/concept_serializer.rb'
-    - 'lib/mongoid/paperclip.rb'
-
-# Offense count: 12
-# Cop supports --auto-correct.
-# Configuration parameters: AllowUnusedKeywordArguments, IgnoreEmptyMethods.
-Lint/UnusedMethodArgument:
-  Exclude:
-    - 'app/controllers/supplejack_api/admin/sessions_controller.rb'
-    - 'app/models/supplejack_api/concerns/searchable.rb'
-    - 'app/models/supplejack_api/schema_definition.rb'
-    - 'app/models/supplejack_api/support/concept/searchable.rb'
-    - 'app/models/supplejack_api/support/fragment_helpers.rb'
-    - 'app/serializers/supplejack_api/concerns/record_serializable.rb'
-    - 'app/serializers/supplejack_api/record_search_serializer.rb'
-    - 'lib/sunspot/resque_session_proxy.rb'
 
 # Offense count: 14
 Lint/UselessAssignment:
@@ -113,85 +58,11 @@ Metrics/ModuleLength:
 Metrics/PerceivedComplexity:
   Max: 14
 
-# Offense count: 7
-# Cop supports --auto-correct.
-Performance/RedundantMatch:
-  Exclude:
-    - 'app/models/supplejack_api/concerns/searchable.rb'
-    - 'app/models/supplejack_api/support/concept/searchable.rb'
-    - 'app/models/supplejack_api/support/searchable.rb'
-
-# Offense count: 7
-# Cop supports --auto-correct.
-# Configuration parameters: MaxKeyValuePairs.
-Performance/RedundantMerge:
-  Exclude:
-    - 'app/controllers/supplejack_api/concepts_controller.rb'
-    - 'app/controllers/supplejack_api/records_controller.rb'
-    - 'app/controllers/supplejack_api/sources_controller.rb'
-    - 'app/models/supplejack_api/schema_definition.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-Performance/StringReplacement:
-  Exclude:
-    - 'app/models/supplejack_api/concept_search.rb'
-    - 'app/models/supplejack_api/concerns/searchable.rb'
-    - 'lib/sunspot/resque_session_proxy.rb'
-
 # Offense count: 2
 Style/AccessorMethodName:
   Exclude:
     - 'app/models/supplejack_api/source_activity.rb'
     - 'app/models/supplejack_api/support/harvestable.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: prefer_alias, prefer_alias_method
-Style/Alias:
-  Exclude:
-    - 'app/models/supplejack_api/user.rb'
-    - 'lib/sunspot/resque_session_proxy.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: with_first_parameter, with_fixed_indentation
-Style/AlignParameters:
-  Exclude:
-    - 'lib/sunspot/resque_session_proxy.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: always, conditionals
-Style/AndOr:
-  Exclude:
-    - 'app/controllers/supplejack_api/harvester/concepts_controller.rb'
-    - 'app/controllers/supplejack_api/harvester/records_controller.rb'
-
-# Offense count: 23
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: braces, no_braces, context_dependent
-Style/BracesAroundHashParameters:
-  Exclude:
-    - 'app/controllers/supplejack_api/concepts_controller.rb'
-    - 'app/controllers/supplejack_api/harvester/concepts_controller.rb'
-    - 'app/controllers/supplejack_api/harvester/fragments_controller.rb'
-    - 'app/controllers/supplejack_api/harvester/records_controller.rb'
-    - 'app/controllers/supplejack_api/records_controller.rb'
-    - 'app/helpers/supplejack_api/application_helper.rb'
-    - 'app/helpers/supplejack_api/facets_helper.rb'
-    - 'app/models/supplejack_api/concerns/record.rb'
-    - 'app/models/supplejack_api/concerns/searchable.rb'
-    - 'app/models/supplejack_api/support/concept/storable.rb'
-    - 'app/models/supplejack_api/support/harvestable.rb'
-    - 'app/models/supplejack_api/support/storable.rb'
-    - 'app/serializers/supplejack_api/record_search_serializer.rb'
-    - 'app/workers/supplejack_api/daily_metrics_worker.rb'
-    - 'lib/sunspot/resque_session_proxy.rb'
 
 # Offense count: 6
 # Configuration parameters: EnforcedStyle, SupportedStyles.
@@ -211,38 +82,6 @@ Style/ClassVars:
     - 'app/models/supplejack_api/api_concept/concept_fragment.rb'
     - 'app/models/supplejack_api/concerns/record_fragmentable.rb'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/ColonMethodCall:
-  Exclude:
-    - 'app/controllers/supplejack_api/status_controller.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/CommentIndentation:
-  Exclude:
-    - 'app/models/supplejack_api/fragment.rb'
-
-# Offense count: 7
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, SingleLineConditionsOnly.
-# SupportedStyles: assign_to_condition, assign_inside_condition
-Style/ConditionalAssignment:
-  Exclude:
-    - 'app/controllers/supplejack_api/application_controller.rb'
-    - 'app/models/supplejack_api/concerns/user_set.rb'
-    - 'app/models/supplejack_api/user.rb'
-    - 'app/serializers/supplejack_api/concept_serializer.rb'
-    - 'app/serializers/supplejack_api/concerns/record_serializable.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-Style/DeprecatedHashMethods:
-  Exclude:
-    - 'app/models/supplejack_api/concerns/user_set.rb'
-    - 'app/models/supplejack_api/fragment.rb'
-    - 'app/models/supplejack_api/support/harvestable.rb'
-
 # Offense count: 110
 Style/Documentation:
   Enabled: false
@@ -256,14 +95,6 @@ Style/DoubleNegation:
     - 'app/models/supplejack_api/support/storable.rb'
     - 'lib/url_validator.rb'
 
-# Offense count: 7
-# Cop supports --auto-correct.
-Style/EmptyLines:
-  Exclude:
-    - 'Rakefile'
-    - 'app/models/supplejack_api/support/harvestable.rb'
-    - 'lib/mongoid/paperclip.rb'
-
 # Offense count: 1
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.
@@ -271,20 +102,6 @@ Style/EmptyLines:
 Style/EmptyLinesAroundBlockBody:
   Exclude:
     - 'supplejack_api.gemspec'
-
-# Offense count: 25
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: empty_lines, no_empty_lines
-Style/EmptyLinesAroundClassBody:
-  Enabled: false
-
-# Offense count: 24
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: empty_lines, no_empty_lines
-Style/EmptyLinesAroundModuleBody:
-  Enabled: false
 
 # Offense count: 8
 # Configuration parameters: MinBodyLength.
@@ -296,66 +113,10 @@ Style/GuardClause:
     - 'lib/supplejack_api/utils.rb'
     - 'lib/url_validator.rb'
 
-# Offense count: 28
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, UseHashRocketsWithSymbolValues.
-# SupportedStyles: ruby19, ruby19_no_mixed_keys, hash_rockets
-Style/HashSyntax:
-  Enabled: false
-
 # Offense count: 2
 Style/IfInsideElse:
   Exclude:
     - 'app/models/supplejack_api/concerns/searchable.rb'
-
-# Offense count: 8
-# Cop supports --auto-correct.
-# Configuration parameters: MaxLineLength.
-Style/IfUnlessModifier:
-  Exclude:
-    - 'app/models/supplejack_api/concept_search.rb'
-    - 'app/models/supplejack_api/concerns/searchable.rb'
-    - 'app/models/supplejack_api/schema_definition.rb'
-    - 'app/serializers/supplejack_api/user_set_serializer.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, IndentationWidth.
-# SupportedStyles: special_inside_parentheses, consistent, align_braces
-Style/IndentHash:
-  Enabled: false
-
-# Offense count: 25
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: normal, rails
-Style/IndentationConsistency:
-  Exclude:
-    - 'app/controllers/supplejack_api/admin/sessions_controller.rb'
-    - 'app/controllers/supplejack_api/harvester/fragments_controller.rb'
-    - 'app/models/supplejack_api/api_concept/concept_fragment.rb'
-    - 'app/models/supplejack_api/fragment.rb'
-    - 'app/models/supplejack_api/record.rb'
-    - 'app/models/supplejack_api/support/concept/storable.rb'
-    - 'app/models/supplejack_api/support/storable.rb'
-
-# Offense count: 28
-# Cop supports --auto-correct.
-# Configuration parameters: Width.
-Style/IndentationWidth:
-  Exclude:
-    - 'app/controllers/supplejack_api/admin/base_controller.rb'
-    - 'app/controllers/supplejack_api/admin/sessions_controller.rb'
-    - 'app/controllers/supplejack_api/harvester/fragments_controller.rb'
-    - 'app/helpers/supplejack_api/application_helper.rb'
-    - 'app/models/supplejack_api/api_concept/concept_fragment.rb'
-    - 'app/models/supplejack_api/api_record/record_fragment.rb'
-    - 'app/models/supplejack_api/concept_search.rb'
-    - 'app/models/supplejack_api/fragment.rb'
-    - 'app/models/supplejack_api/schema_definition.rb'
-    - 'app/models/supplejack_api/source_activity.rb'
-    - 'app/serializers/supplejack_api/concerns/record_serializable.rb'
-    - 'lib/supplejack_api/harvester_constraint.rb'
 
 # Offense count: 1
 # Cop supports --auto-correct.
@@ -363,84 +124,10 @@ Style/LeadingCommentSpace:
   Exclude:
     - 'Rakefile'
 
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: require_parentheses, require_no_parentheses, require_no_parentheses_except_multiline
-Style/MethodDefParentheses:
-  Enabled: false
-
 # Offense count: 1
 Style/ModuleFunction:
   Exclude:
     - 'lib/supplejack_api/utils.rb'
-
-# Offense count: 6
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, IndentationWidth.
-# SupportedStyles: aligned, indented
-Style/MultilineMethodCallIndentation:
-  Enabled: false
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, IndentationWidth.
-# SupportedStyles: aligned, indented
-Style/MultilineOperationIndentation:
-  Enabled: false
-
-# Offense count: 16
-# Cop supports --auto-correct.
-Style/MutableConstant:
-  Exclude:
-    - 'app/controllers/supplejack_api/metrics_api_controller.rb'
-    - 'app/models/supplejack_api/concerns/searchable.rb'
-    - 'app/models/supplejack_api/fragment.rb'
-    - 'app/models/supplejack_api/interaction_updaters/all_usage_metric.rb'
-    - 'app/models/supplejack_api/schema_definition.rb'
-    - 'app/models/supplejack_api/site_activity.rb'
-    - 'app/models/supplejack_api/source_authority.rb'
-    - 'app/models/supplejack_api/supplejack_schema.rb'
-    - 'app/models/supplejack_api/support/concept/searchable.rb'
-    - 'app/models/supplejack_api/support/searchable.rb'
-    - 'app/serializers/supplejack_api/concept_record_serializer.rb'
-    - 'app/services/metrics_api/v3/api.rb'
-    - 'app/services/metrics_api/v3/endpoints/root.rb'
-    - 'app/services/metrics_api/v3/presenters/extended_metadata.rb'
-    - 'lib/supplejack_api/version.rb'
-
-# Offense count: 4
-# Cop supports --auto-correct.
-Style/NegatedIf:
-  Exclude:
-    - 'app/models/supplejack_api/concerns/record.rb'
-    - 'app/models/supplejack_api/support/concept/storable.rb'
-    - 'app/models/supplejack_api/support/storable.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/NilComparison:
-  Exclude:
-    - 'app/models/supplejack_api/concept_search.rb'
-
-# Offense count: 3
-# Cop supports --auto-correct.
-Style/NumericLiterals:
-  MinDigits: 7
-
-# Offense count: 4
-# Cop supports --auto-correct.
-Style/ParallelAssignment:
-  Exclude:
-    - 'app/models/supplejack_api/user.rb'
-
-# Offense count: 8
-# Cop supports --auto-correct.
-Style/PerlBackrefs:
-  Exclude:
-    - 'app/helpers/supplejack_api/application_helper.rb'
-    - 'app/models/supplejack_api/concerns/searchable.rb'
-    - 'lib/supplejack_api/admin/sortable.rb'
 
 # Offense count: 1
 # Configuration parameters: NamePrefix, NamePrefixBlacklist, NameWhitelist.
@@ -452,209 +139,12 @@ Style/PredicateName:
     - 'spec/**/*'
     - 'lib/mongoid/paperclip.rb'
 
-# Offense count: 5
-# Cop supports --auto-correct.
-Style/Proc:
-  Exclude:
-    - 'app/models/supplejack_api/concerns/searchable.rb'
-    - 'app/models/supplejack_api/support/concept/searchable.rb'
-    - 'app/models/supplejack_api/support/searchable.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: SupportedStyles.
-# SupportedStyles: compact, exploded
-Style/RaiseArgs:
-  EnforcedStyle: compact
-
-# Offense count: 8
-# Cop supports --auto-correct.
-Style/RedundantBegin:
-  Exclude:
-    - 'app/controllers/supplejack_api/concepts_controller.rb'
-    - 'app/controllers/supplejack_api/records_controller.rb'
-    - 'app/controllers/supplejack_api/status_controller.rb'
-    - 'app/models/supplejack_api/concerns/searchable.rb'
-    - 'lib/supplejack_api/harvester_constraint.rb'
-    - 'lib/supplejack_api/utils.rb'
-
-# Offense count: 140
-# Cop supports --auto-correct.
-Style/RedundantSelf:
-  Enabled: false
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, AllowInnerSlashes.
-# SupportedStyles: slashes, percent_r, mixed
-Style/RegexpLiteral:
-  Exclude:
-    - 'app/models/supplejack_api/user.rb'
-    - 'lib/url_validator.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/SelfAssignment:
-  Exclude:
-    - 'app/models/supplejack_api/user.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: AllowAsExpressionSeparator.
-Style/Semicolon:
-  Exclude:
-    - 'lib/sunspot/sunspot_spellcheck.rb'
-
 # Offense count: 3
 # Configuration parameters: Methods.
 # Methods: {"reduce"=>["a", "e"]}, {"inject"=>["a", "e"]}
 Style/SingleLineBlockParams:
   Exclude:
     - 'lib/sunspot/sunspot_spellcheck.rb'
-
-# Offense count: 15
-# Cop supports --auto-correct.
-Style/SpaceAfterComma:
-  Exclude:
-    - 'app/controllers/supplejack_api/harvester/concepts_controller.rb'
-    - 'app/controllers/supplejack_api/harvester/records_controller.rb'
-    - 'app/models/supplejack_api/concerns/searchable.rb'
-    - 'app/models/supplejack_api/site_activity.rb'
-    - 'app/models/supplejack_api/support/harvestable.rb'
-    - 'app/models/supplejack_api/support/searchable.rb'
-    - 'lib/sunspot/sunspot_spellcheck.rb'
-    - 'supplejack_api.gemspec'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyleInsidePipes, SupportedStyles.
-# SupportedStyles: space, no_space
-Style/SpaceAroundBlockParameters:
-  Exclude:
-    - 'app/models/supplejack_api/concept.rb'
-
-# Offense count: 37
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: space, no_space
-Style/SpaceAroundEqualsInParameterDefault:
-  Enabled: false
-
-# Offense count: 13
-# Cop supports --auto-correct.
-# Configuration parameters: AllowForAlignment.
-Style/SpaceAroundOperators:
-  Exclude:
-    - 'app/models/supplejack_api/concerns/record.rb'
-    - 'app/models/supplejack_api/concerns/user_set.rb'
-    - 'app/models/supplejack_api/site_activity.rb'
-    - 'app/models/supplejack_api/user.rb'
-    - 'lib/sunspot/resque_session_proxy.rb'
-    - 'lib/sunspot/sunspot_spellcheck.rb'
-
-# Offense count: 22
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: space, no_space
-Style/SpaceBeforeBlockBraces:
-  Enabled: false
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/SpaceBeforeComma:
-  Exclude:
-    - 'app/controllers/supplejack_api/admin/users_controller.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: AllowForAlignment.
-Style/SpaceBeforeFirstArg:
-  Exclude:
-    - 'app/controllers/supplejack_api/users_controller.rb'
-
-# Offense count: 88
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, EnforcedStyleForEmptyBraces, SpaceBeforeBlockParameters.
-# SupportedStyles: space, no_space
-Style/SpaceInsideBlockBraces:
-  Enabled: false
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/SpaceInsideBrackets:
-  Exclude:
-    - 'lib/mongoid/string.rb'
-
-# Offense count: 98
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, EnforcedStyleForEmptyBraces, SupportedStyles.
-# SupportedStyles: space, no_space
-Style/SpaceInsideHashLiteralBraces:
-  Enabled: false
-
-# Offense count: 4
-# Cop supports --auto-correct.
-Style/SpaceInsideParens:
-  Exclude:
-    - 'app/mailers/supplejack_api/request_limit_mailer.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: SupportedStyles.
-# SupportedStyles: use_perl_names, use_english_names
-Style/SpecialGlobalVars:
-  EnforcedStyle: use_perl_names
-
-# Offense count: 96
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, ConsistentQuotesInMultiline.
-# SupportedStyles: single_quotes, double_quotes
-Style/StringLiterals:
-  Enabled: false
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/SymbolLiteral:
-  Exclude:
-    - 'app/models/supplejack_api/support/harvestable.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: IgnoredMethods.
-# IgnoredMethods: respond_to, define_method
-Style/SymbolProc:
-  Exclude:
-    - 'app/models/supplejack_api/concerns/searchable.rb'
-    - 'app/models/supplejack_api/support/fragment_helpers.rb'
-
-# Offense count: 117
-# Cop supports --auto-correct.
-Style/Tab:
-  Exclude:
-    - 'app/controllers/supplejack_api/admin/base_controller.rb'
-    - 'app/controllers/supplejack_api/admin/sessions_controller.rb'
-    - 'app/controllers/supplejack_api/harvester/fragments_controller.rb'
-    - 'app/helpers/supplejack_api/application_helper.rb'
-    - 'app/models/supplejack_api/api_concept/concept_fragment.rb'
-    - 'app/models/supplejack_api/api_record/record_fragment.rb'
-    - 'app/models/supplejack_api/concept_search.rb'
-    - 'app/models/supplejack_api/fragment.rb'
-    - 'app/models/supplejack_api/record.rb'
-    - 'app/models/supplejack_api/source_activity.rb'
-    - 'app/models/supplejack_api/support/concept/storable.rb'
-    - 'app/models/supplejack_api/support/storable.rb'
-
-# Offense count: 16
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: final_newline, final_blank_line
-Style/TrailingBlankLines:
-  Enabled: false
-
-# Offense count: 423
-# Cop supports --auto-correct.
-Style/TrailingWhitespace:
-  Enabled: false
 
 # Offense count: 2
 # Configuration parameters: EnforcedStyle, SupportedStyles.
@@ -667,16 +157,3 @@ Style/VariableName:
 Style/WhileUntilDo:
   Exclude:
     - 'lib/sunspot/resque_session_proxy.rb'
-
-# Offense count: 14
-# Cop supports --auto-correct.
-# Configuration parameters: SupportedStyles, MinSize, WordRegex.
-# SupportedStyles: percent, brackets
-Style/WordArray:
-  EnforcedStyle: brackets
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/ZeroLengthPredicate:
-  Exclude:
-    - 'app/helpers/supplejack_api/facets_helper.rb'

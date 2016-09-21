@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -16,7 +17,7 @@ module SupplejackApi
       :record_type,
       :created_at,
       :updated_at
-    ]
+    ].freeze
 
     included do
       CORE_FIELDS.each do |field|
@@ -33,5 +34,4 @@ module SupplejackApi
       # mongo_index :updated_at,          fields: [{updated_at: 1}]
     end
   end
-
 end

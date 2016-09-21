@@ -1,8 +1,9 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# frozen_string_literal: true
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
@@ -22,13 +23,13 @@ module SupplejackApi
 
     validates_uniqueness_of :date
 
-    IMPLICIT_FIELDS = ['_type','_id','created_at','updated_at']
+    IMPLICIT_FIELDS = %w(_type _id created_at updated_at).freeze
 
-    def self.generate_activity(time=Time.now)
+    def self.generate_activity(time = Time.now)
       site_activity_date = time.to_date
-      user_activities = SupplejackApi::UserActivity.gt(created_at: time-12.hours).lte(created_at: time)
+      user_activities = SupplejackApi::UserActivity.gt(created_at: time - 12.hours).lte(created_at: time)
 
-      attributes = {user_sets: 0, search: 0, records: 0}
+      attributes = { user_sets: 0, search: 0, records: 0 }
 
       user_activities.each do |user_activity|
         [:user_sets, :search, :records].each do |field|
@@ -47,13 +48,12 @@ module SupplejackApi
       site_activity
     end
 
-    def self.activities 
-      ['date', 'search', 'user_sets', 'records', 'source_clicks', 'total'] - IMPLICIT_FIELDS
+    def self.activities
+      %w(date search user_sets records source_clicks total) - IMPLICIT_FIELDS
     end
 
     def calculate_total
-      self.total = self.user_sets + self.records + self.search + self.source_clicks
+      self.total = user_sets + records + search + source_clicks
     end
   end
-
 end

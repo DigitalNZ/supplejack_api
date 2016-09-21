@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module MetricsApi
   module V3
     module Endpoints

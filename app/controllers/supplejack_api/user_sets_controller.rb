@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -28,7 +29,7 @@ module SupplejackApi
         @user_sets = @user.user_sets
         render json: serializable_array(@user_sets).to_json
       else
-        render json: {errors: "The user with api key: '#{params[:user_id]}' was not found" }, status: :not_found
+        render json: { errors: "The user with api key: '#{params[:user_id]}' was not found" }, status: :not_found
       end
     end
 
@@ -49,7 +50,7 @@ module SupplejackApi
       if @user_set
         render json: UserSetSerializer.new(@user_set, user: current_user)
       else
-        render json: {errors: "Set with id: #{params[:id]} was not found."}, status: :not_found
+        render json: { errors: "Set with id: #{params[:id]} was not found." }, status: :not_found
       end
     end
 
@@ -58,7 +59,7 @@ module SupplejackApi
       if @user_set.update_attributes_and_embedded(params[:set])
         render json: UserSetSerializer.new(@user_set, user: true)
       else
-        render json: {errors: @user_set.errors.to_hash}, status: :unprocessable_entity
+        render json: { errors: @user_set.errors.to_hash }, status: :unprocessable_entity
       end
     end
 
@@ -66,7 +67,7 @@ module SupplejackApi
       if @user_set.update_attributes_and_embedded(params[:set], current_user)
         render json: UserSetSerializer.new(@user_set, user: true)
       else
-        render json: {errors: @user_set.errors.to_hash}, status: :unprocessable_entity
+        render json: { errors: @user_set.errors.to_hash }, status: :unprocessable_entity
       end
     end
 
@@ -77,18 +78,18 @@ module SupplejackApi
 
     private
 
-    def serializable_array(user_sets, options={})
+    def serializable_array(user_sets, options = {})
       options.reverse_merge!(root: false, items: false, user: false, total: false)
-      hash = {"sets" => []}
+      hash = { 'sets' => [] }
       user_sets.each do |set|
-        hash["sets"] << UserSetSerializer.new(set, options).as_json
+        hash['sets'] << UserSetSerializer.new(set, options).as_json
       end
-      hash["total"] = UserSet.public_sets_count if options[:total]
+      hash['total'] = UserSet.public_sets_count if options[:total]
       hash
     end
 
-    rescue_from UserSet::WrongRecordsFormat do |exception|
-      render json: {errors: {records: ["The records array is not in a valid format."]}}, status: :unprocessable_entity
+    rescue_from UserSet::WrongRecordsFormat do |_exception|
+      render json: { errors: { records: ['The records array is not in a valid format.'] } }, status: :unprocessable_entity
     end
   end
 end

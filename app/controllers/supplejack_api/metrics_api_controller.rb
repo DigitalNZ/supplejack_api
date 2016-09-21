@@ -1,10 +1,11 @@
+# frozen_string_literal: true
 module SupplejackApi
   class MetricsApiController < ApplicationController
     skip_before_action :authenticate_user!
 
     API_VERSIONS = {
       'v3' => MetricsApi::V3::Api
-    }
+    }.freeze
 
     def root
       render_response(:root)
@@ -37,7 +38,7 @@ module SupplejackApi
 
       ex = api_response[:exception]
 
-      render json: {errors: ex[:message]}, status: ex[:status]
+      render json: { errors: ex[:message] }, status: ex[:status]
     end
   end
 end

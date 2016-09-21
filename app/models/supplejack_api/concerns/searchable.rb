@@ -1,47 +1,48 @@
+# frozen_string_literal: true
 # rubocop:disable Metrics/ModuleLength
 module SupplejackApi::Concerns::Searchable
   extend ActiveSupport::Concern
 
   included do
-    INTEGER_ATTRIBUTES ||= [:page, :per_page, :facets_per_page, :facets_page, :record_type]
-    
+    INTEGER_ATTRIBUTES ||= [:page, :per_page, :facets_per_page, :facets_page, :record_type].freeze
+
     attr_accessor :options, :request_url, :scope, :solr_request_params, :errors, :warnings
-  
+
     class_attribute :max_values
-    
+
     self.max_values = {
-      page: 100000, 
-      per_page: 100, 
-      facets_per_page: 150, 
+      page: 100_000,
+      per_page: 100,
+      facets_per_page: 150,
       facets_page: 5000
     }
 
-    def initialize(options={})
+    def initialize(options = {})
       @options = options.dup
       @options.reverse_merge!(
-        facets: '', 
-        and: {}, 
-        or: {}, 
-        without: {}, 
-        page: 1, 
-        per_page: 20, 
-        record_type: 0, 
-        facets_per_page: 10, 
-        facets_page: 1, 
-        sort: nil, 
-        direction: 'desc', 
-        fields: 'default', 
-        facet_query: {}, 
+        facets: '',
+        and: {},
+        or: {},
+        without: {},
+        page: 1,
+        per_page: 20,
+        record_type: 0,
+        facets_per_page: 10,
+        facets_page: 1,
+        sort: nil,
+        direction: 'desc',
+        fields: 'default',
+        facet_query: {},
         debug: nil
       )
     end
-  
+
     def self.model_class
-      self.to_s.gsub(/Search/, '').constantize
+      to_s.gsub(/Search/, '').constantize
     end
 
     def self.schema_class
-      "#{self.model_class.to_s.demodulize}Schema".constantize
+      "#{model_class.to_s.demodulize}Schema".constantize
     end
 
     # The records that match the criteria within each role will be removed
@@ -52,11 +53,11 @@ module SupplejackApi::Concerns::Searchable
 
       if scope
         role = scope.role.try(:to_sym)
-        if self.schema_class.roles[role].record_restrictions
-          restrictions = self.schema_class.roles[role].record_restrictions 
+        if schema_class.roles[role].record_restrictions
+          restrictions = schema_class.roles[role].record_restrictions
         end
       end
-      
+
       restrictions
     end
 
@@ -66,38 +67,34 @@ module SupplejackApi::Concerns::Searchable
       search_model = self
 
       @search_builder ||= Sunspot.new_search(search_model.class.model_class) do
-        unless options[:record_type] == 'all'
-          with(:record_type, record_type)
-        end
+        with(:record_type, record_type) unless options[:record_type] == 'all'
 
         search_model.facet_list.each do |facet_name|
           facet(facet_name, limit: facets_per_page, offset: facets_offset)
         end
-  
-        if options[:suggest]
-          spellcheck collate: true, only_more_popular: true
-        end
-  
+
+        spellcheck collate: true, only_more_popular: true if options[:suggest]
+
         options[:without].each do |name, values|
-          values = values.split(",")
+          values = values.split(',')
           values.each do |value|
-            without(name, self.to_proper_value(name, value))
+            without(name, to_proper_value(name, value))
           end
         end
 
         if options[:geo_bbox]
           coords = options[:geo_bbox].split(',').map(&:to_f)
           with(:lat_lng).in_bounding_box([coords[2], coords[1]], [coords[0], coords[3]])
-        end        
-  
+        end
+
         adjust_solr_params do |params|
           if options[:solr_query].present?
-            params[:q] ||= ""
+            params[:q] ||= ''
             params['q.alt'] = options[:solr_query]
             params[:defType] = 'dismax'
           end
         end
-  
+
         # Facet Queries
         #
         # The facet query parameter should have the following format:
@@ -107,16 +104,16 @@ module SupplejackApi::Concerns::Searchable
         # - Each key in the top level hash will be the name of each facet row returned.
         # - Each value in the top level hash is a hash similar with all the restrictions
         #
-  
+
         if options[:facet_query].any?
           facet(:counts) do
             options[:facet_query].each_pair do |row_name, filters_hash|
               row(row_name.to_s) do
                 filters_hash.each_pair do |filter, value|
-                  if value == "all"
+                  if value == 'all'
                     without(filter.to_sym, nil)
-                  elsif filter.match(/-(.+)/)
-                    without($1.to_sym, to_proper_value(filter, value))
+                  elsif filter =~ /-(.+)/
+                    without(Regexp.last_match(1).to_sym, to_proper_value(filter, value))
                   else
                     if value.is_a?(Array)
                       with(filter.to_sym).all_of(value)
@@ -129,22 +126,20 @@ module SupplejackApi::Concerns::Searchable
             end
           end
         end
-  
-        if options[:sort].present?
-          order_by(sort, direction)
-        end
+
+        order_by(sort, direction) if options[:sort].present?
 
         search_model.class.role_collection_restrictions(search_model.scope).each do |field, values|
           without(field.to_sym, values)
         end
-  
+
         SupplejackApi::Source.suppressed.each do |source|
           without(:source_id, source.source_id)
         end
-  
-        paginate :page => page, :per_page => per_page
+
+        paginate page: page, per_page: per_page
       end
-  
+
       @search_builder.build(&build_conditions)
 
       @search_builder
@@ -156,9 +151,9 @@ module SupplejackApi::Concerns::Searchable
     #
     def facet_list
       return @facet_list if @facet_list
-  
-      @facet_list = options[:facets].split(",").map {|f| f.strip.to_sym}
-      @facet_list.keep_if {|f| self.class.model_class.valid_facets.include?(f) }
+
+      @facet_list = options[:facets].split(',').map { |f| f.strip.to_sym }
+      @facet_list.keep_if { |f| self.class.model_class.valid_facets.include?(f) }
       @facet_list
     end
 
@@ -166,11 +161,11 @@ module SupplejackApi::Concerns::Searchable
       return @field_list if @field_list
       valid_fields = self.class.schema_class.fields.keys.dup
 
-      @field_list = options[:fields].split(",").map {|f| f.strip.gsub(':', '_').to_sym}
+      @field_list = options[:fields].split(',').map { |f| f.strip.tr(':', '_').to_sym }
       @field_list.delete_if do |f|
         !valid_fields.include?(f)
       end
-      
+
       @field_list
     end
 
@@ -186,7 +181,7 @@ module SupplejackApi::Concerns::Searchable
           rows[row.value] = row.count
         end
 
-        facets.merge!({facet.name => rows})
+        facets.merge!(facet.name => rows)
       end
 
       facets
@@ -197,37 +192,37 @@ module SupplejackApi::Concerns::Searchable
     #
     def group_list
       return @group_list if @group_list
-      @group_list = options[:fields].split(',').map {|f| f.strip.to_sym}
-      @group_list.keep_if {|f| self.class.model_class.valid_groups.include?(f) }
+      @group_list = options[:fields].split(',').map { |f| f.strip.to_sym }
+      @group_list.keep_if { |f| self.class.model_class.valid_groups.include?(f) }
       @group_list
     end
 
     def query_fields
       query_field_list = nil
-  
+
       if options[:query_fields].is_a?(String)
         query_field_list = options[:query_fields].split(',').map(&:strip).map(&:to_sym)
       elsif options[:query_fields].is_a?(Array)
         query_field_list = options[:query_fields].map(&:to_sym)
       end
-  
+
       return nil if query_field_list.try(:empty?)
       query_field_list
     end
 
     def extract_range(value)
-      if value.match(/^\[(\d+)\sTO\s(\d+)\]$/)
-        $1.to_i..$2.to_i
+      if value =~ /^\[(\d+)\sTO\s(\d+)\]$/
+        Regexp.last_match(1).to_i..Regexp.last_match(2).to_i
       else
-        value.to_i > 0 ? value.to_i : value.strip
+        value.to_i.positive? ? value.to_i : value.strip
       end
     end
 
-    def to_proper_value(name, value)
+    def to_proper_value(_name, value)
       return false if value == 'false'
       return true if value == 'true'
-      return nil if ['nil', 'null'].include?(value)
-  
+      return nil if %w(nil null).include?(value)
+
       value = value.strip if value.is_a?(String)
       value
     end
@@ -239,7 +234,7 @@ module SupplejackApi::Concerns::Searchable
       @text = options[:text]
       if @text.present? && !@text.match(/:\"/)
         @text.downcase!
-        @text.gsub!(/ and | or | not /) {|op| op.upcase}
+        @text.gsub!(/ and | or | not /, &:upcase)
       end
       @text
     end
@@ -247,10 +242,10 @@ module SupplejackApi::Concerns::Searchable
     def offset
       (page * per_page) - per_page
     end
-  
+
     def facets_offset
       offset = (facets_page * facets_per_page) - facets_per_page
-      offset < 0 ? 0 : offset
+      offset.negative? ? 0 : offset
     end
 
     def valid?
@@ -259,19 +254,19 @@ module SupplejackApi::Concerns::Searchable
       self.class.max_values.each do |attribute, max_value|
         max_value = self.class.max_values[attribute]
         if @options[attribute].to_i > max_value
-          self.warnings << "The #{attribute} parameter can not exceed #{max_value}" 
+          self.warnings << "The #{attribute} parameter can not exceed #{max_value}"
         end
       end
-  
-      self.solr_search_object
+
+      solr_search_object
       self.errors.empty?
     end
-  
+
     def records
-      self.solr_search_object.results
+      solr_search_object.results
     end
-  
-    def jsonp    
+
+    def jsonp
       @options[:jsonp].present? ? @options[:jsonp] : nil
     end
 
@@ -294,7 +289,7 @@ module SupplejackApi::Concerns::Searchable
 
     def sort
       value = @options[:sort].to_sym
-      
+
       begin
         field = Sunspot::Setup.for(self.class.model_class).field(value)
         return value
@@ -302,9 +297,9 @@ module SupplejackApi::Concerns::Searchable
         return 'score'
       end
     end
-  
+
     def direction
-      if ['asc', 'desc'].include?(@options[:direction])
+      if %w(asc desc).include?(@options[:direction])
         @options[:direction].to_sym
       else
         :desc
@@ -314,11 +309,11 @@ module SupplejackApi::Concerns::Searchable
     def solr_search_object
       return @solr_search_object if @solr_search_object
       @solr_search_object = execute_solr_search
-  
+
       if options[:debug] == 'true' && @solr_search_object.respond_to?(:query)
         self.solr_request_params = @solr_search_object.query.to_params
       end
-  
+
       @solr_search_object
     end
 
@@ -329,66 +324,64 @@ module SupplejackApi::Concerns::Searchable
       }
     end
 
-    def method_missing(symbol, *args, &block)
-      return nil unless self.solr_search_object.respond_to?(:hits)
-      self.solr_search_object.send(symbol, *args)
+    def method_missing(symbol, *args)
+      return nil unless solr_search_object.respond_to?(:hits)
+      solr_search_object.send(symbol, *args)
     end
 
     def execute_solr_search
       search = search_builder
-  
+
       search.build do
         keywords text, fields: query_fields
       end
-  
+
       execute_solr_search_and_handle_errors(search)
     end
 
     def execute_solr_search_and_handle_errors(search)
-      begin
-        self.errors ||= []
-        sunspot = search.execute
-      rescue RSolr::Error::Http => e
-        self.errors << self.solr_error_message(e)
-        Rails.logger.info e.message
-        sunspot = {}
-      rescue Timeout::Error, Errno::ECONNREFUSED, Errno::ECONNRESET => e
-        self.errors << 'Solr is temporarily unavailable please try again in a few seconds.'
-        Rails.logger.info e.message
-        sunspot = {}
-      ensure
-        return sunspot
-      end
+      self.errors ||= []
+      sunspot = search.execute
+    rescue RSolr::Error::Http => e
+      self.errors << solr_error_message(e)
+      Rails.logger.info e.message
+      sunspot = {}
+    rescue Timeout::Error, Errno::ECONNREFUSED, Errno::ECONNRESET => e
+      self.errors << 'Solr is temporarily unavailable please try again in a few seconds.'
+      Rails.logger.info e.message
+      sunspot = {}
+    ensure
+      return sunspot
     end
 
     private
-  
+
     # Generates the :and and :or conditions for a search object
     #
     def build_conditions
-      Proc.new do
-        {and: options[:and], or: options[:or]}.each do |operator, value|
+      proc do
+        { and: options[:and], or: options[:or] }.each do |operator, value|
           Utils.call_block(self, &recurse_conditions(operator, value))
         end
       end
     end
-  
+
     # Detects when the key is a operator (:and, :or) and calls itself
     # recursively until it finds facets defined in Sunspot.
     #
-    def recurse_conditions(key, conditions, current_operator=:and)
-      Proc.new do
+    def recurse_conditions(key, conditions, current_operator = :and)
+      proc do
         case key.to_sym
         when :and
           all_of do
-            conditions.each do |filter,value|
-              Utils.call_block(self, &recurse_conditions(filter,value, :and))
+            conditions.each do |filter, value|
+              Utils.call_block(self, &recurse_conditions(filter, value, :and))
             end
           end
         when :or
           any_of do
-            conditions.each do |filter,value|
-              Utils.call_block(self, &recurse_conditions(filter,value, :or))
+            conditions.each do |filter, value|
+              Utils.call_block(self, &recurse_conditions(filter, value, :or))
             end
           end
         else
@@ -396,20 +389,20 @@ module SupplejackApi::Concerns::Searchable
         end
       end
     end
-  
+
     # Generates a single condition. It can take a operator to
     # determine how the values within the filter are going to be
     # joined.
     #
-    def filter_values(key, conditions, current_operator=:and)
-      Proc.new do
+    def filter_values(key, conditions, current_operator = :and)
+      proc do
         if conditions.is_a? Hash
           operator, values = conditions.first
         else
           operator = current_operator
           values = conditions
         end
-  
+
         if values.is_a?(Array)
           case operator.to_sym
           when :or
@@ -417,11 +410,11 @@ module SupplejackApi::Concerns::Searchable
           when :and
             with(key).all_of(values)
           else
-            raise Exception.new("Expected operator (:and, :or)")
+            raise Exception, 'Expected operator (:and, :or)'
           end
         else
-          if values.match(/(.+)\*$/)
-            with(key).starting_with($1)
+          if values =~ /(.+)\*$/
+            with(key).starting_with(Regexp.last_match(1))
           else
             with(key, to_proper_value(key, values))
           end
@@ -429,6 +422,5 @@ module SupplejackApi::Concerns::Searchable
       end
     end
   end
-
 end
 # rubocop:enable Metrics/ModuleLength

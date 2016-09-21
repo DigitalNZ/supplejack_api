@@ -1,9 +1,9 @@
+# frozen_string_literal: true
 module MetricsApi
   module V3
     module Presenters
       # Presents a +SupplejackApi::UsageMetrics+ ready to be returned via the API
       class View
-
         def initialize(metric)
           @m = metric
         end
@@ -20,7 +20,7 @@ module MetricsApi
         end
 
         def self.to_proc
-          ->(metric){self.new(metric).to_json}
+          ->(metric) { new(metric).to_json }
         end
       end
     end

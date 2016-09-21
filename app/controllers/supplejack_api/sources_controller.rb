@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -7,11 +8,10 @@
 
 module SupplejackApi
   class SourcesController < ActionController::Base
-
     respond_to :json
 
     def create
-      params[:source].merge!(partner_id: params[:partner_id])
+      params[:source][:partner_id] = params[:partner_id]
       if params[:source][:_id].present?
         @source = Source.find_or_initialize_by(_id: params[:source][:_id])
         @source.update_attributes(params[:source])
@@ -59,10 +59,9 @@ module SupplejackApi
 
     def first_two_records(source_id, direction)
       sort = direction == :latest ? -1 : 1
-      records = Record.where("fragments.source_id" => source_id, :status => 'active')
-                      .sort("fragments.syndication_date" => sort)
+      records = Record.where('fragments.source_id' => source_id, :status => 'active')
+                      .sort('fragments.syndication_date' => sort)
       records.limit(2).to_a
     end
-
   end
 end

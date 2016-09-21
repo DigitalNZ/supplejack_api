@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -18,7 +19,7 @@ module SupplejackApi
       mongo_index: [:fields, :index_options],
       model_field: [:type, :field_options, :validation, :index_fields, :index_options,
                     :search_value, :search_as, :store, :namespace]
-    }
+    }.freeze
 
     included do
       cattr_accessor :fields, :groups, :roles, :default_role, :namespaces, :mongo_indexes, :model_fields
@@ -33,15 +34,15 @@ module SupplejackApi
 
       private
 
-      def field(type, name, options={}, &block)
-          self.fields ||= {}
-          options.merge!(type: type)
+      def field(type, name, options = {}, &block)
+        self.fields ||= {}
+        options[:type] = type
 
-          field = Field.new(name, options, &block)
-          self.fields[name] = field
+        field = Field.new(name, options, &block)
+        self.fields[name] = field
       end
 
-      def group(name, options={}, &block)
+      def group(name, options = {}, &block)
         self.groups ||= {}
 
         group = Group.new(name, options, &block)
@@ -50,32 +51,30 @@ module SupplejackApi
         self.groups[name] = group
       end
 
-      def role(name, options={}, &block)
+      def role(name, options = {}, &block)
         self.roles ||= {}
 
         role = Role.new(name, options, &block)
-        if role.default
-          self.default_role = role
-        end
+        self.default_role = role if role.default
 
         self.roles[name] = role
       end
 
-      def namespace(name, options={}, &block)
+      def namespace(name, options = {})
         self.namespaces ||= {}
 
         namespace = Namespace.new(name, options)
         self.namespaces[name] = namespace
       end
 
-      def mongo_index(name, options={}, &block)
+      def mongo_index(name, options = {})
         self.mongo_indexes ||= {}
 
         mongo_index = MongoIndex.new(name, options)
         self.mongo_indexes[name] = mongo_index
       end
 
-      def model_field(name, options={}, &block)
+      def model_field(name, options = {}, &block)
         self.model_fields ||= {}
 
         model_field = ModelField.new(name, options, &block)
@@ -92,9 +91,7 @@ module SupplejackApi
         @name = name
 
         builder = SchemaObjectBuilder.new(options)
-        if block_given?
-          builder.instance_eval(&block)
-        end
+        builder.instance_eval(&block) if block_given?
 
         @options = builder.options
       end
@@ -146,6 +143,5 @@ module SupplejackApi
 
     class ModelField < SchemaObject
     end
-
   end
 end

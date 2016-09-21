@@ -1,27 +1,27 @@
+# frozen_string_literal: true
 module SupplejackApi
   module InteractionUpdaters
     class AllUsageMetric
-
-      BLACKLISTED_FIELDS = [:_id, :created_at, :updated_at, :date, :record_field_value]
+      BLACKLISTED_FIELDS = [:_id, :created_at, :updated_at, :date, :record_field_value].freeze
       attr_reader :model
 
       def initialize
-        # Slightly nonstandard model, so mock ActiveRecord interactions 
+        # Slightly nonstandard model, so mock ActiveRecord interactions
         # that the InteractionMetricsWorker performs
         @model = OpenStruct.new(all: OpenStruct.new(delete_all: true))
       end
 
       def process(*)
         usage_metrics = SupplejackApi::UsageMetrics
-          .where(:record_field_value.ne => 'all')
-          .created_on(Time.zone.today)
+                        .where(:record_field_value.ne => 'all')
+                        .created_on(Time.zone.today)
         fields_to_update = SupplejackApi::UsageMetrics
-          .fields
-          .keys
-          .map(&:to_sym)
-          .reject{|field| BLACKLISTED_FIELDS.include? field}
+                           .fields
+                           .keys
+                           .map(&:to_sym)
+                           .reject { |field| BLACKLISTED_FIELDS.include? field }
         summed_usage_metrics_fields = usage_metrics.reduce({}) do |acc, el|
-          fields_to_update.each_with_object(acc) do |field, accumulator| 
+          fields_to_update.each_with_object(acc) do |field, accumulator|
             accumulator[field] = accumulator[field].to_i + el[field]
           end
         end

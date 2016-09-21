@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -20,7 +21,7 @@ module SupplejackApi
 
       def self.create_search(object)
         results = object.results.map(&@field).flatten
-        self.create(request_type: "search", log_values: results) unless results.empty?
+        create(request_type: 'search', log_values: results) unless results.empty?
       rescue
         Rails.logger.warn "[RecordInteraction] Field #{field} does not exist"
       end
@@ -29,7 +30,7 @@ module SupplejackApi
         return if object.nil?
         result = object.send(@field)
         result = [result] unless result.is_a? Array
-        self.create(request_type: "get", log_values: result) unless result.empty?
+        create(request_type: 'get', log_values: result) unless result.empty?
       rescue
         Rails.logger.warn "[RecordInteraction] Field #{field} does not exist"
       end
@@ -50,11 +51,10 @@ module SupplejackApi
           end
         end
 
-        self.create(request_type: "user_set", log_values: results.flatten) unless results.empty?
+        create(request_type: 'user_set', log_values: results.flatten) unless results.empty?
       rescue
         Rails.logger.warn "[RecordInteraction] Field #{field} does not exist"
       end
-
     end
   end
 end

@@ -38,13 +38,3 @@ group :test do
   gem 'faker'
   gem 'json-schema'
 end
-
-group :test, :development do
-  gem 'pry-byebug'
-  gem 'pry-rails'
-end
-
-group :development do
-  gem 'guard'
-  gem 'guard-rspec'
-end

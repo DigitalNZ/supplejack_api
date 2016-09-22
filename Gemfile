@@ -40,8 +40,11 @@ group :test do
 end
 
 group :test, :development do
-  if RUBY_VERSION =~ /2/
-    gem 'pry-byebug'
-    gem 'pry-rails'
-  end
+  gem 'pry-byebug'
+  gem 'pry-rails'
+end
+
+group :development do
+  gem 'guard'
+  gem 'guard-rspec'
 end

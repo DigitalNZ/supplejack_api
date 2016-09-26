@@ -1,55 +1,52 @@
 module StoriesApi
   module V3
     module Schemas
-      RSpec.describe Block do
-        let(:valid_block) do
-          {
-            type: 'embed',
-            sub_type: 'dnz'
-          }
-        end
+      module StoryItem
+        RSpec.describe Block do
+          let(:valid_block) { build(:story_block) }
 
-        describe '#type' do
-          it 'is invalid when missing' do
-            result = subject.call(valid_block.except(:type))
+          describe '#type' do
+            it 'is invalid when missing' do
+              result = subject.call(valid_block.except(:type))
 
-            expect(result.success?).to eq(false)
-            expect(result.messages).to include(:type)
+              expect(result.success?).to eq(false)
+              expect(result.messages).to include(:type)
+            end
+
+            it 'is invalid when an invalid block type is present' do
+              result = subject.call(valid_block.update(type: 'foo'))
+
+              expect(result.success?).to eq(false)
+              expect(result.messages).to include(:type)
+            end
+
+            it 'is valid when a valid block type is present' do
+              result = subject.call(valid_block)
+
+              expect(result.success?).to eq(true)
+            end
           end
 
-          it 'is invalid when an invalid block type is present' do
-            result = subject.call(valid_block.update(type: 'foo'))
+          describe '#sub_type' do
+            it 'is invalid when missing' do
+              result = subject.call(valid_block.except(:sub_type))
 
-            expect(result.success?).to eq(false)
-            expect(result.messages).to include(:type)
-          end
+              expect(result.success?).to eq(false)
+              expect(result.messages).to include(:sub_type)
+            end
 
-          it 'is valid when a valid block type is present' do
-            result = subject.call(valid_block)
+            it 'is invalid when an invalid block type is present' do
+              result = subject.call(valid_block.update(sub_type: 'foo'))
 
-            expect(result.success?).to eq(true)
-          end
-        end
+              expect(result.success?).to eq(false)
+              expect(result.messages).to include(:sub_type)
+            end
 
-        describe '#sub_type' do
-          it 'is invalid when missing' do
-            result = subject.call(valid_block.except(:sub_type))
+            it 'is valid when a valid block type is present' do
+              result = subject.call(valid_block)
 
-            expect(result.success?).to eq(false)
-            expect(result.messages).to include(:sub_type)
-          end
-
-          it 'is invalid when an invalid block type is present' do
-            result = subject.call(valid_block.update(sub_type: 'foo'))
-
-            expect(result.success?).to eq(false)
-            expect(result.messages).to include(:sub_type)
-          end
-
-          it 'is valid when a valid block type is present' do
-            result = subject.call(valid_block)
-
-            expect(result.success?).to eq(true)
+              expect(result.success?).to eq(true)
+            end
           end
         end
       end

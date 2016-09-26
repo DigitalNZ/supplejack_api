@@ -4,18 +4,7 @@ module StoriesApi
       module StoryItem
         module Text
           RSpec.describe Heading do
-            let(:valid_block) do
-              {
-                type: 'text',
-                sub_type: 'heading',
-                content: {
-                  value: 'foo'
-                },
-                meta: {
-                  size: '1'
-                }
-              }
-            end
+            let(:valid_block) {build(:heading_block)}
 
             describe '#content' do
               context 'invalid' do

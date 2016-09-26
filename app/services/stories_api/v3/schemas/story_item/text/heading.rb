@@ -3,7 +3,7 @@ module StoriesApi
     module Schemas
       module StoryItem
         module Text
-          Heading = Dry::Validation.Schema(::StoriesApi::V3::Schemas::Block) do
+          Heading = Dry::Validation.Schema(Block) do
             configure do
               def valid_sizes
                 %w(1 2 3 4 5 6)

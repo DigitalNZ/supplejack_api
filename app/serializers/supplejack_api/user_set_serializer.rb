@@ -42,7 +42,14 @@ module SupplejackApi
     # The values to be added from the record are stored in SetItem::ATTRIBUTES
     #
     def records(amount = nil)
-      attributes = [:record_id, :position] + SetItem::ATTRIBUTES
+      attributes = [:record_id, :position] + RecordSchema.groups[:sets].fields
+
+      if options[:fields]
+        fields = options[:fields].split(',').map(&:to_sym)
+        fields.reject! { |field| !SetItem::ATTRIBUTES.include? field }
+        attributes.concat(fields)
+      end
+
       object.items_with_records(amount).map do |item|
         Hash[attributes.map { |attr| [attr, item.send(attr)] }]
       end

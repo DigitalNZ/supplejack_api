@@ -10,7 +10,9 @@ module SupplejackApi
   class SetItem
     include Mongoid::Document
 
-    ATTRIBUTES = [:title,
+    ATTRIBUTES = [:name,
+                  :address,
+                  :title,
                   :description,
                   :large_thumbnail_url,
                   :thumbnail_url,

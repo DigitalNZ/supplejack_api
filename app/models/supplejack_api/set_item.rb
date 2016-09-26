@@ -10,7 +10,20 @@ module SupplejackApi
   class SetItem
     include Mongoid::Document
 
-    ATTRIBUTES = RecordSchema.groups[:sets].fields
+    ATTRIBUTES = [:title,
+                  :description,
+                  :large_thumbnail_url,
+                  :thumbnail_url,
+                  :display_content_partner,
+                  :contributing_partner,
+                  :display_collection,
+                  :landing_url,
+                  :category,
+                  :date,
+                  :dnz_type,
+                  :dc_identifier,
+                  :creator,
+                  :tag].freeze
 
     attr_accessor :record
 

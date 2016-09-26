@@ -71,7 +71,7 @@ module SupplejackApi
     context "requesting set items" do
       before(:each) do
         @user_set = FakeSet.new(id: "1", name: "Dogs and cats", description: "Ugly dogs and cats", tags: ["dog"], count:1, privacy:"hidden", featured: true, approved: true)
-        allow(@user_set).to receive(:items_with_records){[double(:item, record_id: 5, position: 1, name: "John Smith", address: "Wellington").as_null_object]}
+        allow(@user_set).to receive(:items_with_records){[double(:item, record_id: 5, position: 1, name: "John Smith", address: "Wellington", tag: ['hey']).as_null_object]}
         allow(@user_set).to receive(:user) { double(:user, name: "Tony").as_null_object }
       end
 
@@ -88,6 +88,16 @@ module SupplejackApi
       it "returns the user information" do
         serializer = UserSetSerializer.new(@user_set, user: true)
         expect(serializer.as_json[:set][:user]).to eq({name: "Tony"})
+      end
+
+      it 'does not return the tag field by default' do
+        serializer = UserSetSerializer.new(@user_set)
+        expect(serializer.as_json[:set][:records].first).not_to include :tag
+      end
+
+      it 'does return the tag field when it has been requested' do
+        serializer = UserSetSerializer.new(@user_set, user: true, fields: 'tag')
+        expect(serializer.as_json[:set][:records].first).to include :tag
       end
     end
 

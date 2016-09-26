@@ -46,6 +46,7 @@ module SupplejackApi
 
       if options[:fields]
         fields = options[:fields].split(',').map(&:to_sym)
+        # This is done to prevent people from passing random fields and breaking the API
         fields.reject! { |field| !SetItem::ATTRIBUTES.include? field }
         attributes.concat(fields)
       end

@@ -1,5 +1,5 @@
 FactoryGirl.define do
-  factory :story, class: Hash do
+  factory :story_json, class: Hash do
     transient do
       number_of_blocks 2
     end

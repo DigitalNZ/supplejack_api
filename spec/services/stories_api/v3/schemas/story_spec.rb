@@ -2,7 +2,7 @@ module StoriesApi
   module V3
     module Schemas
       RSpec.describe Story do
-        let(:valid_story) { build(:story, contents: [build(:heading_block)]) }
+        let(:valid_story) { build(:story_json, contents: [build(:heading_block)]) }
 
         it 'requires an id' do
           result = subject.call(valid_story.except(:id))

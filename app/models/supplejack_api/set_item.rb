@@ -19,6 +19,11 @@ module SupplejackApi
     field :record_id,   type: Integer
     field :position,    type: Integer
 
+    field :type,        type: String
+    field :sub_type,    type: String
+    field :content,     type: Hash
+    field :meta,        type: Hash
+
     validates :record_id,   presence: true, uniqueness: true, numericality: { greater_than: 0 }
     validates :position,    presence: true
     validate  :not_adding_set_to_itself

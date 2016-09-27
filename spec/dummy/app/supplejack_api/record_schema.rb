@@ -58,10 +58,9 @@ class RecordSchema
     ]
   end
 
-  group :verbose_sets do
+  group :valid_set_fields do
+    includes [:sets]
     fields [
-      :name,
-      :address,
       :tag
     ]
   end

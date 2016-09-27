@@ -15,7 +15,7 @@ FactoryGirl.define do
 
     factory :rich_text_block do
       type 'text'
-      sub_type 'rich-text'
+      sub_type 'rich_text'
       content {{value: 'foo'}}
     end
   end

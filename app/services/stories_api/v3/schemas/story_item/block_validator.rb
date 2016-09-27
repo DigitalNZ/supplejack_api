@@ -1,9 +1,9 @@
+# frozen_string_literal: true
 module StoriesApi
   module V3
     module Schemas
       module StoryItem
         class BlockValidator
-
           def call(block)
             type = block[:type].classify
             sub_type = block[:sub_type].classify

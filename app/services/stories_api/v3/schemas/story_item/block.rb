@@ -1,9 +1,9 @@
+# frozen_string_literal: true
 module StoriesApi
   module V3
     module Schemas
       module StoryItem
         class Block < Dry::Validation::Schema
-
           def valid_types
             %w(embed text)
           end

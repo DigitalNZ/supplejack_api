@@ -159,6 +159,12 @@ module StoriesApi
 
               expect(result.success?).to eq(true)
             end
+
+            it 'is valid when set to 0' do
+              result = subject.call(valid_story.update(number_of_items: 0))
+
+              expect(result.success?).to eq(true)
+            end
           end
         end
 

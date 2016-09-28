@@ -27,7 +27,7 @@ module StoriesApi
         required(:featured).filled(:bool?)
         required(:approved).filled(:bool?)
         required(:tags).each(:str?)
-        required(:number_of_items).filled(:int?, gt?: 0)
+        required(:number_of_items).filled(:int?, gteq?: 0)
         required(:contents).each(:valid_block?)
       end
     end

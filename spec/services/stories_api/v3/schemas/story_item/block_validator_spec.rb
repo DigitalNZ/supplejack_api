@@ -10,6 +10,14 @@ module StoriesApi
 
             expect(subject.call(rich_text_block.update(sub_type: 'heading'))).to eq(false)
           end
+
+          describe '#messages' do
+            it 'returns the validation error messages' do
+              subject.call(rich_text_block.update(sub_type: 'heading'))
+
+              expect(subject.messages).to include(:meta)
+            end
+          end
         end
       end
     end

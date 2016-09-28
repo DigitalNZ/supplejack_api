@@ -31,6 +31,15 @@ module SupplejackApi
     before_validation :set_position
     after_destroy :reindex_record
 
+    # The Schema validations for meta and content require the keys to be symbols
+    def meta
+      self[:meta].deep_symbolize_keys if self[:meta]
+    end
+
+    def content
+      self[:content].deep_symbolize_keys if self[:content]
+    end
+
     def not_adding_set_to_itself
       return unless user_set.record && record_id == user_set.record.record_id
 

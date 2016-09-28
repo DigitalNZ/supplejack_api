@@ -22,6 +22,7 @@ class RecordSchema
   datetime  :birth_date
   boolean   :nz_citizen,                          search_as: [:filter]
   string    :display_collection,                                search_as: [:filter, :fulltext],  namespace: :sj
+  string    :tag,         multi_value: true,      search_as: [:filter]
 
   # facets
   string    :category,     multi_value: true,     search_as: [:filter]
@@ -54,6 +55,13 @@ class RecordSchema
     fields [
       :name,
       :address
+    ]
+  end
+
+  group :valid_set_fields do
+    includes [:sets]
+    fields [
+      :tag
     ]
   end
 

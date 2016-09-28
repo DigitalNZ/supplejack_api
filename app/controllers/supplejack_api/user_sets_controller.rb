@@ -48,7 +48,7 @@ module SupplejackApi
     def show
       @user_set = UserSet.custom_find(params[:id])
       if @user_set
-        render json: UserSetSerializer.new(@user_set, user: current_user)
+        render json: UserSetSerializer.new(@user_set, user: current_user, fields: params[:fields])
       else
         render json: { errors: "Set with id: #{params[:id]} was not found." }, status: :not_found
       end

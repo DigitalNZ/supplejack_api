@@ -1,5 +1,6 @@
 FactoryGirl.define do
   factory :story_item, class: SupplejackApi::SetItem do
+    user_set
     sequence(:record_id)
     sequence(:position)
 

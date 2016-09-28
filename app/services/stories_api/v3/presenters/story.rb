@@ -4,7 +4,6 @@ module StoriesApi
     module Presenters
       class Story
         TOP_LEVEL_FIELDS = [
-          :id,
           :name,
           :description,
           :privacy,
@@ -19,10 +18,15 @@ module StoriesApi
           TOP_LEVEL_FIELDS.each do |field|
             result[field] = story.send(field)
           end
+          result[:id] = story.id.to_s
           result[:number_of_items] = story.set_items.count
           result[:contents] = story.set_items.map(&StoryItem)
 
           result
+        end
+
+        def self.to_proc
+          ->(story) { new.call(story) }
         end
       end
     end

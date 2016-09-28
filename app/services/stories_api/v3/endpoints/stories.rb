@@ -11,7 +11,6 @@ module StoriesApi
 
         def get
           user = params[:user]
-
           user_account = SupplejackApi::User.find_by_api_key(user)
 
           unless user_account.present?
@@ -22,6 +21,13 @@ module StoriesApi
               }
             }
           end
+
+          presented_stories = user_account.user_sets.map(&::StoriesApi::V3::Presenters::Story)
+
+          {
+            status: 200,
+            payload: presented_stories
+          }
         end
 
         def post

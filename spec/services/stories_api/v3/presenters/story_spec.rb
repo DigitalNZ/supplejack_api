@@ -6,9 +6,13 @@ module StoriesApi
         let(:presented_json) {subject.call(story)}
 
         it 'presents all top level fields' do
-          [:id, :name, :description, :privacy, :featured, :approved, :tags].each do |field|
+          [:name, :description, :privacy, :featured, :approved, :tags].each do |field|
             expect(presented_json[field]).to eq(story.send(field))
           end
+        end
+
+        it 'presents the id field as a string' do
+          expect(presented_json[:id]).to eq(story.id.to_s)
         end
 
         it 'presents number_of_items as the count of the items in the UserSet' do

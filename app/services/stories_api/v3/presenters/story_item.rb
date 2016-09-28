@@ -23,6 +23,10 @@ module StoriesApi
 
           result
         end
+
+        def self.to_proc
+          ->(story_item) {new.call(story_item)}
+        end
       end
     end
   end

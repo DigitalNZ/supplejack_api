@@ -32,6 +32,22 @@ module StoriesApi
         end
 
         def delete
+          story = SupplejackApi::UserSet.custom_find(params[:id])
+
+          unless story.present?
+            return {
+              status: 404,
+              exception: {
+                message: 'Story with given Id was not found'
+              }
+            }
+          end
+
+          story.delete
+
+          {
+            status: 204
+          }
         end
       end
     end

@@ -18,11 +18,26 @@ module StoriesApi
           expect(result.messages).to include(:name)
         end
 
-        it 'requires a description' do
-          result = subject.call(valid_story.except(:description))
+        describe '#description' do
+          it 'is required' do
+            result = subject.call(valid_story.except(:description))
 
-          expect(result.success?).to eq(false)
-          expect(result.messages).to include(:description)
+            expect(result.success?).to eq(false)
+            expect(result.messages).to include(:description)
+          end
+
+          it 'is allowed to be empty' do
+            result = subject.call(valid_story.update(description: ''))
+
+            expect(result.success?).to eq(true)
+          end
+
+          it 'is not allowed to be nil' do
+            result = subject.call(valid_story.update(description: nil))
+
+            expect(result.success?).to eq(false)
+            expect(result.messages).to include(:description)
+          end
         end
 
         describe '#privacy' do

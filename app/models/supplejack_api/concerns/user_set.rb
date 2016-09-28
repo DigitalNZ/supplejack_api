@@ -15,7 +15,7 @@ module SupplejackApi::Concerns::UserSet
     end
 
     field :name,              type: String
-    field :description,       type: String
+    field :description,       type: String,   default: ''
     field :privacy,           type: String,   default: 'public'
     field :url,               type: String
     field :priority,          type: Integer,  default: 0

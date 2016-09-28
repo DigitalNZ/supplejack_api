@@ -12,6 +12,10 @@ module StoriesApi
             StoryItem::BlockValidator.new.call(block)
           end
 
+          def not_nil?(value)
+            !value.nil?
+          end
+
           def self.messages
             super.merge(
               # TODO: Figure out how to make this error message actually useful
@@ -22,7 +26,7 @@ module StoriesApi
 
         required(:id).filled(:str?)
         required(:name).filled(:str?)
-        required(:description).filled(:str?)
+        required(:description) { str? }
         required(:privacy).filled(included_in?: privacy_statuses)
         required(:featured).filled(:bool?)
         required(:approved).filled(:bool?)

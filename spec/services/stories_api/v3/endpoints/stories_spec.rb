@@ -14,7 +14,7 @@ module StoriesApi
             )
           end
 
-          context 'successful request', focus: true do
+          context 'successful request' do
             let(:response) { Stories.new(user: @user.api_key).get }
             before do
               # So we have two users, because a story creates a user
@@ -32,6 +32,40 @@ module StoriesApi
 
               expect(payload.length).to eq(@user.user_sets.count)
               expect(payload.all?{|story| ::StoriesApi::V3::Schemas::Story.call(story).success?}).to eq(true)
+            end
+          end
+        end
+
+        describe '#post' do
+          it 'returns 400 if the name field is missing for the Story' do
+            response = Stories.new(story: {}).post
+
+            expect(response).to eq(
+              status: 400,
+              exception: {
+                message: 'Story was missing name field'
+              }
+            )
+          end
+
+          context 'succesful request' do
+            let(:user) {create(:user)}
+            let!(:response) {Stories.new(story: {name: 'Story Name'}, api_key: user.api_key).post}
+
+            before do
+              user.reload
+            end
+
+            it 'creates a new Story for the current_user' do
+              expect(user.user_sets.first.name).to eq('Story Name')
+            end
+
+            it 'returns the correct response shape' do
+              expect(::StoriesApi::V3::Schemas::Story.call(response[:payload]).success?).to eq(true)
+            end
+
+            it 'uses a 200 status code' do
+              expect(response[:status]).to eq(200)
             end
           end
         end

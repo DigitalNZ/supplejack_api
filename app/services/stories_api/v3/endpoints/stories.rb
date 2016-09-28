@@ -3,6 +3,8 @@ module StoriesApi
   module V3
     module Endpoints
       class Stories
+        include Helpers
+
         attr_reader :params
 
         def initialize(params)
@@ -31,6 +33,24 @@ module StoriesApi
         end
 
         def post
+          story_name = params[:story][:name]
+
+          unless story_name.present?
+            return {
+              status: 400,
+              exception: {
+                message: 'Story was missing name field'
+              }
+            }
+          end
+
+          new_story = current_user(params).user_sets.create(name: story_name)
+
+
+          {
+            status: 200,
+            payload: ::StoriesApi::V3::Presenters::Story.new.call(new_story)
+          }
         end
       end
     end

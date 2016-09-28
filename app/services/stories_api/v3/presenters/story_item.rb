@@ -1,8 +1,9 @@
+# frozen_string_literal: true
 module StoriesApi
   module V3
     module Presenters
       class StoryItem
-        TOP_LEVEL_FIELDS = [:position, :type, :sub_type]
+        TOP_LEVEL_FIELDS = [:position, :type, :sub_type].freeze
 
         def call(story_item)
           result = {}
@@ -25,7 +26,7 @@ module StoriesApi
         end
 
         def self.to_proc
-          ->(story_item) {new.call(story_item)}
+          ->(story_item) { new.call(story_item) }
         end
       end
     end

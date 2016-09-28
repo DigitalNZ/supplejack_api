@@ -4,6 +4,8 @@ module StoriesApi
     module Schemas
       module StoryItem
         class BlockValidator
+          attr_reader :messages
+
           def initialize
             @messages = nil
           end
@@ -17,10 +19,6 @@ module StoriesApi
 
             @messages = result.messages
             result.success?
-          end
-
-          def messages
-            @messages
           end
         end
       end

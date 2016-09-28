@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module StoriesApi
   module V3
     module Presenters
@@ -10,7 +11,7 @@ module StoriesApi
           :featured,
           :approved,
           :tags
-        ]
+        ].freeze
 
         def call(story)
           result = {}

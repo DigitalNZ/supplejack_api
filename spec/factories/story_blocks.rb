@@ -10,7 +10,7 @@ FactoryGirl.define do
       type 'text'
       sub_type 'heading'
       content {{value: 'foo'}}
-      meta {{size: '1'}}
+      meta {{size: 1}}
     end
 
     factory :rich_text_block do

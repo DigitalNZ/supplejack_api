@@ -7,7 +7,7 @@ module StoriesApi
           Heading = Dry::Validation.Schema(Block) do
             configure do
               def valid_sizes
-                %w(1 2 3 4 5 6)
+                [1, 2, 3, 4, 5, 6]
               end
             end
 

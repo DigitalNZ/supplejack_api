@@ -5,6 +5,7 @@ module SupplejackApi
     end
 
     def show
+      render_response(:story)
     end
 
     def create
@@ -30,7 +31,7 @@ module SupplejackApi
     end
 
     def handle_errors(api_response)
-      return unless api_response.has_key? :exception
+      return unless api_response.key? :exception
 
       render json: { errors: api_response[:exception][:message] }, status: api_response[:status]
     end

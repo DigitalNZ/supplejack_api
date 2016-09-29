@@ -38,7 +38,7 @@ module StoriesApi
 
         describe '#post' do
           it 'returns 400 if the name field is missing for the Story' do
-            response = Stories.new(story: {}).post
+            response = Stories.new(story: '111').post
 
             expect(response).to eq(
               status: 400,

@@ -33,9 +33,9 @@ module StoriesApi
         end
 
         def post
-          story_name = params[:story][:name]
+          story = params[:story]
 
-          unless story_name.present?
+          unless story.is_a?(Hash) && story[:name].present?
             return {
               status: 400,
               exception: {
@@ -44,6 +44,7 @@ module StoriesApi
             }
           end
 
+          story_name = params[:story][:name]
           new_story = current_user(params).user_sets.create(name: story_name)
 
           {

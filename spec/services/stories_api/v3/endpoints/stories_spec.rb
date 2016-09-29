@@ -9,7 +9,7 @@ module StoriesApi
             expect(response).to eq(
               status: 404,
               exception: {
-                message: 'User with provided Id not found'
+                message: 'User with provided Id was not found'
               }
             )
           end

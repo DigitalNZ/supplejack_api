@@ -14,7 +14,7 @@ module SupplejackApi
         end
 
         it 'includes the error message' do
-          expect(response.body).to include('Id not found')
+          expect(response.body).to include('Id was not found')
         end
       end
 
@@ -52,11 +52,11 @@ module SupplejackApi
         end
 
         it 'includes the error message' do
-          expect(response.body).to include('Id not found')
+          expect(response.body).to include('Id was not found')
         end
       end
 
-      context 'successful request', focus: true do
+      context 'successful request' do
         let(:response_body) { JSON.parse(response.body).deep_symbolize_keys }
         let(:story_id) { user.user_sets.first.id.to_s }
 

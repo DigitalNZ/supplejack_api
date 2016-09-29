@@ -29,6 +29,35 @@ module StoriesApi
         end
 
         def patch
+          story = SupplejackApi::UserSet.custom_find(params[:id])
+          merge_patch = PerformMergePatch.new(::StoriesApi::V3::Schemas::Story, ::StoriesApi::V3::Presenters::Story.new)
+
+          unless story.present?
+            return {
+              status: 404,
+              exception: {
+                message: 'Story with given Id was not found'
+              }
+            }
+          end
+
+          valid = merge_patch.call(story, params[:story])
+
+          unless valid
+            return {
+              status: 400,
+              exception: {
+                message: "Story patch failed to validate: #{merge_patch.validation_errors.values.reduce(&:+).join(', ')}"
+              }
+            }
+          end
+
+          story.save
+
+          {
+            status: 200,
+            payload: ::StoriesApi::V3::Presenters::Story.new.call(story)
+          }
         end
 
         def delete

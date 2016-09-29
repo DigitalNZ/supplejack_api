@@ -46,7 +46,6 @@ module StoriesApi
 
           new_story = current_user(params).user_sets.create(name: story_name)
 
-
           {
             status: 200,
             payload: ::StoriesApi::V3::Presenters::Story.new.call(new_story)

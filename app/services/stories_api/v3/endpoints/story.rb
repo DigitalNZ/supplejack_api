@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module StoriesApi
   module V3
     module Endpoints
@@ -44,10 +45,12 @@ module StoriesApi
           valid = merge_patch.call(story, params[:story])
 
           unless valid
+            validation_errors = merge_patch.validation_errors.values.reduce(&:+).join(', ')
+
             return {
               status: 400,
               exception: {
-                message: "Story patch failed to validate: #{merge_patch.validation_errors.values.reduce(&:+).join(', ')}"
+                message: "Story patch failed to validate: #{validation_errors}"
               }
             }
           end

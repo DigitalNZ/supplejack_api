@@ -8,7 +8,7 @@ before_script:
   - cp spec/dummy/config/mongoid.travis.yml spec/dummy/config/mongoid.yml
 script:
   - bundle exec rspec
-#  - bundle exec rubocop
+  - bundle exec rubocop
 services: mongodb
 addons:
   codeclimate:

@@ -119,5 +119,38 @@ module SupplejackApi
         end
       end
     end
+
+    describe 'DELETE create' do
+      context 'unsuccessful request - story not found' do
+        before { delete :destroy, api_key: api_key, id: '1231231231' }
+
+        it 'returns 404' do
+          expect(response.status).to eq(404)
+        end
+
+        it 'includes the error message' do
+          expect(response.body).to include('Id was not found')
+        end
+      end
+
+      context 'successful request' do
+        before do
+          story = user.user_sets.create(attributes_for(:story))
+
+          delete :destroy, api_key: api_key, id: story.id
+        end
+
+        it 'returns a 204 http code' do
+          expect(response.status).to eq(204)
+        end
+
+        it 'deletes the story' do
+          user.reload
+
+          expect(user.user_sets.count).to eq(0)
+          expect(SupplejackApi::UserSet.count).to eq(0)
+        end
+      end
+    end
   end
 end

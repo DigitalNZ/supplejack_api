@@ -16,6 +16,7 @@ module SupplejackApi
     end
 
     def destroy
+      render_response(:story)
     end
 
     private

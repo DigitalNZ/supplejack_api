@@ -13,6 +13,7 @@ module SupplejackApi
     end
 
     def update
+      render_response(:story)
     end
 
     def destroy

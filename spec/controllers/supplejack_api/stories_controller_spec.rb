@@ -152,5 +152,51 @@ module SupplejackApi
         end
       end
     end
+
+    describe 'PATCH update' do
+      context 'unsuccessful request - story not found' do
+        before { patch :update, api_key: api_key, id: '1231231231' }
+
+        it 'returns 404' do
+          expect(response.status).to eq(404)
+        end
+
+        it 'includes the error message' do
+          expect(response.body).to include('Id was not found')
+        end
+      end
+
+      context 'successful request' do
+        let(:response_body) { JSON.parse(response.body).deep_symbolize_keys }
+        let(:name) { 'InsertANameHere' }
+        let(:description) { 'InsertADescriptionHere' }
+        let(:story) {user.user_sets.create(attributes_for(:story)) }
+        let(:story_patch) do
+          {
+            name: name,
+            description: description
+          }
+        end
+
+        before do
+          patch :update, api_key: api_key, id: story.id, story: story_patch
+        end
+
+        it 'returns a 200 http code' do
+          expect(response.status).to eq(200)
+        end
+
+        it 'updates the given Story' do
+          updated_story = SupplejackApi::UserSet.find(story.id)
+
+          expect(updated_story.name).to eq(name)
+          expect(updated_story.description).to eq(description)
+        end
+
+        it 'returns a valid story shape' do
+          expect(::StoriesApi::V3::Schemas::Story.call(response_body).success?).to eq(true)
+        end
+      end
+    end
   end
 end

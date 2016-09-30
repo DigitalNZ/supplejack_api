@@ -24,7 +24,7 @@ module StoriesApi
             }
           end
 
-          user_story = user_account.user_sets.find(params[:id])
+          user_story = user_account.user_sets.find_by_id(params[:id])
 
           unless user_story.present?
             return {

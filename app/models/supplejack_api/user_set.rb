@@ -13,5 +13,9 @@ module SupplejackApi
     include ActionView::Helpers::SanitizeHelper
     include ActiveModel::MassAssignmentSecurity
     include SupplejackApi::Concerns::UserSet
+
+    def self.find_by_id(id)
+      where(id: id).first
+    end    
   end
 end

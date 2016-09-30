@@ -4,13 +4,24 @@ module StoriesApi
       RSpec.describe StoryItems do
         describe '#get' do
           it 'returns 404 if the provided user id does not exist' do
-            response = StoryItems.new(id: '3',
-                                      user: 'fxjghlh').get
+            response = StoryItems.new(id: '3', user: 'fxjghlh').get
 
             expect(response).to eq(
               status: 404,
               exception: {
                 message: 'User with provided Id not found'
+              }
+            )
+          end
+
+          it 'returns 404 if the story id dosent exist' do
+            @story = create(:story)
+            response = StoryItems.new(id: 'madeupkey', user: @story.user.api_key).get
+
+            expect(response).to eq(
+              status: 404,
+              exception: {
+                message: 'Story with provided Id madeupkey not found'
               }
             )
           end
@@ -26,15 +37,15 @@ module StoriesApi
               expect(response[:status]).to eq(200)
             end
 
-            # it 'returns an array of all of a users stories if the user exists' do
-            #   payload = response[:payload]
+            it 'returns an array of all of a users stories if the user exists' do
+              payload = response[:payload]
 
-            #   expect(payload.length).to eq(@user.user_sets.count)
-            #   expect(payload.all?{|story| ::StoriesApi::V3::Schemas::Story.call(story).success?}).to eq(true)
-            # end
+              expect(payload.length).to eq(@story.set_items.count)
+              # expect(payload.all?{|story| ::StoriesApi::V3::Schemas::Story.call(story).success?}).to eq(true)
+            end
           end
         end
-        
+
       end
     end
   end

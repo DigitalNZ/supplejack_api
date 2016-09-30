@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module SupplejackApi
   class StoriesController < ApplicationController
     def index

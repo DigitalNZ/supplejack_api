@@ -47,7 +47,7 @@ module SupplejackApi::Concerns::UserSet
     # Force-capitalize only the first word of the set name
     #
     def name=(name)
-      write_attribute(:name, Utils.capitalize_first_word(name))
+      self[:name] = Utils.capitalize_first_word(name)
     end
 
     # Find a set based on the MongoDB ObjectID or the set url.

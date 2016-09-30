@@ -11,7 +11,7 @@ module SupplejackApi
     class SessionsController < Devise::SessionsController
       layout 'supplejack_api/application'
 
-      skip_before_filter :authenticate_user!
+      skip_before_action :authenticate_user!
 
       def after_sign_in_path_for(resource)
         stored_location_for(resource) || admin_users_path

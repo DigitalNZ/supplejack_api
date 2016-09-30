@@ -167,7 +167,7 @@ module SupplejackApi
       requests = []
       date = today - days.days
       while date < today
-        date += 1.days
+        date += 1.day
         requests << (user_activities.find { |ua| ua.created_at.to_date == date }.try(:total) || 0)
       end
       requests

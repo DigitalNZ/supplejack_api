@@ -41,7 +41,7 @@ module StoriesApi
               payload = response[:payload]
 
               expect(payload.length).to eq(@story.set_items.count)
-              # expect(payload.all?{|story| ::StoriesApi::V3::Schemas::Story.call(story).success?}).to eq(true)
+              expect(payload.all?{ |story| ::StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(story) }).to eq(true)
             end
           end
         end

@@ -81,5 +81,43 @@ module SupplejackApi
         end
       end
     end
+
+    describe 'POST create' do
+      context 'unsuccessful request - malformed post body' do
+        before { post :create, api_key: api_key, story: '1231231231' }
+
+        it 'returns 400' do
+          expect(response.status).to eq(400)
+        end
+
+        it 'includes the error message' do
+          expect(response.body).to include('missing name field')
+        end
+      end
+
+      context 'successful request' do
+        let(:response_body) { JSON.parse(response.body).deep_symbolize_keys }
+        let(:story_name) { 'StoryNameGoesHere' }
+
+        before do
+          post :create, api_key: api_key, story: { name: story_name }
+        end
+
+        it 'returns a 200 http code' do
+          expect(response.status).to eq(200)
+        end
+
+        it 'creates the story' do
+          user.reload
+
+          expect(user.user_sets.count).to eq(1)
+          expect(user.user_sets.first.name).to eq(story_name)
+        end
+
+        it 'returns a valid story' do
+          expect(::StoriesApi::V3::Schemas::Story.call(response_body).success?).to eq(true)
+        end
+      end
+    end
   end
 end

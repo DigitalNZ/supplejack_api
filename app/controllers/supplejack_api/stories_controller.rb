@@ -9,6 +9,7 @@ module SupplejackApi
     end
 
     def create
+      render_response(:stories)
     end
 
     def update

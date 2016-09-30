@@ -8,7 +8,7 @@
 
 module SupplejackApi
   class UserSetSerializer < ActiveModel::Serializer
-    attributes :name, :count, :priority, :featured, :approved, :created_at, :updated_at, :tags
+    attributes :name, :count, :priority, :featured, :approved, :created_at, :updated_at, :tags, :privacy
     has_one :record, serializer: UserSetRecordSerializer
     root :set
 
@@ -42,7 +42,15 @@ module SupplejackApi
     # The values to be added from the record are stored in SetItem::ATTRIBUTES
     #
     def records(amount = nil)
-      attributes = [:record_id, :position] + SetItem::ATTRIBUTES
+      attributes = [:record_id, :position] + RecordSchema.groups[:sets].fields
+
+      if options[:fields]
+        fields = options[:fields].split(',').map(&:to_sym)
+        # This is done to prevent people from passing random fields and breaking the API
+        fields.reject! { |field| !SetItem::ATTRIBUTES.include? field }
+        attributes.concat(fields)
+      end
+
       object.items_with_records(amount).map do |item|
         Hash[attributes.map { |attr| [attr, item.send(attr)] }]
       end

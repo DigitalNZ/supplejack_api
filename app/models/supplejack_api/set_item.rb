@@ -10,7 +10,7 @@ module SupplejackApi
   class SetItem
     include Mongoid::Document
 
-    ATTRIBUTES = RecordSchema.groups[:sets].fields
+    ATTRIBUTES = RecordSchema.groups[:valid_set_fields].fields
 
     attr_accessor :record
 

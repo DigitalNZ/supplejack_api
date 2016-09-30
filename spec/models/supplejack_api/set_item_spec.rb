@@ -1,18 +1,18 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 require 'spec_helper'
 
 module SupplejackApi
   describe SetItem do
-  
+
   	let(:user_set) { FactoryGirl.build(:user_set) }
     let(:set_item) { user_set.set_items.build(record_id: 10, position: 1) }
-    
+
     before(:each) do
       allow(user_set).to receive(:record) {double(:record, record_id: 4321)}
       allow(user_set).to receive(:update_record)
@@ -44,14 +44,14 @@ module SupplejackApi
 
       it "should not be valid when trying to add a set to itself" do
         allow(user_set).to receive(:record) {double(:record, record_id: 1234)}
-        user_set.set_items.build(record_id: 1234, position: 1)    
+        user_set.set_items.build(record_id: 1234, position: 1)
         set_item = user_set.set_items.first
         expect(set_item).to_not be_valid
       end
 
       it "should allow set_item to be added to user_set without an associated Record" do
         allow(user_set).to receive(:record)
-        user_set.set_items.build(record_id: 1234, position: 1)    
+        user_set.set_items.build(record_id: 1234, position: 1)
         set_item = user_set.set_items.first
         expect(set_item).to be_valid
       end
@@ -86,7 +86,7 @@ module SupplejackApi
           user_set.set_items.build(record_id: 1, position: 1)
           user_set.save
         end
-        
+
         it "positions the set item at the end" do
           set_item = user_set.set_items.build(record_id: 2)
           set_item.set_position

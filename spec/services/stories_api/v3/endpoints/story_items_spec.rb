@@ -1,15 +1,29 @@
+# frozen_string_literal: true
 module StoriesApi
   module V3
     module Endpoints
       RSpec.describe StoryItems do
+        describe '#initialize' do
+          before do
+            @story = create(:story)
+            @user = @story.user
+          end
+
+          it 'should set user and story' do
+            story_item = StoryItems.new(id: @story.id, user: @user.api_key)
+            expect(story_item.user).to eq @user
+            expect(story_item.story).to eq @story
+          end
+        end
+
         describe '#get' do
           it 'returns 404 if the provided user id does not exist' do
-            response = StoryItems.new(id: '3', user: 'fxjghlh').get
+            response = StoryItems.new(id: '3', user: 'madeupuser').get
 
             expect(response).to eq(
               status: 404,
               exception: {
-                message: 'User with provided Api Key fxjghlh not found'
+                message: 'User with provided Api Key madeupuser not found'
               }
             )
           end
@@ -47,7 +61,28 @@ module StoriesApi
         end
 
         describe '#post' do
+          it 'returns 404 if the user dosent exist' do
+            response = StoryItems.new(id: 'madeupkey', user: 'madeupuser').post
 
+            expect(response).to eq(
+              status: 404,
+              exception: {
+                message: 'User with provided Api Key madeupuser not found'
+              }
+            )            
+          end
+
+          it 'returns 404 if the story dosent exist' do
+            @story = create(:story)
+            response = StoryItems.new(id: 'madeupkey', user: @story.user.api_key).post
+
+            expect(response).to eq(
+              status: 404,
+              exception: {
+                message: 'Story with provided Id madeupkey not found'
+              }
+            )            
+          end
         end
       end
     end

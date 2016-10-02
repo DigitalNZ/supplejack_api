@@ -14,6 +14,11 @@ module StoriesApi
             expect(story_item.user).to eq @user
             expect(story_item.story).to eq @story
           end
+
+          it 'expecst set_user_and_story method to be called' do
+            expect_any_instance_of(StoryItems).to receive(:set_user_and_story)
+            StoryItems.new(id: @story.id, user: @user.api_key)
+          end
         end
 
         describe '#get' do

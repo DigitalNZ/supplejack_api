@@ -15,42 +15,28 @@ module StoriesApi
           user = params[:user]
           user_account = SupplejackApi::User.find_by_api_key(user)
 
-          unless user_account.present?
-            return {
-              status: 404,
-              exception: {
-                message: 'User with provided Id was not found'
-              }
-            }
-          end
+          return create_exception(
+            status: 404,
+            message: 'User with provided Id was not found'
+          ) unless user_account.present?
 
           presented_stories = user_account.user_sets.map(&::StoriesApi::V3::Presenters::Story)
 
-          {
-            status: 200,
-            payload: presented_stories
-          }
+          create_response(status: 200, payload: presented_stories)
         end
 
         def post
           story = params[:story]
 
-          unless story.is_a?(Hash) && story[:name].present?
-            return {
-              status: 400,
-              exception: {
-                message: 'Story was missing name field'
-              }
-            }
-          end
+          return create_exception(
+            status: 400,
+            message: 'Story was missing name field'
+          ) unless story.is_a?(Hash) && story[:name].present?
 
           story_name = params[:story][:name]
           new_story = current_user(params).user_sets.create(name: story_name)
 
-          {
-            status: 200,
-            payload: ::StoriesApi::V3::Presenters::Story.new.call(new_story)
-          }
+          create_response(status: 200, payload: ::StoriesApi::V3::Presenters::Story.new.call(new_story))
         end
       end
     end

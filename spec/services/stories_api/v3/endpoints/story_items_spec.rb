@@ -9,7 +9,7 @@ module StoriesApi
             expect(response).to eq(
               status: 404,
               exception: {
-                message: 'User with provided Id not found'
+                message: 'User with provided Api Key fxjghlh not found'
               }
             )
           end
@@ -46,6 +46,9 @@ module StoriesApi
           end
         end
 
+        describe '#post' do
+
+        end
       end
     end
   end

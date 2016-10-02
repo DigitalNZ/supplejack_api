@@ -13,27 +13,12 @@ module StoriesApi
 
         def get
           user = params[:user]
-          user_account = SupplejackApi::User.find_by_api_key(user)
 
-          unless user_account.present?
-            return {
-              status: 404,
-              exception: {
-                message: 'User with provided Id not found'
-              }
-            }
-          end
+          user_account = SupplejackApi::User.find_by_api_key(user)
+          return StoriesApi::V3::Errors::UserNotFound.new(params[:user]).error unless user_account.present?
 
           user_story = user_account.user_sets.find_by_id(params[:id])
-
-          unless user_story.present?
-            return {
-              status: 404,
-              exception: {
-                message: "Story with provided Id #{params[:id]} not found"
-              }
-            }
-          end
+          return StoriesApi::V3::Errors::StoryNotFound.new(params[:id]).error unless user_story.present?
 
           presented_story_items = user_story.set_items.map(&::StoriesApi::V3::Presenters::StoryItem)
 

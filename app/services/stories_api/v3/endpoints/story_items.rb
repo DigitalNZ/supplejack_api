@@ -9,7 +9,8 @@ module StoriesApi
 
         def initialize(params)
           @params = params
-          set_user_and_story
+          @user = SupplejackApi::User.find_by_api_key(params[:user])
+          @story = @user ? @user.user_sets.find_by_id(params[:id]) : nil
         end
 
         def get
@@ -27,15 +28,9 @@ module StoriesApi
         def post
           return V3::Errors::UserNotFound.new(params[:user]).error unless @user.present?
           return V3::Errors::StoryNotFound.new(params[:id]).error unless @story.present?
-        end
 
-        private
-
-        def set_user_and_story
-          user = params[:user]
-
-          @user = SupplejackApi::User.find_by_api_key(user)
-          @story = @user ? @user.user_sets.find_by_id(params[:id]) : nil
+          # StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(params)
+          # binding.pry
         end
       end
     end

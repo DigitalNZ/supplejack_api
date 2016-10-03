@@ -50,8 +50,8 @@ module StoriesApi
           end
 
           context 'succesful request' do
-            let(:user) {create(:user)}
-            let!(:response) {Stories.new(story: {name: 'Story Name'}, api_key: user.api_key).post}
+            let(:user) { create(:user) }
+            let!(:response) { Stories.new(story: { name: 'Story Name' }, api_key: user.api_key).post }
 
             before do
               user.reload

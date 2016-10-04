@@ -6,8 +6,41 @@ module SupplejackApi
     let(:api_key) { user.api_key }
 
     describe 'GET index' do
+
+      context 'successful request' do
+        let(:response_body) { JSON.parse(response.body).map(&:deep_symbolize_keys) }
+
+        before do
+          2.times do
+            user.user_sets.create(attributes_for(:story))
+          end
+
+          get :index, api_key: api_key
+        end
+
+        it 'returns a 200 http code' do
+          expect(response.status).to eq(200)
+        end
+
+        it 'returns all their stories' do
+          expect(response_body.length).to eq(2)
+        end
+
+        it 'returns valid stories' do
+          expect(response_body.all? {|story| ::StoriesApi::V3::Schemas::Story.call(story).success?}).to eq(true)
+        end
+      end
+    end
+
+    describe 'GET admin_index' do
+      let(:api_key) { create(:user, role: 'admin').api_key }
+
+      before do
+        allow(RecordSchema).to receive(:roles) { { admin: double(:admin, admin: true) } }
+      end
+
       context 'unsuccessful request - provided user id does not exist' do
-        before { get :index, api_key: api_key, user: '1231231231' }
+        before { get :admin_index, api_key: api_key, user_id: '1231231231' }
 
         it 'returns 404' do
           expect(response.status).to eq(404)
@@ -15,6 +48,18 @@ module SupplejackApi
 
         it 'includes the error message' do
           expect(response.body).to include('Id was not found')
+        end
+      end
+
+      context 'unsuccesful request - not admin' do
+        before { get :admin_index, api_key: user.api_key, user_id: user.api_key }
+
+        it 'returns 403' do
+          expect(response.status).to eq(403)
+        end
+
+        it 'includes the error message' do
+          expect(response.body).to include('Administrator privileges')
         end
       end
 
@@ -26,7 +71,7 @@ module SupplejackApi
             user.user_sets.create(attributes_for(:story))
           end
 
-          get :index, api_key: api_key, user: api_key
+          get :admin_index, api_key: api_key, user_id: user.api_key
         end
 
         it 'returns a 200 http code' do

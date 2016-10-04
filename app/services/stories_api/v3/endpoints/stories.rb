@@ -12,7 +12,7 @@ module StoriesApi
         end
 
         def get
-          user = params[:user]
+          user = params[:user_id]
           user_account = SupplejackApi::User.find_by_api_key(user)
 
           return create_exception(

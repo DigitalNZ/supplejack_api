@@ -1,7 +1,15 @@
 # frozen_string_literal: true
 module SupplejackApi
   class StoriesController < ApplicationController
+    before_action :authenticate_admin!, only: [:admin_index]
+
     def index
+      params[:user_id] = params[:api_key]
+
+      render_response(:stories)
+    end
+
+    def admin_index
       render_response(:stories)
     end
 

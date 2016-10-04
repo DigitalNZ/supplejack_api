@@ -41,6 +41,13 @@ module StoriesApi
             status: 200,
           )
         end
+
+        it 'includes the payload if it is an empty array' do
+          expect(helpers.create_response(status: 200, payload: [])).to eq(
+            status: 200,
+            payload: []
+          )
+        end
       end
     end
   end

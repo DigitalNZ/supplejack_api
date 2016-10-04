@@ -4,7 +4,7 @@ module StoriesApi
       RSpec.describe Stories do
         describe '#get' do
           it 'returns 404 if the provided user id does not exist' do
-            response = Stories.new(user: '1231892312hj3k12j3').get
+            response = Stories.new(user_id: '1231892312hj3k12j3').get
 
             expect(response).to eq(
               status: 404,
@@ -15,7 +15,7 @@ module StoriesApi
           end
 
           context 'successful request' do
-            let(:response) { Stories.new(user: @user.api_key).get }
+            let(:response) { Stories.new(user_id: @user.api_key).get }
             before do
               # So we have two users, because a story creates a user
               create(:story)

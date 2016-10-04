@@ -17,7 +17,7 @@ module StoriesApi
 
       def create_response(status: nil, payload: nil)
         response = { status: status }
-        response[:payload] = payload if payload.present?
+        response[:payload] = payload unless payload.nil?
 
         response
       end

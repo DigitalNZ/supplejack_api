@@ -21,6 +21,7 @@ SupplejackApi::Engine.routes.draw do
     # User level authentication
     resources :users, only: [:show, :create, :update, :destroy] do
       get "/sets" => "user_sets#admin_index", as: :user_sets
+      get "/stories" => "stories#admin_index", as: :stories
     end
 
     # Concepts

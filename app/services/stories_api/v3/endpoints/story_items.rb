@@ -23,7 +23,8 @@ module StoriesApi
         end
 
         def post
-          # StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(params)
+          validation = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new
+          return validation.messages unless validation.call(params[:block])
         end
 
         def errors

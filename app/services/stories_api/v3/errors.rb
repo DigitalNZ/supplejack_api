@@ -22,6 +22,34 @@ module StoriesApi
           set(404, "Story with provided Id #{story_id} not found")
         end
       end
+
+      class MandatoryParamMissing < Base
+        def initialize(param)
+          set(422, "Mandatory Parameter #{param} missing in request")
+        end
+      end
+
+      class UnsupportedFieldType < Base
+        def initialize(field, value)
+          set(415, "Unsupported value #{value} for parameter #{field}")
+        end
+      end
+
+      class SchemaValidationError < Base
+        def initialize(errors)
+          message = ''
+          errors.each do |field, subfields|
+            message = if subfields.is_a? Hash
+              subfields.map { |k, v| "#{field} #{k} #{v[0]}" }.join(', ')
+            else
+              "#{field} #{subfields[0]}"
+            end
+          end
+
+          error_code = message.include?('missing') ? 422 : 400
+          set(error_code, "Bad Request. #{message}")
+        end
+      end
     end
   end
 end

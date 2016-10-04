@@ -9,9 +9,9 @@
 module SupplejackApi
   module Admin
     class BaseController < ApplicationController
-      skip_before_filter :authenticate_user!
-      before_filter :authenticate_admin_user!
-      before_filter :restrict_to_admin_users!
+      skip_before_action :authenticate_user!
+      before_action :authenticate_admin_user!
+      before_action :restrict_to_admin_users!
 
       def restrict_to_admin_users!
         return if current_admin_user.admin?

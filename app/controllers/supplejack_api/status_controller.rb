@@ -10,9 +10,9 @@ module SupplejackApi
   # rubocop:disable Metrics/LineLength
   # FIXME: make log lines smaller
   class StatusController < ApplicationController
-    skip_before_filter :authenticate_user!, only: [:show]
-    skip_before_filter :verify_limits!,     only: [:show]
-    around_filter :handle_timeout, only: :show
+    skip_before_action :authenticate_user!, only: [:show]
+    skip_before_action :verify_limits!,     only: [:show]
+    around_action :handle_timeout, only: :show
 
     newrelic_ignore if defined? NewRelic
 

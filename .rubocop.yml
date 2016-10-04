@@ -1,4 +1,6 @@
 inherit_from: .rubocop_todo.yml
+Rails:
+  Enabled: true
 AllCops:
   Exclude:
     - 'vendor/**/*'
@@ -8,8 +10,6 @@ AllCops:
     - 'script/**/*'
     - 'features/**/*'
     - 'lib/generators/**/*'
-  Rails:
-    Enabled: true
   DisplayStyleGuide: true
   DisplayCopNames: true
   TargetRubyVersion: 2.3

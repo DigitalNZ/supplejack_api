@@ -10,7 +10,7 @@ module SupplejackApi
   class SetItemsController < ApplicationController
     include SupplejackApi::Concerns::SetItemsControllerMetrics
 
-    before_filter :find_user_set
+    before_action :find_user_set
 
     respond_to :json
 

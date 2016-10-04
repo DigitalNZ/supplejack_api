@@ -21,6 +21,7 @@ SupplejackApi::Engine.routes.draw do
     # User level authentication
     resources :users, only: [:show, :create, :update, :destroy] do
       get "/sets" => "user_sets#admin_index", as: :user_sets
+      get "/stories" => "stories#admin_index", as: :stories
     end
 
     # Concepts
@@ -40,6 +41,8 @@ SupplejackApi::Engine.routes.draw do
     resources :user_sets, path: 'sets', except: [:new, :edit] do
       resources :set_items, path: 'records', only: [:create, :destroy]
     end
+
+    resources :stories, except: [:new, :edit]
   end
 
   scope '/:version/metrics', version: /v3/, defaults: {format: 'json'} do

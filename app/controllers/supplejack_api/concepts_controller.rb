@@ -8,8 +8,8 @@
 
 module SupplejackApi
   class ConceptsController < ApplicationController
-    skip_before_filter :authenticate_user!, only: [:source]
-    skip_before_filter :verify_limits!,     only: [:source]
+    skip_before_action :authenticate_user!, only: [:source]
+    skip_before_action :verify_limits!,     only: [:source]
 
     respond_to :json, :xml, :rss
 

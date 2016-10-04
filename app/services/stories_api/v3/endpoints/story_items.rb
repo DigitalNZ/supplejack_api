@@ -14,9 +14,6 @@ module StoriesApi
         end
 
         def get
-          return V3::Errors::UserNotFound.new(params[:user]).error unless @user.present?
-          return V3::Errors::StoryNotFound.new(params[:id]).error unless @story.present?
-
           presented_story_items = @story.set_items.map(&::StoriesApi::V3::Presenters::StoryItem)
 
           {
@@ -26,11 +23,12 @@ module StoriesApi
         end
 
         def post
+          # StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(params)
+        end
+
+        def errors
           return V3::Errors::UserNotFound.new(params[:user]).error unless @user.present?
           return V3::Errors::StoryNotFound.new(params[:id]).error unless @story.present?
-
-          # StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(params)
-          # binding.pry
         end
       end
     end

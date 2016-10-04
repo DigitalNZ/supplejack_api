@@ -5,7 +5,7 @@ module StoriesApi
       class Stories
         include Helpers
 
-        attr_reader :params
+        attr_reader :params, :errors
 
         def initialize(params)
           @params = params

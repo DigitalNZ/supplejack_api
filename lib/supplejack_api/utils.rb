@@ -66,10 +66,18 @@ module Utils
     end
   end
 
+  # Make only the first letter of the string capital
+  # .capilatize makes the rest of the string lower case
+  # And hence this method.
+  #
+  # @author Ben
+  # @last_modified Eddie
+  # @param string [String] the string
+  # @return [String] the string with capital first letter
   def capitalize_first_word(string)
     return '' unless string.present?
-    first_letter = string.to_s[0].upcase
-    string[0] = first_letter
+    string = string.dup if string.frozen?
+    string[0] = string.to_s[0].upcase
     string
   end
 end

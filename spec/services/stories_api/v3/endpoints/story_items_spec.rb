@@ -18,7 +18,7 @@ module StoriesApi
 
         describe '#get' do
           it 'returns 404 if the provided user id does not exist' do
-            response = StoryItems.new(id: '3', user: 'madeupuser').get
+            response = StoryItems.new(id: '3', user: 'madeupuser').errors
 
             expect(response).to eq(
               status: 404,
@@ -30,7 +30,7 @@ module StoriesApi
 
           it 'returns 404 if the story id dosent exist' do
             @story = create(:story)
-            response = StoryItems.new(id: 'madeupkey', user: @story.user.api_key).get
+            response = StoryItems.new(id: 'madeupkey', user: @story.user.api_key).errors
 
             expect(response).to eq(
               status: 404,
@@ -62,7 +62,7 @@ module StoriesApi
 
         describe '#post' do
           it 'returns 404 if the user dosent exist' do
-            response = StoryItems.new(id: 'madeupkey', user: 'madeupuser').post
+            response = StoryItems.new(id: 'madeupkey', user: 'madeupuser').errors
 
             expect(response).to eq(
               status: 404,
@@ -74,7 +74,7 @@ module StoriesApi
 
           it 'returns 404 if the story dosent exist' do
             @story = create(:story)
-            response = StoryItems.new(id: 'madeupkey', user: @story.user.api_key).post
+            response = StoryItems.new(id: 'madeupkey', user: @story.user.api_key).errors
 
             expect(response).to eq(
               status: 404,

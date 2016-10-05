@@ -40,10 +40,10 @@ module StoriesApi
           message = ''
           errors.each do |field, subfields|
             message = if subfields.is_a? Hash
-              subfields.map { |k, v| "#{field} #{k} #{v[0]}" }.join(', ')
-            else
-              "#{field} #{subfields[0]}"
-            end
+                        subfields.map { |k, v| "#{field} #{k} #{v[0]}" }.join(', ')
+                      else
+                        "#{field} #{subfields[0]}"
+                      end
           end
 
           error_code = message.include?('missing') ? 422 : 400

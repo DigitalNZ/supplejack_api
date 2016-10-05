@@ -259,12 +259,13 @@ module StoriesApi
                                                    sub_type: 'dnz',
                                                    position: 0,
                                                    content: {
-                                                    id: 'jhdfg',
-                                                    title: 'Title',
-                                                    display_collection: 'Marama',
-                                                    category: 'Te Papa',
-                                                    image_url: 'url',
-                                                    tags: 'foo' },
+                                                     id: 'jhdfg',
+                                                     title: 'Title',
+                                                     display_collection: 'Marama',
+                                                     category: 'Te Papa',
+                                                     image_url: 'url',
+                                                     tags: 'foo'
+                                                   },
                                                    meta: {} }).post
                 expect(response).to eq(
                   status: 400,
@@ -281,12 +282,13 @@ module StoriesApi
                                                    sub_type: 'dnz',
                                                    position: 0,
                                                    content: {
-                                                    id: 100,
-                                                    title: 'Title',
-                                                    display_collection: 'Marama',
-                                                    category: 'Te Papa',
-                                                    image_url: 'url',
-                                                    tags: ['foo', 'bar'] },
+                                                     id: 100,
+                                                     title: 'Title',
+                                                     display_collection: 'Marama',
+                                                     category: 'Te Papa',
+                                                     image_url: 'url',
+                                                     tags: %w(foo bar)
+                                                   },
                                                    meta: {} }).post
                 expect(response).to eq(
                   status: 200,
@@ -294,13 +296,13 @@ module StoriesApi
                     position: 0,
                     type: 'embed',
                     sub_type: 'dnz',
-                    content: { 
+                    content: {
                       id: 100,
                       title: 'Title',
                       display_collection: 'Marama',
                       category: 'Te Papa',
                       image_url: 'url',
-                      tags: ['foo', 'bar']
+                      tags: %w(foo bar)
                     }
                   }
                 )

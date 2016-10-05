@@ -245,7 +245,7 @@ module SupplejackApi
       end
 
       it "ignores invalid set items but still saves the set" do
-        user_set.update_attributes_and_embedded(records: [{"record_id" => "13", "position" => "1"}, {"position" => "2"}])
+        user_set.update_attributes_and_embedded(records: [{"record_id" => "13", "position" => "1"}, {"record_id" => "shtig", "position" => "2"}])
         user_set.reload
         expect(user_set.set_items.size).to eq 1
         expect(user_set.set_items.first.record_id).to eq 13

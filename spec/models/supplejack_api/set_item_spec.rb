@@ -19,11 +19,6 @@ module SupplejackApi
     end
 
     context "validations" do
-      it "should not be valid without a record_id" do
-        set_item.record_id = nil
-        expect(set_item).to_not be_valid
-      end
-
       it "should not be valid when record_id is not a number" do
         set_item.record_id = "abc"
         expect(set_item).to_not be_valid

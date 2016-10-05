@@ -23,6 +23,12 @@ module StoriesApi
         end
       end
 
+      class StoryItemNotFound < Base
+        def initialize(item_id, story_id)
+          set(404, "StoryItem with provided Id #{item_id} not found for Story with provided Story Id #{story_id}")
+        end
+      end
+
       class MandatoryParamMissing < Base
         def initialize(param)
           set(422, "Mandatory Parameter #{param} missing in request")

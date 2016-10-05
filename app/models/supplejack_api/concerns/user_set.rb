@@ -12,6 +12,16 @@ module SupplejackApi::Concerns::UserSet
       def find_by_record_id(record_id)
         where(record_id: record_id).first
       end
+
+      # Finds a set item and returns it
+      #
+      # @author Eddie
+      # @last_modified Eddie
+      # @param id [String] the id
+      # @return [SetItem] the item
+      def find_by_id(id)
+        where(id: id).first
+      end
     end
 
     field :name,              type: String

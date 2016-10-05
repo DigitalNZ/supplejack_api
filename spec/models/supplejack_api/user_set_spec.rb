@@ -96,6 +96,14 @@ module SupplejackApi
       end
     end
 
+    describe ".find_by_id" do
+      it "returns a set_item by it's id" do
+        set_item = user_set.set_items.build(record_id: 12)
+        user_set.save
+        expect(user_set.set_items.find_by_id(set_item.id.to_s)).to eq set_item
+      end
+    end
+
     describe "relationships" do
       it "should have a single record" do
         user_set.record = SupplejackApi::Record.new

@@ -17,15 +17,5 @@ module SupplejackApi
     def self.find_by_id(id)
       where(id: id).first
     end
-
-    # Finds a set item and returns it
-    #
-    # @author Eddie
-    # @last_modified Eddie
-    # @param id [String] the id
-    # @return [SetItem] the item
-    def find_set_item_by_id(id)
-      self.set_items.where(id: id).first
-    end
   end
 end

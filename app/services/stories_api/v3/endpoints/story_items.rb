@@ -57,6 +57,11 @@ module StoriesApi
           }
         end
 
+        # Returns if story and user wasnt initialised
+        #
+        # @author Eddie
+        # @last_modified Eddie
+        # @return [Hash] the error
         def errors
           return V3::Errors::UserNotFound.new(params[:user]).error unless @user.present?
           return V3::Errors::StoryNotFound.new(params[:id]).error unless @story.present?

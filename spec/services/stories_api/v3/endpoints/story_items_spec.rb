@@ -84,6 +84,7 @@ module StoriesApi
             )          
           end
 
+
           context 'valid user and story' do
             before do
               @story = create(:story)
@@ -144,21 +145,6 @@ module StoriesApi
               )
             end
 
-            it 'should return error when content is empty' do
-              response = StoryItems.new(id: @story.id,
-                                        user: @user.api_key,
-                                        block: { type: 'embed',
-                                                 sub_type: 'dnz',
-                                                 content: {},
-                                                 meta: {} }).post
-              expect(response).to eq(
-                status: 422,
-                exception: {
-                  message: 'Bad Request. content id is missing, content title is missing, content display_collection is missing, content category is missing, content image_url is missing, content tags is missing'
-                }
-              )
-            end
-
             it 'should return error when type is not valid' do
               response = StoryItems.new(id: @story.id,
                                         user: @user.api_key,
@@ -187,7 +173,139 @@ module StoriesApi
                   message: 'Unsupported value fancy_text for parameter sub_type'
                 }
               )
-            end            
+            end
+
+            # Text Items
+            context 'text item' do
+              it 'should return error when text heading block' do
+                response = StoryItems.new(id: @story.id,
+                                          user: @user.api_key,
+                                          block: { type: 'text',
+                                                   sub_type: 'heading',
+                                                   content: {},
+                                                   meta: {} }).post
+                expect(response).to eq(
+                  status: 422,
+                  exception: {
+                    message: 'Bad Request. content value is missing'
+                  }
+                )
+              end
+
+              it 'should return created text heading story item' do
+                response = StoryItems.new(id: @story.id,
+                                          user: @user.api_key,
+                                          block: { type: 'text',
+                                                   sub_type: 'heading',
+                                                   position: 0,
+                                                   content: { value: 'Some Heading' },
+                                                   meta: {} }).post
+                expect(response).to eq(
+                  status: 200,
+                  payload: {
+                    type: 'text',
+                    sub_type: 'heading',
+                    position: 0,
+                    content: {
+                      value: 'Some Heading'
+                    }
+                  }
+                )
+              end
+
+              it 'should return created text rich_text story item' do
+                response = StoryItems.new(id: @story.id,
+                                          user: @user.api_key,
+                                          block: { type: 'text',
+                                                   sub_type: 'rich_text',
+                                                   position: 0,
+                                                   content: { value: 'Some Rick Text' },
+                                                   meta: {} }).post
+                expect(response).to eq(
+                  status: 200,
+                  payload: {
+                    type: 'text',
+                    sub_type: 'rich_text',
+                    position: 0,
+                    content: {
+                      value: 'Some Rick Text'
+                    }
+                  }
+                )
+              end
+            end
+
+            # Embed Item
+            context 'embed item' do
+              it 'should return error when content is empty' do
+                response = StoryItems.new(id: @story.id,
+                                          user: @user.api_key,
+                                          block: { type: 'embed',
+                                                   sub_type: 'dnz',
+                                                   content: {},
+                                                   meta: {} }).post
+                expect(response).to eq(
+                  status: 422,
+                  exception: {
+                    message: 'Bad Request. content id is missing, content title is missing, content display_collection is missing, content category is missing, content image_url is missing, content tags is missing'
+                  }
+                )
+              end
+
+              it 'should return error for wrong type or values' do
+                response = StoryItems.new(id: @story.id,
+                                          user: @user.api_key,
+                                          block: { type: 'embed',
+                                                   sub_type: 'dnz',
+                                                   position: 0,
+                                                   content: {
+                                                    id: 'jhdfg',
+                                                    title: 'Title',
+                                                    display_collection: 'Marama',
+                                                    category: 'Te Papa',
+                                                    image_url: 'url',
+                                                    tags: 'foo' },
+                                                   meta: {} }).post
+                expect(response).to eq(
+                  status: 400,
+                  exception: {
+                    message: 'Bad Request. content id must be an integer, content tags must be an array'
+                  }
+                )
+              end
+
+              it 'should return the created dnz item' do
+                response = StoryItems.new(id: @story.id,
+                                          user: @user.api_key,
+                                          block: { type: 'embed',
+                                                   sub_type: 'dnz',
+                                                   position: 0,
+                                                   content: {
+                                                    id: 100,
+                                                    title: 'Title',
+                                                    display_collection: 'Marama',
+                                                    category: 'Te Papa',
+                                                    image_url: 'url',
+                                                    tags: ['foo', 'bar'] },
+                                                   meta: {} }).post
+                expect(response).to eq(
+                  status: 200,
+                  payload: {
+                    position: 0,
+                    type: 'embed',
+                    sub_type: 'dnz',
+                    content: { 
+                      id: 100,
+                      title: 'Title',
+                      display_collection: 'Marama',
+                      category: 'Te Papa',
+                      image_url: 'url',
+                      tags: ['foo', 'bar']
+                    }
+                  }
+                )
+              end
+            end
           end
         end
       end

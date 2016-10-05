@@ -23,8 +23,15 @@ module StoriesApi
         end
 
         def post
-          validation = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new
-          return validation.messages unless validation.call(params[:block])
+          validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new
+          return validator.messages unless validator.call(params[:block])
+          
+          story_items = @story.set_items.build(params[:block])
+
+          {
+            status: 200,
+            payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(story_items)
+          }
         end
 
         def errors

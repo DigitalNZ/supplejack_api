@@ -55,6 +55,15 @@ module StoriesApi
         expect(object.error).to eq(status: 400,
                                    exception: { message: 'Bad Request. content id must be integer' })
       end
+
+      it 'should return error for story item not found' do
+        object = Errors::StoryItemNotFound.new('storyitemid', 'storyid')
+
+        expect(object.error).to eq(status: 404,
+                                   exception: {
+                                     message: 'StoryItem with provided Id storyitemid not found for Story with provided Story Id storyid'
+                                   })
+      end      
     end
   end
 end

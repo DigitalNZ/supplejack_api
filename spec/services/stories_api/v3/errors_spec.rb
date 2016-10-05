@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module StoriesApi
   module V3
     RSpec.describe Errors do
@@ -53,7 +54,7 @@ module StoriesApi
 
         expect(object.error).to eq(status: 400,
                                    exception: { message: 'Bad Request. content id must be integer' })
-      end      
+      end
     end
   end
 end

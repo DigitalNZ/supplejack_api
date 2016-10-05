@@ -27,10 +27,33 @@ module StoriesApi
           return validator.messages unless validator.call(params[:block])
           
           story_items = @story.set_items.build(params[:block])
+          @story.save!
 
           {
             status: 200,
             payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(story_items)
+          }
+        end
+
+        def put
+          validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new
+          params[:blocks].each do |block|
+            return validator.messages unless validator.call(block)
+          end
+
+          @story.set_items.destroy
+
+          params[:blocks].each do |block|
+            @story.set_items.build(block)
+          end
+
+          @story.save!
+
+          presented_story_items = @story.set_items.map(&::StoriesApi::V3::Presenters::StoryItem)
+
+          {
+            status: 200,
+            payload: presented_story_items
           }
         end
 

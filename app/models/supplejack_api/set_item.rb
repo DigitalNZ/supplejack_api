@@ -24,7 +24,8 @@ module SupplejackApi
     field :content,     type: Hash
     field :meta,        type: Hash
 
-    validates :record_id,   presence: true, uniqueness: true, numericality: { greater_than: 0 }
+    # validates :record_id,   presence: true, uniqueness: true, numericality: { greater_than: 0 }
+    validates :record_id,   allow_blank: true, uniqueness: true, numericality: { greater_than: 0 }
     validates :position,    presence: true
     validate  :not_adding_set_to_itself
 

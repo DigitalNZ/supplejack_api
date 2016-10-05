@@ -18,6 +18,9 @@ module StoriesApi
         end
 
         def delete
+          item.delete
+
+          { status: 204 }
         end
 
         # Returns error if story and user were not initialised

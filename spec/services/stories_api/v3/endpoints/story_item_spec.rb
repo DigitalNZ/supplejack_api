@@ -3,12 +3,12 @@ module StoriesApi
   module V3
     module Endpoints
       RSpec.describe StoryItem do
-        describe '#initialize' do
-          before do
-            @story = create(:story)
-            @user = @story.user
-          end
+        before do
+          @story = create(:story)
+          @user = @story.user
+        end
 
+        describe '#initialize' do
           it 'should set user, story and a story item' do
             # passing id as a string as the id will be a string in the
             # request where as set_item.id is a BSON
@@ -53,8 +53,31 @@ module StoriesApi
                 exception: {
                   message: "StoryItem with provided Id fake not found for Story with provided Story Id #{@story.id}"
                 }
-              )              
+              )
             end
+          end
+        end
+
+        describe '#delete' do
+          it 'should delete a set item from story' do
+            item_to_delete = @story.set_items.first.id
+            item_count = @story.set_items.count
+            StoryItem.new(id: item_to_delete.to_s,
+                          story_id: @story.id, user: @user.api_key).delete
+
+            @story.reload
+
+            expect(@story.set_items.count).to be < item_count
+            expect(@story.set_items.find_by_id(item_to_delete)).to be nil
+          end
+
+          it 'should return delete success code' do
+            response = StoryItem.new(id: @story.set_items.first.id.to_s,
+                                     story_id: @story.id, user: @user.api_key).delete
+
+            expect(response).to eq(
+              status: 204
+            )
           end
         end
       end

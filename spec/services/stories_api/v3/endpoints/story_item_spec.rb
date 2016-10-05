@@ -18,6 +18,44 @@ module StoriesApi
             expect(story_item.story).to eq @story
             expect(story_item.item).to eq @story.set_items.first
           end
+
+          context 'errors asfter initialize' do
+            it 'should return UserNotFound error when user id dosent exist' do
+              story_item = StoryItem.new(id: @story.set_items.first.id.to_s,
+                                         story_id: @story.id, user: 'fake')
+
+              expect(story_item.errors).to eq(
+                status: 404,
+                exception: {
+                  message: 'User with provided Api Key fake not found'
+                }
+              )
+            end
+
+            it 'should return StoryNotFound error when story id dosent exist' do
+              story_item = StoryItem.new(id: @story.set_items.first.id.to_s,
+                                         story_id: 'fake', user: @user.api_key)
+
+              expect(story_item.errors).to eq(
+                status: 404,
+                exception: {
+                  message: 'Story with provided Id fake not found'
+                }
+              )              
+            end
+
+            it 'should return StoryItemNotFound error when story item id dosent exist' do
+              story_item = StoryItem.new(id: 'fake',
+                                         story_id: @story.id, user: @user.api_key)
+
+              expect(story_item.errors).to eq(
+                status: 404,
+                exception: {
+                  message: "StoryItem with provided Id fake not found for Story with provided Story Id #{@story.id}"
+                }
+              )              
+            end
+          end
         end
       end
     end

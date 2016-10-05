@@ -310,6 +310,49 @@ module StoriesApi
             end
           end
         end
+
+        describe '#put' do
+          before do
+            @story = create(:story)
+            @user = @story.user
+          end
+
+          it 'should return the created dnz item' do
+            old_story_items = @story.set_items
+            blocks = [{ type: 'embed',
+                        sub_type: 'dnz',
+                        position: 0,
+                        content: {
+                          id: 100,
+                          title: 'Title',
+                          display_collection: 'Marama',
+                          category: 'Te Papa',
+                          image_url: 'url',
+                          tags: %w(foo bar)
+                        },
+                        meta: { school: 'foo'} },
+                       { type: 'embed',
+                         sub_type: 'dnz',
+                         position: 1,
+                         content: {
+                           id: 100,
+                           title: 'Title New',
+                           display_collection: 'New Marama',
+                           category: 'New Te Papa',
+                           image_url: 'New url',
+                           tags: %w(foo bar)
+                         },
+                         meta: { school: 'foo'} }]
+
+            response = StoryItems.new(id: @story.id,
+                                      user: @user.api_key,
+                                      blocks: blocks).put
+
+            expect(response[:status]).to eq 200
+            expect(response[:payload]).to eq blocks
+            expect(@story.reload.set_items).not_to eq old_story_items
+          end          
+        end
       end
     end
   end

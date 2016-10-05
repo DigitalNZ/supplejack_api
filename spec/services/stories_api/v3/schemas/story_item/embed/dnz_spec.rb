@@ -3,7 +3,7 @@ module StoriesApi
     module Schemas
       module StoryItem
         module Embed
-          RSpec.describe DNZ do
+          RSpec.describe Dnz do
             let(:valid_block) { build(:embed_dnz_block) }
 
             def update_content_value(field, value)

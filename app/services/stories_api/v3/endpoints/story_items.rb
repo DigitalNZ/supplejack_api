@@ -57,7 +57,7 @@ module StoriesApi
           }
         end
 
-        # Returns error if story and user wasnt initialised
+        # Returns error if story and user were not initialised
         #
         # @author Eddie
         # @last_modified Eddie

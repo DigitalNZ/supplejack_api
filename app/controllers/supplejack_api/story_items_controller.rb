@@ -25,8 +25,8 @@ module SupplejackApi
 
     # Renders the response for the controller action
     #
-    # @author Eddie
-    # @last_modified Taylor
+    # @author Taylor
+    # @last_modified Eddie
     # @param endpoint [Symbol] the service endpoint
     def render_response(endpoint)
       api = StoriesApi::V3::Api.new(params.dup, endpoint, request.method.downcase.to_sym)
@@ -41,8 +41,8 @@ module SupplejackApi
 
     # Renders error response for the controller action
     #
-    # @author Eddie
-    # @last_modified Taylor
+    # @author Taylor
+    # @last_modified Eddie
     # @param endpoint [Symbol] the response
     def handle_errors(api_response)
       return unless api_response.key? :exception

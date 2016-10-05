@@ -26,8 +26,8 @@ module StoriesApi
           validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new
           return validator.messages unless validator.call(params[:block])
           
-          story_items = @story.set_items.build(params[:block])
-          @story.save!
+          story_items = story.set_items.build(params[:block])
+          story.save!
 
           {
             status: 200,
@@ -44,10 +44,10 @@ module StoriesApi
           @story.set_items.destroy
 
           params[:blocks].each do |block|
-            @story.set_items.build(block)
+            story.set_items.build(block)
           end
 
-          @story.save!
+          story.save!
 
           presented_story_items = @story.set_items.map(&::StoriesApi::V3::Presenters::StoryItem)
 
@@ -57,14 +57,14 @@ module StoriesApi
           }
         end
 
-        # Returns if story and user wasnt initialised
+        # Returns error if story and user wasnt initialised
         #
         # @author Eddie
         # @last_modified Eddie
         # @return [Hash] the error
         def errors
-          return V3::Errors::UserNotFound.new(params[:user]).error unless @user.present?
-          return V3::Errors::StoryNotFound.new(params[:id]).error unless @story.present?
+          return V3::Errors::UserNotFound.new(params[:user]).error unless user.present?
+          return V3::Errors::StoryNotFound.new(params[:id]).error unless story.present?
         end
       end
     end

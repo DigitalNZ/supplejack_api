@@ -6,9 +6,11 @@ module StoriesApi
           let(:rich_text_block) { build(:rich_text_block) }
 
           it 'validates a block against the correct schema based on type/sub_type' do
-            expect(subject.call(rich_text_block)).to eq(true)
+            subject.call(rich_text_block)
+            expect(subject.valid).to eq(true)
 
-            expect(subject.call(rich_text_block.update(sub_type: 'heading'))).to eq(false)
+            subject.call(rich_text_block.update(sub_type: 'heading'))
+            expect(subject.valid).to eq(false)
           end
 
           describe '#messages' do

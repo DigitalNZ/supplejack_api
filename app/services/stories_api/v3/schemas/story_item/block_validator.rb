@@ -23,7 +23,7 @@ module StoriesApi
               unless block[param]
                 @messages = V3::Errors::MandatoryParamMissing.new(param).error
                 @valid = false
-                return
+                return false
               end
             end
 
@@ -32,13 +32,13 @@ module StoriesApi
             unless block_object.valid_types.include? block[:type]
               @messages = V3::Errors::UnsupportedFieldType.new(:type, block[:type]).error
               @valid = false
-              return
+              return false
             end
 
             unless block_object.valid_sub_types.include? block[:sub_type]
               @messages = V3::Errors::UnsupportedFieldType.new(:sub_type, block[:sub_type]).error
               @valid = false
-              return
+              return false
             end
 
             type = block[:type].classify

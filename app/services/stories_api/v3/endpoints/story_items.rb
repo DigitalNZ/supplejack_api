@@ -16,10 +16,7 @@ module StoriesApi
         def get
           presented_story_items = @story.set_items.map(&::StoriesApi::V3::Presenters::StoryItem)
 
-          {
-            status: 200,
-            payload: presented_story_items
-          }
+          create_response(status: 200, payload: presented_story_items)
         end
 
         def post
@@ -30,10 +27,8 @@ module StoriesApi
           story_items = story.set_items.build(params[:block])
           story.save!
 
-          {
-            status: 200,
-            payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(story_items)
-          }
+          create_response(status: 200,
+                          payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(story_items))
         end
 
         def put
@@ -53,10 +48,7 @@ module StoriesApi
 
           presented_story_items = @story.set_items.map(&::StoriesApi::V3::Presenters::StoryItem)
 
-          {
-            status: 200,
-            payload: presented_story_items
-          }
+          create_response(status: 200, payload: presented_story_items)
         end
 
         # Returns error if story and user were not initialised

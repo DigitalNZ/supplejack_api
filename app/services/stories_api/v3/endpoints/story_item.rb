@@ -24,17 +24,14 @@ module StoriesApi
           return create_exception('SchemaValidationError', { errors: merge_patch.validation_errors }) unless valid
 
           item.save
-
-          {
-            status: 200,
-            payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(item)
-          }          
+          
+          create_response(status: 200, payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(item))
         end
 
         def delete
           item.delete
 
-          { status: 204 }
+          create_response(status: 204)
         end
 
         # Returns error if story and user were not initialised

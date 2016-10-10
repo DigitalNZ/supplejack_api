@@ -17,7 +17,7 @@ module StoriesApi
             it 'returns the validation error messages' do
               subject.call(rich_text_block.update(sub_type: 'heading'))
 
-              expect(subject.messages).to eq(status: 422,
+              expect(subject.messages).to eq(status: 400,
                                              exception: {
                                                message: 'Bad Request. meta is missing' })
             end

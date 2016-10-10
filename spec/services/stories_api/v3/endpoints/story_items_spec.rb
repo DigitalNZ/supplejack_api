@@ -97,7 +97,7 @@ module StoriesApi
                                         block: { sub_type: 'dnz',
                                                  meta: {} }).post
               expect(response).to eq(
-                status: 422,
+                status: 400,
                 exception: {
                   message: 'Mandatory Parameter type missing in request'
                 }
@@ -110,7 +110,7 @@ module StoriesApi
                                         block: { type: 'embed',
                                                  meta: {} }).post
               expect(response).to eq(
-                status: 422,
+                status: 400,
                 exception: {
                   message: 'Mandatory Parameter sub_type missing in request'
                 }
@@ -124,7 +124,7 @@ module StoriesApi
                                                  sub_type: 'dnz',
                                                  meta: {} }).post
               expect(response).to eq(
-                status: 422,
+                status: 400,
                 exception: {
                   message: 'Bad Request. content is missing'
                 }
@@ -138,9 +138,9 @@ module StoriesApi
                                                  sub_type: 'dnz',
                                                  content: {} }).post
               expect(response).to eq(
-                status: 422,
+                status: 400,
                 exception: {
-                  message: 'Bad Request. meta is missing'
+                  message: 'Bad Request. id is missing, title is missing, display_collection is missing, category is missing, image_url is missing, tags is missing in content meta is missing'
                 }
               )
             end
@@ -185,7 +185,7 @@ module StoriesApi
                                                    content: {},
                                                    meta: {} }).post
                 expect(response).to eq(
-                  status: 422,
+                  status: 400,
                   exception: {
                     message: 'Bad Request. value is missing in content'
                   }
@@ -245,7 +245,7 @@ module StoriesApi
                                                    content: {},
                                                    meta: {} }).post
                 expect(response).to eq(
-                  status: 422,
+                  status: 400,
                   exception: {
                     message: 'Bad Request. id is missing, title is missing, display_collection is missing, category is missing, image_url is missing, tags is missing in content'
                   }

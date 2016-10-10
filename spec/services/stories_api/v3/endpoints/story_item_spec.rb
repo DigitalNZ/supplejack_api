@@ -98,7 +98,7 @@ module StoriesApi
                                                meta: { school: 'foo'} }).patch
 
             expect(response).to eq(
-              status: 422, exception: { message: 'Bad Request. id is missing in content' }
+              status: 400, exception: { message: 'Bad Request. id is missing in content' }
             )
           end
 

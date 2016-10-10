@@ -9,7 +9,7 @@ module StoriesApi
             expect(response).to eq(
               status: 404,
               exception: {
-                message: 'Story with given Id was not found'
+                message: 'Story with provided Id foobar not found'
               }
             )
           end
@@ -35,7 +35,7 @@ module StoriesApi
             expect(response).to eq(
               status: 404,
               exception: {
-                message: 'Story with given Id was not found'
+                message: 'Story with provided Id foobar not found'
               }
             )
           end
@@ -78,7 +78,7 @@ module StoriesApi
             expect(response).to eq(
               status: 404,
               exception: {
-                message: 'Story with given Id was not found'
+                message: 'Story with provided Id foobar not found'
               }
             )
           end
@@ -90,7 +90,7 @@ module StoriesApi
               expect(response).to eq(
                 status: 400,
                 exception: {
-                  message: 'Story patch failed to validate: description must be a string, tags must be an array'
+                  message: 'Bad Request. description must be a string tags must be an array'
                 }
               )
             end

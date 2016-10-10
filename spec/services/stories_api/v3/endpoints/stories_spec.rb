@@ -10,7 +10,7 @@ module StoriesApi
             expect(response).to eq(
               status: 404,
               exception: {
-                message: 'User with provided Id was not found'
+                message: 'User with provided Api Key 1231892312hj3k12j3 not found'
               }
             )
           end
@@ -44,7 +44,7 @@ module StoriesApi
             expect(response).to eq(
               status: 400,
               exception: {
-                message: 'Story was missing name field'
+                message: 'Mandatory Parameter name missing in request'
               }
             )
           end

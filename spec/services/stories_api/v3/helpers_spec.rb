@@ -18,11 +18,11 @@ module StoriesApi
       end
 
       describe '#create_exception' do
-        it 'returns an exception hash with a status and message' do
-          expect(helpers.create_exception(status: 400, message: 'Error message')).to eq(
-            status: 400,
+        it 'returns an exception for the Error class and options passed' do
+          expect(helpers.create_exception('StoryNotFound', { id: 1 })).to eq(
+            status: 404,
             exception: {
-              message: 'Error message'
+              message: 'Story with provided Id 1 not found'
             }
           )
         end

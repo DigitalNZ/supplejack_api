@@ -31,7 +31,7 @@ module StoriesApi
 
       class MandatoryParamMissing < Base
         def initialize(options = {})
-          super(422, "Mandatory Parameter #{options[:param]} missing in request")
+          super(400, "Mandatory Parameter #{options[:param]} missing in request")
         end
       end
 
@@ -43,17 +43,17 @@ module StoriesApi
 
       class SchemaValidationError < Base
         def initialize(options = {})
-          message = ''
+          messages = ''
           options[:errors].each do |field, subfields|
             message = if subfields.is_a? Hash
                         subfields.values.flatten.join(', ') + " in #{field}"
                       else
                         subfields[0]
                       end
+            messages += " #{message}"
           end
 
-          error_code = message.include?('missing') ? 422 : 400
-          super(error_code, "Bad Request. #{message}")
+          super(400, "Bad Request. #{messages.strip}")
         end
       end
     end

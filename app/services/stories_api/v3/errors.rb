@@ -12,39 +12,39 @@ module StoriesApi
       end
 
       class UserNotFound < Base
-        def initialize(options = {})
-          super(404, "User with provided Api Key #{options[:id]} not found")
+        def initialize(id: nil)
+          super(404, "User with provided Api Key #{id} not found")
         end
       end
 
       class StoryNotFound < Base
-        def initialize(options = {})
-          super(404, "Story with provided Id #{options[:id]} not found")
+        def initialize(id: nil)
+          super(404, "Story with provided Id #{id} not found")
         end
       end
 
       class StoryItemNotFound < Base
-        def initialize(options = {})
-          super(404, "StoryItem with provided Id #{options[:item_id]} not found for Story with provided Story Id #{options[:story_id]}")
+        def initialize(item_id: nil, story_id: nil)
+          super(404, "StoryItem with provided Id #{item_id} not found for Story with provided Story Id #{story_id}")
         end
       end
 
       class MandatoryParamMissing < Base
-        def initialize(options = {})
-          super(400, "Mandatory Parameter #{options[:param]} missing in request")
+        def initialize(param: nil)
+          super(400, "Mandatory Parameter #{param} missing in request")
         end
       end
 
       class UnsupportedFieldType < Base
-        def initialize(options = {})
-          super(415, "Unsupported value #{options[:value]} for parameter #{options[:param]}")
+        def initialize(value: nil, param: nil)
+          super(415, "Unsupported value #{value} for parameter #{param}")
         end
       end
 
       class SchemaValidationError < Base
-        def initialize(options = {})
+        def initialize(errors: nil)
           messages = ''
-          options[:errors].each do |field, subfields|
+          errors.each do |field, subfields|
             message = if subfields.is_a? Hash
                         subfields.values.flatten.join(', ') + " in #{field}"
                       else

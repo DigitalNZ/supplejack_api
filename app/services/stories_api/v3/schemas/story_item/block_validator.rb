@@ -19,37 +19,40 @@ module StoriesApi
           # @last_modified Eddie
           # @return [Hash] the error
           def call(block)
-            [:type, :sub_type].each do |param|
-              unless block[param]
-                @messages = V3::Errors::MandatoryParamMissing.new(param: param).error
-                @valid = false
-                return false
-              end
-            end
+            story_item_block = StoriesApi::V3::Schemas::StoryItem::Block.new.call(block)
 
-            block_object = StoriesApi::V3::Schemas::StoryItem::Block.new
+            return story_item_block unless story_item_block.success?
+            # [:type, :sub_type].each do |param|
+            #   unless block[param]
+            #     @messages = V3::Errors::MandatoryParamMissing.new(param: param).error
+            #     @valid = false
+            #     return false
+            #   end
+            # end
 
-            unless block_object.valid_types.include? block[:type]
-              @messages = V3::Errors::UnsupportedFieldType.new(value: block[:type], param: :type).error
-              @valid = false
-              return false
-            end
+            # block_object = StoriesApi::V3::Schemas::StoryItem::Block.new
 
-            unless block_object.valid_sub_types.include? block[:sub_type]
-              @messages = V3::Errors::UnsupportedFieldType.new(value: block[:sub_type], param: :sub_type).error
-              @valid = false
-              return false
-            end
+            # unless block_object.valid_types.include? block[:type]
+            #   @messages = V3::Errors::UnsupportedFieldType.new(value: block[:type], param: :type).error
+            #   @valid = false
+            #   return false
+            # end
+
+            # unless block_object.valid_sub_types.include? block[:sub_type]
+            #   @messages = V3::Errors::UnsupportedFieldType.new(value: block[:sub_type], param: :sub_type).error
+            #   @valid = false
+            #   return false
+            # end
 
             type = block[:type].classify
             sub_type = block[:sub_type].classify
             block_schema = "StoriesApi::V3::Schemas::StoryItem::#{type}::#{sub_type}".constantize
             @result = block_schema.call(block)
 
-            unless result.success?
-              @messages = V3::Errors::SchemaValidationError.new(errors: result.messages(full: true)).error
-              @valid = false
-            end
+            # unless result.success?
+            #   @messages = V3::Errors::SchemaValidationError.new(errors: result.messages(full: true)).error
+            #   @valid = false
+            # end
 
             @result
           end

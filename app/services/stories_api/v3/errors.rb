@@ -37,7 +37,7 @@ module StoriesApi
 
       class UnsupportedFieldType < Base
         def initialize(value: nil, param: nil)
-          super(415, "Unsupported value #{value} for parameter #{param}")
+          super(400, "Unsupported value #{value} for parameter #{param}")
         end
       end
 
@@ -53,7 +53,15 @@ module StoriesApi
             messages += " #{message}"
           end
 
-          super(400, "Bad Request. #{messages.strip}")
+          message = if messages.include? 'missing'
+                      "Mandatory Parameters Missing: #{messages.strip}"
+                    elsif messages.include? 'must be one of'
+                      "Unsupported Values: #{messages.strip}"
+                    else
+                      "Bad Request: #{messages.strip}"
+                    end
+
+          super(400, message)
         end
       end
     end

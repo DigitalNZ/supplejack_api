@@ -90,7 +90,7 @@ module StoriesApi
               expect(response).to eq(
                 status: 400,
                 exception: {
-                  message: 'Bad Request. description must be a string tags must be an array'
+                  message: 'Bad Request: description must be a string tags must be an array'
                 }
               )
             end

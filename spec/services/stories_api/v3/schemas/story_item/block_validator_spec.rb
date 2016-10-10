@@ -19,7 +19,7 @@ module StoriesApi
 
               expect(subject.messages).to eq(status: 400,
                                              exception: {
-                                               message: 'Bad Request. meta is missing' })
+                                               message: 'Bad Request: meta is missing' })
             end
           end
         end

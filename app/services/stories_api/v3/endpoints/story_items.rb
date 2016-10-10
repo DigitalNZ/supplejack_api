@@ -20,9 +20,9 @@ module StoriesApi
         end
 
         def post
-          validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new
-          validator.call(params[:block])
-          return validator.messages unless validator.success?
+          validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(params[:block])
+          return create_exception('SchemaValidationError',
+                                  errors: validator.messages(full: true)) unless validator.success?
           
           story_items = story.set_items.build(params[:block])
           story.save!

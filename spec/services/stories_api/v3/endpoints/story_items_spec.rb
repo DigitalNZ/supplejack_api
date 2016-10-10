@@ -99,7 +99,7 @@ module StoriesApi
               expect(response).to eq(
                 status: 400,
                 exception: {
-                  message: 'Mandatory Parameter type missing in request'
+                  message: 'Mandatory Parameters Missing: type is missing'
                 }
               )
             end
@@ -112,7 +112,7 @@ module StoriesApi
               expect(response).to eq(
                 status: 400,
                 exception: {
-                  message: 'Mandatory Parameter sub_type missing in request'
+                  message: 'Mandatory Parameters Missing: sub_type is missing'
                 }
               )
             end
@@ -126,7 +126,7 @@ module StoriesApi
               expect(response).to eq(
                 status: 400,
                 exception: {
-                  message: 'Bad Request. content is missing'
+                  message: 'Mandatory Parameters Missing: content is missing'
                 }
               )
             end
@@ -140,7 +140,7 @@ module StoriesApi
               expect(response).to eq(
                 status: 400,
                 exception: {
-                  message: 'Bad Request. id is missing, title is missing, display_collection is missing, category is missing, image_url is missing, tags is missing in content meta is missing'
+                  message: 'Mandatory Parameters Missing: id is missing, title is missing, display_collection is missing, category is missing, image_url is missing, tags is missing in content meta is missing'
                 }
               )
             end
@@ -153,9 +153,9 @@ module StoriesApi
                                                  content: {},
                                                  meta: {} }).post
               expect(response).to eq(
-                status: 415,
+                status: 400,
                 exception: {
-                  message: 'Unsupported value youtube for parameter type'
+                  message: 'Unsupported Values: type must be one of: embed, text'
                 }
               )
             end
@@ -168,9 +168,9 @@ module StoriesApi
                                                  content: {},
                                                  meta: {} }).post
               expect(response).to eq(
-                status: 415,
+                status: 400,
                 exception: {
-                  message: 'Unsupported value fancy_text for parameter sub_type'
+                  message: 'Unsupported Values: sub_type must be one of: dnz, heading, rich_text'
                 }
               )
             end
@@ -187,7 +187,7 @@ module StoriesApi
                 expect(response).to eq(
                   status: 400,
                   exception: {
-                    message: 'Bad Request. value is missing in content'
+                    message: 'Mandatory Parameters Missing: value is missing in content'
                   }
                 )
               end
@@ -247,7 +247,7 @@ module StoriesApi
                 expect(response).to eq(
                   status: 400,
                   exception: {
-                    message: 'Bad Request. id is missing, title is missing, display_collection is missing, category is missing, image_url is missing, tags is missing in content'
+                    message: 'Mandatory Parameters Missing: id is missing, title is missing, display_collection is missing, category is missing, image_url is missing, tags is missing in content'
                   }
                 )
               end
@@ -270,7 +270,7 @@ module StoriesApi
                 expect(response).to eq(
                   status: 400,
                   exception: {
-                    message: 'Bad Request. id must be an integer, tags must be an array in content'
+                    message: 'Bad Request: id must be an integer, tags must be an array in content'
                   }
                 )
               end

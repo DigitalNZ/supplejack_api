@@ -98,7 +98,7 @@ module StoriesApi
                                                meta: { school: 'foo'} }).patch
 
             expect(response).to eq(
-              status: 400, exception: { message: 'Bad Request. id is missing in content' }
+              status: 400, exception: { message: 'Mandatory Parameters Missing: id is missing in content' }
             )
           end
 
@@ -119,7 +119,7 @@ module StoriesApi
                                                meta: { school: 'foo'} }).patch
 
             expect(response).to eq(
-              status: 400, exception: { message: 'Bad Request. id must be an integer in content' }
+              status: 400, exception: { message: 'Bad Request: id must be an integer in content' }
             )
           end
 

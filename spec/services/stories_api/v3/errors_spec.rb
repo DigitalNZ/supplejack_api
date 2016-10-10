@@ -33,7 +33,7 @@ module StoriesApi
       it 'should return error for unsopported field value' do
         object = Errors::UnsupportedFieldType.new(param: :fake_field, value: 'unspported_value')
 
-        expect(object.error).to eq(status: 415,
+        expect(object.error).to eq(status: 400,
                                    exception: {
                                      message: 'Unsupported value unspported_value for parameter fake_field'
                                    })
@@ -44,7 +44,7 @@ module StoriesApi
         object = Errors::SchemaValidationError.new(errors: validation_error)
 
         expect(object.error).to eq(status: 400,
-                                   exception: { message: 'Bad Request: id is missing in content' })
+                                   exception: { message: 'Mandatory Parameters Missing: id is missing in content' })
       end
 
       it 'should return error code 400 for scheme validation' do

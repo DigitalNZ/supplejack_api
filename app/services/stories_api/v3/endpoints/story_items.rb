@@ -32,10 +32,10 @@ module StoriesApi
         end
 
         def put
-          validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new
           params[:blocks].each do |block|
-            validator.call(block)
-            return validator.messages unless validator.success?
+            validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(block)
+            return create_exception('SchemaValidationError',
+                                    errors: validator.messages(full: true)) unless validator.success?
           end
 
           @story.set_items.destroy

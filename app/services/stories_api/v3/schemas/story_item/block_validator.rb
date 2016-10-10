@@ -4,13 +4,11 @@ module StoriesApi
     module Schemas
       module StoryItem
         class BlockValidator
-          # Returns result
-          # PerformMergePatch calls .success? on the result of this method
-          # SetItems end point checks success after the call is made
+          # Returns an object of the validation
           #
           # @author Taylor
           # @last_modified Eddie
-          # @return [Hash] the error
+          # @return [Object] the validation
           def call(block)
             story_item_block = StoriesApi::V3::Schemas::StoryItem::Block.new.call(block)
             return story_item_block unless story_item_block.success?

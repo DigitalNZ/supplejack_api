@@ -9,7 +9,7 @@ module StoriesApi
           end
 
           def valid_block?(block)
-            StoryItem::BlockValidator.new.call(block)
+            StoryItem::BlockValidator.new.call(block).success?
           end
 
           def not_nil?(value)

@@ -5,14 +5,13 @@ module StoriesApi
       class StoryItem
         include Helpers
 
-        attr_reader :params, :user, :story, :item, :errors
+        attr_reader :params, :user, :story, :item
 
         def initialize(params)
           @params = params
           @user = SupplejackApi::User.find_by_api_key(params[:user])
           @story = @user ? @user.user_sets.find_by_id(params[:story_id]) : nil
           @item = @story ? @story.set_items.find_by_id(params[:id]) : nil
-          @errors = []
         end
 
         def patch

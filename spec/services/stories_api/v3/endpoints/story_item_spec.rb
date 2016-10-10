@@ -80,6 +80,88 @@ module StoriesApi
             )
           end
         end
+
+        describe '#patch' do
+          it 'should fail with no content id error' do
+            response = StoryItem.new(id: @story.set_items.first.id.to_s,
+                                       story_id: @story.id, user: @user.api_key,
+                                       item: { type: 'embed',
+                                               sub_type: 'dnz',
+                                               position: 1,
+                                               content: {
+                                                 title: 'Title New',
+                                                 display_collection: 'New Marama',
+                                                 category: 'New Te Papa',
+                                                 image_url: 'New url',
+                                                 tags: %w(foo bar)
+                                               },
+                                               meta: { school: 'foo'} }).patch
+
+            expect(response).to eq(
+              status: 422, exception: { message: 'Bad Request. id is missing in content' }
+            )
+          end
+
+          it 'should fail with content must be an intiger error' do
+            response = StoryItem.new(id: @story.set_items.first.id.to_s,
+                                       story_id: @story.id, user: @user.api_key,
+                                       item: { type: 'embed',
+                                               sub_type: 'dnz',
+                                               position: 1,
+                                               content: {
+                                                 id: 'jhsdbgh',
+                                                 title: 'Title New',
+                                                 display_collection: 'New Marama',
+                                                 category: 'New Te Papa',
+                                                 image_url: 'New url',
+                                                 tags: %w(foo bar)
+                                               },
+                                               meta: { school: 'foo'} }).patch
+
+            expect(response).to eq(
+              status: 400, exception: { message: 'Bad Request. id must be an integer in content' }
+            )
+          end
+
+          it 'should update given set item' do
+            response = StoryItem.new(id: @story.set_items.first.id.to_s,
+                                       story_id: @story.id, user: @user.api_key,
+                                       item: { type: 'embed',
+                                               sub_type: 'dnz',
+                                               position: 1,
+                                               content: {
+                                                 id: 100,
+                                                 title: 'Title New',
+                                                 display_collection: 'New Marama',
+                                                 category: 'New Te Papa',
+                                                 image_url: 'New url',
+                                                 tags: %w(foo bar)
+                                               },
+                                               meta: { school: 'foo'} }).patch
+
+            expect(response).to eq(
+              {status: 200, 
+               payload: { position: 1,
+                          type: 'embed',
+                          sub_type: 'dnz',
+                          content: { 
+                            value: 'foo',
+                            id: 100,
+                            title: 'Title New',
+                            display_collection: 'New Marama',
+                            category: 'New Te Papa',
+                            image_url: 'New url',
+                            tags: %w(foo bar)
+                          },
+                          meta: {
+                            size: 1,
+                            school: 'foo'
+                            }
+                          }
+                          }
+            )
+          end
+        end        
       end
     end
   end

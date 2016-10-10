@@ -187,7 +187,7 @@ module StoriesApi
                 expect(response).to eq(
                   status: 422,
                   exception: {
-                    message: 'Bad Request. content value is missing'
+                    message: 'Bad Request. value is missing in content'
                   }
                 )
               end
@@ -247,7 +247,7 @@ module StoriesApi
                 expect(response).to eq(
                   status: 422,
                   exception: {
-                    message: 'Bad Request. content id is missing, content title is missing, content display_collection is missing, content category is missing, content image_url is missing, content tags is missing'
+                    message: 'Bad Request. id is missing, title is missing, display_collection is missing, category is missing, image_url is missing, tags is missing in content'
                   }
                 )
               end
@@ -270,7 +270,7 @@ module StoriesApi
                 expect(response).to eq(
                   status: 400,
                   exception: {
-                    message: 'Bad Request. content id must be an integer, content tags must be an array'
+                    message: 'Bad Request. id must be an integer, tags must be an array in content'
                   }
                 )
               end

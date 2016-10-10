@@ -46,9 +46,9 @@ module StoriesApi
           message = ''
           errors.each do |field, subfields|
             message = if subfields.is_a? Hash
-                        subfields.map { |k, v| "#{field} #{k} #{v[0]}" }.join(', ')
+                        subfields.values.flatten.join(', ') + " in #{field}"
                       else
-                        "#{field} #{subfields[0]}"
+                        subfields[0]
                       end
           end
 

@@ -15,6 +15,19 @@ module StoriesApi
         end
 
         def patch
+          merge_patch = PerformMergePatch.new(::StoriesApi::V3::Schemas::StoryItem::BlockValidator.new,
+                                              ::StoriesApi::V3::Presenters::StoryItem.new)
+
+          valid = merge_patch.call(item, params[:item])
+
+          return V3::Errors::SchemaValidationError.new(merge_patch.validation_errors).error unless valid
+
+          item.save
+
+          {
+            status: 200,
+            payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(item)
+          }          
         end
 
         def delete

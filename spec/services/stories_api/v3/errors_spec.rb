@@ -41,19 +41,19 @@ module StoriesApi
       end
 
       it 'should return error code 422 for missing param error for scheme validation' do
-        validation_error = { content: { id: ['is missing'] } }
+        validation_error = { content: { id: ['id is missing'] } }
         object = Errors::SchemaValidationError.new(validation_error)
 
         expect(object.error).to eq(status: 422,
-                                   exception: { message: 'Bad Request. content id is missing' })
+                                   exception: { message: 'Bad Request. id is missing in content' })
       end
 
       it 'should return error code 400 for scheme validation' do
-        validation_error = { content: { id: ['must be integer'] } }
+        validation_error = { content: { id: ['id must be integer'] } }
         object = Errors::SchemaValidationError.new(validation_error)
 
         expect(object.error).to eq(status: 400,
-                                   exception: { message: 'Bad Request. content id must be integer' })
+                                   exception: { message: 'Bad Request. id must be integer in content' })
       end
 
       it 'should return error for story item not found' do

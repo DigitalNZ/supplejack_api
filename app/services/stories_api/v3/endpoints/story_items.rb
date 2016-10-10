@@ -24,7 +24,8 @@ module StoriesApi
 
         def post
           validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new
-          return validator.messages unless validator.call(params[:block])
+          validator.call(params[:block])
+          return validator.messages unless validator.success?
           
           story_items = story.set_items.build(params[:block])
           story.save!
@@ -38,7 +39,8 @@ module StoriesApi
         def put
           validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new
           params[:blocks].each do |block|
-            return validator.messages unless validator.call(block)
+            validator.call(block)
+            return validator.messages unless validator.success?
           end
 
           @story.set_items.destroy

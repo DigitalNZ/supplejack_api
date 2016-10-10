@@ -42,7 +42,10 @@ SupplejackApi::Engine.routes.draw do
       resources :set_items, path: 'records', only: [:create, :destroy]
     end
 
-    resources :stories, except: [:new, :edit]
+    # Stories
+    resources :stories, except: [:new, :edit] do
+      resources :story_items, except: [:new, :edit]
+    end
   end
 
   scope '/:version/metrics', version: /v3/, defaults: {format: 'json'} do

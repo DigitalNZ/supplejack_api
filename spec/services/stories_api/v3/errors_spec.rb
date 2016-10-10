@@ -3,8 +3,7 @@ module StoriesApi
   module V3
     RSpec.describe Errors do
       it 'should return error for given code and message' do
-        object = Errors::Base.new
-        object.set(403, 'Forbidden Request')
+        object = Errors::Base.new(403, 'Forbidden Request')
 
         expect(object.error).to eq(status: 403,
                                    exception: { message: 'Forbidden Request' })

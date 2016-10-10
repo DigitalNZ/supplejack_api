@@ -6,38 +6,38 @@ module StoriesApi
     module Errors
       class Base
         attr_reader :error
-        def set(status = nil, message = nil)
+        def initialize(status = nil, message = nil)
           @error = { status: status, exception: { message: message } }
         end
       end
 
       class UserNotFound < Base
         def initialize(user_id)
-          set(404, "User with provided Api Key #{user_id} not found")
+          super(404, "User with provided Api Key #{user_id} not found")
         end
       end
 
       class StoryNotFound < Base
         def initialize(story_id)
-          set(404, "Story with provided Id #{story_id} not found")
+          super(404, "Story with provided Id #{story_id} not found")
         end
       end
 
       class StoryItemNotFound < Base
         def initialize(item_id, story_id)
-          set(404, "StoryItem with provided Id #{item_id} not found for Story with provided Story Id #{story_id}")
+          super(404, "StoryItem with provided Id #{item_id} not found for Story with provided Story Id #{story_id}")
         end
       end
 
       class MandatoryParamMissing < Base
         def initialize(param)
-          set(422, "Mandatory Parameter #{param} missing in request")
+          super(422, "Mandatory Parameter #{param} missing in request")
         end
       end
 
       class UnsupportedFieldType < Base
         def initialize(field, value)
-          set(415, "Unsupported value #{value} for parameter #{field}")
+          super(415, "Unsupported value #{value} for parameter #{field}")
         end
       end
 
@@ -53,7 +53,7 @@ module StoriesApi
           end
 
           error_code = message.include?('missing') ? 422 : 400
-          set(error_code, "Bad Request. #{message}")
+          super(error_code, "Bad Request. #{message}")
         end
       end
     end

@@ -5,13 +5,14 @@ module StoriesApi
       class StoryItem
         include Helpers
 
-        attr_reader :params, :user, :story, :item
+        attr_reader :params, :user, :story, :item, :errors
 
         def initialize(params)
           @params = params
           @user = SupplejackApi::User.find_by_api_key(params[:user])
           @story = @user ? @user.user_sets.find_by_id(params[:story_id]) : nil
           @item = @story ? @story.set_items.find_by_id(params[:id]) : nil
+          @errors = []
         end
 
         def patch
@@ -20,7 +21,7 @@ module StoriesApi
 
           valid = merge_patch.call(item, params[:item])
 
-          return V3::Errors::SchemaValidationError.new(merge_patch.validation_errors).error unless valid
+          return create_exception('SchemaValidationError', { errors: merge_patch.validation_errors }) unless valid
 
           item.save
 
@@ -42,9 +43,9 @@ module StoriesApi
         # @last_modified Eddie
         # @return [Hash] the error
         def errors
-          return V3::Errors::UserNotFound.new(params[:user]).error unless user.present?
-          return V3::Errors::StoryNotFound.new(params[:story_id]).error unless story.present?
-          return V3::Errors::StoryItemNotFound.new(params[:id], params[:story_id]).error unless item.present?
+          return create_exception('UserNotFound', { id: params[:user] }) unless user.present?
+          return create_exception('StoryNotFound', { id: params[:story_id] }) unless story.present?
+          return create_exception('StoryItemNotFound', { item_id: params[:id], story_id: params[:story_id] }) unless item.present?
         end
       end
     end

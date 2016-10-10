@@ -65,8 +65,8 @@ module StoriesApi
         # @last_modified Eddie
         # @return [Hash] the error
         def errors
-          return V3::Errors::UserNotFound.new(params[:user]).error unless user.present?
-          return V3::Errors::StoryNotFound.new(params[:id]).error unless story.present?
+          return create_exception('UserNotFound', { id: params[:user] }) unless user.present?
+          return create_exception('StoryNotFound', { id: params[:id] }) unless story.present?
         end
       end
     end

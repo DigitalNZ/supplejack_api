@@ -21,7 +21,7 @@ module StoriesApi
           def call(block)
             [:type, :sub_type].each do |param|
               unless block[param]
-                @messages = V3::Errors::MandatoryParamMissing.new(param).error
+                @messages = V3::Errors::MandatoryParamMissing.new(param: param).error
                 @valid = false
                 return false
               end
@@ -30,13 +30,13 @@ module StoriesApi
             block_object = StoriesApi::V3::Schemas::StoryItem::Block.new
 
             unless block_object.valid_types.include? block[:type]
-              @messages = V3::Errors::UnsupportedFieldType.new(:type, block[:type]).error
+              @messages = V3::Errors::UnsupportedFieldType.new(value: block[:type], param: :type).error
               @valid = false
               return false
             end
 
             unless block_object.valid_sub_types.include? block[:sub_type]
-              @messages = V3::Errors::UnsupportedFieldType.new(:sub_type, block[:sub_type]).error
+              @messages = V3::Errors::UnsupportedFieldType.new(value: block[:sub_type], param: :sub_type).error
               @valid = false
               return false
             end
@@ -47,7 +47,7 @@ module StoriesApi
             @result = block_schema.call(block)
 
             unless result.success?
-              @messages = V3::Errors::SchemaValidationError.new(result.messages(full: true)).error
+              @messages = V3::Errors::SchemaValidationError.new(errors: result.messages(full: true)).error
               @valid = false
             end
 

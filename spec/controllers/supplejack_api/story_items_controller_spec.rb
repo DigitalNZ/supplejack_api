@@ -149,32 +149,5 @@ module SupplejackApi
         end
       end
     end
-
-    describe 'PUT update' do
-      context 'successfull requests' do
-        before do
-          @blocks = [{ type: 'text', sub_type: 'heading',
-                      content: { value: 'sometext' },
-                      meta: { some: 'foo' }, position: 0 },
-                    { type: 'text', sub_type: 'rich_text',
-                      content: { value: 'somerichtext' },
-                      meta: { some: 'bar' }, position: 1 }]
-
-          put(:update, story_id: story.id.to_s,
-                       id: story.set_items.first.id.to_s,
-                       api_key: api_key, user: api_key, blocks: @blocks)
-        end
-
-        it 'returns a 200 http code' do
-          expect(response.status).to eq(200)
-        end
-
-        it 'should return updated Story Items' do
-          response_item = JSON.parse(response.body).map(&:deep_symbolize_keys)
-
-          expect(response_item).to eq @blocks
-        end
-      end
-    end
   end
 end

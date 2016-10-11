@@ -47,7 +47,7 @@ module SupplejackApi
         end
 
         it 'includes the error message' do
-          expect(response.body).to include('Id was not found')
+          expect(response.body).to include('User with provided Api Key 1231231231 not found')
         end
       end
 
@@ -97,7 +97,7 @@ module SupplejackApi
         end
 
         it 'includes the error message' do
-          expect(response.body).to include('Id was not found')
+          expect(response.body).to include('Story with provided Id 1231231231 not found')
         end
       end
 
@@ -136,7 +136,7 @@ module SupplejackApi
         end
 
         it 'includes the error message' do
-          expect(response.body).to include('missing name field')
+          expect(response.body).to include('Mandatory Parameter name missing in request')
         end
       end
 
@@ -174,7 +174,7 @@ module SupplejackApi
         end
 
         it 'includes the error message' do
-          expect(response.body).to include('Id was not found')
+          expect(response.body).to include('Story with provided Id 1231231231 not found')
         end
       end
 
@@ -207,7 +207,7 @@ module SupplejackApi
         end
 
         it 'includes the error message' do
-          expect(response.body).to include('Id was not found')
+          expect(response.body).to include('Story with provided Id 1231231231 not found')
         end
       end
 

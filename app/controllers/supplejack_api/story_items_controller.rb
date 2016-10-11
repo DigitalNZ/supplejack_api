@@ -14,7 +14,11 @@ module SupplejackApi
     end
 
     def update
-      render_response(:story_item)
+      # I dont like this
+      case request.method
+      when 'PUT' then render_response(:story_items)
+      when 'PATCH' then render_response(:story_item)
+      end
     end
 
     def destroy

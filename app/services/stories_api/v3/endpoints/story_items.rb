@@ -24,12 +24,14 @@ module StoriesApi
           validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(params[:block])
           return create_exception('SchemaValidationError',
                                   errors: validator.messages(full: true)) unless validator.success?
-          story_items = story.set_items.build(params[:block])
+
+          story_item = story.set_items.build(params[:block].deep_symbolize_keys)
           story.save!
 
           create_response(status: 200,
-                          payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(story_items))
+                          payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(story_item))
         end
+
 
         def put
           params[:blocks].each do |block|
@@ -41,7 +43,7 @@ module StoriesApi
           @story.set_items.destroy
 
           params[:blocks].each do |block|
-            story.set_items.build(block)
+            story.set_items.build(block.deep_symbolize_keys)
           end
 
           story.save!

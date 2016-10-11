@@ -9,7 +9,6 @@ module StoriesApi
 
         def initialize(params)
           @params = params
-          # binding.pry
           @user = SupplejackApi::User.find_by_api_key(params[:user])
           @story = @user ? @user.user_sets.find_by_id(params[:story_id]) : nil
         end
@@ -32,7 +31,7 @@ module StoriesApi
                           payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(story_item))
         end
 
-
+        # Not using this method now
         def put
           params[:blocks].each do |block|
             validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(block)

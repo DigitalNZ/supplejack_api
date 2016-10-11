@@ -20,7 +20,7 @@ module SupplejackApi::Concerns::UserSet
       # @param id [String] the id
       # @return [SetItem] the item
       def find_by_id(id)
-        where(id: id).first
+        find(id) rescue nil
       end
     end
 

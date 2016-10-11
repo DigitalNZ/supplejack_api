@@ -61,6 +61,10 @@ Rails/FindBy:
     - 'app/models/supplejack_api/support/searchable.rb'
     - 'app/models/supplejack_api/user.rb'
 
+Metrics/ModuleLength:
+  Exclude:
+    - 'app/models/supplejack_api/concerns/user_set.rb'
+
 # Offense count: 1
 # Configuration parameters: Include.
 # Include: app/models/**/*.rb

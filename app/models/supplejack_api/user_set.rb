@@ -15,7 +15,7 @@ module SupplejackApi
     include SupplejackApi::Concerns::UserSet
 
     def self.find_by_id(id)
-      where(id: id).first
+      find(id) rescue nil
     end
   end
 end

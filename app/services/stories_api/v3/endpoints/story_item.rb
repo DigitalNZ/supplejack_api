@@ -19,11 +19,9 @@ module StoriesApi
                                               ::StoriesApi::V3::Presenters::StoryItem.new)
 
           valid = merge_patch.call(item, params[:item])
-
-          return create_exception('SchemaValidationError', { errors: merge_patch.validation_errors }) unless valid
+          return create_exception('SchemaValidationError', errors: merge_patch.validation_errors) unless valid
 
           item.save
-          
           create_response(status: 200, payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(item))
         end
 
@@ -39,9 +37,11 @@ module StoriesApi
         # @last_modified Eddie
         # @return [Hash] the error
         def errors
-          return create_exception('UserNotFound', { id: params[:user] }) unless user.present?
-          return create_exception('StoryNotFound', { id: params[:story_id] }) unless story.present?
-          return create_exception('StoryItemNotFound', { item_id: params[:id], story_id: params[:story_id] }) unless item.present?
+          return create_exception('UserNotFound', id: params[:user]) unless user.present?
+          return create_exception('StoryNotFound', id: params[:story_id]) unless story.present?
+          return create_exception('StoryItemNotFound',
+                                  item_id: params[:id],
+                                  story_id: params[:story_id]) unless item.present?
         end
       end
     end

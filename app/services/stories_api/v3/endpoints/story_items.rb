@@ -23,7 +23,6 @@ module StoriesApi
           validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(params[:block])
           return create_exception('SchemaValidationError',
                                   errors: validator.messages(full: true)) unless validator.success?
-          
           story_items = story.set_items.build(params[:block])
           story.save!
 
@@ -57,8 +56,8 @@ module StoriesApi
         # @last_modified Eddie
         # @return [Hash] the error
         def errors
-          return create_exception('UserNotFound', { id: params[:user] }) unless user.present?
-          return create_exception('StoryNotFound', { id: params[:id] }) unless story.present?
+          return create_exception('UserNotFound', id: params[:user]) unless user.present?
+          return create_exception('StoryNotFound', id: params[:id]) unless story.present?
         end
       end
     end

@@ -193,7 +193,7 @@ module StoriesApi
             end
 
             it 'is invalid when it contains malformed blocks' do
-              result = subject.call(valid_story.update(contents: valid_story[:contents].map{|x| x.except(:meta)}))
+              result = subject.call(valid_story.update(contents: valid_story[:contents].map { |x| x.except(:meta) }))
 
               expect(result.success?).to eq(false)
               expect(result.messages).to include(:contents)

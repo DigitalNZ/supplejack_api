@@ -15,7 +15,7 @@ module StoriesApi
           user = params[:user_id]
           user_account = SupplejackApi::User.find_by_api_key(user)
 
-          return create_exception('UserNotFound', { id: user }) unless user_account.present?
+          return create_exception('UserNotFound', id: user) unless user_account.present?
 
           presented_stories = user_account.user_sets.map(&::StoriesApi::V3::Presenters::Story)
 
@@ -26,7 +26,7 @@ module StoriesApi
           story = params[:story]
 
           return create_exception('MandatoryParamMissing',
-                                  { param: :name }) unless story.is_a?(Hash) && story[:name].present?
+                                  param: :name) unless story.is_a?(Hash) && story[:name].present?
 
           story_name = params[:story][:name]
           new_story = current_user(params).user_sets.create(name: story_name)

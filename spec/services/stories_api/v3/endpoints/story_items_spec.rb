@@ -10,7 +10,7 @@ module StoriesApi
           end
 
           it 'should set user and story' do
-            story_item = StoryItems.new(id: @story.id, user: @user.api_key)
+            story_item = StoryItems.new(story_id: @story.id, user: @user.api_key)
             expect(story_item.user).to eq @user
             expect(story_item.story).to eq @story
           end
@@ -18,7 +18,7 @@ module StoriesApi
 
         describe '#get' do
           it 'returns 404 if the provided user id does not exist' do
-            response = StoryItems.new(id: '3', user: 'madeupuser').errors
+            response = StoryItems.new(story_id: '3', user: 'madeupuser').errors
 
             expect(response).to eq(
               status: 404,
@@ -30,7 +30,7 @@ module StoriesApi
 
           it 'returns 404 if the story id dosent exist' do
             @story = create(:story)
-            response = StoryItems.new(id: 'madeupkey', user: @story.user.api_key).errors
+            response = StoryItems.new(story_id: 'madeupkey', user: @story.user.api_key).errors
 
             expect(response).to eq(
               status: 404,
@@ -41,7 +41,7 @@ module StoriesApi
           end
 
           context 'successful request' do
-            let(:response) { StoryItems.new(id: @story.id, user: @user.api_key).get }
+            let(:response) { StoryItems.new(story_id: @story.id, user: @user.api_key).get }
             before do
               @story = create(:story)
               @user = @story.user
@@ -62,7 +62,7 @@ module StoriesApi
 
         describe '#post' do
           it 'returns 404 if the user dosent exist' do
-            response = StoryItems.new(id: 'madeupkey', user: 'madeupuser').errors
+            response = StoryItems.new(story_id: 'madeupkey', user: 'madeupuser').errors
 
             expect(response).to eq(
               status: 404,
@@ -74,7 +74,7 @@ module StoriesApi
 
           it 'returns 404 if the story dosent exist' do
             @story = create(:story)
-            response = StoryItems.new(id: 'madeupkey', user: @story.user.api_key).errors
+            response = StoryItems.new(story_id: 'madeupkey', user: @story.user.api_key).errors
 
             expect(response).to eq(
               status: 404,
@@ -92,7 +92,7 @@ module StoriesApi
             end
 
             it 'should return error when type is missing' do
-              response = StoryItems.new(id: @story.id,
+              response = StoryItems.new(story_id: @story.id,
                                         user: @user.api_key,
                                         block: { sub_type: 'dnz',
                                                  meta: {} }).post
@@ -105,7 +105,7 @@ module StoriesApi
             end
 
             it 'should return error when sub_type is missing' do
-              response = StoryItems.new(id: @story.id,
+              response = StoryItems.new(story_id: @story.id,
                                         user: @user.api_key,
                                         block: { type: 'embed',
                                                  meta: {} }).post
@@ -118,7 +118,7 @@ module StoriesApi
             end
 
             it 'should return error when content is missing' do
-              response = StoryItems.new(id: @story.id,
+              response = StoryItems.new(story_id: @story.id,
                                         user: @user.api_key,
                                         block: { type: 'embed',
                                                  sub_type: 'dnz',
@@ -132,7 +132,7 @@ module StoriesApi
             end
 
             it 'should return error when meta is missing' do
-              response = StoryItems.new(id: @story.id,
+              response = StoryItems.new(story_id: @story.id,
                                         user: @user.api_key,
                                         block: { type: 'embed',
                                                  sub_type: 'dnz',
@@ -146,7 +146,7 @@ module StoriesApi
             end
 
             it 'should return error when type is not valid' do
-              response = StoryItems.new(id: @story.id,
+              response = StoryItems.new(story_id: @story.id,
                                         user: @user.api_key,
                                         block: { type: 'youtube',
                                                  sub_type: 'dnz',
@@ -161,7 +161,7 @@ module StoriesApi
             end
 
             it 'should return error when sub_type is not valid' do
-              response = StoryItems.new(id: @story.id,
+              response = StoryItems.new(story_id: @story.id,
                                         user: @user.api_key,
                                         block: { type: 'embed',
                                                  sub_type: 'fancy_text',
@@ -178,7 +178,7 @@ module StoriesApi
             # Text Items
             context 'text item' do
               it 'should return error when text heading block' do
-                response = StoryItems.new(id: @story.id,
+                response = StoryItems.new(story_id: @story.id,
                                           user: @user.api_key,
                                           block: { type: 'text',
                                                    sub_type: 'heading',
@@ -193,7 +193,7 @@ module StoriesApi
               end
 
               it 'should return created text heading story item' do
-                response = StoryItems.new(id: @story.id,
+                response = StoryItems.new(story_id: @story.id,
                                           user: @user.api_key,
                                           block: { type: 'text',
                                                    sub_type: 'heading',
@@ -214,7 +214,7 @@ module StoriesApi
               end
 
               it 'should return created text rich_text story item' do
-                response = StoryItems.new(id: @story.id,
+                response = StoryItems.new(story_id: @story.id,
                                           user: @user.api_key,
                                           block: { type: 'text',
                                                    sub_type: 'rich_text',
@@ -238,7 +238,7 @@ module StoriesApi
             # Embed Item
             context 'embed item' do
               it 'should return error when content is empty' do
-                response = StoryItems.new(id: @story.id,
+                response = StoryItems.new(story_id: @story.id,
                                           user: @user.api_key,
                                           block: { type: 'embed',
                                                    sub_type: 'dnz',
@@ -253,7 +253,7 @@ module StoriesApi
               end
 
               it 'should return error for wrong type or values' do
-                response = StoryItems.new(id: @story.id,
+                response = StoryItems.new(story_id: @story.id,
                                           user: @user.api_key,
                                           block: { type: 'embed',
                                                    sub_type: 'dnz',
@@ -276,7 +276,7 @@ module StoriesApi
               end
 
               it 'should return the created dnz item' do
-                response = StoryItems.new(id: @story.id,
+                response = StoryItems.new(story_id: @story.id,
                                           user: @user.api_key,
                                           block: { type: 'embed',
                                                    sub_type: 'dnz',
@@ -344,7 +344,7 @@ module StoriesApi
                          },
                          meta: { school: 'foo'} }]
 
-            response = StoryItems.new(id: @story.id,
+            response = StoryItems.new(story_id: @story.id,
                                       user: @user.api_key,
                                       blocks: blocks).put
 

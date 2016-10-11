@@ -14,6 +14,10 @@ module StoriesApi
           @item = @story ? @story.set_items.find_by_id(params[:id]) : nil
         end
 
+        def get
+          create_response(status: 200, payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(item))
+        end
+
         def patch
           merge_patch = PerformMergePatch.new(::StoriesApi::V3::Schemas::StoryItem::BlockValidator.new,
                                               ::StoriesApi::V3::Presenters::StoryItem.new)

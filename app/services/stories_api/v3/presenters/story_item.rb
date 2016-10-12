@@ -17,8 +17,8 @@ module StoriesApi
             result[:content][k] = v
           end
 
+          result[:meta] = {}
           story_item.meta.each do |k, v|
-            result[:meta] ||= {}
             result[:meta][k] = v
           end
 

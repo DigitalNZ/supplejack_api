@@ -211,7 +211,8 @@ module StoriesApi
                     position: 0,
                     content: {
                       value: 'Some Heading'
-                    }
+                    },
+                    meta: {}
                 )
               end
 
@@ -221,7 +222,7 @@ module StoriesApi
                                           block: { type: 'text',
                                                    sub_type: 'rich_text',
                                                    position: 0,
-                                                   content: { value: 'Some Rick Text' },
+                                                   content: { value: 'Some Rich Text' },
                                                    meta: {} }).post
 
                 result = response[:payload]
@@ -232,8 +233,9 @@ module StoriesApi
                     sub_type: 'rich_text',
                     position: 0,
                     content: {
-                      value: 'Some Rick Text'
-                    }
+                      value: 'Some Rich Text'
+                    },
+                    meta: {}
                 )
               end
             end

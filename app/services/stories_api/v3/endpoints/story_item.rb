@@ -9,7 +9,7 @@ module StoriesApi
 
         def initialize(params)
           @params = params
-          @user = SupplejackApi::User.find_by_api_key(params[:user])
+          @user = SupplejackApi::User.find_by_api_key(params[:api_key])
           @story = @user ? @user.user_sets.find_by_id(params[:story_id]) : nil
           @item = @story ? @story.set_items.find_by_id(params[:id]) : nil
         end
@@ -41,7 +41,7 @@ module StoriesApi
         # @last_modified Eddie
         # @return [Hash] the error
         def errors
-          return create_exception('UserNotFound', id: params[:user]) unless user.present?
+          return create_exception('UserNotFound', id: params[:api_key]) unless user.present?
           return create_exception('StoryNotFound', id: params[:story_id]) unless story.present?
           return create_exception('StoryItemNotFound',
                                   item_id: params[:id],

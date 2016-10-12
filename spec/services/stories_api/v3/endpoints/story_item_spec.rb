@@ -13,7 +13,7 @@ module StoriesApi
             # passing id as a string as the id will be a string in the
             # request where as set_item.id is a BSON
             story_item = StoryItem.new(id: @story.set_items.first.id.to_s,
-                                       story_id: @story.id, user: @user.api_key)
+                                       story_id: @story.id, api_key: @user.api_key)
             expect(story_item.user).to eq @user
             expect(story_item.story).to eq @story
             expect(story_item.item).to eq @story.set_items.first
@@ -22,7 +22,7 @@ module StoriesApi
           context 'errors asfter initialize' do
             it 'should return UserNotFound error when user id dosent exist' do
               story_item = StoryItem.new(id: @story.set_items.first.id.to_s,
-                                         story_id: @story.id, user: 'fake')
+                                         story_id: @story.id, api_key: 'fake')
 
               expect(story_item.errors).to eq(
                 status: 404,
@@ -34,7 +34,7 @@ module StoriesApi
 
             it 'should return StoryNotFound error when story id dosent exist' do
               story_item = StoryItem.new(id: @story.set_items.first.id.to_s,
-                                         story_id: 'fake', user: @user.api_key)
+                                         story_id: 'fake', api_key: @user.api_key)
 
               expect(story_item.errors).to eq(
                 status: 404,
@@ -46,7 +46,8 @@ module StoriesApi
 
             it 'should return StoryItemNotFound error when story item id dosent exist' do
               story_item = StoryItem.new(id: 'fake',
-                                         story_id: @story.id, user: @user.api_key)
+                                         story_id: @story.id,
+                                         api_key: @user.api_key)
 
               expect(story_item.errors).to eq(
                 status: 404,
@@ -63,7 +64,8 @@ module StoriesApi
             item_to_delete = @story.set_items.first.id
             item_count = @story.set_items.count
             StoryItem.new(id: item_to_delete.to_s,
-                          story_id: @story.id, user: @user.api_key).delete
+                          story_id: @story.id,
+                          api_key: @user.api_key).delete
 
             @story.reload
 
@@ -73,7 +75,8 @@ module StoriesApi
 
           it 'should return delete success code' do
             response = StoryItem.new(id: @story.set_items.first.id.to_s,
-                                     story_id: @story.id, user: @user.api_key).delete
+                                     story_id: @story.id,
+                                     api_key: @user.api_key).delete
 
             expect(response).to eq(
               status: 204
@@ -84,7 +87,7 @@ module StoriesApi
         describe '#patch' do
           it 'should fail with no content id error' do
             response = StoryItem.new(id: @story.set_items.first.id.to_s,
-                                       story_id: @story.id, user: @user.api_key,
+                                       story_id: @story.id, api_key: @user.api_key,
                                        item: { type: 'embed',
                                                sub_type: 'dnz',
                                                position: 1,
@@ -104,7 +107,7 @@ module StoriesApi
 
           it 'should fail with content must be an intiger error' do
             response = StoryItem.new(id: @story.set_items.first.id.to_s,
-                                       story_id: @story.id, user: @user.api_key,
+                                       story_id: @story.id, api_key: @user.api_key,
                                        item: { type: 'embed',
                                                sub_type: 'dnz',
                                                position: 1,
@@ -125,7 +128,7 @@ module StoriesApi
 
           it 'should update given set item' do
             response = StoryItem.new(id: @story.set_items.first.id.to_s,
-                                       story_id: @story.id, user: @user.api_key,
+                                       story_id: @story.id, api_key: @user.api_key,
                                        item: { type: 'embed',
                                                sub_type: 'dnz',
                                                position: 1,

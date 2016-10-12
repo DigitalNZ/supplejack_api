@@ -142,9 +142,11 @@ module StoriesApi
                                                },
                                                meta: { school: 'foo'} }).patch
 
-            expect(response).to eq(
-              {status: 200, 
-               payload: { position: 1,
+            result = response[:payload]
+            result.delete(:id)
+
+            expect(result).to eq(
+                          position: 1,
                           type: 'embed',
                           sub_type: 'dnz',
                           content: { 
@@ -160,8 +162,6 @@ module StoriesApi
                             size: 1,
                             school: 'foo'
                             }
-                          }
-                          }
             )
           end
         end        

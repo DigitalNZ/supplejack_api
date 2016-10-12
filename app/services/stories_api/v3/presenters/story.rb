@@ -4,6 +4,7 @@ module StoriesApi
     module Presenters
       class Story
         TOP_LEVEL_FIELDS = [
+          :id,
           :name,
           :description,
           :privacy,

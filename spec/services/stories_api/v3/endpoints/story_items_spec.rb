@@ -202,16 +202,16 @@ module StoriesApi
                                                    position: 0,
                                                    content: { value: 'Some Heading' },
                                                    meta: {} }).post
-                expect(response).to eq(
-                  status: 200,
-                  payload: {
+                result = response[:payload]
+                result.delete(:id)
+
+                expect(result).to eq(
                     type: 'text',
                     sub_type: 'heading',
                     position: 0,
                     content: {
                       value: 'Some Heading'
                     }
-                  }
                 )
               end
 
@@ -223,16 +223,17 @@ module StoriesApi
                                                    position: 0,
                                                    content: { value: 'Some Rick Text' },
                                                    meta: {} }).post
-                expect(response).to eq(
-                  status: 200,
-                  payload: {
+
+                result = response[:payload]
+                result.delete(:id)
+
+                expect(response[:payload]).to eq(
                     type: 'text',
                     sub_type: 'rich_text',
                     position: 0,
                     content: {
                       value: 'Some Rick Text'
                     }
-                  }
                 )
               end
             end
@@ -278,23 +279,7 @@ module StoriesApi
               end
 
               it 'should return the created dnz item' do
-                response = StoryItems.new(story_id: @story.id,
-                                          api_key: @user.api_key,
-                                          block: { type: 'embed',
-                                                   sub_type: 'dnz',
-                                                   position: 0,
-                                                   content: {
-                                                     id: 100,
-                                                     title: 'Title',
-                                                     display_collection: 'Marama',
-                                                     category: 'Te Papa',
-                                                     image_url: 'url',
-                                                     tags: %w(foo bar)
-                                                   },
-                                                   meta: {} }).post
-                expect(response).to eq(
-                  status: 200,
-                  payload: {
+                payload = {
                     position: 0,
                     type: 'embed',
                     sub_type: 'dnz',
@@ -305,9 +290,17 @@ module StoriesApi
                       category: 'Te Papa',
                       image_url: 'url',
                       tags: %w(foo bar)
-                    }
+                    },
+                    meta: { somemeta: 'metadata'}
                   }
-                )
+
+                response = StoryItems.new(story_id: @story.id,
+                                          api_key: @user.api_key,
+                                          block: payload).post
+                result = response[:payload]
+                result.delete(:id)
+
+                expect(result).to eq payload
               end
             end
           end
@@ -351,9 +344,12 @@ module StoriesApi
                                       blocks: blocks).put
 
             expect(response[:status]).to eq 200
-            expect(response[:payload]).to eq blocks
-            expect(@story.reload.set_items).not_to eq old_story_items
-          end          
+
+            response[:payload].each do |block|
+              block.delete(:id)
+              expect(blocks.include? block).to be true
+            end
+          end        
         end
       end
     end

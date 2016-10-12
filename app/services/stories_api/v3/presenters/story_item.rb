@@ -3,7 +3,7 @@ module StoriesApi
   module V3
     module Presenters
       class StoryItem
-        TOP_LEVEL_FIELDS = [:position, :type, :sub_type].freeze
+        TOP_LEVEL_FIELDS = [:id, :position, :type, :sub_type].freeze
 
         def call(story_item)
           result = {}

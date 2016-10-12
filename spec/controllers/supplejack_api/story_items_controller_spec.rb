@@ -53,9 +53,12 @@ module SupplejackApi
           expect(response.status).to eq(200)
         end
 
-        it 'should return an Array of Story Items' do
+        it 'should return a Story Items' do
           response_item = JSON.parse(response.body).deep_symbolize_keys
           first_item = ::StoriesApi::V3::Presenters::StoryItem.new.call(story.set_items.first)
+
+          response_item.delete(:id)
+          first_item.delete(:id)
 
           expect(response_item).to eq(first_item)
         end
@@ -104,7 +107,10 @@ module SupplejackApi
                     meta: { some: 'foo' }, position: 0 }
 
           post :create, story_id: story.id.to_s, api_key: api_key, block: block
-          expect(JSON.parse(response.body).deep_symbolize_keys).to eq block
+          result = JSON.parse(response.body).deep_symbolize_keys
+          result.delete(:id)
+          
+          expect(result).to eq block
         end
       end
     end

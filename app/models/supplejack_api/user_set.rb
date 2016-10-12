@@ -14,6 +14,11 @@ module SupplejackApi
     include ActiveModel::MassAssignmentSecurity
     include SupplejackApi::Concerns::UserSet
 
+    # Finds and returns a UserSet with id
+    #
+    # @author Eddie
+    # @last_modified Eddie
+    # @return [Object] the set_item
     def self.find_by_id(id)
       find(id) rescue nil
     end

@@ -44,7 +44,7 @@ SupplejackApi::Engine.routes.draw do
 
     # Stories
     resources :stories, except: [:new, :edit] do
-      resources :story_items, except: [:new, :edit]
+      resources :story_items, except: [:new, :edit], as: :items
     end
   end
 

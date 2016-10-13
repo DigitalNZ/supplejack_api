@@ -20,7 +20,7 @@ module SupplejackApi
     # @last_modified Eddie
     # @return [Object] the set_item
     def self.find_by_id(id)
-      find(id) rescue nil
+      where(id: id).first
     end
   end
 end

@@ -126,20 +126,26 @@ module StoriesApi
             end
 
             it 'should return error when meta is missing' do
+              item = create(:story_item, type: 'embed', sub_type: 'dnz', content: {}, meta: {}).attributes.symbolize_keys
+              item.delete(:_id)
+
               response = StoryItems.new(story_id: @story.id, api_key: @user.api_key,
-                                        item: { type: 'embed', sub_type: 'dnz', content: {} }).post
+                                        item: item).post
 
               expect(response).to eq(
                 status: 400,
                 exception: {
-                  message: 'Mandatory Parameters Missing: id is missing, title is missing, display_collection is missing, category is missing, image_url is missing, tags is missing in content meta is missing'
+                  message: 'Mandatory Parameters Missing: id is missing, title is missing, display_collection is missing, category is missing, image_url is missing, tags is missing in content'
                 }
               )
             end
 
             it 'should return error when type is not valid' do
+              item = create(:story_item, type: 'youtube', sub_type: 'dnz', content: {}, meta: {}).attributes.symbolize_keys
+              item.delete(:_id)
+
               response = StoryItems.new(story_id: @story.id, api_key: @user.api_key,
-                                        item: { type: 'youtube', sub_type: 'dnz', content: {}, meta: {} }).post
+                                        item: item).post
 
               expect(response).to eq(
                 status: 400,
@@ -150,8 +156,11 @@ module StoriesApi
             end
 
             it 'should return error when sub_type is not valid' do
+              item = create(:story_item, type: 'embed', sub_type: 'fancy_text', content: {}, meta: {}).attributes.symbolize_keys
+              item.delete(:_id)
+
               response = StoryItems.new(story_id: @story.id, api_key: @user.api_key,
-                                        item: { type: 'embed', sub_type: 'fancy_text', content: {}, meta: {} }).post
+                                        item: item).post
 
               expect(response).to eq(
                 status: 400,
@@ -169,7 +178,6 @@ module StoriesApi
                                              meta: { metadata: 'Some Meta' })
                 @item = factory.attributes.symbolize_keys
                 @item.delete(:_id)
-                @item.delete(:record_id)
               end
 
               it 'should return error when text heading block' do
@@ -266,7 +274,6 @@ module StoriesApi
 
             @item = factory.attributes.symbolize_keys
             @item.delete(:_id)
-            @item.delete(:record_id)            
           end
 
           it 'should return the created dnz item' do

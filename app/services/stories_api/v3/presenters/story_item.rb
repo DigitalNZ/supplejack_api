@@ -15,6 +15,8 @@ module StoriesApi
         def call(story_item)
           result = {}
 
+          result[:record_id] = story_item.record_id if story_item.record_id
+
           TOP_LEVEL_FIELDS.each do |field|
             result[field] = story_item.send(field)
           end

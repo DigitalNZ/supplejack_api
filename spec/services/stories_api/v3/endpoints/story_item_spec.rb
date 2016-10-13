@@ -114,19 +114,15 @@ module StoriesApi
 
         describe '#patch' do
           it 'should fail with no content id error' do
+            item = create(:story_item, type: 'embed', sub_type: 'dnz', position: 1,
+                          content: { title: 'Title', display_collection: 'Marama', value: 'bar',
+                                     category: 'Te Papa', image_url: 'url', tags: %w(foo bar)},
+                          meta: { size: 1, metadata: 'Some Meta' }).attributes.symbolize_keys
+            item.delete(:_id)
+
             response = StoryItem.new(id: @story.set_items.first.id.to_s,
                                        story_id: @story.id, api_key: @user.api_key,
-                                       item: { type: 'embed',
-                                               sub_type: 'dnz',
-                                               position: 1,
-                                               content: {
-                                                 title: 'Title New',
-                                                 display_collection: 'New Marama',
-                                                 category: 'New Te Papa',
-                                                 image_url: 'New url',
-                                                 tags: %w(foo bar)
-                                               },
-                                               meta: { school: 'foo'} }).patch
+                                       item: item).patch
 
             expect(response).to eq(
               status: 400, exception: { message: 'Mandatory Parameters Missing: id is missing in content' }
@@ -134,20 +130,15 @@ module StoriesApi
           end
 
           it 'should fail with content must be an intiger error' do
+            item = create(:story_item, type: 'embed', sub_type: 'dnz', position: 1,
+                          content: { id: "zfkjg", title: 'Title', display_collection: 'Marama', value: 'bar',
+                                     category: 'Te Papa', image_url: 'url', tags: %w(foo bar)},
+                          meta: { size: 1, metadata: 'Some Meta' }).attributes.symbolize_keys
+            item.delete(:_id)
+
             response = StoryItem.new(id: @story.set_items.first.id.to_s,
                                        story_id: @story.id, api_key: @user.api_key,
-                                       item: { type: 'embed',
-                                               sub_type: 'dnz',
-                                               position: 1,
-                                               content: {
-                                                 id: 'jhsdbgh',
-                                                 title: 'Title New',
-                                                 display_collection: 'New Marama',
-                                                 category: 'New Te Papa',
-                                                 image_url: 'New url',
-                                                 tags: %w(foo bar)
-                                               },
-                                               meta: { school: 'foo'} }).patch
+                                       item: item).patch
 
             expect(response).to eq(
               status: 400, exception: { message: 'Bad Request: id must be an integer in content' }
@@ -155,42 +146,20 @@ module StoriesApi
           end
 
           it 'should update given set item' do
+            item = create(:story_item, type: 'embed', sub_type: 'dnz', position: 1,
+                          content: { id: 100, title: 'Title', display_collection: 'Marama', value: 'bar',
+                                     category: 'Te Papa', image_url: 'url', tags: %w(foo bar)},
+                          meta: { size: 1, metadata: 'Some Meta' }).attributes.symbolize_keys
+            item.delete(:_id)
+
             response = StoryItem.new(id: @story.set_items.first.id.to_s,
                                        story_id: @story.id, api_key: @user.api_key,
-                                       item: { type: 'embed',
-                                               sub_type: 'dnz',
-                                               position: 1,
-                                               content: {
-                                                 id: 100,
-                                                 title: 'Title New',
-                                                 display_collection: 'New Marama',
-                                                 category: 'New Te Papa',
-                                                 image_url: 'New url',
-                                                 tags: %w(foo bar)
-                                               },
-                                               meta: { school: 'foo'} }).patch
+                                       item: item).patch
 
             result = response[:payload]
             result.delete(:id)
 
-            expect(result).to eq(
-                          position: 1,
-                          type: 'embed',
-                          sub_type: 'dnz',
-                          content: { 
-                            value: 'foo',
-                            id: 100,
-                            title: 'Title New',
-                            display_collection: 'New Marama',
-                            category: 'New Te Papa',
-                            image_url: 'New url',
-                            tags: %w(foo bar)
-                          },
-                          meta: {
-                            size: 1,
-                            school: 'foo'
-                            }
-            )
+            expect(result).to eq(item)
           end
         end        
       end

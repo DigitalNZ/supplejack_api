@@ -76,25 +76,25 @@ module SupplejackApi
     describe 'POST create' do
       context 'unsuccessfull create requests' do
         it 'should return 400 if required params are not posted' do
-          post :create, story_id: story.id.to_s, api_key: api_key, block: {}
+          post :create, story_id: story.id.to_s, api_key: api_key, item: {}
           expect(response.status).to eq 400
           expect(JSON.parse(response.body)['errors']).to eq 'Mandatory Parameters Missing: type is missing sub_type is missing'
         end
 
         it 'should return error for unknow values for type' do
-          post :create, story_id: story.id.to_s, api_key: api_key, block: { type: 'foo' }
+          post :create, story_id: story.id.to_s, api_key: api_key, item: { type: 'foo' }
           expect(response.status).to eq 400
           expect(JSON.parse(response.body)['errors']).to eq 'Mandatory Parameters Missing: type must be one of: embed, text sub_type is missing'
         end
 
         it 'should return error for unknow values for sub type' do
-          post :create, story_id: story.id.to_s, api_key: api_key, block: { type: 'text', sub_type: 'foo' }
+          post :create, story_id: story.id.to_s, api_key: api_key, item: { type: 'text', sub_type: 'foo' }
           expect(response.status).to eq 400
           expect(JSON.parse(response.body)['errors']).to eq 'Unsupported Values: sub_type must be one of: dnz, heading, rich_text'
         end
 
         it 'should return error if content and meta is not posted' do
-          post :create, story_id: story.id.to_s, api_key: api_key, block: { type: 'text', sub_type: 'heading' }
+          post :create, story_id: story.id.to_s, api_key: api_key, item: { type: 'text', sub_type: 'heading' }
           expect(response.status).to eq 400
           expect(JSON.parse(response.body)['errors']).to eq 'Mandatory Parameters Missing: content is missing meta is missing'
         end
@@ -106,7 +106,7 @@ module SupplejackApi
                     content: { value: 'sometext'},
                     meta: { some: 'foo' }, position: 0 }
 
-          post :create, story_id: story.id.to_s, api_key: api_key, block: block
+          post :create, story_id: story.id.to_s, api_key: api_key, item: block
           result = JSON.parse(response.body).deep_symbolize_keys
           result.delete(:id)
           

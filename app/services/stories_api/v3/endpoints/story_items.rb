@@ -1,4 +1,11 @@
 # frozen_string_literal: true
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
+# and is licensed under the GNU General Public License, version 3.
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
+# the Department of Internal Affairs. http://digitalnz.org/supplejack
+
 module StoriesApi
   module V3
     module Endpoints
@@ -20,13 +27,13 @@ module StoriesApi
         end
 
         def post
-          return create_exception('MandatoryParamMissing', param: :block) unless params[:block]
+          return create_exception('MandatoryParamMissing', param: :item) unless params[:item]
           
-          validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(params[:block])
+          validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(params[:item])
           return create_exception('SchemaValidationError',
                                   errors: validator.messages(full: true)) unless validator.success?
 
-          story_item = story.set_items.build(params[:block].deep_symbolize_keys)
+          story_item = story.set_items.build(params[:item].deep_symbolize_keys)
           story.save!
 
           create_response(status: 200,
@@ -35,7 +42,7 @@ module StoriesApi
 
         # Not using this method now
         def put
-          params[:blocks].each do |block|
+          params[:items].each do |block|
             validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(block)
             return create_exception('SchemaValidationError',
                                     errors: validator.messages(full: true)) unless validator.success?
@@ -43,7 +50,7 @@ module StoriesApi
 
           @story.set_items.destroy
 
-          params[:blocks].each do |block|
+          params[:items].each do |block|
             story.set_items.build(block.deep_symbolize_keys)
           end
 

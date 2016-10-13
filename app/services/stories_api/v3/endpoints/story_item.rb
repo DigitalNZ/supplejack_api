@@ -12,13 +12,13 @@ module StoriesApi
       class StoryItem
         include Helpers
 
-        attr_reader :params, :user, :story, :item
+        attr_reader :params, :user, :story, :item, :errors
 
         def initialize(params)
           @params = params
-          @user = SupplejackApi::User.find_by_api_key(params[:api_key])
-          @story = @user ? @user.user_sets.find_by_id(params[:story_id]) : nil
-          @item = @story ? @story.set_items.find_by_id(params[:id]) : nil
+          @user = find_user
+          @story = find_story
+          @item = find_item
         end
 
         def get
@@ -45,17 +45,38 @@ module StoriesApi
           create_response(status: 204)
         end
 
-        # Returns error if story and user were not initialised
+        # Initialises user
         #
         # @author Eddie
         # @last_modified Eddie
-        # @return [Hash] the error
-        def errors
-          return create_exception('UserNotFound', id: params[:api_key]) unless user.present?
-          return create_exception('StoryNotFound', id: params[:story_id]) unless story.present?
-          return create_exception('StoryItemNotFound',
-                                  item_id: params[:id],
-                                  story_id: params[:story_id]) unless item.present?
+        def find_user
+          user = SupplejackApi::User.find_by_api_key(params[:api_key])
+          @errors = create_exception('UserNotFound', id: params[:api_key]) unless user
+          user
+        end
+
+        # Initialises story
+        #
+        # @author Eddie
+        # @last_modified Eddie
+        def find_story
+          return unless @user
+          story = @user.user_sets.find_by_id(params[:story_id])
+          @errors = create_exception('StoryNotFound', id: params[:story_id]) unless story
+          story
+        end
+
+        # Initialises story item
+        #
+        # @author Eddie
+        # @last_modified Eddie
+        def find_item
+          return unless @story
+          item = @story.set_items.find_by_id(params[:id])
+          @errors = create_exception('StoryItemNotFound',
+                                     item_id: params[:id],
+                                     story_id: params[:story_id]) unless item
+          item
         end
       end
     end

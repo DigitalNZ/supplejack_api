@@ -19,6 +19,34 @@ module StoriesApi
             expect(story_item.item).to eq @story.set_items.first
           end
 
+          context '#find_user' do
+            it 'should find a user by api key' do
+              story_item = StoryItem.new(id: @story.set_items.first.id.to_s,
+                                         story_id: @story.id, api_key: @user.api_key)
+
+              expect(SupplejackApi::User).to receive(:find_by_api_key).with(@user.api_key)
+              story_item.find_user
+            end
+          end
+
+          context '#find_story' do
+            it 'should find a story by id' do
+              story_item = StoryItem.new(id: @story.set_items.first.id.to_s,
+                                         story_id: @story.id, api_key: @user.api_key)
+
+              expect(story_item.find_story).to eq @story
+            end
+          end
+
+          context '#find_item' do
+            it 'should find a set item by id' do
+              story_item = StoryItem.new(id: @story.set_items.first.id.to_s,
+                                         story_id: @story.id, api_key: @user.api_key)
+
+              expect(story_item.find_item).to eq(@story.set_items.first)
+            end
+          end
+
           context 'errors asfter initialize' do
             it 'should return UserNotFound error when user id dosent exist' do
               story_item = StoryItem.new(id: @story.set_items.first.id.to_s,

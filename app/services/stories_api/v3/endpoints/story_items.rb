@@ -28,7 +28,7 @@ module StoriesApi
 
         def post
           return create_exception('MandatoryParamMissing', param: :item) unless params[:item]
-          
+
           validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(params[:item])
           return create_exception('SchemaValidationError',
                                   errors: validator.messages(full: true)) unless validator.success?

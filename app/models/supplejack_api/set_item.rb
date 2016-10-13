@@ -26,7 +26,7 @@ module SupplejackApi
 
     # validates :record_id,   presence: true, uniqueness: true, numericality: { greater_than: 0 }
     validates :record_id,   allow_blank: true, uniqueness: true, numericality: { greater_than: 0 }
-    validates :position,    presence: true
+    validates :position,    presence: true, uniqueness: true
     validate  :not_adding_set_to_itself
 
     before_validation :set_position

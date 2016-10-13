@@ -48,22 +48,21 @@ module StoriesApi
             end
 
             it 'returns a 200 status code' do
-              # expect(response[:status]).to eq(200)
+              expect(response[:status]).to eq(200)
             end
 
             it 'returns an array of all of a users stories if the user exists' do
-              # payload = response[:payload]
+              payload = response[:payload]
 
-              # expect(payload.length).to eq(@story.set_items.count)
-              # expect(payload.all?{ |story| ::StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(story) }).to eq(true)
+              expect(payload.length).to eq(@story.set_items.count)
+              expect(payload.all?{ |story| ::StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(story) }).to eq(true)
             end
           end
         end
 
         describe '#post' do
           it 'returns 404 if the user dosent exist' do
-            response = StoryItems.new(story_id: 'madeupkey',
-                                      api_key: 'madeupuser').errors
+            response = StoryItems.new(story_id: 'madeupkey', api_key: 'madeupuser').errors
 
             expect(response).to eq(
               status: 404,
@@ -75,8 +74,7 @@ module StoriesApi
 
           it 'returns 404 if the story dosent exist' do
             @story = create(:story)
-            response = StoryItems.new(story_id: 'madeupkey',
-                                      api_key: @story.user.api_key).errors
+            response = StoryItems.new(story_id: 'madeupkey', api_key: @story.user.api_key).errors
 
             expect(response).to eq(
               status: 404,
@@ -94,10 +92,8 @@ module StoriesApi
             end
 
             it 'should return error when type is missing' do
-              response = StoryItems.new(story_id: @story.id,
-                                        api_key: @user.api_key,
-                                        item: { sub_type: 'dnz',
-                                                 meta: {} }).post
+              response = StoryItems.new(story_id: @story.id, api_key: @user.api_key,
+                                        item: { sub_type: 'dnz', meta: {} }).post
               expect(response).to eq(
                 status: 400,
                 exception: {
@@ -107,10 +103,8 @@ module StoriesApi
             end
 
             it 'should return error when sub_type is missing' do
-              response = StoryItems.new(story_id: @story.id,
-                                        api_key: @user.api_key,
-                                        item: { type: 'embed',
-                                                 meta: {} }).post
+              response = StoryItems.new(story_id: @story.id, api_key: @user.api_key,
+                                        item: { type: 'embed', meta: {} }).post
               expect(response).to eq(
                 status: 400,
                 exception: {
@@ -120,11 +114,9 @@ module StoriesApi
             end
 
             it 'should return error when content is missing' do
-              response = StoryItems.new(story_id: @story.id,
-                                        api_key: @user.api_key,
-                                        item: { type: 'embed',
-                                                 sub_type: 'dnz',
-                                                 meta: {} }).post
+              response = StoryItems.new(story_id: @story.id, api_key: @user.api_key,
+                                        item: { type: 'embed', sub_type: 'dnz', meta: {} }).post
+
               expect(response).to eq(
                 status: 400,
                 exception: {
@@ -134,11 +126,9 @@ module StoriesApi
             end
 
             it 'should return error when meta is missing' do
-              response = StoryItems.new(story_id: @story.id,
-                                        api_key: @user.api_key,
-                                        item: { type: 'embed',
-                                                 sub_type: 'dnz',
-                                                 content: {} }).post
+              response = StoryItems.new(story_id: @story.id, api_key: @user.api_key,
+                                        item: { type: 'embed', sub_type: 'dnz', content: {} }).post
+
               expect(response).to eq(
                 status: 400,
                 exception: {
@@ -148,12 +138,9 @@ module StoriesApi
             end
 
             it 'should return error when type is not valid' do
-              response = StoryItems.new(story_id: @story.id,
-                                        api_key: @user.api_key,
-                                        item: { type: 'youtube',
-                                                 sub_type: 'dnz',
-                                                 content: {},
-                                                 meta: {} }).post
+              response = StoryItems.new(story_id: @story.id, api_key: @user.api_key,
+                                        item: { type: 'youtube', sub_type: 'dnz', content: {}, meta: {} }).post
+
               expect(response).to eq(
                 status: 400,
                 exception: {
@@ -163,12 +150,9 @@ module StoriesApi
             end
 
             it 'should return error when sub_type is not valid' do
-              response = StoryItems.new(story_id: @story.id,
-                                        api_key: @user.api_key,
-                                        item: { type: 'embed',
-                                                 sub_type: 'fancy_text',
-                                                 content: {},
-                                                 meta: {} }).post
+              response = StoryItems.new(story_id: @story.id, api_key: @user.api_key,
+                                        item: { type: 'embed', sub_type: 'fancy_text', content: {}, meta: {} }).post
+
               expect(response).to eq(
                 status: 400,
                 exception: {
@@ -179,13 +163,22 @@ module StoriesApi
 
             # Text Items
             context 'text item' do
+              before do
+                factory = create(:story_item, type: 'text', sub_type: 'rich_text',
+                                             content: { value: 'Some Text' },
+                                             meta: { metadata: 'Some Meta' })
+                @item = factory.attributes.symbolize_keys
+                @item.delete(:_id)
+                @item.delete(:record_id)
+              end
+
               it 'should return error when text heading block' do
-                response = StoryItems.new(story_id: @story.id,
-                                          api_key: @user.api_key,
-                                          item: { type: 'text',
-                                                   sub_type: 'heading',
-                                                   content: {},
-                                                   meta: {} }).post
+                item = @item
+                item[:content].delete(:value)
+
+                response = StoryItems.new(story_id: @story.id, api_key: @user.api_key,
+                                          item: item).post
+
                 expect(response).to eq(
                   status: 400,
                   exception: {
@@ -194,84 +187,52 @@ module StoriesApi
                 )
               end
 
-              it 'should return created text heading story item' do
-                response = StoryItems.new(story_id: @story.id,
-                                          api_key: @user.api_key,
-                                          item: { type: 'text',
-                                                   sub_type: 'heading',
-                                                   position: 0,
-                                                   content: { value: 'Some Heading' },
-                                                   meta: {} }).post
-                result = response[:payload]
-                result.delete(:id)
-
-                expect(result).to eq(
-                    type: 'text',
-                    sub_type: 'heading',
-                    position: 0,
-                    content: {
-                      value: 'Some Heading'
-                    },
-                    meta: {}
-                )
-              end
-
               it 'should return created text rich_text story item' do
-                response = StoryItems.new(story_id: @story.id,
-                                          api_key: @user.api_key,
-                                          item: { type: 'text',
-                                                   sub_type: 'rich_text',
-                                                   position: 0,
-                                                   content: { value: 'Some Rich Text' },
-                                                   meta: {} }).post
+                response = StoryItems.new(story_id: @story.id, api_key: @user.api_key,
+                                          item: @item).post
 
                 result = response[:payload]
                 result.delete(:id)
-
-                expect(response[:payload]).to eq(
-                    type: 'text',
-                    sub_type: 'rich_text',
-                    position: 0,
-                    content: {
-                      value: 'Some Rich Text'
-                    },
-                    meta: {}
-                )
+                expect(result).to eq @item
               end
             end
 
             # Embed Item
             context 'embed item' do
+              before do
+                factory = create(:story_item, type: 'embed', sub_type: 'dnz',
+                                             content: { id: 100, title: 'Title', display_collection: 'Marama',
+                                                        category: 'Te Papa', image_url: 'url', tags: %w(foo bar)},
+                                             meta: { metadata: 'Some Meta' })
+
+                @item = factory.attributes.symbolize_keys
+                @item.delete(:_id)
+                @item.delete(:record_id)
+              end
+
               it 'should return error when content is empty' do
+                item = @item
+                item[:content].delete(:id)
+
                 response = StoryItems.new(story_id: @story.id,
                                           api_key: @user.api_key,
-                                          item: { type: 'embed',
-                                                   sub_type: 'dnz',
-                                                   content: {},
-                                                   meta: {} }).post
+                                          item: item).post
                 expect(response).to eq(
                   status: 400,
                   exception: {
-                    message: 'Mandatory Parameters Missing: id is missing, title is missing, display_collection is missing, category is missing, image_url is missing, tags is missing in content'
+                    message: 'Mandatory Parameters Missing: id is missing in content'
                   }
                 )
               end
 
               it 'should return error for wrong type or values' do
+                item = @item
+                item[:content][:id] = 'zfbgksdgjb'
+                item[:content][:tags] = 1
+                
                 response = StoryItems.new(story_id: @story.id,
                                           api_key: @user.api_key,
-                                          item: { type: 'embed',
-                                                   sub_type: 'dnz',
-                                                   position: 0,
-                                                   content: {
-                                                     id: 'jhdfg',
-                                                     title: 'Title',
-                                                     display_collection: 'Marama',
-                                                     category: 'Te Papa',
-                                                     image_url: 'url',
-                                                     tags: 'foo'
-                                                   },
-                                                   meta: {} }).post
+                                          item: item).post
                 expect(response).to eq(
                   status: 400,
                   exception: {
@@ -281,28 +242,13 @@ module StoriesApi
               end
 
               it 'should return the created dnz item' do
-                payload = {
-                    position: 0,
-                    type: 'embed',
-                    sub_type: 'dnz',
-                    content: {
-                      id: 100,
-                      title: 'Title',
-                      display_collection: 'Marama',
-                      category: 'Te Papa',
-                      image_url: 'url',
-                      tags: %w(foo bar)
-                    },
-                    meta: { somemeta: 'metadata'}
-                  }
-
                 response = StoryItems.new(story_id: @story.id,
                                           api_key: @user.api_key,
-                                          item: payload).post
+                                          item: @item).post
                 result = response[:payload]
                 result.delete(:id)
 
-                expect(result).to eq payload
+                expect(result).to eq @item
               end
             end
           end
@@ -312,44 +258,29 @@ module StoriesApi
           before do
             @story = create(:story)
             @user = @story.user
+
+            factory = create(:story_item, type: 'embed', sub_type: 'dnz',
+                                         content: { id: 100, title: 'Title', display_collection: 'Marama',
+                                                    category: 'Te Papa', image_url: 'url', tags: %w(foo bar)},
+                                         meta: { metadata: 'Some Meta' })
+
+            @item = factory.attributes.symbolize_keys
+            @item.delete(:_id)
+            @item.delete(:record_id)            
           end
 
           it 'should return the created dnz item' do
             old_story_items = @story.set_items
-            blocks = [{ type: 'embed',
-                        sub_type: 'dnz',
-                        position: 0,
-                        content: {
-                          id: 100,
-                          title: 'Title',
-                          display_collection: 'Marama',
-                          category: 'Te Papa',
-                          image_url: 'url',
-                          tags: %w(foo bar)
-                        },
-                        meta: { school: 'foo'} },
-                       { type: 'embed',
-                         sub_type: 'dnz',
-                         position: 1,
-                         content: {
-                           id: 100,
-                           title: 'Title New',
-                           display_collection: 'New Marama',
-                           category: 'New Te Papa',
-                           image_url: 'New url',
-                           tags: %w(foo bar)
-                         },
-                         meta: { school: 'foo'} }]
 
             response = StoryItems.new(story_id: @story.id,
                                       api_key: @user.api_key,
-                                      items: blocks).put
+                                      items: [@item]).put
 
             expect(response[:status]).to eq 200
 
             response[:payload].each do |block|
               block.delete(:id)
-              expect(blocks.include? block).to be true
+              expect([@item].include? block).to be true
             end
           end        
         end

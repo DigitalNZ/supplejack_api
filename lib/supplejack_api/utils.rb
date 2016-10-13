@@ -76,8 +76,8 @@ module Utils
   # @return [String] the string with capital first letter
   def capitalize_first_word(string)
     return '' unless string.present?
-    string = string.dup if string.frozen?
-    string[0] = string.to_s[0].upcase
-    string
+    string_dup = string.dup
+    string_dup[0] = string_dup.to_s[0].upcase
+    string_dup
   end
 end

@@ -59,6 +59,7 @@ Rails/FindBy:
     - 'app/models/supplejack_api/support/concept/searchable.rb'
     - 'app/models/supplejack_api/support/fragment_helpers.rb'
     - 'app/models/supplejack_api/support/searchable.rb'
+    - 'app/models/supplejack_api/user_set.rb'
     - 'app/models/supplejack_api/user.rb'
 
 Metrics/ModuleLength:

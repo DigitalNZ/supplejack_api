@@ -26,14 +26,14 @@ module StoriesApi
         end
 
         def patch
-          return create_exception('MandatoryParamMissing', param: :item) unless params[:item]
+          return create_error('MandatoryParamMissing', param: :item) unless params[:item]
 
           merge_patch = PerformMergePatch.new(::StoriesApi::V3::Schemas::StoryItem::BlockValidator.new,
                                               ::StoriesApi::V3::Presenters::StoryItem.new)
 
           valid = merge_patch.call(item, params[:item])
 
-          return create_exception('SchemaValidationError', errors: merge_patch.validation_errors) unless valid
+          return create_error('SchemaValidationError', errors: merge_patch.validation_errors) unless valid
 
           item.save
           create_response(status: 200, payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(item))
@@ -51,7 +51,7 @@ module StoriesApi
         # @last_modified Eddie
         def find_user
           user = SupplejackApi::User.find_by_api_key(params[:api_key])
-          @errors = create_exception('UserNotFound', id: params[:api_key]) unless user
+          @errors = create_error('UserNotFound', id: params[:api_key]) unless user
           user
         end
 
@@ -62,7 +62,7 @@ module StoriesApi
         def find_story
           return unless @user
           story = @user.user_sets.find_by_id(params[:story_id])
-          @errors = create_exception('StoryNotFound', id: params[:story_id]) unless story
+          @errors = create_error('StoryNotFound', id: params[:story_id]) unless story
           story
         end
 
@@ -73,9 +73,9 @@ module StoriesApi
         def find_item
           return unless @story
           item = @story.set_items.find_by_id(params[:id])
-          @errors = create_exception('StoryItemNotFound',
-                                     item_id: params[:id],
-                                     story_id: params[:story_id]) unless item
+          @errors = create_error('StoryItemNotFound',
+                                 item_id: params[:id],
+                                 story_id: params[:story_id]) unless item
           item
         end
       end

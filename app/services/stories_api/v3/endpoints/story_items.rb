@@ -27,11 +27,11 @@ module StoriesApi
         end
 
         def post
-          return create_exception('MandatoryParamMissing', param: :item) unless params[:item]
+          return create_error('MandatoryParamMissing', param: :item) unless params[:item]
 
           validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(params[:item])
-          return create_exception('SchemaValidationError',
-                                  errors: validator.messages(full: true)) unless validator.success?
+          return create_error('SchemaValidationError',
+                              errors: validator.messages(full: true)) unless validator.success?
 
           story_item = story.set_items.build(params[:item].deep_symbolize_keys)
           story.save!
@@ -44,8 +44,8 @@ module StoriesApi
         def put
           params[:items].each do |block|
             validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(block)
-            return create_exception('SchemaValidationError',
-                                    errors: validator.messages(full: true)) unless validator.success?
+            return create_error('SchemaValidationError',
+                                errors: validator.messages(full: true)) unless validator.success?
           end
 
           @story.set_items.destroy
@@ -67,8 +67,8 @@ module StoriesApi
         # @last_modified Eddie
         # @return [Hash] the error
         def errors
-          return create_exception('UserNotFound', id: params[:api_key]) unless user.present?
-          return create_exception('StoryNotFound', id: params[:story_id]) unless story.present?
+          return create_error('UserNotFound', id: params[:api_key]) unless user.present?
+          return create_error('StoryNotFound', id: params[:story_id]) unless story.present?
         end
       end
     end

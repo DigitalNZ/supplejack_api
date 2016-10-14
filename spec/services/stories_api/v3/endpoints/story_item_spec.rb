@@ -125,14 +125,13 @@ module StoriesApi
                                        item: item).patch
 
             expect(response).to eq(
-              status: 400, exception: { message: 'Mandatory Parameters Missing: id is missing in content' }
+              status: 400, exception: { message: 'Mandatory Parameters Missing: record_id is missing in content' }
             )
           end
 
           it 'should fail with content must be an intiger error' do
             item = create(:story_item, type: 'embed', sub_type: 'dnz', position: 1,
-                          content: { id: "zfkjg", title: 'Title', display_collection: 'Marama', value: 'bar',
-                                     category: 'Te Papa', image_url: 'url', tags: %w(foo bar)},
+                          content: { record_id: "zfkjg"},
                           meta: { size: 1, metadata: 'Some Meta' }).attributes.symbolize_keys
             item.delete(:_id)
 
@@ -141,14 +140,13 @@ module StoriesApi
                                        item: item).patch
 
             expect(response).to eq(
-              status: 400, exception: { message: 'Bad Request: id must be an integer in content' }
+              status: 400, exception: { message: 'Bad Request: record_id must be an integer in content' }
             )
           end
 
           it 'should update given set item' do
             item = create(:story_item, type: 'embed', sub_type: 'dnz', position: 1,
-                          content: { id: 100, title: 'Title', display_collection: 'Marama', value: 'bar',
-                                     category: 'Te Papa', image_url: 'url', tags: %w(foo bar)},
+                          content: { value: 'foo', record_id: 100},
                           meta: { size: 1, metadata: 'Some Meta' }).attributes.symbolize_keys
             item.delete(:_id)
 

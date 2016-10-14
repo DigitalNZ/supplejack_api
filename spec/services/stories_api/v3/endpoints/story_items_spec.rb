@@ -125,21 +125,6 @@ module StoriesApi
               )
             end
 
-            it 'should return error when meta is missing' do
-              item = create(:story_item, type: 'embed', sub_type: 'dnz', content: {}, meta: {}).attributes.symbolize_keys
-              item.delete(:_id)
-
-              response = StoryItems.new(story_id: @story.id, api_key: @user.api_key,
-                                        item: item).post
-
-              expect(response).to eq(
-                status: 400,
-                exception: {
-                  message: 'Mandatory Parameters Missing: id is missing, title is missing, display_collection is missing, category is missing, image_url is missing, tags is missing in content'
-                }
-              )
-            end
-
             it 'should return error when type is not valid' do
               item = create(:story_item, type: 'youtube', sub_type: 'dnz', content: {}, meta: {}).attributes.symbolize_keys
               item.delete(:_id)
@@ -209,8 +194,7 @@ module StoriesApi
             context 'embed item' do
               before do
                 factory = create(:story_item, type: 'embed', sub_type: 'dnz',
-                                             content: { id: 100, title: 'Title', display_collection: 'Marama',
-                                                        category: 'Te Papa', image_url: 'url', tags: %w(foo bar)},
+                                             content: { record_id: 100},
                                              meta: { metadata: 'Some Meta' })
 
                 @item = factory.attributes.symbolize_keys
@@ -220,7 +204,7 @@ module StoriesApi
 
               it 'should return error when content is empty' do
                 item = @item
-                item[:content].delete(:id)
+                item[:content].delete(:record_id)
 
                 response = StoryItems.new(story_id: @story.id,
                                           api_key: @user.api_key,
@@ -228,15 +212,14 @@ module StoriesApi
                 expect(response).to eq(
                   status: 400,
                   exception: {
-                    message: 'Mandatory Parameters Missing: id is missing in content'
+                    message: 'Mandatory Parameters Missing: record_id is missing in content'
                   }
                 )
               end
 
               it 'should return error for wrong type or values' do
                 item = @item
-                item[:content][:id] = 'zfbgksdgjb'
-                item[:content][:tags] = 1
+                item[:content][:record_id] = 'zfbgksdgjb'
                 
                 response = StoryItems.new(story_id: @story.id,
                                           api_key: @user.api_key,
@@ -244,7 +227,7 @@ module StoriesApi
                 expect(response).to eq(
                   status: 400,
                   exception: {
-                    message: 'Bad Request: id must be an integer, tags must be an array in content'
+                    message: 'Bad Request: record_id must be an integer in content'
                   }
                 )
               end
@@ -268,8 +251,7 @@ module StoriesApi
             @user = @story.user
 
             factory = create(:story_item, type: 'embed', sub_type: 'dnz',
-                                         content: { id: 100, title: 'Title', display_collection: 'Marama',
-                                                    category: 'Te Papa', image_url: 'url', tags: %w(foo bar)},
+                                         content: { record_id: 100},
                                          meta: { metadata: 'Some Meta' })
 
             @item = factory.attributes.symbolize_keys

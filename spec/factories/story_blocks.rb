@@ -35,12 +35,14 @@ FactoryGirl.define do
       type 'embed'
       sub_type 'dnz'
       content {{
-        id: id,
-        title: title,
-        display_collection: display_collection,
-        category: category,
-        image_url: image_url,
-        tags: tags
+        record_id: id,
+        record: {
+          title: title,
+          display_collection: display_collection,
+          category: category,
+          image_url: image_url,
+          tags: tags
+        }
       }}
       meta {{
         alignment: alignment,

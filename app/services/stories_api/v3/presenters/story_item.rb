@@ -11,6 +11,16 @@ module StoriesApi
     module Presenters
       class StoryItem
         TOP_LEVEL_FIELDS = [:id, :position, :type, :sub_type].freeze
+        CUSTOM_PRESENTER_BASE = "StoriesApi::V3::Presenters::Content".freeze
+        DEFAULT_CONTENT_PRESENTER = ->(block) do
+          result = {}
+
+          block.content.each do |k, v|
+            result[k] = v
+          end
+
+          result
+        end
 
         def call(story_item)
           result = {}
@@ -21,10 +31,13 @@ module StoriesApi
             result[field] = story_item.send(field)
           end
 
-          story_item.content.each do |k, v|
-            result[:content] ||= {}
-            result[:content][k] = v
-          end
+          type = story_item[:type].classify
+          sub_type = story_item[:sub_type].classify
+          content_presenter = (
+            "#{CUSTOM_PRESENTER_BASE}::#{type}::#{sub_type}".constantize.new rescue DEFAULT_CONTENT_PRESENTER
+          )
+
+          result[:content] = content_presenter.call(story_item)
 
           result[:meta] = {}
           story_item.meta.each do |k, v|

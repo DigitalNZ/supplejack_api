@@ -11,8 +11,22 @@ module StoriesApi
           end
         end
 
-        it 'presents the content field' do
-          expect(presented_json[:content][:value]).to eq(story_item.content[:value])
+        describe '#content' do
+          context 'block without a custom presenter' do
+            it 'presents the attributes in the content field' do
+              expect(presented_json[:content][:value]).to eq(story_item.content[:value])
+            end
+          end
+
+          context 'block with a custom presenter' do
+            let(:record) {create(:record)}
+            let(:story_item) {build(:embed_dnz_item, id: record.id)}
+
+            it 'hands off the content field to the custom presenter' do
+              expect(presented_json[:content][:record][:description]).to eq(record.description)
+              expect(presented_json[:content][:record][:title]).to eq(record.title)
+            end
+          end
         end
 
         it 'presents the meta field' do

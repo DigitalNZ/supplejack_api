@@ -11,8 +11,8 @@ module StoriesApi
     module Presenters
       class StoryItem
         TOP_LEVEL_FIELDS = [:id, :position, :type, :sub_type].freeze
-        CUSTOM_PRESENTER_BASE = "StoriesApi::V3::Presenters::Content".freeze
-        DEFAULT_CONTENT_PRESENTER = ->(block) do
+        CUSTOM_PRESENTER_BASE = 'StoriesApi::V3::Presenters::Content'
+        DEFAULT_CONTENT_PRESENTER = lambda do |block|
           result = {}
 
           block.content.each do |k, v|

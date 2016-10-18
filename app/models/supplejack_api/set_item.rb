@@ -21,8 +21,8 @@ module SupplejackApi
 
     field :type,        type: String
     field :sub_type,    type: String
-    field :content,     type: Hash
-    field :meta,        type: Hash
+    field :content,     type: Hash,  default: {}
+    field :meta,        type: Hash,  default: {}
 
     # validates :record_id,   presence: true, uniqueness: true, numericality: { greater_than: 0 }
     validates :record_id,   allow_blank: true, uniqueness: true, numericality: { greater_than: 0 }

@@ -15,7 +15,11 @@ module SupplejackApi
     respond_to :json
 
     def create
-      @set_item = @user_set.set_items.build(record_params)
+      updated_params = record_params.merge(type: 'embed',
+                                           sub_type: 'dnz',
+                                           content: { record_id: record_params[:record_id] })
+
+      @set_item = @user_set.set_items.build(updated_params)
       @user_set.save
       respond_with @user_set, @set_item
     end

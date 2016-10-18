@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module StoriesApi
   module V3
     module Presenters
@@ -8,10 +9,10 @@ module StoriesApi
 
             def call(block)
               record = SupplejackApi::Record.find_by(id: block[:content][:record_id])
-              result = {}
+              result = { record_id: block[:content][:record_id], record: {} }
 
               RECORD_FIELDS.each do |field|
-                result[field] = record[field]
+                result[:record][field] = record[field]
               end
 
               result

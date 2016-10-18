@@ -21,8 +21,9 @@ module StoriesApi
             result[field] = story_item.send(field)
           end
 
+          result[:content] || {}
           story_item.content.each do |k, v|
-            result[:content] ||= {}
+            # result[:content] ||= {}
             result[:content][k] = v
           end
 

@@ -2,7 +2,7 @@ FactoryGirl.define do
   factory :story_item, class: SupplejackApi::SetItem do
     user_set
     sequence(:position)
-    sequence(:record_id)
+    sequence(:record_id, 10000)
     type 'text'
     sub_type 'heading'
     content {{value: 'foo'}}

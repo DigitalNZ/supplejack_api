@@ -193,8 +193,9 @@ module StoriesApi
             # Embed Item
             context 'embed item' do
               before do
+                record = create(:record)
                 factory = create(:story_item, type: 'embed', sub_type: 'dnz',
-                                             content: { record_id: 100},
+                                             content: { record_id: record.record_id},
                                              meta: { metadata: 'Some Meta' })
 
                 @item = factory.attributes.symbolize_keys
@@ -239,7 +240,7 @@ module StoriesApi
                 result = response[:payload]
                 result.delete(:id)
 
-                expect(result).to eq @item
+                expect(result[:content][:record_id]).to eq @item[:content][:record_id]
               end
             end
           end
@@ -250,8 +251,9 @@ module StoriesApi
             @story = create(:story)
             @user = @story.user
 
+            record = create(:record)
             factory = create(:story_item, type: 'embed', sub_type: 'dnz',
-                                         content: { record_id: 100},
+                                        content: { record_id: record.record_id},
                                          meta: { metadata: 'Some Meta' })
 
             @item = factory.attributes.symbolize_keys
@@ -269,7 +271,7 @@ module StoriesApi
 
             response[:payload].each do |block|
               block.delete(:id)
-              expect([@item].include? block).to be true
+              expect(@item[:meta]).to eq(block[:meta])
             end
           end        
         end

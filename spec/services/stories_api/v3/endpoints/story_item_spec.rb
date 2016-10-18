@@ -145,8 +145,9 @@ module StoriesApi
           end
 
           it 'should update given set item' do
+            record = create(:record)
             item = create(:story_item, type: 'embed', sub_type: 'dnz', position: 1,
-                          content: { value: 'foo', record_id: 100},
+                          content: { record_id: record.record_id},
                           meta: { size: 1, metadata: 'Some Meta' }).attributes.symbolize_keys
             item.delete(:_id)
 
@@ -157,9 +158,9 @@ module StoriesApi
             result = response[:payload]
             result.delete(:id)
 
-            expect(result).to eq(item)
+            expect(result[:meta]).to eq(item[:meta])
           end
-        end        
+        end
       end
     end
   end

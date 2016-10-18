@@ -20,7 +20,7 @@ module StoriesApi
 
           context 'block with a custom presenter' do
             let(:record) {create(:record)}
-            let(:story_item) {build(:embed_dnz_item, id: record.id)}
+            let(:story_item) {build(:embed_dnz_item, id: record.record_id)}
 
             it 'hands off the content field to the custom presenter' do
               expect(presented_json[:content][:record][:description]).to eq(record.description)

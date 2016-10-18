@@ -103,10 +103,10 @@ module SupplejackApi::Concerns::UserSet
               set_item = self.set_items.find_or_initialize_by(record_id: set_item_hash['record_id'])
               set_item.position = set_item_hash['position']
 
-              new_set_items << set_item # if valid_for_position_update(set_item)
+              new_set_items << set_item
             end
 
-            self.set_items = new_set_items unless new_set_items.map(&:valid?).include? false
+            self.set_items = new_set_items.map { |item| item if item.valid? }
           rescue StandardError => e
             raise WrongRecordsFormat
           end
@@ -123,18 +123,6 @@ module SupplejackApi::Concerns::UserSet
 
       self.attributes = new_attributes
       save
-    end
-
-    # Temporary solution. Ignoring position exception becuse
-    # at the end of the iteration all items will have unique position
-    #
-    # @author Eddie
-    # @last_modified Eddie
-    # @param item [SetItem] the set item
-    # @return [Boolean] the validity
-    def valid_for_position_update(item)
-      return true if item.valid?
-      item.errors.messages == { position: ['is already taken'] }
     end
 
     def calculate_count

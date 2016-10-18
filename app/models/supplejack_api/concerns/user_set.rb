@@ -95,7 +95,6 @@ module SupplejackApi::Concerns::UserSet
       new_attributes = new_attributes.try(:symbolize_keys) || {}
 
       if set_items = new_attributes.delete(:records)
-        Rails.logger.info "DEBUGG: set_items = #{set_items}"
         if set_items.is_a? Array
           begin
             new_set_items = []

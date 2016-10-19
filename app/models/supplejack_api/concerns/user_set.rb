@@ -105,7 +105,7 @@ module SupplejackApi::Concerns::UserSet
               new_set_items << set_item
             end
 
-            self.set_items = new_set_items.map { |item| item if item.valid? }
+            self.set_items = new_set_items.map { |item| item if item.valid? }.compact
           rescue StandardError => e
             raise WrongRecordsFormat
           end

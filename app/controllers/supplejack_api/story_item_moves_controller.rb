@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module SupplejackApi
   class StoryItemMovesController < ApplicationController
     include Concerns::Stories

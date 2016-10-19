@@ -5,17 +5,33 @@ module StoriesApi
       class Moves
         include Helpers
 
-        attr_reader :story_item_id, :position, :errors
+        REQUIRED_PARAMS = [:story_id, :item_id, :position].freeze
+        attr_reader :params, :position, :errors
 
         def initialize(params)
-          @story_id = params[:story_id]
-          @story_item_id = params[:item_id]
+          @params = params
           @position = params[:position].to_i
         end
 
         def post
-          story = SupplejackApi::UserSet.find_by(id: @story_id)
-          block_to_move_index = story.set_items.find_index { |x| x.id.to_s == @story_item_id }
+          REQUIRED_PARAMS.each do |param|
+            return create_error('MandatoryParamMissing', param: param) unless params.key?(param)
+          end
+          return create_error(
+            'UnsupportedFieldType',
+            value: params[:position],
+            param: 'position'
+          ) unless params[:position] =~ /[0-9]+/
+
+          story = current_user(params).user_sets.find_by_id(params[:story_id])
+          return create_error('StoryNotFound', id: params[:story_id]) unless story.present?
+
+          block_to_move_index = story.set_items.find_index { |x| x.id.to_s == params[:item_id] }
+          return create_error(
+            'StoryItemNotFound',
+            item_id: params[:item_id],
+            story_id: params[:story_id]
+          ) unless block_to_move_index.present?
 
           set_items = story.set_items.to_a
           updated_items = set_items.insert(position - 1, set_items.delete_at(block_to_move_index))

@@ -5,7 +5,7 @@ module StoriesApi
         describe '#post' do
           context 'valid request' do
             let(:story) { create(:story) }
-            let(:params) {{api_key: story.user.api_key, story_id: story.id, story_item_id: story.set_items.first.id, position: '2'}}
+            let(:params) {{api_key: story.user.api_key, story_id: story.id.to_s, item_id: story.set_items.first.id.to_s, position: '2'}}
             let(:response) {Moves.new(params).post}
 
             it 'moves the block' do

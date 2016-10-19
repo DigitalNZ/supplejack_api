@@ -5,17 +5,17 @@ module StoriesApi
       class Moves
         include Helpers
 
-        attr_reader :story_item_id, :position
+        attr_reader :story_item_id, :position, :errors
 
         def initialize(params)
           @story_id = params[:story_id]
-          @story_item_id = params[:story_item_id]
+          @story_item_id = params[:item_id]
           @position = params[:position].to_i
         end
 
         def post
           story = SupplejackApi::UserSet.find_by(id: @story_id)
-          block_to_move_index = story.set_items.find_index { |x| x.id == @story_item_id }
+          block_to_move_index = story.set_items.find_index { |x| x.id.to_s == @story_item_id }
 
           set_items = story.set_items.to_a
           updated_items = set_items.insert(position - 1, set_items.delete_at(block_to_move_index))

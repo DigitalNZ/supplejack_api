@@ -23,7 +23,7 @@ FactoryGirl.define do
 
     factory :embed_dnz_item do
       transient do
-        id 123
+        sequence(:id, 123)
         title 'A title'
         display_collection 'Display collection'
         category 'Category'
@@ -50,6 +50,21 @@ FactoryGirl.define do
         alignment: alignment,
         caption: caption
       }}
+
+      record do
+        build(
+          :record,
+          record_id: id,
+          title: title,
+          display_collection: display_collection,
+          category: category,
+          tags: tags
+        )
+      end
+    end
+
+    after(:create) do |item|
+      item.record.save!
     end
   end
 end

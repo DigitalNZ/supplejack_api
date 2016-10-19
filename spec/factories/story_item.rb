@@ -61,10 +61,12 @@ FactoryGirl.define do
           tags: tags
         )
       end
+
+      after(:create) do |item|
+        binding.pry if item.record.nil?
+        item.record.save!
+      end
     end
 
-    after(:create) do |item|
-      item.record.save!
-    end
   end
 end

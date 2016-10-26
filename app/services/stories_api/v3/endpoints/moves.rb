@@ -21,7 +21,9 @@ module StoriesApi
             'UnsupportedFieldType',
             value: params[:position],
             param: 'position'
-          ) unless params[:position] =~ /[0-9]+/
+          ) unless params[:position].is_a?(Integer) || params[:position] =~ /[0-9]+/
+          # The above regex does not work on Integers, but if it's an Integer it's guaranteed to be ok
+          # So just check that first
 
           story = current_user(params).user_sets.find_by_id(params[:story_id])
           return create_error('StoryNotFound', id: params[:story_id]) unless story.present?

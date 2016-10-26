@@ -36,6 +36,16 @@ module StoriesApi
 
                 expect(response[:status]).to eq(404)
               end
+
+              it 'handles integer positions' do
+                params.merge!(position: 2)
+
+                expect(response[:status]).to eq(200)
+              end
+
+              it 'returns http 200' do
+                expect(response[:status]).to eq(200)
+              end
             end
 
             context 'story belongs to another user' do

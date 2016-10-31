@@ -96,6 +96,14 @@ module SupplejackApi
       end
     end
 
+    describe ".find_by_id" do
+      it "returns a set_item by it's id" do
+        set_item = user_set.set_items.build(record_id: 12)
+        user_set.save
+        expect(user_set.set_items.find_by_id(set_item.id.to_s)).to eq set_item
+      end
+    end
+
     describe "relationships" do
       it "should have a single record" do
         user_set.record = SupplejackApi::Record.new
@@ -245,8 +253,8 @@ module SupplejackApi
       end
 
       it "ignores invalid set items but still saves the set" do
-        user_set.update_attributes_and_embedded(records: [{"record_id" => "13", "position" => "1"}, {"position" => "2"}])
-        user_set.reload
+        user_set.update_attributes_and_embedded(records: [{"record_id" => "13", "position" => "1"}, {"record_id" => "shtig", "position" => "2"}])
+        # user_set.reload
         expect(user_set.set_items.size).to eq 1
         expect(user_set.set_items.first.record_id).to eq 13
         expect(user_set.set_items.first.position).to eq 1

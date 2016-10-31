@@ -19,11 +19,6 @@ module SupplejackApi
     end
 
     context "validations" do
-      it "should not be valid without a record_id" do
-        set_item.record_id = nil
-        expect(set_item).to_not be_valid
-      end
-
       it "should not be valid when record_id is not a number" do
         set_item.record_id = "abc"
         expect(set_item).to_not be_valid
@@ -119,5 +114,22 @@ module SupplejackApi
       end
     end
 
+
+    describe 'hash fields' do
+      it 'symbolizes the keys on the hash fields when created' do
+        set_item = create(:story_item)
+
+        expect(set_item.meta).to have_key :size
+        expect(set_item.content).to have_key :value
+      end
+
+      it 'symbolizes the keys on the hash fields when found' do
+        set_item = create(:story_item)
+        set_item = UserSet.find(set_item.user_set.id).set_items.first
+
+        expect(set_item.meta).to have_key :size
+        expect(set_item.content).to have_key :value
+      end
+    end
   end
 end

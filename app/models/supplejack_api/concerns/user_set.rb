@@ -12,10 +12,20 @@ module SupplejackApi::Concerns::UserSet
       def find_by_record_id(record_id)
         where(record_id: record_id).first
       end
+
+      # Finds a set item and returns it
+      #
+      # @author Eddie
+      # @last_modified Eddie
+      # @param id [String] the id
+      # @return [SetItem] the item
+      def find_by_id(id)
+        where(id: id).first
+      end
     end
 
     field :name,              type: String
-    field :description,       type: String
+    field :description,       type: String,   default: ''
     field :privacy,           type: String,   default: 'public'
     field :url,               type: String
     field :priority,          type: Integer,  default: 0
@@ -47,7 +57,7 @@ module SupplejackApi::Concerns::UserSet
     # Force-capitalize only the first word of the set name
     #
     def name=(name)
-      write_attribute(:name, Utils.capitalize_first_word(name))
+      self[:name] = Utils.capitalize_first_word(name)
     end
 
     # Find a set based on the MongoDB ObjectID or the set url.
@@ -91,9 +101,11 @@ module SupplejackApi::Concerns::UserSet
             set_items.each do |set_item_hash|
               set_item = self.set_items.find_or_initialize_by(record_id: set_item_hash['record_id'])
               set_item.position = set_item_hash['position']
-              new_set_items << set_item if set_item.valid?
+
+              new_set_items << set_item
             end
-            self.set_items = new_set_items
+
+            self.set_items = new_set_items.map { |item| item if item.valid? }.compact
           rescue StandardError => e
             raise WrongRecordsFormat
           end

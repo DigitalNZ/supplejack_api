@@ -13,5 +13,14 @@ module SupplejackApi
     include ActionView::Helpers::SanitizeHelper
     include ActiveModel::MassAssignmentSecurity
     include SupplejackApi::Concerns::UserSet
+
+    # Finds and returns a UserSet with id
+    #
+    # @author Eddie
+    # @last_modified Eddie
+    # @return [Object] the set_item
+    def self.find_by_id(id)
+      where(id: id).first
+    end
   end
 end

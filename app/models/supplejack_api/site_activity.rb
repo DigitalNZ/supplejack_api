@@ -21,7 +21,7 @@ module SupplejackApi
     field :source_clicks, type: Integer
     field :total,     type: Integer
 
-    validates_uniqueness_of :date
+    validates :date, uniqueness: true
 
     IMPLICIT_FIELDS = %w(_type _id created_at updated_at).freeze
 

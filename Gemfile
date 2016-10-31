@@ -38,10 +38,3 @@ group :test do
   gem 'faker'
   gem 'json-schema'
 end
-
-group :test, :development do
-  if RUBY_VERSION =~ /2/
-    gem 'pry-byebug'
-    gem 'pry-rails'
-  end
-end

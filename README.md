@@ -11,6 +11,10 @@ For more information on how to configure and use this application refer to the [
 [Install & Setup instructions](http://digitalnz.github.io/supplejack/start/development-setup.html)
 
 
+## Swagger Documentation
+
+[Stories Api](https://swaggerhub.com/api/DigitalNZ/supplejack-stories-api/3.0.0)
+
 ## Engine Development
 
 ### Rails console
@@ -62,6 +66,7 @@ bundle exec cucumber features/
 ```
 
 This uses a test Solr instance from `spec/dummy/solr` in order to test searching.
+
 
 ## COPYRIGHT AND LICENSING  
 

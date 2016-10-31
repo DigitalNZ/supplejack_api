@@ -10,12 +10,18 @@ module SupplejackApi
   class SetItemsController < ApplicationController
     include SupplejackApi::Concerns::SetItemsControllerMetrics
 
-    before_filter :find_user_set
+    before_action :find_user_set
 
     respond_to :json
 
     def create
-      @set_item = @user_set.set_items.build(record_params)
+      updated_params = record_params.merge(type: 'embed',
+                                           sub_type: 'dnz',
+                                           content: { record_id: record_params[:record_id] })
+
+      Rails.logger.info "STORIES: #{updated_params}"
+
+      @set_item = @user_set.set_items.build(updated_params)
       @user_set.save
       respond_with @user_set, @set_item
     end

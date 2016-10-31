@@ -55,6 +55,8 @@ Gem::Specification.new do |s|
   s.add_dependency 'resque', '~> 1.22.0'
   s.add_dependency 'resque-scheduler', '= 2.0.0'
   s.add_dependency 'resque-pool', '~> 0.3.0'
+  s.add_dependency 'dry-validation', '~> 0.10.0'
+  s.add_dependency 'dry-struct'
 
   # Adding sunspot_solr so app has access to sunspot:solr rake tasks
   s.add_dependency 'sunspot_solr', '= 2.2.0'
@@ -71,6 +73,11 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'database_cleaner', '~> 1.5.3'
   s.add_development_dependency 'mongoid-rspec', '~> 2.0.0.rc1'
   s.add_development_dependency 'pry'
+  s.add_development_dependency 'pry-byebug'
+  s.add_development_dependency 'pry-rails'
+  s.add_development_dependency 'better_errors'
+  s.add_development_dependency 'guard'
+  s.add_development_dependency 'guard-rspec'
   s.add_development_dependency 'json_spec', '~> 1.1.4'
   s.add_development_dependency 'sunspot_matchers', '~> 2.2.0.0'
   s.add_development_dependency 'timecop', '~> 0.4.6'

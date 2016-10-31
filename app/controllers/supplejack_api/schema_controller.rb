@@ -8,7 +8,7 @@
 
 module SupplejackApi
   class SchemaController < ApplicationController
-    skip_before_filter :authenticate_user!
+    skip_before_action :authenticate_user!
     respond_to :json, :xml
 
     def show

@@ -12,7 +12,7 @@ module StoriesApi
               result = { record_id: block[:content][:record_id], record: {} }
 
               RECORD_FIELDS.each do |field|
-                result[:record][field] = record[field]
+                result[:record][field] = record.public_send(field)
               end
 
               result

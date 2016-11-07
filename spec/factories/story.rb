@@ -10,6 +10,7 @@ FactoryGirl.define do
     featured false
     approved false
     tags ['story', 'tags']
+    copyright 0
 
     after(:create) do |story, evaluator|
       next unless story.set_items.empty?
@@ -36,6 +37,7 @@ FactoryGirl.define do
     tags ['story', 'tags']
     number_of_items { number_of_blocks }
     contents []
+    copyright 0
 
     after(:build) do |story, evaluator|
       unless story[:contents].empty?

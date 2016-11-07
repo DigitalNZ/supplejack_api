@@ -49,7 +49,7 @@ module StoriesApi
               expect(result.messages).to include(:privacy)
             end
 
-            it 'is invalid when valid privacy status' do
+            it 'is invalid when invalid privacy status' do
               result = subject.call(valid_story.update(privacy: 'visible'))
 
               expect(result.success?).to eq(false)
@@ -202,6 +202,32 @@ module StoriesApi
 
           context 'valid' do
             it 'is valid when contains valid blocks' do
+              result = subject.call(valid_story)
+
+              expect(result.success?).to eq(true)
+            end
+          end
+        end
+
+        describe '#copyright' do
+          context 'invalid' do
+            it 'is invalid when missing' do
+              result = subject.call(valid_story.except(:copyright))
+
+              expect(result.success?).to eq(false)
+              expect(result.messages).to include(:copyright)
+            end
+
+            it 'is invalid when set to an invalid copyright number' do
+              result = subject.call(valid_story.update(copyright: 99))
+
+              expect(result.success?).to eq(false)
+              expect(result.messages).to include(:copyright)
+            end
+          end
+
+          context 'valid' do
+            it 'is valid when it is a valid privacy status' do
               result = subject.call(valid_story)
 
               expect(result.success?).to eq(true)

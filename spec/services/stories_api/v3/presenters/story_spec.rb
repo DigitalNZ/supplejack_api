@@ -6,7 +6,7 @@ module StoriesApi
         let(:presented_json) {subject.call(story)}
 
         it 'presents all top level fields' do
-          [:name, :description, :privacy, :featured, :approved, :tags].each do |field|
+          [:name, :description, :privacy, :copyright, :featured, :approved, :tags].each do |field|
             expect(presented_json[field]).to eq(story.send(field))
           end
         end

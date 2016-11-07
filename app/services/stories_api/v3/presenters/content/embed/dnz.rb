@@ -5,7 +5,7 @@ module StoriesApi
       module Content
         module Embed
           class Dnz
-            RECORD_FIELDS = {title: :title , display_collection: :display_collection, category: :category, image_url: :large_thumbnail_url, tags: :tag }.freeze
+            RECORD_FIELDS = {title: :title , display_collection: :display_collection, category: :category, image_url: :large_thumbnail_url, tags: :tag, description: :description }.freeze
 
             def call(block)
               record = SupplejackApi::Record.find_by(record_id: block[:content][:record_id])

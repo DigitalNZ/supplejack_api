@@ -4,7 +4,7 @@ module StoriesApi
       module Content
         module Embed
           RSpec.describe Dnz do
-            let(:record) {create(:record)}
+            let(:record) {create(:record_with_fragment)}
             let(:block) {create(:embed_dnz_item, id: record.record_id)}
             let(:result) {subject.call(block)}
 
@@ -19,6 +19,12 @@ module StoriesApi
 
               it 'is an Integer' do
                 expect(result[:record_id]).to be_an Integer
+              end
+            end
+
+            context 'fields with non matching names' do
+              it 'converts the custom field name to the respective field on the record' do
+                expect(result[:record][:image_url]).to eq(record.large_thumbnail_url)
               end
             end
 

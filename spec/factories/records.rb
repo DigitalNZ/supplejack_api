@@ -12,6 +12,7 @@ module SupplejackApi
         display_collection 'test'
         copyright ['0']
         category ['0']
+        tag ['foo', 'bar']
       end
 
       internal_identifier 'nlnz:1234'
@@ -25,12 +26,14 @@ module SupplejackApi
           [FactoryGirl.build(:record_fragment,
                              display_collection: display_collection,
                              copyright: copyright,
-                             category: category)]
+                             category: category,
+                             tag: tag)]
         end
       end
     end
 
     factory :record_fragment, class: SupplejackApi::ApiRecord::RecordFragment do
+      title           'title'
       source_id       'source_name'
       priority        0
       name            'John Doe'
@@ -42,6 +45,7 @@ module SupplejackApi
       birth_date      DateTime.now
       nz_citizen      true
       display_collection 'test'
+      large_thumbnail_url    'http://my-website-that-hosts-images/image.png'
     end
   end
 end

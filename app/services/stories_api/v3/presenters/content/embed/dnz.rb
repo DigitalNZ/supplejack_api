@@ -5,14 +5,14 @@ module StoriesApi
       module Content
         module Embed
           class Dnz
-            RECORD_FIELDS = [:title, :display_collection, :category, :image_url, :tags].freeze
+            RECORD_FIELDS = {title: :title , display_collection: :display_collection, category: :category, image_url: :large_thumbnail_url, tags: :tag }.freeze
 
             def call(block)
               record = SupplejackApi::Record.find_by(record_id: block[:content][:record_id])
               result = { record_id: block[:content][:record_id], record: {} }
 
-              RECORD_FIELDS.each do |field|
-                result[:record][field] = record.public_send(field)
+              RECORD_FIELDS.each do |name, field|
+                result[:record][name] = record.public_send(field)
               end
 
               result

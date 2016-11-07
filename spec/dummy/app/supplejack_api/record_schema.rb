@@ -14,6 +14,7 @@ class RecordSchema
   # Fields
   string    :record_id,    store: false
   string    :name,         search_boost: 10,      search_as: [:filter, :fulltext], namespace: :dc
+  string    :title,         search_boost: 10,      search_as: [:filter, :fulltext], namespace: :dc
   string    :address,      search_boost: 2,       search_as: [:filter, :fulltext]
   string    :email,        multi_value: true,     search_as: [:filter]
   string    :children,     multi_value: true
@@ -27,6 +28,9 @@ class RecordSchema
   # facets
   string    :category,     multi_value: true,     search_as: [:filter]
   string    :copyright,    multi_value: true,     search_as: [:filter]
+
+  string  :thumbnail_url
+  string  :large_thumbnail_url
 
   # Groups
   group :default do

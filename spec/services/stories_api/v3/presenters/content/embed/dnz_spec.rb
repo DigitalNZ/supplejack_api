@@ -10,11 +10,11 @@ module StoriesApi
 
             context 'record_id' do
               it 'includes it as a top level field' do
-                expect(result).to have_key(:record_id)
+                expect(result).to have_key(:id)
               end
 
               it 'is an Integer' do
-                expect(result[:record_id]).to be_an Integer
+                expect(result[:id]).to be_an Integer
               end
             end
 

@@ -8,10 +8,6 @@ module StoriesApi
             let(:block) {create(:embed_dnz_item, id: record.record_id)}
             let(:result) {subject.call(block)}
 
-            it 'presents the fields under the :record field' do
-              expect(result).to have_key(:record)
-            end
-
             context 'record_id' do
               it 'includes it as a top level field' do
                 expect(result).to have_key(:record_id)
@@ -24,18 +20,18 @@ module StoriesApi
 
             context 'fields with non matching names' do
               it 'converts the custom field name to the respective field on the record' do
-                expect(result[:record][:image_url]).to eq(record.large_thumbnail_url)
+                expect(result[:image_url]).to eq(record.large_thumbnail_url)
               end
             end
 
             it 'presents the record fields' do
               [:title, :display_collection, :category, :image_url, :tags].each do |key|
-                expect(result[:record]).to have_key(key)
+                expect(result).to have_key(key)
               end
             end
 
             it 'presents them from the correct record' do
-              expect(result[:record][:title]).to eq(record.title)
+              expect(result[:title]).to eq(record.title)
             end
           end
         end

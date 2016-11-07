@@ -9,10 +9,10 @@ module StoriesApi
 
             def call(block)
               record = SupplejackApi::Record.find_by(record_id: block[:content][:record_id])
-              result = { record_id: block[:content][:record_id], record: {} }
+              result = { record_id: block[:content][:record_id] }
 
               RECORD_FIELDS.each do |name, field|
-                result[:record][name] = record.public_send(field)
+                result[name] = record.public_send(field)
               end
 
               result

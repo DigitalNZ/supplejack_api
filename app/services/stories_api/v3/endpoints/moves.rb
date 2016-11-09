@@ -5,7 +5,7 @@ module StoriesApi
       class Moves
         include Helpers
 
-        REQUIRED_PARAMS = [:story_id, :item_id, :position].freeze
+        REQUIRED_PARAMS = [:story_id, :item_id, :item_to_move_to_id].freeze
         attr_reader :params, :position, :errors
 
         def initialize(params)
@@ -17,26 +17,26 @@ module StoriesApi
           REQUIRED_PARAMS.each do |param|
             return create_error('MandatoryParamMissing', param: param) unless params.key?(param)
           end
-          return create_error(
-            'UnsupportedFieldType',
-            value: params[:position],
-            param: 'position'
-          ) unless params[:position].is_a?(Integer) || params[:position] =~ /[0-9]+/
-          # The above regex does not work on Integers, but if it's an Integer it's guaranteed to be ok
-          # So just check that first
 
           story = current_user(params).user_sets.find_by_id(params[:story_id])
           return create_error('StoryNotFound', id: params[:story_id]) unless story.present?
 
-          block_to_move_index = story.set_items.find_index { |x| x.id.to_s == params[:item_id] }
+          block_to_move_index = story.set_items.find_index { |item| item.id.to_s == params[:item_id] }
+          index_to_move_to = story.set_items.find_index { |item| item.id.to_s == params[:item_to_move_to_id] }
+
           return create_error(
             'StoryItemNotFound',
             item_id: params[:item_id],
             story_id: params[:story_id]
           ) unless block_to_move_index.present?
+          return create_error(
+            'StoryItemNotFound',
+            item_id: params[:item_to_move_to_id],
+            story_id: params[:story_id]
+          ) unless index_to_move_to.present?
 
           set_items = story.set_items.to_a
-          updated_items = set_items.insert(position - 1, set_items.delete_at(block_to_move_index))
+          updated_items = set_items.insert(index_to_move_to, set_items.delete_at(block_to_move_index))
 
           updated_items.each_with_index do |item, index|
             item.position = index + 1

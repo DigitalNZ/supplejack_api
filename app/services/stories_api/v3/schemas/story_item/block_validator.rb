@@ -21,7 +21,7 @@ module StoriesApi
             return story_item_block unless story_item_block.success?
 
             type = block[:type].classify
-            sub_type = block[:sub_type].classify
+            sub_type = block[:sub_type].gsub('-', '_').classify
             block_schema = "StoriesApi::V3::Schemas::StoryItem::#{type}::#{sub_type}".constantize
 
             block_schema.call(block)

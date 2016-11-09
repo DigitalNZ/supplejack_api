@@ -9,7 +9,7 @@ module StoriesApi
           it 'validates a block against the correct schema based on type/sub_type' do
             validation = subject.call(rich_text_block)
             expect(validation.success?).to eq(true)
-            
+
             validation = subject.call(rich_text_block.update(sub_type: 'heading'))
             expect(validation.success?).to eq(false)
           end

@@ -34,16 +34,6 @@ module StoriesApi
                               errors: validator.messages(full: true)) unless validator.success?
 
           story_item = story.set_items.build(params[:item].deep_symbolize_keys)
-          if params[:item][:position].present?
-            story.set_items.insert(
-              params[:item][:position],
-              story.set_items.delete_at(story.set_items.length - 1)
-            )
-
-            story.set_items.each_with_index do |item, index|
-              item.position = index + 1
-            end
-          end
           story.save!
 
           create_response(status: 200,

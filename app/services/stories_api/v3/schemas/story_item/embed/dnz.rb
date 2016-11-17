@@ -23,7 +23,7 @@ module StoriesApi
               optional(:title).filled(:str?)
               optional(:display_collection).filled(:str?)
               optional(:category).each(:str?)
-              optional(:image_url) { filled? > none? | int? }
+              optional(:image_url) { filled? > none? | str? }
               optional(:tags).each(:str?)
             end
 

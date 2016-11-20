@@ -10,7 +10,7 @@ module StoriesApi
             def call(block)
               # FIXME
               record = SupplejackApi::Record.find_by(record_id: (block[:content][:id] || block[:content][:record_id]))
-              result = { id: block[:content][:id].to_i }
+              result = { id: (block[:content][:id] || block[:content][:record_id]).to_i }
 
               RECORD_FIELDS.each do |name, field|
                 result[name] = record.public_send(field)

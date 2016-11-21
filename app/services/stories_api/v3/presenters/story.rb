@@ -17,7 +17,8 @@ module StoriesApi
           :copyright,
           :featured,
           :approved,
-          :tags
+          :tags,
+          :updated_at
         ].freeze
 
         def call(story)

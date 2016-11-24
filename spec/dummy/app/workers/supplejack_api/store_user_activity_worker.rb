@@ -7,10 +7,10 @@
 
 module SupplejackApi
   class StoreUserActivityWorker
-    
-    @queue = :user_activity
+    include Sidekiq::Worker
+    sidekiq_options queue: 'default'
 
-    def self.perform
+    def perform
       SupplejackApi::User.all.each do |user|
         user.user_activities << SupplejackApi::UserActivity.build_from_user(user.daily_activity) unless user.daily_activity_stored
         user.calculate_last_30_days_requests

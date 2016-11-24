@@ -14,6 +14,7 @@ defaults: &defaults
   REQUEST_LIMIT_MAILER: 'develop@example.com'
   MONGOID_HOSTS: 'localhost:27017'
   WWW_DOMAIN: 'www.dev'
+  REDIS_URL: 'redis://localhost:6379/12'
 
 development:
   <<: *defaults

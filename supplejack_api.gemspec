@@ -52,9 +52,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'mongoid', '~> 4.0.0'
   s.add_dependency 'mongoid_auto_inc', '~> 0.1.0'
   s.add_dependency 'mongoid-tree', '~> 1.0.0'
-  s.add_dependency 'resque', '~> 1.22.0'
-  s.add_dependency 'resque-scheduler', '= 2.0.0'
-  s.add_dependency 'resque-pool', '~> 0.3.0'
+  s.add_dependency 'sidekiq', '~> 4.2'
   s.add_dependency 'dry-validation', '~> 0.10.0'
   s.add_dependency 'dry-struct'
 

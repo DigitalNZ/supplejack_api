@@ -32,7 +32,7 @@ module SupplejackApi
       end
 
       def flush
-        Resque.enqueue(FlushOldRecordsWorker, params[:source_id], params[:job_id])
+        FlushOldRecordsWorker.perform_async(params[:source_id], params[:job_id])
         render nothing: true, status: 204
       end
 

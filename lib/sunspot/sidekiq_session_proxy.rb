@@ -2,7 +2,7 @@
 # This was authored by HeyZap (http://www.heyzap.com/) and is available at http://stdout.heyzap.com/2011/08/17/sunspot-resque-session-proxy/
 
 module Sunspot
-  class ResqueSessionProxy < Sunspot::SessionProxy::AbstractSessionProxy
+  class SidekiqSessionProxy < Sunspot::SessionProxy::AbstractSessionProxy
     attr_reader :original_session, :batch_size
 
     delegate :config, :delete_dirty?, :dirty?,
@@ -35,7 +35,9 @@ module Sunspot
 
           while batch_object_ids do
             index_worker_args = { class: class_name, id: batch_object_ids }
-            Resque.enqueue(SupplejackApi::IndexWorker, method, index_worker_args) if batch_object_ids.try(:any?)
+
+            SupplejackApi::IndexWorker.perform_async(method, index_worker_args) if batch_object_ids.try(:any?)
+
             start += batch_size
             batch_object_ids = total_ids[start..(start + batch_size - 1)]
           end
@@ -45,20 +47,20 @@ module Sunspot
 
     [:remove_by_id, :remove_by_id!].each do |method|
       define_method(method) do |clazz, id|
-        Resque.enqueue(SupplejackApi::IndexWorker, method, class: clazz, id: id.to_s)
+        SupplejackApi::IndexWorker.perform_async(method, class: clazz, id: id.to_s)
       end
     end
 
     def remove_all(clazz = nil)
-      Resque.enqueue SupplejackApi::IndexWorker, :remove_all, clazz.to_s
+      SupplejackApi::IndexWorker.perform_async(:remove_all, clazz.to_s)
     end
 
     def remove_all!(clazz = nil)
-      Resque.enqueue SupplejackApi::IndexWorker, :remove_all, clazz.to_s
+      SupplejackApi::IndexWorker.perform_async(:remove_all, clazz.to_s)
     end
 
     def commit(_soft_commit = false)
-      Resque.enqueue(SupplejackApi::IndexWorker, :commit)
+      SupplejackApi::IndexWorker.perform_async(:commit)
     end
 
     def commit_if_dirty(soft_commit = false)

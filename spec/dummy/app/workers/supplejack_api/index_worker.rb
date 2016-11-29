@@ -22,7 +22,7 @@ module SupplejackApi
       when :index
         index(find_all(object[:class], object[:id]))
       when :remove
-        remove(find_all(object[:class], object[:id]))
+        remove(self.find_all(object[:class], object[:id]))
       when :remove_all
         remove_all(object)
       when :commit_if_dirty

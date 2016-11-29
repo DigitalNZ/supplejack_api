@@ -25,11 +25,12 @@ module Sunspot
         start = 0
         objects = objects.flatten.compact
         object_ids = objects.map { |o| o.id.to_s }.compact
-        total_ids = object_ids + @buffer.pop_record_ids(method)
+        total_ids_to_index = object_ids.size + @buffer.send("#{method}_record_ids_count")
 
-        if total_ids.size < 100
-          @buffer.send("#{method}_record_ids=", total_ids)
+        if total_ids_to_index < 100
+          @buffer.send("#{method}_record_ids=", object_ids)
         else
+          total_ids = object_ids + @buffer.pop_record_ids(method)
           batch_object_ids = total_ids[start..(batch_size - 1)]
           class_name = objects.first.class.name
 
@@ -41,6 +42,8 @@ module Sunspot
             start += batch_size
             batch_object_ids = total_ids[start..(start + batch_size - 1)]
           end
+
+          SupplejackApi::IndexWorker.perform_async(:commit)
         end
       end
     end

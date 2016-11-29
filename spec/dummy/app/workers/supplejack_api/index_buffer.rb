@@ -12,14 +12,14 @@ module SupplejackApi
   class IndexBuffer
 
     def pop_record_ids(method=:index, num=1000)
-      # get all the entries from the list. Need to check what happens if the list doesn't exist
-      num ||= 100000
       ids = []
+
       Sidekiq.redis do |conn|
         while ids.count < num and id = conn.lpop("#{method}_buffer_record_ids")
           ids << id
         end
       end
+
       ids
     end
 
@@ -39,9 +39,14 @@ module SupplejackApi
       define_method("#{method}_record_ids=") do |ids|
         Sidekiq.redis do |conn|
           ids.each do |id|
-            # push each id
-            conn.rpush("#{method}_buffer_record_ids", id) 
+            conn.rpush("#{method}_buffer_record_ids", id)
           end
+        end
+      end
+
+      define_method("#{method}_record_ids_count") do
+        Sidekiq.redis do |conn|
+          conn.llen("#{method}_buffer_record_ids")
         end
       end
     end

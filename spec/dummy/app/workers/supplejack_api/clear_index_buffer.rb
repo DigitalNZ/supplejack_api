@@ -28,6 +28,7 @@ module SupplejackApi
       end
 
       Sunspot.commit
+      Sunspot.session = session
     end
   end
 end

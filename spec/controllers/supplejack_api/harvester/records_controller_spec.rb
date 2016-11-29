@@ -93,6 +93,7 @@ module SupplejackApi
 
       it "returns a 204" do
         delete :flush, source_id: 'tapuhi', job_id: 'abc123'
+
         expect(response.code).to eq '204'
       end
     end

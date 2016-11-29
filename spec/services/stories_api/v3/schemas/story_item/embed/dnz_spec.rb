@@ -80,6 +80,12 @@ module StoriesApi
                     expect(result.success?).to eq(false)
                     expect_content_message(:image_url, result)
                   end
+
+                  it 'can be nil' do
+                    result = subject.call(update_content_value(:image_url, nil))
+
+                    expect(result.success?).to eq(true)
+                  end                  
                 end
 
                 describe '#tags' do

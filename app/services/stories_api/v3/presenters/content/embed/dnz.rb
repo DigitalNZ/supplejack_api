@@ -5,7 +5,9 @@ module StoriesApi
       module Content
         module Embed
           class Dnz
-            RECORD_FIELDS = {title: :title , display_collection: :display_collection, category: :category, image_url: :large_thumbnail_url, tags: :tag, description: :description }.freeze
+            RECORD_FIELDS = { title: :title, display_collection: :display_collection,
+                              category: :category, image_url: :large_thumbnail_url,
+                              tags: :tag, description: :description }.freeze
 
             def call(block)
               # FIXME

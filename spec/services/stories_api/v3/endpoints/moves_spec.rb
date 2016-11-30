@@ -8,29 +8,41 @@ module StoriesApi
             api_key: story.user.api_key,
             story_id: story.id.to_s,
             item_id: story.set_items.first.id.to_s,
-            item_to_move_to_id: story.set_items.second.id.to_s,
+            position: story.set_items.second.id.to_s,
           }}
           let(:response) {Moves.new(params).post}
 
-          context 'malformed request' do
-            [:story_id, :item_id, :item_to_move_to_id].each do |param|
-              it "returns http 400 if #{param} is missing" do
-                params.delete(param)
+          context 'invalid requests' do
+            context 'malformed request' do
+              [:story_id, :item_id, :position].each do |param|
+                it "returns http 400 if #{param} is missing" do
+                  params.delete(param)
 
-                expect(response[:status]).to eq(400)
+                  expect(response[:status]).to eq(400)
+                end
               end
             end
-
           end
 
           context 'valid request' do
-            context 'story belongs to current user' do
-              it 'moves the block' do
-                expect(response[:payload].first[:id]).to eq(story.set_items.second.id)
-                expect(response[:payload].second[:id]).to eq(story.set_items.first.id)
-              end
+            it 'moves the first story item to last' do
+              params = {api_key: story.user.api_key,
+                        story_id: story.id.to_s,
+                        item_id: story.set_items.first.id.to_s,
+                        position: story.set_items.last.position}
 
-              [:item_id, :item_to_move_to_id].each do |param|
+              response = Moves.new(params).post
+              
+              # Using array indexes to visually understand how the positions has changed
+              expect(response[:status]).to eq(200)
+
+              expect(response[:payload][0][:id]).to eq(story.set_items[1].id.to_s)
+              expect(response[:payload][1][:id]).to eq(story.set_items[2].id.to_s)
+              expect(response[:payload][2][:id]).to eq(story.set_items[0].id.to_s)
+            end
+
+            context 'requested data not found' do
+              [:item_id, :story_id].each do |param|
                 it "returns http 404 with error message if #{param} is not an existing block" do
                   params.merge!(param => 'a')
 
@@ -39,8 +51,11 @@ module StoriesApi
                 end
               end
 
-              it 'returns http 200' do
-                expect(response[:status]).to eq(200)
+              it 'returns 400 unsupported error if position is a string' do
+                params.merge!(position: 'stringposition')
+
+                expect(response[:status]).to eq(400)
+                expect(response[:exception][:message]).to eq('Unsupported value stringposition for parameter position')
               end
             end
 

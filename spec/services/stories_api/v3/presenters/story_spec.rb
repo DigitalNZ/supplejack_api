@@ -2,11 +2,18 @@ module StoriesApi
   module V3
     module Presenters
       RSpec.describe Story do
-        let(:story) {create(:story)}
+        let(:story) do
+          story = create(:story)
+
+          story.set_items.first.position = 2
+          story.set_items.last.position = 1
+
+          story
+        end
         let(:presented_json) {subject.call(story)}
 
         it 'presents all top level fields' do
-          [:name, :description, :privacy, :featured, :approved, :tags].each do |field|
+          [:name, :description, :privacy, :copyright, :featured, :approved, :tags].each do |field|
             expect(presented_json[field]).to eq(story.send(field))
           end
         end
@@ -25,6 +32,12 @@ module StoriesApi
               ::StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(story_item)
             end
           ).to eq(true)
+        end
+
+        it 'presents the contents sorted by their position' do
+          positions = presented_json[:contents].map{|content| content[:position]}
+
+          expect(positions).to eq(positions.sort)
         end
       end
     end

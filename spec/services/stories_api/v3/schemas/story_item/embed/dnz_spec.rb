@@ -13,13 +13,6 @@ module StoriesApi
               valid_block.update(content: content)
             end
 
-            def update_record_value(field, value)
-              record = valid_block[:content][:record]
-              record[field] = value
-
-              update_content_value(:record, record)
-            end
-
             def update_meta_value(field, value)
               meta = valid_block[:meta]
               meta[field] = value
@@ -31,97 +24,76 @@ module StoriesApi
               expect(result.messages).to include(content: include(field))
             end
 
-            def expect_record_message(field, result)
-              expect(result.messages).to include(content: include(record: include(field)))
-            end
-
             it 'is valid for a valid block' do
               expect(subject.call(valid_block).success?).to eq(true)
             end
 
             describe '#content' do
-              describe '#record_id' do
+              describe '#id' do
                 it 'must be an integer' do
-                  result = subject.call(update_content_value(:record_id, '123'))
+                  result = subject.call(update_content_value(:id, '123'))
 
                   expect(result.success?).to eq(false)
-                  expect_content_message(:record_id, result)
+                  expect_content_message(:id, result)
                 end
 
                 it 'must be present' do
-                  result = subject.call(valid_block.dup.update(content: valid_block[:content].except(:record_id)))
+                  result = subject.call(valid_block.dup.update(content: valid_block[:content].except(:id)))
 
-                  expect(result.success?).to eq(false), "schema failed to validate 'record_id' as required"
-                  expect_content_message(:record_id, result)
+                  expect(result.success?).to eq(false), "schema failed to validate 'id' as required"
+                  expect_content_message(:id, result)
                 end
               end
 
-              describe '#record' do
-                let(:required_fields) do
-                  [
-                    :title,
-                    :display_collection,
-                    :category,
-                    :image_url,
-                    :tags
-                  ]
-                end
-
-                it 'requires all the required fields' do
-                  required_fields.each do |field|
-                    result = subject.call(
-                      valid_block.dup.update(
-                        content: valid_block[:content].update(record: valid_block[:content][:record].except(field))
-                      )
-                    )
-
-                    expect(result.success?).to eq(false), "schema failed to validate '#{field}' as required"
-                    expect_record_message(field, result)
-                  end
-                end
-
+              context 'record attributes' do
                 describe '#title' do
                   it 'must be a string' do
-                    result = subject.call(update_record_value(:title, 123))
+                    result = subject.call(update_content_value(:title, 123))
 
                     expect(result.success?).to eq(false)
-                    expect_record_message(:title, result)
+                    expect_content_message(:title, result)
                   end
                 end
 
                 describe '#display_collection' do
                   it 'must be a string' do
-                    result = subject.call(update_record_value(:display_collection, 123))
+                    result = subject.call(update_content_value(:display_collection, 123))
 
                     expect(result.success?).to eq(false)
-                    expect_record_message(:display_collection, result)
+                    expect_content_message(:display_collection, result)
                   end
                 end
 
                 describe '#category' do
                   it 'must be a string' do
-                    result = subject.call(update_record_value(:category, 123))
+                    result = subject.call(update_content_value(:category, 123))
 
                     expect(result.success?).to eq(false)
-                    expect_record_message(:category, result)
+                    expect_content_message(:category, result)
                   end
                 end
 
                 describe '#image_url' do
                   it 'must be a string' do
-                    result = subject.call(update_record_value(:image_url, 123))
+                    result = subject.call(update_content_value(:image_url, 123))
 
                     expect(result.success?).to eq(false)
-                    expect_record_message(:image_url, result)
+                    expect_content_message(:image_url, result)
                   end
+
+                  it 'can be nil' do
+                    result = subject.call(update_content_value(:image_url, nil))
+
+                    expect(result.success?).to eq(true)
+                  end                  
                 end
 
                 describe '#tags' do
                   it 'must be an array of strings' do
-                    result = subject.call(update_record_value(:tags, 123))
+                    result = subject.call(update_content_value(:tags, 123))
 
                     expect(result.success?).to eq(false)
-                    expect_record_message(:tags, result)
+                    expect_content_message(:tags, result)
                   end
                 end
               end

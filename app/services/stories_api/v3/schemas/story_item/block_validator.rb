@@ -16,12 +16,13 @@ module StoriesApi
           # @author Taylor
           # @last_modified Eddie
           # @return [Object] the validation
+
           def call(block)
             story_item_block = StoriesApi::V3::Schemas::StoryItem::Block.new.call(block)
             return story_item_block unless story_item_block.success?
 
             type = block[:type].classify
-            sub_type = block[:sub_type].classify
+            sub_type = block[:sub_type].tr('-', '_').classify
             block_schema = "StoriesApi::V3::Schemas::StoryItem::#{type}::#{sub_type}".constantize
 
             block_schema.call(block)

@@ -15,7 +15,7 @@ FactoryGirl.define do
 
     factory :rich_text_block do
       type 'text'
-      sub_type 'rich_text'
+      sub_type 'rich-text'
       content {{value: 'foo'}}
     end
 
@@ -35,7 +35,7 @@ FactoryGirl.define do
       type 'embed'
       sub_type 'dnz'
       content {{
-        record_id: id,
+        id: id,
         record: {
           title: title,
           display_collection: display_collection,

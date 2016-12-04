@@ -11,10 +11,6 @@ module StoriesApi
     module Schemas
       Story = Dry::Validation.Schema do
         configure do
-          def privacy_statuses
-            %w(hidden private public)
-          end
-
           def valid_block?(block)
             StoryItem::BlockValidator.new.call(block).success?
           end
@@ -34,7 +30,8 @@ module StoriesApi
         required(:id).filled(:str?)
         required(:name).filled(:str?)
         required(:description) { str? }
-        required(:privacy).filled(included_in?: privacy_statuses)
+        required(:privacy).filled(included_in?: %(hidden private public))
+        required(:copyright).filled(included_in?: [0, 1, 2])
         required(:featured).filled(:bool?)
         required(:approved).filled(:bool?)
         required(:tags).each(:str?)

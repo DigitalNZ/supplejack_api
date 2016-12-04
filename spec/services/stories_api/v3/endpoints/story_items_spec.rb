@@ -150,7 +150,7 @@ module StoriesApi
               expect(response).to eq(
                 status: 400,
                 exception: {
-                  message: 'Unsupported Values: sub_type must be one of: dnz, heading, rich_text'
+                  message: 'Unsupported Values: sub_type must be one of: dnz, heading, rich-text'
                 }
               )
             end
@@ -158,7 +158,7 @@ module StoriesApi
             # Text Items
             context 'text item' do
               before do
-                factory = create(:story_item, type: 'text', sub_type: 'rich_text',
+                factory = create(:story_item, type: 'text', sub_type: 'rich-text',
                                              content: { value: 'Some Text' },
                                              meta: { metadata: 'Some Meta' })
                 @item = factory.attributes.symbolize_keys
@@ -180,7 +180,7 @@ module StoriesApi
                 )
               end
 
-              it 'should return created text rich_text story item' do
+              it 'should return created text rich-text story item' do
                 response = StoryItems.new(story_id: @story.id, api_key: @user.api_key,
                                           item: @item).post
 
@@ -195,17 +195,17 @@ module StoriesApi
               before do
                 record = create(:record)
                 factory = create(:story_item, type: 'embed', sub_type: 'dnz',
-                                             content: { record_id: record.record_id},
+                                             content: { id: record.record_id},
                                              meta: { metadata: 'Some Meta' })
 
                 @item = factory.attributes.symbolize_keys
                 @item.delete(:_id)
-                @item.delete(:record_id)
+                @item.delete(:id)
               end
 
               it 'should return error when content is empty' do
                 item = @item
-                item[:content].delete(:record_id)
+                item[:content].delete(:id)
 
                 response = StoryItems.new(story_id: @story.id,
                                           api_key: @user.api_key,
@@ -213,22 +213,22 @@ module StoriesApi
                 expect(response).to eq(
                   status: 400,
                   exception: {
-                    message: 'Mandatory Parameters Missing: record_id is missing in content'
+                    message: 'Mandatory Parameters Missing: id is missing in content'
                   }
                 )
               end
 
               it 'should return error for wrong type or values' do
                 item = @item
-                item[:content][:record_id] = 'zfbgksdgjb'
-                
+                item[:content][:id] = 'zfbgksdgjb'
+
                 response = StoryItems.new(story_id: @story.id,
                                           api_key: @user.api_key,
                                           item: item).post
                 expect(response).to eq(
                   status: 400,
                   exception: {
-                    message: 'Bad Request: record_id must be an integer in content'
+                    message: 'Bad Request: id must be an integer in content'
                   }
                 )
               end
@@ -240,7 +240,7 @@ module StoriesApi
                 result = response[:payload]
                 result.delete(:id)
 
-                expect(result[:content][:record_id]).to eq @item[:content][:record_id]
+                expect(result[:content][:id]).to eq @item[:content][:id]
               end
             end
           end
@@ -253,7 +253,7 @@ module StoriesApi
 
             record = create(:record)
             factory = create(:story_item, type: 'embed', sub_type: 'dnz',
-                                        content: { record_id: record.record_id},
+                                        content: { id: record.record_id},
                                          meta: { metadata: 'Some Meta' })
 
             @item = factory.attributes.symbolize_keys
@@ -273,7 +273,7 @@ module StoriesApi
               block.delete(:id)
               expect(@item[:meta]).to eq(block[:meta])
             end
-          end        
+          end
         end
       end
     end

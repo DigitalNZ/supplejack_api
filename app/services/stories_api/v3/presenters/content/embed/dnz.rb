@@ -12,7 +12,7 @@ module StoriesApi
               image_url: :large_thumbnail_url,
               tags: :tag,
               description: :description
-             }.freeze
+            }.freeze
 
             def call(block)
               # FIXME

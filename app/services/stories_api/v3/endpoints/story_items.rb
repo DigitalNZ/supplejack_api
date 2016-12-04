@@ -36,6 +36,7 @@ module StoriesApi
           item_params = params[:item].deep_symbolize_keys
 
           # FIXME: This is a temporary fix
+          # Can be removed after user_sets is retired
           item_params[:record_id] = item_params[:content][:id] if item_params[:content][:id]
 
           story_item = story.set_items.build(item_params)

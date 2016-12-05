@@ -30,6 +30,8 @@ module StoriesApi
           TOP_LEVEL_FIELDS.each do |field|
             result[field] = story_item.send(field)
           end
+          # FIXME
+          result[:id] = result[:id].to_s
 
           type = story_item[:type].classify
           sub_type = story_item[:sub_type].classify

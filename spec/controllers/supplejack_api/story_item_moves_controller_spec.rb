@@ -9,23 +9,24 @@ module SupplejackApi
             :story,
             set_items: [
               create(:embed_dnz_item, title: 'last', position: 1),
-              create(:embed_dnz_item, title: 'first', position: 2)
+              create(:embed_dnz_item, title: 'first', position: 2),
+              create(:embed_dnz_item, title: 'middle', position: 3)
             ]
           )
         end
         let(:ordered_items) { story.set_items.sort_by(&:position) }
         let(:first_title) { ordered_items.first.content[:record][:title] }
-        let(:second_title) { ordered_items.second.content[:record][:title] }
+        let(:last_title) { ordered_items.last.content[:record][:title] }
 
         before do
-          post :create, {story_id: story.id, item_id: story.set_items.first.id, position: '2', api_key: story.user.api_key}
+          post :create, {story_id: story.id, item_id: story.set_items.first.id, position: story.set_items.last.id, api_key: story.user.api_key}
         end
 
         it 'moves the block' do
           story.reload
 
           expect(first_title).to eq('first')
-          expect(second_title).to eq('last')
+          expect(last_title).to eq('last')
         end
 
         it 'returns a 200 code' do

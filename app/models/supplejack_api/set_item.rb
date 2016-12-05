@@ -59,7 +59,7 @@ module SupplejackApi
     # Set the default position as the last in the set, if not defined.
     #
     def set_position
-      return if position
+      return if position && position != -1
 
       positions = user_set.set_items.map(&:position)
       self.position = positions.compact.max.to_i + 1

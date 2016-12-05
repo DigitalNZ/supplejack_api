@@ -19,14 +19,12 @@ module StoriesApi
             end
 
             required(:content).schema do
-              required(:record_id).filled(:int?)
-              optional(:record).schema do
-                required(:title).filled(:str?)
-                required(:display_collection).filled(:str?)
-                required(:category).filled(:str?)
-                required(:image_url).filled(:str?)
-                required(:tags).each(:str?)
-              end
+              required(:id).filled(:int?)
+              optional(:title).filled(:str?)
+              optional(:display_collection).filled(:str?)
+              optional(:category).each(:str?)
+              optional(:image_url).maybe(:str?)
+              optional(:tags).each(:str?)
             end
 
             required(:meta).schema do

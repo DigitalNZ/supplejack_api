@@ -23,8 +23,8 @@ module StoriesApi
             let(:story_item) {build(:embed_dnz_item, id: record.record_id)}
 
             it 'hands off the content field to the custom presenter' do
-              expect(presented_json[:content][:record][:description]).to eq(record.description)
-              expect(presented_json[:content][:record][:title]).to eq(record.title)
+              expect(presented_json[:content][:description]).to eq(record.description)
+              expect(presented_json[:content][:title]).to eq(record.title)
             end
           end
         end

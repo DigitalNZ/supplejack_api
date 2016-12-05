@@ -11,13 +11,14 @@ module StoriesApi
     module Presenters
       class Story
         TOP_LEVEL_FIELDS = [
-          :id,
           :name,
           :description,
           :privacy,
+          :copyright,
           :featured,
           :approved,
-          :tags
+          :tags,
+          :updated_at
         ].freeze
 
         def call(story)
@@ -28,7 +29,7 @@ module StoriesApi
           end
           result[:id] = story.id.to_s
           result[:number_of_items] = story.set_items.count
-          result[:contents] = story.set_items.map(&StoryItem)
+          result[:contents] = story.set_items.sort_by(&:position).map(&StoryItem)
 
           result
         end

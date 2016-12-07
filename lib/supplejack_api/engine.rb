@@ -24,7 +24,7 @@ require 'unicode_utils'
 require 'rest_client'
 require 'lazy_high_charts'
 require 'zurb-foundation'
-require 'resque/server'
+require 'sidekiq'
 require 'json/ld'
 require 'dry-validation'
 

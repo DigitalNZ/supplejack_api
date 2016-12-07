@@ -84,15 +84,16 @@ module SupplejackApi
     describe "DELETE flush" do
       before do
         allow(Record).to receive(:flush_old_records)
+        expect(FlushOldRecordsWorker).to receive(:perform_async).with('tapuhi', 'abc123')
       end
 
       it "calls flush_old_records" do
-        expect(Resque).to receive(:enqueue).with(FlushOldRecordsWorker, 'tapuhi', 'abc123')
         delete :flush, source_id: 'tapuhi', job_id: 'abc123'
       end
 
       it "returns a 204" do
         delete :flush, source_id: 'tapuhi', job_id: 'abc123'
+
         expect(response.code).to eq '204'
       end
     end

@@ -100,7 +100,7 @@ module SupplejackApi
 
       it "enqueues the job with the source_id and date if given" do
         date = Time.now
-        expect(Resque).to receive(:enqueue).with(IndexSourceWorker, @source.source_id, date.to_s)
+        expect(IndexSourceWorker).to receive(:perform_async).with(@source.source_id, date.to_s)
         get :reindex, id: @source.id, date: date
       end
 

@@ -6,9 +6,10 @@
 
 module SupplejackApi
   class ClearIndexBuffer
-    @queue = :solr_index
+    include Sidekiq::Worker
+    sidekiq_options queue: 'default', retry: false
 
-    def self.perform
+    def perform
       Rails.logger.level = 1 unless Rails.env.development?
 
       session = Sunspot.session
@@ -26,7 +27,7 @@ module SupplejackApi
         Sunspot.remove(remove_record_ids)
       end
 
-      Sunspot.commit
+      Sunspot.session = session
     end
   end
 end

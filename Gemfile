@@ -22,7 +22,6 @@ gem 'mongoid_auto_inc', git: 'https://github.com/boost/mongoid_auto_inc.git'
 
 # Must add 'require' statments in Gemfile
 gem 'mongoid-tree', require: 'mongoid/tree'
-gem 'resque-scheduler', require: 'resque_scheduler'
 gem 'dimensions', require: false
 gem 'mimemagic', require: false
 gem 'rb-fsevent', require: false

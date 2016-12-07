@@ -5,6 +5,9 @@
 # Supplejack was created by DigitalNZ at the National Library of NZ and 
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
+require 'sidekiq/web'
+Sidekiq::Web.set :session_secret, Rails.application.secrets[:secret_key_base]
+
 SupplejackApi::Engine.routes.draw do
   root to: 'records#index'
 
@@ -84,6 +87,6 @@ SupplejackApi::Engine.routes.draw do
   get '/status', to: 'status#show'
 
   get '/schema', to: 'schema#show', :defaults => { format: 'json' }
-  
-  mount ::Resque::Server.new, at: '/resque'
+
+  mount Sidekiq::Web => '/sidekiq'
 end

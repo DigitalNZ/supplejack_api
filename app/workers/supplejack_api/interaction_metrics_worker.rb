@@ -8,13 +8,17 @@
 
 module SupplejackApi
   class InteractionMetricsWorker
+    include Sidekiq::Worker
+    sidekiq_options queue: 'low', retry: false
+    class << self
+      attr_reader :interaction_updaters
+    end
+
     # Contains list of +InteractionUpdater+ classes to be executed by worker
     @interaction_updaters = []
 
-    @queue = :interaction_metrics
-
-    def self.perform
-      @interaction_updaters.each do |interaction_updater|
+    def perform
+      self.class.interaction_updaters.each do |interaction_updater|
         models_to_process = interaction_updater.model.all
         models_to_process.delete_all if interaction_updater.process(models_to_process.to_a)
       end

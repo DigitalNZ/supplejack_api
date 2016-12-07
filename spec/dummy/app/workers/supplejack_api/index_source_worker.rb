@@ -7,9 +7,10 @@
 
 module SupplejackApi
   class IndexSourceWorker
-    @queue = :index_source
+    include Sidekiq::Worker
+    sidekiq_options queue: 'default'
 
-    def self.perform(source_id, date=nil)
+    def perform(source_id, date=nil)
       if date.present?
         cursor = Record.where(:'fragments.source_id' => source_id, :updated_at.gt => Time.parse(date))
       else
@@ -25,7 +26,7 @@ module SupplejackApi
       end
     end
 
-    def self.in_chunks(cursor, &block)
+    def in_chunks(cursor, &block)
       total = cursor.count
       start = 0
       chunk_size = 10000

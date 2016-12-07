@@ -8,8 +8,10 @@
 
 module SupplejackApi
   class DailyMetricsWorker
+    include Sidekiq::Worker
+    sidekiq_options queue: 'critical', retry: 1
+
     attr_reader :primary_key, :secondary_keys
-    @queue = :daily_metrics
 
     def initialize
       # configuration for metrics logging
@@ -24,8 +26,8 @@ module SupplejackApi
       )
     end
 
-    def self.perform
-      new.call
+    def perform
+      call
     end
 
     # Uses +SupplejackApi::RecordSearch+ to query the API for metrics information

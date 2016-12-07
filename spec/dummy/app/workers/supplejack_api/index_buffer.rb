@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
@@ -11,39 +12,69 @@
 module SupplejackApi
   class IndexBuffer
 
-    def initialize
-      @redis = Resque.redis
-    end
+    def pop_record_ids(method = :index, batch_size = 1000)
+      future_ids = OpenStruct.new(value: [])
+      number_of_ids_to_retrieve = count_for_buffer_type(method)
 
-    def pop_record_ids(method=:index, num=1000)
-      # get all the entries from the list. Need to check what happens if the list doesn't exist
-      num ||= 100000
-      ids = []
-      while ids.count < num and id = @redis.lpop("#{method}_buffer_record_ids")
-        ids << id
+      Sidekiq.redis do |conn|
+        conn.pipelined do
+          buffer = buffer_name(method)
+          range_end = if number_of_ids_to_retrieve < batch_size
+                        number_of_ids_to_retrieve
+                      else
+                        batch_size
+                      end
+
+          future_ids = conn.lrange(buffer, 0, range_end)
+          conn.ltrim(buffer, 0, range_end)
+        end
       end
-      ids
+
+      # Record ids get double pushed to Redis during creation
+      # I'm guessing because they are created and then something
+      # is updated. The uniq takes care of that
+      future_ids.value.uniq || []
     end
 
     def records_to_index
-      @records_to_index ||= SupplejackApi::Record.where(:id.in => self.pop_record_ids(:index)).to_a
+      @records_to_index ||= ::Record.where(:id.in => self.pop_record_ids(:index)).to_a
       @records_to_index.keep_if {|r| r.should_index? }
       @records_to_index
     end
 
     def records_to_remove
-      @records_to_remove ||= SupplejackApi::Record.where(:id.in => self.pop_record_ids(:remove)).to_a
+      @records_to_remove ||= ::Record.where(:id.in => self.pop_record_ids(:remove)).to_a
       @records_to_remove.delete_if {|r| r.should_index?}
       @records_to_remove
     end
 
     [:index, :remove].each do |method|
-      define_method("#{method}_record_ids=") do |ids|
-        ids.each do |id|
-          # push each id
-          @redis.rpush("#{method}_buffer_record_ids", id) 
+      define_method("push_to_#{method}_buffer") do |ids|
+        Sidekiq.redis do |conn|
+          conn.pipelined do
+            ids.each do |id|
+              Rails.logger.info("METHOD: #{method}")
+              conn.rpush(buffer_name(method), id)
+            end
+          end
         end
       end
+
+      define_method("#{method}_buffer_count") do
+        count_for_buffer_type(method)
+      end
+    end
+
+    private
+
+    def count_for_buffer_type(type)
+      Sidekiq.redis do |conn|
+        conn.llen(buffer_name(type))
+      end
+    end
+
+    def buffer_name(type)
+      "#{type}_buffer_record_ids"
     end
   end
 end

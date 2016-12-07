@@ -40,7 +40,7 @@ module SupplejackApi
 
     def reindex
       @source = Source.find(params[:id])
-      Resque.enqueue(IndexSourceWorker, @source.source_id, params[:date])
+      IndexSourceWorker.perform_async(@source.source_id, params[:date])
 
       render nothing: true
     end

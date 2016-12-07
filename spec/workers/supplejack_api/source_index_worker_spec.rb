@@ -24,23 +24,23 @@ module SupplejackApi
       it "finds all active records and indexes them" do
         expect(Record).to receive(:where).with(:'fragments.source_id' => 'tapuhi').and_call_original
         expect(Sunspot).to receive(:index).with(records)
-        IndexSourceWorker.perform('tapuhi')
+
+        IndexSourceWorker.new.perform('tapuhi')
       end
-      
 
       it "finds all deleted records and removes them from solr" do
         records.each { |r| r.update_attribute(:status, 'deleted') }
 
         expect(Record).to receive(:where).with(:'fragments.source_id' => 'tapuhi').and_call_original
         expect(Sunspot).to receive(:remove).with(records)
-        IndexSourceWorker.perform('tapuhi')
+        IndexSourceWorker.new.perform('tapuhi')
       end
 
       it "finds records updated more recently than the date given" do
         date = Time.now
         allow(Time).to receive(:parse) { date }
         expect(Record).to receive(:where).with(:'fragments.source_id' => 'tapuhi', :updated_at.gt => date)
-        IndexSourceWorker.perform('tapuhi', date.to_s)
+        IndexSourceWorker.new.perform('tapuhi', date.to_s)
       end
     end
 
@@ -54,7 +54,7 @@ module SupplejackApi
         expect(mock_cursor).to receive(:count) {2}
         expect(mock_cursor_2).to receive(:skip).with(0) { records }
 
-        expect{|b| IndexSourceWorker.in_chunks(mock_cursor, &b) }.to yield_with_args(records)
+        expect{|b| IndexSourceWorker.new.in_chunks(mock_cursor, &b) }.to yield_with_args(records)
       end
     end
   end

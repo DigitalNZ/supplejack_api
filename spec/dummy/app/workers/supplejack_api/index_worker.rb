@@ -7,55 +7,56 @@
 
 module SupplejackApi
   class IndexWorker
-    @queue = :solr_index
-  
-    def self.perform(sunspot_method, object = nil)
+    include Sidekiq::Worker
+    sidekiq_options queue: 'critical'
+
+    def perform(sunspot_method, object = nil)
       sunspot_method = sunspot_method.to_sym
       object = object.with_indifferent_access if object.is_a? Hash
-      
+
       Rails.logger.level = 1 unless Rails.env.development?
-          
+
       session = Sunspot.session
       Sunspot.session = Sunspot::Rails.build_session
       case sunspot_method
       when :index
-        self.index(self.find_all(object[:class], object[:id]))
+        index(find_all(object[:class], object[:id]))
       when :remove
-        self.remove(self.find_all(object[:class], object[:id]))
+        remove(self.find_all(object[:class], object[:id]))
       when :remove_all
-        self.remove_all(object)
+        remove_all(object)
       when :commit_if_dirty
-        self.commit_if_dirty
+        commit_if_dirty
       when :commit_if_delete_dirty
-        self.commit_if_delete_dirty
+        commit_if_delete_dirty
       when :commit
-        self.commit
+        commit
       else
         raise "Error: undefined protocol for IndexWorker: #{sunspot_method} (#{objects})"
       end
       Sunspot.session = session
     end
-  
-    def self.index(object)
+
+    def index(object)
       Sunspot.index(object)
     end
-    
-    def self.remove(object)
+
+    def remove(object)
       Sunspot.remove(object)
     end
-  
-    def self.remove_by_id(klass, id)
+
+    def remove_by_id(klass, id)
       Sunspot.remove_by_id(klass, id)
     end
-  
-    def self.remove_all(klass = nil)
+
+    def remove_all(klass = nil)
       klass = klass.constantize unless klass.nil?
       Sunspot.remove_all(klass)
     end
-  
-    def self.commit
+
+    def commit
       begin
-        # on production, use autocommit in solrconfig.xml 
+        # on production, use autocommit in solrconfig.xml
         # or commitWithin whenever sunspot supports it
         sleep(20) unless Rails.env.test? # Sleep 20 seconds to wait for other potential jobs being executed in parallel
         Sunspot.commit
@@ -63,20 +64,19 @@ module SupplejackApi
         Rails.logger.error e.inspect
       end
     end
-    
-    def self.commit_if_dirty
+
+    def commit_if_dirty
       Sunspot.commit_if_dirty
     end
-    
-    def self.commit_if_delete_dirty
+
+    def commit_if_delete_dirty
       Sunspot.commit_if_delete_dirty
     end
-  
-    def self.find_all(klass, ids)
+
+    def find_all(klass, ids)
       klass = "SupplejackApi::#{klass}" if klass.deconstantize.blank?
       object_ids = *ids
       klass.constantize.where(:id.in => object_ids)
     end
   end
-
 end

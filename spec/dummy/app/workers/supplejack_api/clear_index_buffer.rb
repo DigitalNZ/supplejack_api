@@ -27,7 +27,6 @@ module SupplejackApi
         Sunspot.remove(remove_record_ids)
       end
 
-      Sunspot.commit
       Sunspot.session = session
     end
   end

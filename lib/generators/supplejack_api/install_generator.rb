@@ -19,9 +19,8 @@ module SupplejackApi
         puts "\nInstalling config files into config/"
 
         copy_file('config/application.yml.example', 'config/application.yml')
+        copy_file('config/schedule.example.rb', 'config/schedule.rb')
         copy_file 'config/mongoid.yml'
-        copy_file 'config/resque-pool.yml'
-        copy_file 'config/resque_schedule.yml'
         copy_file 'config/sunspot.yml'
 
         puts "\nGenerating secret token"
@@ -41,13 +40,14 @@ module SupplejackApi
         copy_file 'config/initializers/devise.rb'
         copy_file 'config/initializers/kaminari_config.rb'
         copy_file 'config/initializers/quiet_logger.rb'
-        copy_file 'config/initializers/resque.rb'
+        copy_file 'config/initializers/sidekiq.rb'
         copy_file 'config/initializers/simple_form.rb'
         copy_file 'config/initializers/simple_form_foundation.rb'
         copy_file 'config/initializers/state_machine.rb'
         copy_file 'config/initializers/sunspot.rb'
         copy_file 'config/initializers/mongoid.rb'
-
+        copy_file 'config/initializers/interaction_updaters.rb'
+        copy_file 'config/initializers/force_eagerload.rb'
         directory 'config/locales'
       end
 
@@ -77,6 +77,7 @@ module SupplejackApi
           string << "gem 'sunspot_rails', '~> 2.2.0'"
           string << "gem 'active_model_serializers', git: 'https://github.com/boost/active_model_serializers.git'"
           string << "gem 'mongoid_auto_inc', git: 'https://github.com/boost/mongoid_auto_inc.git'"
+          string << "gem 'whenever', '~> 0.9'"
 
           string.join("\n")
         end
@@ -86,7 +87,7 @@ module SupplejackApi
         puts "\nCreating Schemas in app/supplejack_api/"
 
         empty_directory 'app/supplejack_api'
-        copy_file 'app/supplejack_api/record_schema.txt', 'app/supplejack_api/record_schema.rb'
+        copy_file 'app/supplejack_api/record_schema.rb'
         copy_file 'app/supplejack_api/concept_schema.rb'
       end
 

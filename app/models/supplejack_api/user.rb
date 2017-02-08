@@ -119,12 +119,9 @@ module SupplejackApi
     end
 
     def update_daily_activity(request)
-      Rails.logger.info "DAILY ACTIVITY: request = #{request}"
       # Get the controller name and strips out the `supplejack_api/` namespace
-      controller = request.params[:controller].to_s.gsub(%r{ supplejack_api/ }, '')
+      controller = request.params[:controller].to_s.gsub('supplejack_api/', '')
       action = request.params[:action].to_s
-
-      Rails.logger.info "DAILY ACTIVITY: controller = #{controller}, action = #{action}"
 
       if controller == 'records' && action == 'index'
         controller = 'search'
@@ -137,8 +134,6 @@ module SupplejackApi
         controller = 'user_sets'
         action = "#{action}_item"
       end
-
-      Rails.logger.info "DAILY ACTIVITY: controller = #{controller}, action = #{action}"
 
       self.daily_activity ||= {}
       self.daily_activity[controller] ||= {}

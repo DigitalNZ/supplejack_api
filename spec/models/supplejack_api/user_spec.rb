@@ -185,12 +185,6 @@ module SupplejackApi
           user.update_daily_activity(request)
           expect(user.daily_activity['records']['source']).to eq 1
         end
-
-        it 'updates the requests for search through a custom search' do
-          allow(request).to receive(:params) { {action: 'records', controller: 'custom_searches'} }
-          user.update_daily_activity(request)
-          expect(user.daily_activity['search']['custom_search']).to eq 1
-        end
       end
     end
 

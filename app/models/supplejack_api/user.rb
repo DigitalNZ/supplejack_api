@@ -120,7 +120,7 @@ module SupplejackApi
 
     def update_daily_activity(request)
       # Get the controller name and strips out the `supplejack_api/` namespace
-      controller = request.params[:controller].to_s.gsub(%r{ supplejack_api/ }, '')
+      controller = request.params[:controller].to_s.gsub('supplejack_api/', '')
       action = request.params[:action].to_s
 
       if controller == 'records' && action == 'index'

@@ -126,11 +126,7 @@ module SupplejackApi
       if controller == 'records' && action == 'index'
         controller = 'search'
         action = 'records'
-      # TODO: Custom Search is deprecated. Evaluate for removal
-      elsif controller == 'custom_searches' && action == 'records'
-        controller = 'search'
-        action = 'custom_search'
-      elsif controller == 'set_items'
+      elsif %w(set_items story_items).include? controller
         controller = 'user_sets'
         action = "#{action}_item"
       end

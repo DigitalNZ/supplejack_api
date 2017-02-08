@@ -130,7 +130,7 @@ module SupplejackApi
       elsif controller == 'custom_searches' && action == 'records'
         controller = 'search'
         action = 'custom_search'
-      elsif controller == 'set_items'
+      elsif ['set_items', 'story_items'].include? controller
         controller = 'user_sets'
         action = "#{action}_item"
       end

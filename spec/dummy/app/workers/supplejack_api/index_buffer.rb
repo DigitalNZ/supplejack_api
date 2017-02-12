@@ -14,18 +14,14 @@ module SupplejackApi
 
     def pop_record_ids(method = :index, batch_size = 1000)
       future_ids = OpenStruct.new(value: [])
-      number_of_ids_to_retrieve = count_for_buffer_type(method)
+      number_of_ids = count_for_buffer_type(method)
 
       Sidekiq.redis do |conn|
         conn.pipelined do
           buffer = buffer_name(method)
-          range_end = if number_of_ids_to_retrieve < batch_size
-                        number_of_ids_to_retrieve
-                      else
-                        batch_size
-                      end
-
+          range_end = (number_of_ids < batch_size) ? number_of_ids : batch_size
           future_ids = conn.lrange(buffer, 0, range_end)
+
           conn.ltrim(buffer, 0, range_end)
         end
       end

@@ -13,7 +13,7 @@ module SupplejackApi::Concerns::Searchable
     self.max_values = {
       page: 100_000,
       per_page: 100,
-      facets_per_page: 150,
+      facets_per_page: 250,
       facets_page: 5000
     }
 

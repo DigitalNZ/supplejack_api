@@ -16,20 +16,27 @@ module SupplejackApi
       future_ids = OpenStruct.new(value: [])
       number_of_ids = count_for_buffer_type(method)
 
+      Rails.logger.info "INDEX ISSUE: number_of_ids #{number_of_ids}"
+
       Sidekiq.redis do |conn|
         conn.pipelined do
           buffer = buffer_name(method)
           range_end = (number_of_ids < batch_size) ? number_of_ids : batch_size
-          future_ids = conn.lrange(buffer, 0, range_end)
+          ids = conn.lrange(buffer, 0, range_end)
 
-          conn.ltrim(buffer, 0, range_end)
+          Rails.logger.info "INDEX ISSUE: ids #{ids}"
+
+          # keeping everything from range_end to count +1000
+          # +1000 because if harvesting is running  
+          conn.ltrim(buffer, range_end + 1, number_of_ids + 1000)
+          Rails.logger.info "INDEX ISSUE: ids_left #{ids = conn.lrange(buffer, 0, range_end)}"
         end
       end
 
       # Record ids get double pushed to Redis during creation
       # I'm guessing because they are created and then something
       # is updated. The uniq takes care of that
-      future_ids.value.uniq || []
+      ids.value.uniq || []
     end
 
     def records_to_index

@@ -13,6 +13,7 @@ module SupplejackApi
   class IndexBuffer
 
     def pop_record_ids(method = :index, batch_size = 1000)
+      Rails.logger.info "INDEX ISSUE SUPPLEJACK PI"
       future_ids = OpenStruct.new(value: [])
       number_of_ids = count_for_buffer_type(method)
 
@@ -27,7 +28,8 @@ module SupplejackApi
           Rails.logger.info "INDEX ISSUE: ids #{ids}"
 
           # keeping everything from range_end to count +1000
-          # +1000 because if harvesting is running  
+          # +1000 because if harvesting is running there caould be more id in
+          # the queue when it gets to this statement.
           conn.ltrim(buffer, range_end + 1, number_of_ids + 1000)
           Rails.logger.info "INDEX ISSUE: ids_left #{ids = conn.lrange(buffer, 0, range_end)}"
         end

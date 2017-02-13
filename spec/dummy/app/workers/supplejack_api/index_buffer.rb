@@ -31,7 +31,7 @@ module SupplejackApi
           # +1000 because if harvesting is running there caould be more id in
           # the queue when it gets to this statement.
           conn.ltrim(buffer, range_end + 1, number_of_ids + 1000)
-          Rails.logger.info "INDEX ISSUE: ids_left #{ids = conn.lrange(buffer, 0, range_end)}"
+          Rails.logger.info "INDEX ISSUE: ids_left #{conn.lrange(buffer, 0, range_end)}"
         end
       end
 

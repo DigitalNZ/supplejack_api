@@ -28,7 +28,7 @@ module SupplejackApi
           # keeping everything from range_end to count +1000
           # +1000 because if harvesting is running there caould be more id in
           # the queue when it gets to this statement.
-          conn.ltrim(buffer, range_end, number_of_ids + 10000)
+          conn.ltrim(buffer, range_end, -1)
         end
       end
 

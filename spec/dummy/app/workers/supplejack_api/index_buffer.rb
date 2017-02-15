@@ -12,33 +12,28 @@
 module SupplejackApi
   class IndexBuffer
 
+    # Pops record ids to be indexed/unindexed from redis list
     def pop_record_ids(method = :index, batch_size = 1000)
-      Rails.logger.info "INDEX ISSUE SUPPLEJACK PI"
-      future_ids = OpenStruct.new(value: [])
+      result = OpenStruct.new(ids: [])
       number_of_ids = count_for_buffer_type(method)
 
-      Rails.logger.info "INDEX ISSUE: number_of_ids #{number_of_ids}"
+      Rails.logger.info "INDEXING[#{Time.zone.now.strftime('%d/%m/%y %H:%M:%S')}]: #{number_of_ids} ids in #{method} buffer" if number_of_ids.positive?
 
       Sidekiq.redis do |conn|
         conn.pipelined do
           buffer = buffer_name(method)
-          range_end = (number_of_ids < batch_size) ? number_of_ids : batch_size
-          ids = conn.lrange(buffer, 0, range_end)
-
-          Rails.logger.info "INDEX ISSUE: ids #{ids}"
+          range_end = number_of_ids < batch_size ? number_of_ids : batch_size
+          result.ids = conn.lrange(buffer, 0, range_end - 1)
 
           # keeping everything from range_end to count +1000
           # +1000 because if harvesting is running there caould be more id in
           # the queue when it gets to this statement.
-          conn.ltrim(buffer, range_end + 1, number_of_ids + 1000)
-          Rails.logger.info "INDEX ISSUE: ids_left #{conn.lrange(buffer, 0, range_end)}"
+          conn.ltrim(buffer, range_end, number_of_ids + 10000)
         end
       end
 
-      # Record ids get double pushed to Redis during creation
-      # I'm guessing because they are created and then something
-      # is updated. The uniq takes care of that
-      ids.value.uniq || []
+      # Removimg duplicate entries
+      result.ids.value.uniq || []
     end
 
     def records_to_index

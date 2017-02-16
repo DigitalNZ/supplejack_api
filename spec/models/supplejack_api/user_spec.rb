@@ -168,6 +168,24 @@ module SupplejackApi
           expect(user.daily_activity['search']['records']).to eq 2
         end
 
+        it 'increments user_sets view for the day' do
+          allow(request).to receive(:params) { {action: 'show', controller: 'set_items'} }
+          user.update_daily_activity(request)
+          expect(user.daily_activity['user_sets']['show_item']).to eq 1
+
+          user.update_daily_activity(request)
+          expect(user.daily_activity['user_sets']['show_item']).to eq 2
+        end
+
+        it 'increments user_sets view for the day if controller is story_items' do
+          allow(request).to receive(:params) { {action: 'show', controller: 'story_items'} }
+          user.update_daily_activity(request)
+          expect(user.daily_activity['user_sets']['show_item']).to eq 1
+
+          user.update_daily_activity(request)
+          expect(user.daily_activity['user_sets']['show_item']).to eq 2
+        end
+
         it 'updates the requests for the record details' do
           allow(request).to receive(:params) { {action: 'show', controller: 'records'} }
           user.update_daily_activity(request)

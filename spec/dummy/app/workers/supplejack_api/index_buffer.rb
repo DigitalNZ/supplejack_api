@@ -25,9 +25,7 @@ module SupplejackApi
           range_end = number_of_ids < batch_size ? number_of_ids : batch_size
           result.ids = conn.lrange(buffer, 0, range_end - 1)
 
-          # keeping everything from range_end to count +1000
-          # +1000 because if harvesting is running there caould be more id in
-          # the queue when it gets to this statement.
+          # keeping everything from range_end to total size -1
           conn.ltrim(buffer, range_end, -1)
         end
       end

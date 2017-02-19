@@ -24,5 +24,8 @@ module SupplejackApi
     validates :name, presence: true
 
     scope :suppressed,  -> { where(status: 'suppressed') }
+
+    def random_records(limit)
+    end
   end
 end

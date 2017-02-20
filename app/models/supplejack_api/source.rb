@@ -25,10 +25,15 @@ module SupplejackApi
 
     scope :suppressed,  -> { where(status: 'suppressed') }
 
-    # Return random records for the source
+    # Its not completely random. Its not effiient to run .sample 
+    # on lastge collections.
+    # Fetches 2 random records each from first 100 and last 100
     def random_records(limit)
-      Record.where('fragments.source_id' => source_id,
-                   :status => 'active').sample(limit)
+      records = Record.where('fragments.source_id' => source_id, :status => 'active')
+      first_100 = records.sort('fragments.syndication_date' => 1).limit(100).to_a
+      first_100 = records.sort('fragments.syndication_date' => 1).limit(100).to_a
+
+      
     end
   end
 end

@@ -21,7 +21,7 @@ module StoriesApi
           :updated_at
         ].freeze
 
-        def call(story)
+        def call(story, slim = false)
           result = {}
 
           TOP_LEVEL_FIELDS.each do |field|
@@ -29,9 +29,22 @@ module StoriesApi
           end
           result[:id] = story.id.to_s
           result[:number_of_items] = story.set_items.count
-          result[:contents] = story.set_items.sort_by(&:position).map(&StoryItem)
-
+          result[:cover_thumbnail] = first_suitable_image story
+          if slim
+            result[:record_ids] = story.set_items.sort_by(&:position).map { |x| { record_id: x.record_id } }
+          else
+            result[:contents] = story.set_items.sort_by(&:position).map(&StoryItem)
+          end
           result
+        end
+
+        def first_suitable_image(story)
+          item_with_image = story.set_items.sort_by(&:position).detect do |item|
+            item.content.present? && (item.type == 'embed') &&
+              (item.sub_type == 'dnz') && item.content[:image_url].present?
+          end
+
+          item_with_image.content[:image_url] unless item_with_image.nil?
         end
 
         def self.to_proc

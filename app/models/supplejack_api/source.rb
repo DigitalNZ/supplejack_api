@@ -25,7 +25,10 @@ module SupplejackApi
 
     scope :suppressed,  -> { where(status: 'suppressed') }
 
+    # Return random records for the source
     def random_records(limit)
+      Record.where('fragments.source_id' => source_id,
+                   :status => 'active').sample(limit)
     end
   end
 end

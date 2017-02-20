@@ -47,12 +47,9 @@ module SupplejackApi
 
     def link_check_records
       @source = Source.find(params[:id])
-      @records = []
+      source_urls = @source.random_records(4).map(&:landing_url)
 
-      @records += first_two_records(@source.source_id, :oldest).map(&:source_url)
-      @records += first_two_records(@source.source_id, :latest).map(&:source_url)
-
-      render json: @records.to_json
+      render json: source_urls
     end
 
     private

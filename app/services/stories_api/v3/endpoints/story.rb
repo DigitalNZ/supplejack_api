@@ -28,12 +28,16 @@ module StoriesApi
         end
 
         def patch
+          Rails.logger.info 'Stories Issues'
           story = SupplejackApi::UserSet.custom_find(params[:id])
+          Rails.logger.info "Stories Issues: story #{story}"
           merge_patch = PerformMergePatch.new(::StoriesApi::V3::Schemas::Story, ::StoriesApi::V3::Presenters::Story.new)
           return create_error('StoryNotFound',
                               id: params[:id]) unless story.present?
 
           valid = merge_patch.call(story, params[:story])
+          Rails.logger.info "Stories Issues valid #{valid}"
+          Rails.logger.info "Stories Issues: message #{merge_patch.validation_errors}" unless valid
           return create_error('SchemaValidationError',
                               errors:  merge_patch.validation_errors) unless valid
 

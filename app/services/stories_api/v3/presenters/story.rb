@@ -39,9 +39,10 @@ module StoriesApi
         end
 
         def first_suitable_image(story)
-          item_with_image = story.set_items.sort_by(&:position).detect { |item|
-            item.content.present? && (item.type == 'embed') && (item.sub_type == 'dnz') && (item.content[:image_url].present?)
-          }
+          item_with_image = story.set_items.sort_by(&:position).detect do |item|
+            item.content.present? && (item.type == 'embed') &&
+              (item.sub_type == 'dnz') && item.content[:image_url].present?
+          end
 
           item_with_image.content[:image_url] unless item_with_image.nil?
         end

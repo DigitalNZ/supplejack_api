@@ -49,7 +49,6 @@ module SupplejackApi
     def link_check_records
       source = Source.find(params[:id])
       records = source.random_records(4).map(&:landing_url)
-      
       render json: records.to_json
     end
   end

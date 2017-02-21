@@ -46,14 +46,10 @@ module SupplejackApi
     end
 
     def link_check_records
-      source = Source.where(id: params[:id]).first
-
-      if source
-        records = source.random_records(4).map(&:landing_url)
-        render json: records.to_json, status: 200
-      else
-        render json: { error: 'source not found'}, status: 404
-      end
+      source = Source.find(params[:id])
+      records = source.random_records(4).map(&:landing_url)
+      
+      render json: records.to_json
     end
   end
 end

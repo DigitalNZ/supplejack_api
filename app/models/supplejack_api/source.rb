@@ -29,6 +29,7 @@ module SupplejackApi
     # Fetches 4 random records from first 100 and last 100
     def random_records(limit)
       records = Record.where('fragments.source_id' => source_id, :status => 'active')
+
       first_hundred = records.sort('fragments.syndication_date' => 1).limit(100).to_a
       last_hundred = records.sort('fragments.syndication_date' => -1).limit(100).to_a
 

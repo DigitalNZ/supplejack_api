@@ -7,15 +7,16 @@ module SupplejackApi
 
     def index
       params[:user_id] = params[:api_key]
-
       render_response(:stories)
     end
 
     def admin_index
+      params[:slim] = true
       render_response(:stories)
     end
 
     def show
+      params[:slim] = false
       render_response(:story)
     end
 

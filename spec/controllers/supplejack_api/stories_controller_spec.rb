@@ -82,10 +82,6 @@ module SupplejackApi
         it 'returns all their stories' do
           expect(response_body.length).to eq(2)
         end
-
-        it 'returns valid stories' do
-          expect(response_body.all? {|story| ::StoriesApi::V3::Schemas::Story.call(story).success?}).to eq(true)
-        end
       end
     end
 

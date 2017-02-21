@@ -250,6 +250,7 @@ module SupplejackApi::Concerns::Searchable
       offset.negative? ? 0 : offset
     end
 
+    # [FIXME] The error is reaised from here
     def valid?
       self.errors ||= []
       self.warnings ||= []

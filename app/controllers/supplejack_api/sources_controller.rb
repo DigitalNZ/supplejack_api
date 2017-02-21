@@ -46,19 +46,10 @@ module SupplejackApi
     end
 
     def link_check_records
-      @source = Source.find(params[:id])
-      source_urls = @source.random_records(4).map(&:landing_url)
+      source = Source.find(params[:id])
+      source_urls = source.random_records(4).map(&:landing_url)
 
       render json: source_urls
-    end
-
-    private
-
-    def first_two_records(source_id, direction)
-      sort = direction == :latest ? -1 : 1
-      records = Record.where('fragments.source_id' => source_id, :status => 'active')
-                      .sort('fragments.syndication_date' => sort)
-      records.limit(2).to_a
     end
   end
 end

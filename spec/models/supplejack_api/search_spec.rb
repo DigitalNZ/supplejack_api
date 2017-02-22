@@ -148,20 +148,20 @@ module SupplejackApi
     end
 
     describe '#valid?' do
-      before { @search.stub(:solr_search_object) { true } }
+      before { allow(@search).to receive(:solr_search_object).and_return(true) }
 
       it 'returns true if no errors' do
-        @search.stub(:errors) { [] }
+        allow(@search).to receive(:errors).and_return([])
         expect(@search.valid?).to be true
       end
 
       it 'returns false if errors exist' do
-        @search.stub(:errors) { ['some error'] }
+        allow(@search).to receive(:errors).and_return(['some error'])
         expect(@search.valid?).to be false
       end
 
       it 'returns false when search bilder raises error' do
-        @search.stub(:solr_search_object).and_raise(Sunspot::UnrecognizedFieldError)
+        allow(@search).to receive(:solr_search_object).and_raise(Sunspot::UnrecognizedFieldError)
         expect(@search.valid?).to be false
       end
 

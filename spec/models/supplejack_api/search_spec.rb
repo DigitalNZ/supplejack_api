@@ -147,6 +147,53 @@ module SupplejackApi
       end
     end
 
+    describe '#valid?' do
+      before { @search.stub(:solr_search_object) { true } }
+
+      it 'returns true if no errors' do
+        @search.stub(:errors) { [] }
+        expect(@search.valid?).to be true
+      end
+
+      it 'returns false if errors exist' do
+        @search.stub(:errors) { ['some error'] }
+        expect(@search.valid?).to be false
+      end
+
+      it 'returns false when search bilder raises error' do
+        @search.stub(:solr_search_object).and_raise(Sunspot::UnrecognizedFieldError)
+        expect(@search.valid?).to be false
+      end
+
+      it 'sets warning if page vale is greater than 10000' do
+        @search.options[:page] = 100_001
+        @search.valid?
+
+        expect(@search.warnings).to include 'The page parameter can not exceed 100000'
+      end
+
+      it 'sets warning if per_page vale is greater than 100' do
+        @search.options[:per_page] = 101
+        @search.valid?
+
+        expect(@search.warnings).to include 'The per_page parameter can not exceed 100'
+      end
+
+      it 'sets warning if facets_per_page vale is greater than 350' do
+        @search.options[:facets_per_page] = 351
+        @search.valid?
+
+        expect(@search.warnings).to include 'The facets_per_page parameter can not exceed 350'
+      end
+
+      it 'sets warning if facets_page vale is greater than 5000' do
+        @search.options[:facets_page] = 5001
+        @search.valid?
+
+        expect(@search.warnings).to include 'The facets_page parameter can not exceed 5000'
+      end
+    end
+
     describe '#solr_search_object' do
       it 'memoizes the solr search object' do
         sunspot_mock = double(:solr).as_null_object

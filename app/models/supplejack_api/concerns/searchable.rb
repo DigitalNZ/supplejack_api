@@ -250,7 +250,6 @@ module SupplejackApi::Concerns::Searchable
       offset.negative? ? 0 : offset
     end
 
-    # [FIXME] The error is reaised from here
     def valid?
       self.errors ||= []
       self.warnings ||= []
@@ -260,7 +259,6 @@ module SupplejackApi::Concerns::Searchable
           self.warnings << "The #{attribute} parameter can not exceed #{max_value}"
         end
       end
-
 
       # This error comes from search_builder method.
       # If i am to handle it there i will have to modify all the methods

@@ -107,55 +107,29 @@ module SupplejackApi
     end
 
     describe 'GET "link_check_records"' do
-      let(:records) { [ double(:record, source_url: 'http://1'), 
-                        double(:record, source_url: 'http://2'), 
-                        double(:record, source_url: 'http://3'), 
-                        double(:record, source_url: 'http://4')] }
+      let(:records) { [ double(:record, landing_url: 'http://1'), 
+                        double(:record, landing_url: 'http://2'), 
+                        double(:record, landing_url: 'http://3'), 
+                        double(:record, landing_url: 'http://4')] }
 
-      let(:source) { FactoryGirl.build(:source) }
+      let(:source) { FactoryGirl.build(:source, source_id: 'source_name') }
 
       before do
-        allow(controller).to receive(:first_two_records).with(anything,:oldest) {records[0..1]}
-        allow(controller).to receive(:first_two_records).with(anything,:latest) {records[2..3]}
         allow(Source).to receive(:find) { source }
+        allow(source).to receive(:random_records) { records }
+      end
+
+      it "should call the random records methid for source with 4" do
+        expect(source).to receive(:random_records).with(4)
+
+        get :link_check_records, id: source.id
       end
 
       it "should asign the oldest two records by syndication_date" do
-        expect(controller).to receive(:first_two_records).with(source.source_id,:oldest) {records[0..1]}
         get :link_check_records, id: source.id
-        expect(assigns(:records)).to include('http://1', 'http://2')
-      end
 
-      it "should asign the latest two records by syndication_date" do
-        expect(controller).to receive(:first_two_records).with(source.source_id,:latest) {records[2..3]}
-        get :link_check_records, id: source.id
-        expect(assigns(:records)).to include('http://3', 'http://4')
-      end
-    end
-
-    describe "#first_two_records" do
-      let(:asc_relation) {double(:asc_relation)} 
-      let(:sorted_relation) {double(:sorted_relation)} 
-
-      let(:records) { [ double(:record, source_url: 'http://1'), 
-                        double(:record, source_url: 'http://2'), 
-                        double(:record, source_url: 'http://3'), 
-                        double(:record, source_url: 'http://4')] }
-
-      before do
-        expect(Record).to receive(:where).with({"fragments.source_id" => "tapuhi", :status => 'active'}) { asc_relation }
-        expect(sorted_relation).to receive(:limit).with(2) { records[0..1] }
-      end
-
-      it "should get the oldest two records by syndication_date" do
-        expect(asc_relation).to receive(:sort).with("fragments.syndication_date" => 1) { sorted_relation }
-        expect(controller.send(:first_two_records, 'tapuhi', :oldest)).to eq (records[0..1])
-      end
-
-      it "should get the latest two records by syndication_date" do
-        expect(asc_relation).to receive(:sort).with("fragments.syndication_date" => -1) { sorted_relation }
-        expect(controller.send(:first_two_records, 'tapuhi', :latest)).to eq (records[0..1])
-      end
+        expect(response.body).to eq "[\"http://1\",\"http://2\",\"http://3\",\"http://4\"]"
+      end      
     end
   end
 end

@@ -7,6 +7,7 @@ module SupplejackApi::Concerns::UserSet
 
     belongs_to :user, class_name: 'SupplejackApi::User'
     belongs_to :record, class_name: 'SupplejackApi::Record', inverse_of: nil
+    before_save :remove_nil_values
 
     embeds_many :set_items, class_name: 'SupplejackApi::SetItem' do
       def find_by_record_id(record_id)
@@ -95,6 +96,30 @@ module SupplejackApi::Concerns::UserSet
     def update_attributes_and_embedded(new_attributes = {}, user = nil)
       new_attributes = new_attributes.try(:symbolize_keys) || {}
 
+      update_set_items(new_attributes)
+      update_featured_set(new_attributes, user)
+
+      self.attributes = new_attributes
+
+      save
+    end
+
+    def remove_nil_values
+      self.description = '' if description.nil?
+      self.approved = false if approved.nil?
+    end
+
+    def update_featured_set(new_attributes, user)
+      if new_attributes.key?(:featured)
+        featured_value = new_attributes.delete(:featured)
+        if user.try(:can_change_featured_sets?)
+          self.featured = featured_value
+          self.featured_at = Time.now if featured_changed?
+        end
+      end
+    end
+
+    def update_set_items(new_attributes)
       if set_items = new_attributes.delete(:records)
         if set_items.is_a? Array
           begin
@@ -112,17 +137,6 @@ module SupplejackApi::Concerns::UserSet
           end
         end
       end
-
-      if new_attributes.key?(:featured)
-        featured_value = new_attributes.delete(:featured)
-        if user.try(:can_change_featured_sets?)
-          self.featured = featured_value
-          self.featured_at = Time.now if featured_changed?
-        end
-      end
-
-      self.attributes = new_attributes
-      save
     end
 
     def calculate_count

@@ -261,7 +261,12 @@ module SupplejackApi::Concerns::Searchable
         end
       end
 
-      solr_search_object
+      begin
+        solr_search_object
+      rescue Sunspot::UnrecognizedFieldError => e
+        errors << e.message
+      end
+
       self.errors.empty?
     end
 

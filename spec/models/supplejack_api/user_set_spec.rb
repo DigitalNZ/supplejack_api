@@ -11,7 +11,6 @@ module SupplejackApi
   describe UserSet do
 
     let(:user_set) { FactoryGirl.build(:user_set)}
-
     before(:each) do
       allow(user_set).to receive(:update_record)
       allow(user_set).to receive(:reindex_items)
@@ -254,7 +253,7 @@ module SupplejackApi
 
       it "ignores invalid set items but still saves the set" do
         user_set.update_attributes_and_embedded(records: [{"record_id" => "13", "position" => "1"}, {"record_id" => "shtig", "position" => "2"}])
-        # user_set.reload
+        user_set.reload
         expect(user_set.set_items.size).to eq 1
         expect(user_set.set_items.first.record_id).to eq 13
         expect(user_set.set_items.first.position).to eq 1
@@ -337,6 +336,20 @@ module SupplejackApi
 
       it "raises a error when then records array format is not correct" do
         expect { user_set.update_attributes_and_embedded(records: [1,2]) }.to raise_error(UserSet::WrongRecordsFormat)
+      end
+
+      it "overrides nil value for description" do
+        user_set.save
+        user_set.update_attributes_and_embedded(description: nil)
+        user_set.reload
+        expect(user_set.description).to eq ''
+      end
+
+      it "overrides nil value for description" do
+        user_set.save
+        user_set.update_attributes_and_embedded(approved: nil)
+        user_set.reload
+        expect(user_set.approved).to eq false
       end
     end
 

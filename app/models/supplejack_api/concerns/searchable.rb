@@ -260,7 +260,15 @@ module SupplejackApi::Concerns::Searchable
         end
       end
 
-      solr_search_object
+      # This error comes from search_builder method.
+      # If i am to handle it there i will have to modify all the methods
+      # between solr_search_object and search builder. So handling it here
+      begin
+        solr_search_object
+      rescue Sunspot::UnrecognizedFieldError => e
+        errors << e.message
+      end
+
       self.errors.empty?
     end
 

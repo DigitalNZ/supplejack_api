@@ -11,7 +11,8 @@ module StoriesApi
               category: :category,
               image_url: :large_thumbnail_url,
               tags: :tag,
-              description: :description
+              description: :description,
+              content_partner: :content_partner
             }.freeze
 
             def call(block)

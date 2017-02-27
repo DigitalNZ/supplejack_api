@@ -34,6 +34,7 @@ module SupplejackApi
 
     factory :record_fragment, class: SupplejackApi::ApiRecord::RecordFragment do
       title           'title'
+      content_partner  ['content partner']
       source_id       'source_name'
       priority        0
       name            'John Doe'

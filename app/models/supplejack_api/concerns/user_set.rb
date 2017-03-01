@@ -95,13 +95,22 @@ module SupplejackApi::Concerns::UserSet
     #
     def update_attributes_and_embedded(new_attributes = {}, user = nil)
       new_attributes = new_attributes.try(:symbolize_keys) || {}
+      Rails.logger.info "SET ISSUE: new_attributes #{new_attributes}"
 
       update_set_items(new_attributes)
       update_featured_set(new_attributes, user)
 
       self.attributes = new_attributes
 
-      save
+      Rails.logger.info "SET ISSUE: new_attributes #{self.attributes}"
+
+      if self.valid?
+        Rails.logger.info "SET ISSUE: valid"
+        save
+      else
+        Rails.logger.info "SET ISSUE: error #{self.errors.messages}"
+        false
+      end
     end
 
     def remove_nil_values

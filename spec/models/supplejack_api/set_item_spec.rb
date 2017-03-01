@@ -58,6 +58,17 @@ module SupplejackApi
         expect(set_item).to receive(:set_position)
         set_item.save
       end
+
+       it "updates the user_set updated at field when an item is updated and saved" do
+        old_time = user_set.updated_at
+        set_item.position = 2
+        set_item.save!
+
+        expect(user_set.updated_at).to_not eq old_time
+      end
+
+
+
     end
 
     it "delegates record fields to the :record object" do

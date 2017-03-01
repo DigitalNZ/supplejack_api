@@ -14,7 +14,8 @@ module SupplejackApi
 
     attr_accessor :record
 
-    embedded_in :user_set, class_name: 'SupplejackApi::UserSet'
+    #  touch: true ensures that the parent user_set updates its updated_at field when the set_item is edited and saved.
+    embedded_in :user_set, class_name: 'SupplejackApi::UserSet', touch: true
 
     field :record_id,   type: Integer
     field :position,    type: Integer

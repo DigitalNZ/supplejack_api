@@ -124,7 +124,7 @@ module SupplejackApi
         @user_set = FactoryGirl.build(:user_set)
         allow(controller.current_user.user_sets).to receive(:build) { @user_set }
         create(:record, record_id: 12345)
-        allow(@user_set).to receive(:set_items).and_return(double(first: double(record_id: 12345)))
+        allow(@user_set).to receive(:set_items).and_return(double(first: double(record_id: 12345), empty?: false))
       end
 
       it "should build a new set with the params" do

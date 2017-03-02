@@ -102,7 +102,6 @@ module SupplejackApi::Concerns::UserSet
       update_featured_set(new_attributes, user)
 
       self.attributes = new_attributes
-      
       save
     end
 

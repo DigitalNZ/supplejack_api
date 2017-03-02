@@ -94,7 +94,6 @@ module SupplejackApi::Concerns::UserSet
     #
     def update_attributes_and_embedded(new_attributes = {}, user = nil)
       new_attributes = new_attributes.try(:symbolize_keys) || {}
-      Rails.logger.info "SET ISSUE: new_attributes #{new_attributes}"
 
       new_attributes[:description] = '' unless new_attributes[:description]
       new_attributes[:approved] = false unless new_attributes[:approved]
@@ -103,16 +102,8 @@ module SupplejackApi::Concerns::UserSet
       update_featured_set(new_attributes, user)
 
       self.attributes = new_attributes
-
-      Rails.logger.info "SET ISSUE: new_attributes #{self.attributes}"
-
-      if self.valid?
-        Rails.logger.info "SET ISSUE: valid"
-        save
-      else
-        Rails.logger.info "SET ISSUE: error #{self.errors.messages}"
-        false
-      end
+      
+      save
     end
 
     def update_featured_set(new_attributes, user)

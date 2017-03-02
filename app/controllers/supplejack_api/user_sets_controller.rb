@@ -57,10 +57,8 @@ module SupplejackApi
     def create
       @user_set = current_user.user_sets.build
       if @user_set.update_attributes_and_embedded(params[:set])
-        Rails.logger.info "SET ISSUE: success"
         render json: UserSetSerializer.new(@user_set, user: true)
       else
-        Rails.logger.info "SET ISSUE: failed"
         render json: { errors: @user_set.errors.to_hash }, status: :unprocessable_entity
       end
     end

@@ -7,7 +7,7 @@ module SupplejackApi::Concerns::UserSet
 
     belongs_to :user, class_name: 'SupplejackApi::User'
     belongs_to :record, class_name: 'SupplejackApi::Record', inverse_of: nil
-    before_save :remove_nil_values
+    # before_save :remove_nil_values
 
     embeds_many :set_items, class_name: 'SupplejackApi::SetItem' do
       def find_by_record_id(record_id)

@@ -7,7 +7,6 @@ module SupplejackApi::Concerns::UserSet
 
     belongs_to :user, class_name: 'SupplejackApi::User'
     belongs_to :record, class_name: 'SupplejackApi::Record', inverse_of: nil
-    # before_save :remove_nil_values
 
     embeds_many :set_items, class_name: 'SupplejackApi::SetItem' do
       def find_by_record_id(record_id)
@@ -97,6 +96,9 @@ module SupplejackApi::Concerns::UserSet
       new_attributes = new_attributes.try(:symbolize_keys) || {}
       Rails.logger.info "SET ISSUE: new_attributes #{new_attributes}"
 
+      new_attributes[:description] = '' unless new_attributes[:description]
+      new_attributes[:approved] = false unless new_attributes[:approved]
+
       update_set_items(new_attributes)
       update_featured_set(new_attributes, user)
 
@@ -111,11 +113,6 @@ module SupplejackApi::Concerns::UserSet
         Rails.logger.info "SET ISSUE: error #{self.errors.messages}"
         false
       end
-    end
-
-    def remove_nil_values
-      self.description = '' if description.nil?
-      self.approved = false if approved.nil?
     end
 
     def update_featured_set(new_attributes, user)

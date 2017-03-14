@@ -8,13 +8,13 @@ module StoriesApi
           it 'initializes a supplejack user' do
             story = Story.new(id: 'foobar', api_key: @user.authentication_token)
             
-            expect(story.user).to be_a SupplejackApi::User
+            expect(story.user).to eq @user
           end
         end
 
         describe '#get' do
           it 'returns 404 if the Story is not found' do
-            response = Story.new(id: 'foobar').get
+            response = Story.new(id: 'foobar', api_key: @user.authentication_token).get
 
             expect(response).to eq(
               status: 404,
@@ -34,6 +34,41 @@ module StoriesApi
 
             it 'returns a valid Story shape' do
               expect(::StoriesApi::V3::Schemas::Story.call(response[:payload]).success?).to eq(true)
+            end
+          end
+
+          context 'when story is private' do
+            let(:developer_restriction) { double(:developer_restriction, admin: false) }
+            let(:admin_restriction) { double(:admin_restriction, admin: true) }
+            let(:story_user) { create(:user, authentication_token: 'story_user_key', role: 'developer') }
+            let(:admin_user) { create(:user, authentication_token: 'admin_key', role: 'admin') }
+            let(:story) { create(:story, user: story_user, privacy: 'private') }
+
+
+            # RecordSchema is suppose to return the roles and confirm .admin? method
+            # So RecordSchema has to be stubed for this test
+            it 'returns error if the story dosent belong to the user' do
+              allow(RecordSchema).to receive(:roles) { {developer: developer_restriction} }
+              response = Story.new(id: story.id, api_key: @user.api_key).get
+
+              expect(response[:status]).to eq 401
+              expect(response[:exception][:message]).to eq "Story with provided Id #{story.id} is private and requires the creator's api_key"
+            end
+
+            it 'returns the story successfuly if the story belongs to the user' do
+              allow(RecordSchema).to receive(:roles) { {developer: developer_restriction} }
+              response = Story.new(id: story.id, api_key: story_user.api_key).get
+
+              expect(response[:status]).to eq 200
+              expect(response[:payload][:id]).to eq story.id.to_s
+            end
+
+            it 'returns the story successfuly if the user is an admin and story dosent belong to user' do
+              allow(RecordSchema).to receive(:roles) { {admin: admin_restriction} }
+              response = Story.new(id: story.id, api_key: admin_user.api_key).get
+
+              expect(response[:status]).to eq 200
+              expect(response[:payload][:id]).to eq story.id.to_s
             end
           end
         end

@@ -20,18 +20,16 @@ module StoriesApi
 
         def get
           story = SupplejackApi::UserSet.custom_find(params[:id])
-
-
-          if story.privacy == 'private'
-            if params[:user_key].nil?
-              return create_error('PrivateStoryRequiresUserKey', id: params[:id])
-            else
-              # todo
-            end
-          end
+          user = current_user(params)
 
           return create_error('StoryNotFound',
                               id: params[:id]) unless story.present?
+
+          if story.privacy == 'private'
+            unless user.user_sets.include?(story) || user.admin?
+              return create_error('PrivateStoryNotAuthorised', id: params[:id])
+            end
+          end
 
           create_response(status: 200, payload: ::StoriesApi::V3::Presenters::Story.new.call(story))
         end

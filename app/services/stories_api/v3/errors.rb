@@ -30,9 +30,9 @@ module StoriesApi
         end
       end
 
-      class PrivateStoryRequiresUserKey < Base
+      class PrivateStoryNotAuthorised < Base
         def initialize(id: nil)
-          super(401, "Story with provided Id #{id} is private and requires the right api key")
+          super(401, "Story with provided Id #{id} is private and requires the creator's api_key")
         end
       end
 

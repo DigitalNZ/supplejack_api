@@ -12,15 +12,15 @@ module StoriesApi
       class Story
         include Helpers
 
-        attr_reader :params, :errors
+        attr_reader :params, :errors, :user
 
         def initialize(params)
           @params = params
+          @user = current_user(params)
         end
 
         def get
           story = SupplejackApi::UserSet.custom_find(params[:id])
-          user = current_user(params)
 
           return create_error('StoryNotFound',
                               id: params[:id]) unless story.present?
@@ -35,10 +35,12 @@ module StoriesApi
         end
 
         def patch
-          story = SupplejackApi::UserSet.custom_find(params[:id])
-          merge_patch = PerformMergePatch.new(::StoriesApi::V3::Schemas::Story, ::StoriesApi::V3::Presenters::Story.new)
+          story = user.user_sets.custom_find(params[:id])
+
           return create_error('StoryNotFound',
                               id: params[:id]) unless story.present?
+
+          merge_patch = PerformMergePatch.new(::StoriesApi::V3::Schemas::Story, ::StoriesApi::V3::Presenters::Story.new)
 
           valid = merge_patch.call(story, params[:story])
           return create_error('SchemaValidationError',
@@ -50,7 +52,7 @@ module StoriesApi
         end
 
         def delete
-          story = SupplejackApi::UserSet.custom_find(params[:id])
+          story = user.user_sets.custom_find(params[:id])
 
           return create_error('StoryNotFound',
                               id: params[:id]) unless story.present?

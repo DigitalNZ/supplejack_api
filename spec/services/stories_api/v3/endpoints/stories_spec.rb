@@ -3,9 +3,19 @@ module StoriesApi
   module V3
     module Endpoints
       RSpec.describe Stories do
+        describe '#new' do
+          let(:user) { create(:user) }
+
+          it 'initializes a user from the api_key passed' do
+            stories = Stories.new(api_key: user.api_key)
+
+            expect(stories.user).to eq user
+          end
+        end
+
         describe '#get' do
           it 'returns 404 if the provided user id does not exist' do
-            response = Stories.new(user_id: '1231892312hj3k12j3').get
+            response = Stories.new(api_key: '1231892312hj3k12j3').get
 
             expect(response).to eq(
               status: 404,
@@ -16,7 +26,7 @@ module StoriesApi
           end
 
           context 'successful request' do
-            let(:response) { Stories.new(user_id: @user.api_key).get }
+            let(:response) { Stories.new(api_key: @user.api_key).get }
             before do
               # So we have two users, because a story creates a user
               create(:story)

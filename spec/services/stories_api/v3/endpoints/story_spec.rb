@@ -52,7 +52,7 @@ module StoriesApi
               response = Story.new(id: story.id, api_key: @user.api_key).get
 
               expect(response[:status]).to eq 401
-              expect(response[:exception][:message]).to eq "Story with provided Id #{story.id} is private and requires the creator's api_key"
+              expect(response[:exception][:message]).to eq "Story with provided Id #{story.id} is private story and requires the creator's api_key"
             end
 
             it 'returns the story successfuly if the story belongs to the user' do

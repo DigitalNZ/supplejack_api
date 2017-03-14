@@ -6,12 +6,12 @@ module SupplejackApi
     before_action :authenticate_admin!, only: [:admin_index]
 
     def index
-      params[:user_id] = params[:api_key]
       render_response(:stories)
     end
 
     def admin_index
       params[:slim] = true
+      params[:api_key] = params[:user_id]
       render_response(:stories)
     end
 

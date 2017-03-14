@@ -26,7 +26,7 @@ module StoriesApi
                               id: params[:id]) unless story.present?
 
           if story.privacy == 'private'
-            unless user.user_sets.include?(story) || user.admin?
+            unless story.user == user || user.admin?
               return create_error('PrivateStoryNotAuthorised', id: params[:id])
             end
           end

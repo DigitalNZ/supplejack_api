@@ -2,6 +2,16 @@ module StoriesApi
   module V3
     module Endpoints
       RSpec.describe Story do
+        before { @user = FactoryGirl.create(:user, authentication_token: 'apikey', role: 'developer') }
+
+        describe '#new' do
+          it 'initializes a supplejack user' do
+            story = Story.new(id: 'foobar', api_key: @user.authentication_token)
+            
+            expect(story.user).to be_a SupplejackApi::User
+          end
+        end
+
         describe '#get' do
           it 'returns 404 if the Story is not found' do
             response = Story.new(id: 'foobar').get
@@ -30,7 +40,7 @@ module StoriesApi
 
         describe '#delete' do
           it 'returns 404 if the Story is not found' do
-            response = Story.new(id: 'foobar').delete
+            response = Story.new(id: 'foobar', api_key: @user.authentication_token).delete
 
             expect(response).to eq(
               status: 404,
@@ -41,8 +51,8 @@ module StoriesApi
           end
 
           context 'succesful request' do
-            let(:story) { create(:story) }
-            let(:response) { Story.new(id: story.id).delete }
+            let(:story) { create(:story, user: @user) }
+            let(:response) { Story.new(id: story.id, api_key: @user.authentication_token).delete }
 
             it 'returns a 204 status code' do
               expect(response[:status]).to eq(204)
@@ -63,8 +73,8 @@ module StoriesApi
         end
 
         describe '#patch' do
-          let(:story) { create(:story) }
-          let!(:response) { Story.new(id: story.id, story: patch).patch }
+          let(:story) { create(:story, user: @user) }
+          let!(:response) { Story.new(id: story.id, story: patch, api_key: @user.authentication_token).patch }
           let(:patch) do
             {
               description: 'foobar',
@@ -73,7 +83,7 @@ module StoriesApi
           end
 
           it 'returns 404 if the Story is not found' do
-            response = Story.new(id: 'foobar').patch
+            response = Story.new(id: 'foobar', api_key: @user.authentication_token).patch
 
             expect(response).to eq(
               status: 404,

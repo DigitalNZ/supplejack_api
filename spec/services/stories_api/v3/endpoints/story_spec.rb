@@ -6,7 +6,7 @@ module StoriesApi
 
         describe '#new' do
           it 'initializes a supplejack user' do
-            story = Story.new(id: 'foobar', api_key: @user.authentication_token)
+            story = Story.new(id: 'foobar', user_key: @user.authentication_token)
             
             expect(story.user).to eq @user
           end
@@ -14,7 +14,7 @@ module StoriesApi
 
         describe '#get' do
           it 'returns 404 if the Story is not found' do
-            response = Story.new(id: 'foobar', api_key: @user.authentication_token).get
+            response = Story.new(id: 'foobar', user_key: @user.authentication_token).get
 
             expect(response).to eq(
               status: 404,
@@ -49,15 +49,15 @@ module StoriesApi
             # So RecordSchema has to be stubed for this test
             it 'returns error if the story dosent belong to the user' do
               allow(RecordSchema).to receive(:roles) { {developer: developer_restriction} }
-              response = Story.new(id: story.id, api_key: @user.api_key).get
+              response = Story.new(id: story.id, user_key: @user.api_key).get
 
               expect(response[:status]).to eq 401
-              expect(response[:exception][:message]).to eq "Story with provided Id #{story.id} is private story and requires the creator's api_key"
+              expect(response[:exception][:message]).to eq "Story with provided Id #{story.id} is private story and requires the creator's key as user_key"
             end
 
             it 'returns the story successfuly if the story belongs to the user' do
               allow(RecordSchema).to receive(:roles) { {developer: developer_restriction} }
-              response = Story.new(id: story.id, api_key: story_user.api_key).get
+              response = Story.new(id: story.id, user_key: story_user.api_key).get
 
               expect(response[:status]).to eq 200
               expect(response[:payload][:id]).to eq story.id.to_s
@@ -65,7 +65,7 @@ module StoriesApi
 
             it 'returns the story successfuly if the user is an admin and story dosent belong to user' do
               allow(RecordSchema).to receive(:roles) { {admin: admin_restriction} }
-              response = Story.new(id: story.id, api_key: admin_user.api_key).get
+              response = Story.new(id: story.id, user_key: admin_user.api_key).get
 
               expect(response[:status]).to eq 200
               expect(response[:payload][:id]).to eq story.id.to_s
@@ -75,7 +75,7 @@ module StoriesApi
 
         describe '#delete' do
           it 'returns 404 if the Story is not found' do
-            response = Story.new(id: 'foobar', api_key: @user.authentication_token).delete
+            response = Story.new(id: 'foobar', user_key: @user.authentication_token).delete
 
             expect(response).to eq(
               status: 404,
@@ -87,7 +87,7 @@ module StoriesApi
 
           context 'succesful request' do
             let(:story) { create(:story, user: @user) }
-            let(:response) { Story.new(id: story.id, api_key: @user.authentication_token).delete }
+            let(:response) { Story.new(id: story.id, user_key: @user.authentication_token).delete }
 
             it 'returns a 204 status code' do
               expect(response[:status]).to eq(204)
@@ -109,7 +109,7 @@ module StoriesApi
 
         describe '#patch' do
           let(:story) { create(:story, user: @user) }
-          let!(:response) { Story.new(id: story.id, story: patch, api_key: @user.authentication_token).patch }
+          let!(:response) { Story.new(id: story.id, story: patch, user_key: @user.authentication_token).patch }
           let(:patch) do
             {
               description: 'foobar',
@@ -118,7 +118,7 @@ module StoriesApi
           end
 
           it 'returns 404 if the Story is not found' do
-            response = Story.new(id: 'foobar', api_key: @user.authentication_token).patch
+            response = Story.new(id: 'foobar', user_key: @user.authentication_token).patch
 
             expect(response).to eq(
               status: 404,

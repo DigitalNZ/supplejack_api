@@ -7,7 +7,7 @@ module StoriesApi
           let(:user) { create(:user) }
 
           it 'initializes a user from the api_key passed' do
-            stories = Stories.new(api_key: user.api_key)
+            stories = Stories.new(user_key: user.api_key)
 
             expect(stories.user).to eq user
           end
@@ -15,7 +15,7 @@ module StoriesApi
 
         describe '#get' do
           it 'returns 404 if the provided user id does not exist' do
-            response = Stories.new(api_key: '1231892312hj3k12j3').get
+            response = Stories.new(user_key: '1231892312hj3k12j3').get
 
             expect(response).to eq(
               status: 404,
@@ -26,7 +26,7 @@ module StoriesApi
           end
 
           context 'successful request' do
-            let(:response) { Stories.new(api_key: @user.api_key).get }
+            let(:response) { Stories.new(user_key: @user.api_key).get }
             before do
               # So we have two users, because a story creates a user
               create(:story)
@@ -61,7 +61,7 @@ module StoriesApi
 
           context 'succesful request' do
             let(:user) { create(:user) }
-            let!(:response) { Stories.new(story: { name: 'Story Name' }, api_key: user.api_key).post }
+            let!(:response) { Stories.new(story: { name: 'Story Name' }, user_key: user.api_key).post }
 
             before do
               user.reload

@@ -16,7 +16,7 @@ module SupplejackApi
             user.user_sets.create(attributes_for(:story))
           end
 
-          get :index, api_key: api_key
+          get :index, api_key: api_key, user_key: api_key
         end
 
         it 'returns a 200 http code' do
@@ -126,7 +126,7 @@ module SupplejackApi
 
     describe 'POST create' do
       context 'unsuccessful request - malformed post body' do
-        before { post :create, api_key: api_key, story: '1231231231' }
+        before { post :create, user_key: api_key, api_key: api_key, story: '1231231231' }
 
         it 'returns 400' do
           expect(response.status).to eq(400)
@@ -142,7 +142,7 @@ module SupplejackApi
         let(:story_name) { 'StoryNameGoesHere' }
 
         before do
-          post :create, api_key: api_key, story: { name: story_name }
+          post :create, user_key: api_key, api_key: api_key, story: { name: story_name }
         end
 
         it 'returns a 200 http code' do
@@ -164,7 +164,7 @@ module SupplejackApi
 
     describe 'DELETE create' do
       context 'unsuccessful request - story not found' do
-        before { delete :destroy, api_key: api_key, id: '1231231231' }
+        before { delete :destroy, api_key: api_key, user_key: api_key, id: '1231231231' }
 
         it 'returns 404' do
           expect(response.status).to eq(404)
@@ -179,7 +179,7 @@ module SupplejackApi
         before do
           story = user.user_sets.create(attributes_for(:story))
 
-          delete :destroy, api_key: api_key, id: story.id
+          delete :destroy, api_key: api_key, user_key: api_key, id: story.id
         end
 
         it 'returns a 204 http code' do
@@ -197,7 +197,7 @@ module SupplejackApi
 
     describe 'PATCH update' do
       context 'unsuccessful request - story not found' do
-        before { patch :update, api_key: api_key, id: '1231231231' }
+        before { patch :update, api_key: api_key, user_key: api_key, id: '1231231231' }
 
         it 'returns 404' do
           expect(response.status).to eq(404)
@@ -221,7 +221,7 @@ module SupplejackApi
         end
 
         before do
-          patch :update, api_key: api_key, id: story.id, story: story_patch
+          patch :update, api_key: api_key, user_key: api_key, id: story.id, story: story_patch
         end
 
         it 'returns a 200 http code' do

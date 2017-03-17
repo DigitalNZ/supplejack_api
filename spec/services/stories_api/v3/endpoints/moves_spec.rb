@@ -5,7 +5,7 @@ module StoriesApi
         describe '#post' do
           let(:story) { create(:story, number_of_story_items: 3) }
           let(:params) {{
-            api_key: story.user.api_key,
+            user_key: story.user.api_key,
             story_id: story.id.to_s,
             item_id: story.set_items.first.id.to_s,
             position: story.set_items.second.id.to_s,
@@ -26,7 +26,7 @@ module StoriesApi
 
           context 'valid request' do
             it 'moves the first story item to last' do
-              params = {api_key: story.user.api_key,
+              params = {user_key: story.user.api_key,
                         story_id: story.id.to_s,
                         item_id: story.set_items.first.id.to_s,
                         position: story.set_items.last.position}
@@ -61,7 +61,7 @@ module StoriesApi
 
             context 'story belongs to another user' do
               let(:user) { create(:user) }
-              let(:params) { super().merge(api_key: user.api_key) }
+              let(:params) { super().merge(user_key: user.api_key) }
 
               it 'returns http 404' do
                 expect(response[:status]).to eq(404)

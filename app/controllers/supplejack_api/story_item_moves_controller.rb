@@ -4,7 +4,13 @@ module SupplejackApi
     include Concerns::Stories
 
     def create
-      render_response(:moves)
+      unless params[:user_key]
+      render request.format.to_sym => {
+          errors: 'Mandatory parameter user_key missing'
+        }, status: 400
+      else
+        render_response(:moves)
+      end
     end
   end
 end

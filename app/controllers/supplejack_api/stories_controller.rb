@@ -4,6 +4,7 @@ module SupplejackApi
     include Concerns::Stories
 
     before_action :authenticate_admin!, only: [:admin_index]
+    before_action :user_key_check!, except: [:admin_index, :show]
 
     def index
       render_response(:stories)
@@ -14,7 +15,7 @@ module SupplejackApi
     # So in this nested route the user api_key is passed as the id.
     def admin_index
       params[:slim] = true
-      params[:api_key] = params[:user_id]
+      params[:user_key] = params[:user_id]
       render_response(:stories)
     end
 
@@ -33,6 +34,17 @@ module SupplejackApi
 
     def destroy
       render_response(:story)
+    end
+
+    private
+
+    def user_key_check!
+      unless params[:user_key]
+        render request.format.to_sym => {
+          errors: 'Mandatory parameter user_key missing'
+        }, status: 400 
+        return false
+      end
     end
   end
 end

@@ -20,7 +20,7 @@ module StoriesApi
         end
 
         def get
-          return create_error('UserNotFound', id: params[:api_key]) unless user.present?
+          return create_error('UserNotFound', id: params[:user_key]) unless user.present?
 
           if params[:slim].present? && params[:slim]
             presented_stories = user.user_sets.order_by(updated_at: 'desc').map do |user_set|

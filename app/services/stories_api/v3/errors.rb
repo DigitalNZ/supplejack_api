@@ -32,7 +32,7 @@ module StoriesApi
 
       class PrivateStoryNotAuthorised < Base
         def initialize(id: nil)
-          super(401, "Story with provided Id #{id} is private story and requires the creator's api_key")
+          super(401, "Story with provided Id #{id} is private story and requires the creator's key as user_key")
         end
       end
 

@@ -12,10 +12,11 @@ module StoriesApi
       class Story
         include Helpers
 
-        attr_reader :params, :errors
+        attr_reader :params, :errors, :user
 
         def initialize(params)
           @params = params
+          @user = current_user(params)
         end
 
         def get
@@ -24,20 +25,25 @@ module StoriesApi
           return create_error('StoryNotFound',
                               id: params[:id]) unless story.present?
 
+          if story.privacy == 'private'
+            return create_error('PrivateStoryNotAuthorised', id: params[:id]) unless user
+            unless story.user == user || user.admin?
+              return create_error('PrivateStoryNotAuthorised', id: params[:id])
+            end
+          end
+
           create_response(status: 200, payload: ::StoriesApi::V3::Presenters::Story.new.call(story))
         end
 
         def patch
-          Rails.logger.info 'Stories Issues'
-          story = SupplejackApi::UserSet.custom_find(params[:id])
-          Rails.logger.info "Stories Issues: story #{story}"
-          merge_patch = PerformMergePatch.new(::StoriesApi::V3::Schemas::Story, ::StoriesApi::V3::Presenters::Story.new)
+          story = user.user_sets.custom_find(params[:id])
+
           return create_error('StoryNotFound',
                               id: params[:id]) unless story.present?
 
+          merge_patch = PerformMergePatch.new(::StoriesApi::V3::Schemas::Story, ::StoriesApi::V3::Presenters::Story.new)
+
           valid = merge_patch.call(story, params[:story])
-          Rails.logger.info "Stories Issues valid #{valid}"
-          Rails.logger.info "Stories Issues: message #{merge_patch.validation_errors}" unless valid
           return create_error('SchemaValidationError',
                               errors:  merge_patch.validation_errors) unless valid
 
@@ -47,7 +53,7 @@ module StoriesApi
         end
 
         def delete
-          story = SupplejackApi::UserSet.custom_find(params[:id])
+          story = user.user_sets.custom_find(params[:id])
 
           return create_error('StoryNotFound',
                               id: params[:id]) unless story.present?

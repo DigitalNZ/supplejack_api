@@ -10,7 +10,7 @@ module StoriesApi
   module V3
     module Helpers
       def current_user(params)
-        @current_user ||= SupplejackApi::User.find_by_api_key(params[:api_key])
+        @current_user ||= SupplejackApi::User.find_by_api_key(params[:user_key])
       end
 
       def create_error(error = nil, options = {})

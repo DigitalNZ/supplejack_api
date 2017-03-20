@@ -30,6 +30,12 @@ module StoriesApi
         end
       end
 
+      class PrivateStoryNotAuthorised < Base
+        def initialize(id: nil)
+          super(401, "Story with provided Id #{id} is private story and requires the creator's key as user_key")
+        end
+      end
+
       class StoryItemNotFound < Base
         def initialize(item_id: nil, story_id: nil)
           super(404, "StoryItem with provided Id #{item_id} not found for Story with provided Story Id #{story_id}")

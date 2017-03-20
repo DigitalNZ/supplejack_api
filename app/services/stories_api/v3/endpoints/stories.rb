@@ -12,24 +12,22 @@ module StoriesApi
       class Stories
         include Helpers
 
-        attr_reader :params, :errors
+        attr_reader :params, :errors, :user
 
         def initialize(params)
           @params = params
+          @user = current_user(params)
         end
 
         def get
-          user = params[:user_id]
-          user_account = SupplejackApi::User.find_by_api_key(user)
-
-          return create_error('UserNotFound', id: user) unless user_account.present?
+          return create_error('UserNotFound', id: params[:user_key]) unless user.present?
 
           if params[:slim].present? && params[:slim]
-            presented_stories = user_account.user_sets.order_by(updated_at: 'desc').map do |user_set|
+            presented_stories = user.user_sets.order_by(updated_at: 'desc').map do |user_set|
               ::StoriesApi::V3::Presenters::Story.new.call(user_set, true)
             end
           else
-            presented_stories = user_account.user_sets.map(&::StoriesApi::V3::Presenters::Story)
+            presented_stories = user.user_sets.map(&::StoriesApi::V3::Presenters::Story)
           end
 
           create_response(status: 200, payload: presented_stories)
@@ -41,8 +39,7 @@ module StoriesApi
           return create_error('MandatoryParamMissing',
                               param: :name) unless story.is_a?(Hash) && story[:name].present?
 
-          story_name = params[:story][:name]
-          new_story = current_user(params).user_sets.create(name: story_name)
+          new_story = user.user_sets.create(name: story[:name])
 
           create_response(status: 200, payload: ::StoriesApi::V3::Presenters::Story.new.call(new_story))
         end

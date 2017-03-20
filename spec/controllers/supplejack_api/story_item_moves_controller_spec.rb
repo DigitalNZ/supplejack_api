@@ -19,7 +19,7 @@ module SupplejackApi
         let(:last_title) { ordered_items.last.content[:record][:title] }
 
         before do
-          post :create, {story_id: story.id, item_id: story.set_items.first.id, position: story.set_items.last.id, api_key: story.user.api_key}
+          post :create, {story_id: story.id, item_id: story.set_items.first.id, position: story.set_items.last.id, api_key: story.user.api_key, user_key: story.user.api_key}
         end
 
         it 'moves the block' do

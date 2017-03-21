@@ -18,7 +18,8 @@ module StoriesApi
           :featured,
           :approved,
           :tags,
-          :updated_at
+          :updated_at,
+          :cover_thumbnail
         ].freeze
 
         def call(story, slim = false)
@@ -29,7 +30,6 @@ module StoriesApi
           end
           result[:id] = story.id.to_s
           result[:number_of_items] = story.set_items.count
-          result[:cover_thumbnail] = first_suitable_image story
           if slim
             result[:record_ids] = story.set_items.sort_by(&:position).map { |x| { record_id: x.record_id } }
           else

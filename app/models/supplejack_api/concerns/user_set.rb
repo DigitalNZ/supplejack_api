@@ -36,6 +36,7 @@ module SupplejackApi::Concerns::UserSet
     field :approved,          type: Boolean,  default: false
     field :featured,          type: Boolean,  default: false
     field :featured_at,       type: DateTime
+    field :cover_thumbnail,   type: String
 
     scope :excluding_favorites, -> { where(:name.ne => 'Favorites') }
     scope :publicly_viewable,              -> { where(privacy: 'public') }

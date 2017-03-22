@@ -40,6 +40,8 @@ module StoriesApi
           item_params[:record_id] = item_params[:content][:id] if item_params[:content][:id]
 
           story_item = story.set_items.build(item_params)
+          story.cover_thumbnail = first_suitable_image(story) unless story.cover_thumbnail
+
           story.save!
 
           create_response(status: 200,

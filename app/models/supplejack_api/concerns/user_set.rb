@@ -24,19 +24,20 @@ module SupplejackApi::Concerns::UserSet
       end
     end
 
-    field :name,              type: String
-    field :description,       type: String,   default: ''
-    field :privacy,           type: String,   default: 'public'
-    field :copyright,         type: Integer,  default: 0
-    field :url,               type: String
-    field :priority,          type: Integer,  default: 0
-    field :count,             type: Integer,  default: 0
-    field :count_updated_at,  type: DateTime
-    field :tags,              type: Array,    default: []
-    field :approved,          type: Boolean,  default: false
-    field :featured,          type: Boolean,  default: false
-    field :featured_at,       type: DateTime
-    field :cover_thumbnail,   type: String
+    field :name,                type: String
+    field :description,         type: String,   default: ''
+    field :privacy,             type: String,   default: 'public'
+    field :copyright,           type: Integer,  default: 0
+    field :url,                 type: String
+    field :priority,            type: Integer,  default: 0
+    field :count,               type: Integer,  default: 0
+    field :count_updated_at,    type: DateTime
+    field :tags,                type: Array,    default: []
+    field :approved,            type: Boolean,  default: false
+    field :featured,            type: Boolean,  default: false
+    field :featured_at,         type: DateTime
+    field :cover_thumbnail,     type: String
+    field :user_selected_cover, type: Boolean,  default: false
 
     scope :excluding_favorites, -> { where(:name.ne => 'Favorites') }
     scope :publicly_viewable,              -> { where(privacy: 'public') }

@@ -37,6 +37,7 @@ module StoriesApi
         required(:tags).each(:str?)
         required(:number_of_items).filled(:int?, gteq?: 0)
         required(:contents).each(:valid_block?)
+        optional(:cover_thumbnail).each(:str?)
       end
     end
   end

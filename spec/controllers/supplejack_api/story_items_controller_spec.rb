@@ -62,7 +62,7 @@ module SupplejackApi
 
         it 'should return a Story Items' do
           response_item = JSON.parse(response.body).deep_symbolize_keys
-          first_item = ::StoriesApi::V3::Presenters::StoryItem.new.call(story.set_items.first)
+          first_item = ::StoriesApi::V3::Presenters::StoryItem.new.call(story.set_items.first, story)
 
           response_item.delete(:id)
           first_item.delete(:id)

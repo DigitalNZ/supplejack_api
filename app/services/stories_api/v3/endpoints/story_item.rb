@@ -22,7 +22,7 @@ module StoriesApi
         end
 
         def get
-          create_response(status: 200, payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(item))
+          create_response(status: 200, payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(item, @story))
         end
 
         def patch

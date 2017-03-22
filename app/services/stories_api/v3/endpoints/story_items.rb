@@ -21,7 +21,7 @@ module StoriesApi
         end
 
         def get
-          presented_story_items = @story.set_items.map(&::StoriesApi::V3::Presenters::StoryItem)
+          presented_story_items = @story.set_items.map {|i| StoriesApi::V3::Presenters::StoryItem.new.call(i, @story) }
 
           create_response(status: 200, payload: presented_story_items)
         end

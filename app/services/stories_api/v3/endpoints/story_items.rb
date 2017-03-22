@@ -37,12 +37,15 @@ module StoriesApi
 
           # FIXME: This is a temporary fix
           # Can be removed after user_sets is retired
-          item_params[:record_id] = item_params[:content][:id] if item_params[:content][:id]
+          if item_params[:content][:id]
+            item_params[:record_id] = item_params[:content][:id]
+            record = SupplejackApi::Record.custom_find(item_params[:record_id])
+            item_params[:content][:image_url] = record.large_thumbnail_url || record.thumbnail_url if record
+          end
 
           story_item = story.set_items.build(item_params)
-          story.save!
-
-          story.cover_thumbnail = first_suitable_image(story) unless story.cover_thumbnail
+          story.cover_thumbnail = story_item.content[:image_url] unless story.cover_thumbnail
+          
           story.save!
 
           create_response(status: 200,

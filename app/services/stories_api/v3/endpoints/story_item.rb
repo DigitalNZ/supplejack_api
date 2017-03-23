@@ -36,6 +36,11 @@ module StoriesApi
           return create_error('SchemaValidationError', errors: merge_patch.validation_errors) unless valid
 
           item.save
+
+          if params[:item][:meta]
+            story.update_attribute(:cover_thumbnail, item.content[:image_url]) if params[:item][:meta][:is_cover]
+          end
+
           create_response(status: 200, payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(item))
         end
 

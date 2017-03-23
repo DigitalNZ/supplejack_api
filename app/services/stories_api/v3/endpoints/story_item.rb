@@ -38,13 +38,19 @@ module StoriesApi
           item.save
 
           if params[:item][:meta]
-            story.update_attribute(:cover_thumbnail, item.content[:image_url]) if params[:item][:meta][:is_cover]
+            if params[:item][:meta][:is_cover]
+               story.update_attribute(:cover_thumbnail, item.content[:image_url])
+            else
+              story.update_attribute(:cover_thumbnail, nil) if story.cover_thumbnail == item.content[:image_url]
+            end
           end
 
           create_response(status: 200, payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(item))
         end
 
         def delete
+          story.update_attribute(:cover_thumbnail, nil) if story.cover_thumbnail == item.content[:image_url]
+          
           item.delete
 
           create_response(status: 204)

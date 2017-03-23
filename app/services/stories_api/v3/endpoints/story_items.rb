@@ -52,27 +52,6 @@ module StoriesApi
                           payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(story_item))
         end
 
-        # Not using this method now
-        def put
-          params[:items].each do |block|
-            validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(block)
-            return create_error('SchemaValidationError',
-                                errors: validator.messages(full: true)) unless validator.success?
-          end
-
-          @story.set_items.destroy
-
-          params[:items].each do |block|
-            story.set_items.build(block.deep_symbolize_keys)
-          end
-
-          story.save!
-
-          presented_story_items = @story.set_items.map(&::StoriesApi::V3::Presenters::StoryItem)
-
-          create_response(status: 200, payload: presented_story_items)
-        end
-
         # Returns error if story and user were not initialised
         #
         # @author Eddie

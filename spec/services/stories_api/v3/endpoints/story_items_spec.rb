@@ -246,35 +246,6 @@ module StoriesApi
           end
         end
 
-        describe '#put' do
-          before do
-            @story = create(:story)
-            @user = @story.user
-
-            record = create(:record)
-            factory = create(:story_item, type: 'embed', sub_type: 'dnz',
-                                        content: { id: record.record_id},
-                                         meta: { metadata: 'Some Meta' })
-
-            @item = factory.attributes.symbolize_keys
-            @item.delete(:_id)
-          end
-
-          it 'should return the created dnz item' do
-            old_story_items = @story.set_items
-
-            response = StoryItems.new(story_id: @story.id,
-                                      api_key: @user.api_key,
-                                      items: [@item]).put
-
-            expect(response[:status]).to eq 200
-
-            response[:payload].each do |block|
-              block.delete(:id)
-              expect(@item[:meta]).to eq(block[:meta])
-            end
-          end
-        end
       end
     end
   end

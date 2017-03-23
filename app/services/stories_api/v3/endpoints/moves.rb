@@ -45,8 +45,11 @@ module StoriesApi
 
           updated_items.each(&:save!)
 
-          story.cover_thumbnail = first_suitable_image(story) unless story.user_selected_cover
-          story.save!
+          # This field was written to update cover_thumbnail for the story when
+          # items are sorted
+
+          # story.cover_thumbnail = first_suitable_image(story) unless story.user_selected_cover
+          # story.save!
 
           create_response(status: 200, payload: updated_items.map(&::StoriesApi::V3::Presenters::StoryItem))
         end

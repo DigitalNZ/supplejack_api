@@ -47,6 +47,7 @@ module StoriesApi
           end
 
           if story
+            # This will override the value of is_cover in database 
             result[:meta].merge!({ is_cover: result[:content][:image_url] == story.cover_thumbnail })
           end
 

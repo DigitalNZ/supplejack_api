@@ -53,6 +53,12 @@ module SupplejackApi
       end
     end
 
+    def user_key_check!
+      render request.format.to_sym => {
+        errors: 'Mandatory parameter user_key missing'
+      }, status: 400 unless params[:user_key]
+    end
+
     def find_user_set
       user_set_id = params[:user_set_id] || params[:id]
 

@@ -61,8 +61,8 @@ module StoriesApi
         # @author Eddie
         # @last_modified Eddie
         def find_user
-          user = SupplejackApi::User.find_by_api_key(params[:api_key])
-          @errors = create_error('UserNotFound', id: params[:api_key]) unless user
+          user = SupplejackApi::User.find_by_api_key(params[:user_key])
+          @errors = create_error('UserNotFound', id: params[:user_key]) unless user
           user
         end
 

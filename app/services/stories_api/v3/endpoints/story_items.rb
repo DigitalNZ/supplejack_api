@@ -16,7 +16,7 @@ module StoriesApi
 
         def initialize(params)
           @params = params
-          @user = SupplejackApi::User.find_by_api_key(params[:api_key])
+          @user = SupplejackApi::User.find_by_api_key(params[:user_key])
           @story = @user ? @user.user_sets.find_by_id(params[:story_id]) : nil
         end
 

@@ -12,21 +12,28 @@ module StoriesApi
       class StoryItems
         include Helpers
 
-        attr_reader :params, :user, :story
+        attr_reader :params, :user, :story, :errors
 
         def initialize(params)
           @params = params
           @user = SupplejackApi::User.find_by_api_key(params[:user_key])
-          @story = @user ? @user.user_sets.find_by_id(params[:story_id]) : nil
+          if @user
+            @story = @user.user_sets.find_by_id(params[:story_id])
+            @errors = create_error('StoryNotFound', id: params[:story_id]) unless @story.present?
+          else
+            @errors =  create_error('UserNotFound', id: params[:user_key]) unless @user
+          end
         end
 
         def get
+          return @errors if @errors
           presented_story_items = @story.set_items.map {|i| StoriesApi::V3::Presenters::StoryItem.new.call(i, @story) }
 
           create_response(status: 200, payload: presented_story_items)
         end
 
         def post
+          return @errors if @errors
           return create_error('MandatoryParamMissing', param: :item) unless params[:item]
 
           validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(params[:item])
@@ -57,10 +64,10 @@ module StoriesApi
         # @author Eddie
         # @last_modified Eddie
         # @return [Hash] the error
-        def errors
-          return create_error('UserNotFound', id: params[:api_key]) unless user.present?
-          return create_error('StoryNotFound', id: params[:story_id]) unless story.present?
-        end
+        # def errors
+        #   return create_error('UserNotFound', id: params[:api_key]) unless user.present?
+        #   return create_error('StoryNotFound', id: params[:story_id]) unless story.present?
+        # end
       end
     end
   end

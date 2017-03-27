@@ -22,10 +22,12 @@ module StoriesApi
         end
 
         def get
+          return @errors if @errors
           create_response(status: 200, payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(item, @story))
         end
 
         def patch
+          return @errors if @errors
           return create_error('MandatoryParamMissing', param: :item) unless params[:item]
 
           merge_patch = PerformMergePatch.new(::StoriesApi::V3::Schemas::StoryItem::BlockValidator.new,
@@ -49,6 +51,7 @@ module StoriesApi
         end
 
         def delete
+          return @errors if @errors
           story.update_attribute(:cover_thumbnail, nil) if story.cover_thumbnail == item.content[:image_url]
           
           item.delete

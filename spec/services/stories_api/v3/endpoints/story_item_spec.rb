@@ -13,7 +13,7 @@ module StoriesApi
             # passing id as a string as the id will be a string in the
             # request where as set_item.id is a BSON
             story_item = StoryItem.new(id: @story.set_items.first.id.to_s,
-                                       story_id: @story.id, api_key: @user.api_key)
+                                       story_id: @story.id, user_key: @user.api_key)
             expect(story_item.user).to eq @user
             expect(story_item.story).to eq @story
             expect(story_item.item).to eq @story.set_items.first
@@ -22,7 +22,7 @@ module StoriesApi
           context '#find_user' do
             it 'should find a user by api key' do
               story_item = StoryItem.new(id: @story.set_items.first.id.to_s,
-                                         story_id: @story.id, api_key: @user.api_key)
+                                         story_id: @story.id, user_key: @user.api_key)
 
               expect(SupplejackApi::User).to receive(:find_by_api_key).with(@user.api_key)
               story_item.find_user
@@ -32,7 +32,7 @@ module StoriesApi
           context '#find_story' do
             it 'should find a story by id' do
               story_item = StoryItem.new(id: @story.set_items.first.id.to_s,
-                                         story_id: @story.id, api_key: @user.api_key)
+                                         story_id: @story.id, user_key: @user.api_key)
 
               expect(story_item.find_story).to eq @story
             end
@@ -41,7 +41,7 @@ module StoriesApi
           context '#find_item' do
             it 'should find a set item by id' do
               story_item = StoryItem.new(id: @story.set_items.first.id.to_s,
-                                         story_id: @story.id, api_key: @user.api_key)
+                                         story_id: @story.id, user_key: @user.api_key)
 
               expect(story_item.find_item).to eq(@story.set_items.first)
             end
@@ -50,7 +50,7 @@ module StoriesApi
           context 'errors asfter initialize' do
             it 'should return UserNotFound error when user id dosent exist' do
               story_item = StoryItem.new(id: @story.set_items.first.id.to_s,
-                                         story_id: @story.id, api_key: 'fake')
+                                         story_id: @story.id, user_key: 'fake')
 
               expect(story_item.errors).to eq(
                 status: 404,
@@ -62,7 +62,7 @@ module StoriesApi
 
             it 'should return StoryNotFound error when story id dosent exist' do
               story_item = StoryItem.new(id: @story.set_items.first.id.to_s,
-                                         story_id: 'fake', api_key: @user.api_key)
+                                         story_id: 'fake', user_key: @user.api_key)
 
               expect(story_item.errors).to eq(
                 status: 404,
@@ -75,7 +75,7 @@ module StoriesApi
             it 'should return StoryItemNotFound error when story item id dosent exist' do
               story_item = StoryItem.new(id: 'fake',
                                          story_id: @story.id,
-                                         api_key: @user.api_key)
+                                         user_key: @user.api_key)
 
               expect(story_item.errors).to eq(
                 status: 404,
@@ -93,7 +93,7 @@ module StoriesApi
             item_count = @story.set_items.count
             StoryItem.new(id: item_to_delete.to_s,
                           story_id: @story.id,
-                          api_key: @user.api_key).delete
+                          user_key: @user.api_key).delete
 
             @story.reload
 
@@ -104,7 +104,7 @@ module StoriesApi
           it 'should return delete success code' do
             response = StoryItem.new(id: @story.set_items.first.id.to_s,
                                      story_id: @story.id,
-                                     api_key: @user.api_key).delete
+                                     user_key: @user.api_key).delete
 
             expect(response).to eq(
               status: 204
@@ -121,7 +121,7 @@ module StoriesApi
             item.delete(:_id)
 
             response = StoryItem.new(id: @story.set_items.first.id.to_s,
-                                       story_id: @story.id, api_key: @user.api_key,
+                                       story_id: @story.id, user_key: @user.api_key,
                                        item: item).patch
 
             expect(response).to eq(
@@ -136,7 +136,7 @@ module StoriesApi
             item.delete(:_id)
 
             response = StoryItem.new(id: @story.set_items.first.id.to_s,
-                                       story_id: @story.id, api_key: @user.api_key,
+                                       story_id: @story.id, user_key: @user.api_key,
                                        item: item).patch
 
             expect(response).to eq(
@@ -152,7 +152,7 @@ module StoriesApi
             item.delete(:_id)
 
             response = StoryItem.new(id: @story.set_items.first.id.to_s,
-                                       story_id: @story.id, api_key: @user.api_key,
+                                       story_id: @story.id, user_key: @user.api_key,
                                        item: item).patch
 
             result = response[:payload]

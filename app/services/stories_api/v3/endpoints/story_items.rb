@@ -21,13 +21,13 @@ module StoriesApi
             @story = @user.user_sets.find_by_id(params[:story_id])
             @errors = create_error('StoryNotFound', id: params[:story_id]) unless @story.present?
           else
-            @errors =  create_error('UserNotFound', id: params[:user_key]) unless @user
+            @errors = create_error('UserNotFound', id: params[:user_key]) unless @user
           end
         end
 
         def get
           return @errors if @errors
-          presented_story_items = @story.set_items.map {|i| StoriesApi::V3::Presenters::StoryItem.new.call(i, @story) }
+          presented_story_items = @story.set_items.map { |i| StoriesApi::V3::Presenters::StoryItem.new.call(i, @story) }
 
           create_response(status: 200, payload: presented_story_items)
         end
@@ -37,8 +37,7 @@ module StoriesApi
           return create_error('MandatoryParamMissing', param: :item) unless params[:item]
 
           validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(params[:item])
-          return create_error('SchemaValidationError',
-                              errors: validator.messages(full: true)) unless validator.success?
+          return create_error('SchemaValidationError', errors: validator.messages(full: true)) unless validator.success?
 
           item_params = params[:item].deep_symbolize_keys
 
@@ -52,7 +51,7 @@ module StoriesApi
 
           story_item = story.set_items.build(item_params)
           story.cover_thumbnail = story_item.content[:image_url] unless story.cover_thumbnail
-          
+
           story.save!
 
           create_response(status: 200,

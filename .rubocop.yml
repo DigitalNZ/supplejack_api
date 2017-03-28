@@ -13,12 +13,20 @@ AllCops:
   DisplayStyleGuide: true
   DisplayCopNames: true
   TargetRubyVersion: 2.3
+Style/MultilineIfModifier:
+  Enabled: false  
+Rails/DynamicFindBy:
+  Enabled: false
 Style/ExtraSpacing:
+  Enabled: false
+Metrics/BlockLength:
   Enabled: false
 Metrics/LineLength:
   Max: 120
 Metrics/MethodLength:
   Max: 25
+Rails/SkipsModelValidations:
+  Enabled: false  
 
 Style/IndentHash:
   EnforcedStyle: consistent

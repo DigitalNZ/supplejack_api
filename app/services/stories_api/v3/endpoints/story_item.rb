@@ -41,9 +41,9 @@ module StoriesApi
 
           if params[:item][:meta]
             if params[:item][:meta][:is_cover]
-               story.update_attribute(:cover_thumbnail, item.content[:image_url])
-            else
-              story.update_attribute(:cover_thumbnail, nil) if story.cover_thumbnail == item.content[:image_url]
+              story.update_attribute(:cover_thumbnail, item.content[:image_url])
+            elsif story.cover_thumbnail == item.content[:image_url]
+              story.update_attribute(:cover_thumbnail, nil)
             end
           end
 
@@ -53,7 +53,7 @@ module StoriesApi
         def delete
           return @errors if @errors
           story.update_attribute(:cover_thumbnail, nil) if story.cover_thumbnail == item.content[:image_url]
-          
+
           item.delete
 
           create_response(status: 204)
@@ -87,9 +87,7 @@ module StoriesApi
         def find_item
           return unless @story
           item = @story.set_items.find_by_id(params[:id])
-          @errors = create_error('StoryItemNotFound',
-                                 item_id: params[:id],
-                                 story_id: params[:story_id]) unless item
+          @errors = create_error('StoryItemNotFound', item_id: params[:id], story_id: params[:story_id]) unless item
           item
         end
       end

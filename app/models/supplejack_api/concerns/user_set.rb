@@ -37,7 +37,7 @@ module SupplejackApi::Concerns::UserSet
     field :featured,            type: Boolean,  default: false
     field :featured_at,         type: DateTime
     field :cover_thumbnail,     type: String
-    
+
     # This field was created for sorting items to know that
     # the cover_thumbnail was selected by the user so dont change it.
     # We have decided not to od this for now

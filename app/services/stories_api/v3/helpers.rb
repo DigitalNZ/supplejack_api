@@ -32,7 +32,7 @@ module StoriesApi
         end
 
         item_with_image.content[:image_url] unless item_with_image.nil?
-      end      
+      end
     end
   end
 end

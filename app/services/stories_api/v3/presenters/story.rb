@@ -28,16 +28,18 @@ module StoriesApi
           TOP_LEVEL_FIELDS.each do |field|
             result[field] = story.send(field)
           end
-          
+
           result[:id] = story.id.to_s
           result[:number_of_items] = story.set_items.count
 
           if slim
             result[:record_ids] = story.set_items.sort_by(&:position).map { |x| { record_id: x.record_id } }
           else
-            result[:contents] = story.set_items.sort_by(&:position).map {|i| StoriesApi::V3::Presenters::StoryItem.new.call(i, story) }
+            result[:contents] = story.set_items.sort_by(&:position).map do |item|
+              StoriesApi::V3::Presenters::StoryItem.new.call(item, story)
+            end
           end
-          
+
           result
         end
 

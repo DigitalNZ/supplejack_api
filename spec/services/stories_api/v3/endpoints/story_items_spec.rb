@@ -243,9 +243,31 @@ module StoriesApi
                 expect(result[:content][:id]).to eq @item[:content][:id]
               end
             end
+
+            context 'setting cover thumbnail' do
+              let(:record) { create(:record_with_fragment) }
+
+              it 'updates the cover thumbnail if it dosent exist' do
+                @story.update_attribute(:cover_thumbnail, nil)
+                factory = create(:story_item, type: 'embed', sub_type: 'dnz',
+                             content: { id: record.record_id},
+                             meta: { metadata: 'Some Meta' })
+
+                item = factory.attributes.symbolize_keys
+
+                expect(@story.cover_thumbnail).to be_nil
+
+                StoryItems.new(story_id: @story.id,
+                               user_key: @user.api_key,
+                               item: item).post
+
+                @story.reload
+
+                expect(@story.cover_thumbnail).to eq record.large_thumbnail_url
+              end
+            end
           end
         end
-
       end
     end
   end

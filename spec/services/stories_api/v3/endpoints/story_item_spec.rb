@@ -88,7 +88,7 @@ module StoriesApi
         end
 
         describe '#delete' do
-          it 'should delete a set item from story' do
+          it 'deletes a set item from story' do
             item_to_delete = @story.set_items.first.id
             item_count = @story.set_items.count
             StoryItem.new(id: item_to_delete.to_s,
@@ -101,7 +101,17 @@ module StoriesApi
             expect(@story.set_items.find_by_id(item_to_delete)).to be nil
           end
 
-          it 'should return delete success code' do
+          it 'returns 404 when story dosent exist' do
+            response = StoryItem.new(id: @story.set_items.first.id.to_s,
+                                     story_id: 'madeupkey',
+                                     user_key: @user.api_key).delete
+
+            expect(response).to eq(
+              :status=>404, :exception=>{:message=>"Story with provided Id madeupkey not found"}
+            )
+          end
+
+          it 'returns 204 delete success code' do
             response = StoryItem.new(id: @story.set_items.first.id.to_s,
                                      story_id: @story.id,
                                      user_key: @user.api_key).delete
@@ -110,10 +120,20 @@ module StoriesApi
               status: 204
             )
           end
+
+          it 'updates the story cover_thumbanil as nil if the item has same image_url' do
+            expect(@story.cover_thumbnail).to be_truthy # ie not nil
+
+            @story.update_attribute(:cover_thumbnail, @story.set_items.first.content[:image_url])
+            StoryItem.new(id: @story.set_items.first.id.to_s, story_id: @story.id, user_key: @user.api_key).delete
+            @story.reload
+
+            expect(@story.cover_thumbnail).to be_nil
+          end
         end
 
         describe '#patch' do
-          it 'should fail with no content id error' do
+          it 'fails with no content id error' do
             item = create(:story_item, type: 'embed', sub_type: 'dnz', position: 1,
                           content: { title: 'Title', display_collection: 'Marama', value: 'bar',
                                      category: ['Te Papa'], image_url: 'url', tags: %w(foo bar)},
@@ -129,7 +149,7 @@ module StoriesApi
             )
           end
 
-          it 'should fail with content must be an intiger error' do
+          it 'fails with content must be an intiger error' do
             item = create(:story_item, type: 'embed', sub_type: 'dnz', position: 1,
                           content: { id: "zfkjg"},
                           meta: { size: 1, metadata: 'Some Meta' }).attributes.symbolize_keys
@@ -144,7 +164,7 @@ module StoriesApi
             )
           end
 
-          it 'should update given set item' do
+          it 'updates given set item' do
             record = create(:record)
             item = create(:story_item, type: 'embed', sub_type: 'dnz', position: 1,
                           content: { id: record.record_id},
@@ -159,6 +179,39 @@ module StoriesApi
             result.delete(:id)
 
             expect(result[:meta]).to eq(item[:meta])
+          end
+
+          context 'setting cover thumbnail' do
+            let(:record) { create(:record) }
+
+            it 'updates cover thumbnail of story if meta is_cover true' do
+              item = create(:story_item, type: 'embed', sub_type: 'dnz', position: 1,
+                            content: { id: record.record_id},
+                            meta: { size: 1, metadata: 'Some Meta', is_cover: true}).attributes.symbolize_keys
+
+              StoryItem.new(id: @story.set_items.first.id.to_s,
+                            story_id: @story.id, user_key: @user.api_key,
+                            item: item).patch
+
+              @story.reload
+
+              expect(@story.cover_thumbnail).to eq @story.set_items.first.content[:image_url].to_s
+            end
+
+            it 'updates cover thumbnail of story as nil if meta is_cover false' do
+              item = create(:story_item, type: 'embed', sub_type: 'dnz', position: 1,
+                            content: { id: record.record_id},
+                            meta: { size: 1, metadata: 'Some Meta', is_cover: false}).attributes.symbolize_keys
+              @story.update_attribute(:cover_thumbnail, @story.set_items.first.content[:image_url])
+
+              StoryItem.new(id: @story.set_items.first.id.to_s,
+                            story_id: @story.id, user_key: @user.api_key,
+                            item: item).patch
+
+              @story.reload
+
+              expect(@story.cover_thumbnail).to be_nil
+            end
           end
         end
       end

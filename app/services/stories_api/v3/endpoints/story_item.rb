@@ -27,37 +27,22 @@ module StoriesApi
         end
 
         def patch
-          Rails.logger.info 'COVER THUMB'
-          Rails.logger.info "COVER THUMB: params: #{params}"
           return @errors if @errors
           return create_error('MandatoryParamMissing', param: :item) unless params[:item]
 
           merge_patch = PerformMergePatch.new(::StoriesApi::V3::Schemas::StoryItem::BlockValidator.new,
                                               ::StoriesApi::V3::Presenters::StoryItem.new)
 
-          Rails.logger.info "COVER THUMB: params item #{params[:item]}"
-
-          Rails.logger.info "COVER THUMB: item before: #{item.attributes}"
-
           valid = merge_patch.call(item, params[:item])
-
-          Rails.logger.info "COVER THUMB: valid? #{valid}"
-          Rails.logger.info "COVER THUMB: valid? #{merge_patch.validation_errors}" unless valid
 
           return create_error('SchemaValidationError', errors: merge_patch.validation_errors) unless valid
 
           item.save
 
-          Rails.logger.info "COVER THUMB: item after: #{item.attributes}"
-
           if params[:item][:meta]
-            Rails.logger.info "COVER THUMB: has meta #{params[:item][:meta]}"
             if params[:item][:meta][:is_cover]
-              Rails.logger.info "COVER THUMB: has is_cover"
-              Rails.logger.info "COVER THUMB: image_url : #{item.content}"
               story.update_attribute(:cover_thumbnail, item.content[:image_url])
             elsif story.cover_thumbnail == item.content[:image_url]
-              Rails.logger.info "COVER THUMB: dont have is_cover"
               story.update_attribute(:cover_thumbnail, nil)
             end
           end
@@ -109,34 +94,3 @@ module StoriesApi
     end
   end
 end
-
-# params:
-#   { item: {
-#       position: 1,
-#       meta: { is_cover:false, align_mode: 1, caption: "This is a test"},
-#       content: { 
-#         i: 23376598, title: "Cricket match on a sunny afternoon",
-#         display_collection: "mychillybin.co.nz",
-#         category: ["Images"],
-#         image_url: "http://www.mychillybin.co.nz/viewphoto/mychillybin100116/mychillybin100116_1693/w/mychillybin100116_1693.jpg"
-#         tags: nil, description: nil, content_partner: ["mychillybin"]
-#         },
-#       type: "embed",
-#       sub_type: "dnz"
-#       },
-#     api_key: "bES4B3UwR64cP8msCphF",
-#     debug: true,
-#     user_key: "QAZV1i__KK2PPjuE1zsc",
-#     version: nil,
-#     story_id: "58d34258297b1f027a000000",
-#     story_item: {"item"=>{"position"=>1, "meta"=>{"is_cover"=>false, "align_mode"=>1, "caption"=>"This is a test"}, "content"=>{"id"=>23376598, "title"=>"Cricket match on a sunny afternoon", "display_collection"=>"mychillybin.co.nz", "category"=>["Images"], "image_url"=>"http://www.mychillybin.co.nz/viewphoto/mychillybin100116/mychillybin100116_1693/w/mychillybin100116_1693.jpg", "tags"=>nil, "description"=>nil, "content_partner"=>["mychillybin"]}, "type"=>"embed", "sub_type"=>"dnz"}}}
-
-
-
-
-
-
-
-
-
-

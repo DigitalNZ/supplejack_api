@@ -35,6 +35,10 @@ module StoriesApi
           merge_patch = PerformMergePatch.new(::StoriesApi::V3::Schemas::StoryItem::BlockValidator.new,
                                               ::StoriesApi::V3::Presenters::StoryItem.new)
 
+          Rails.logger.info "COVER THUMB: params item #{params[:item]}"
+
+          Rails.logger.info "COVER THUMB: item before: #{item}"
+
           valid = merge_patch.call(item, params[:item])
 
           Rails.logger.info "COVER THUMB: valid? #{valid}"
@@ -44,7 +48,7 @@ module StoriesApi
 
           item.save
 
-          Rails.logger.info "COVER THUMB: item: #{item}"
+          Rails.logger.info "COVER THUMB: item after: #{item}"
 
           if params[:item][:meta]
             Rails.logger.info "COVER THUMB: has meta #{params[:item][:meta]}"

@@ -29,7 +29,7 @@ module StoriesApi
 
             required(:meta).schema do
               optional(:alignment).filled(included_in?: valid_alignments)
-              optional(:caption).filled(:str?)
+              optional(:caption).maybe(:str?)
             end
           end
         end

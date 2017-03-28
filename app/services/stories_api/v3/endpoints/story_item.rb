@@ -37,7 +37,7 @@ module StoriesApi
 
           Rails.logger.info "COVER THUMB: params item #{params[:item]}"
 
-          Rails.logger.info "COVER THUMB: item before: #{item}"
+          Rails.logger.info "COVER THUMB: item before: #{item.attributes}"
 
           valid = merge_patch.call(item, params[:item])
 
@@ -48,7 +48,7 @@ module StoriesApi
 
           item.save
 
-          Rails.logger.info "COVER THUMB: item after: #{item}"
+          Rails.logger.info "COVER THUMB: item after: #{item.attributes}"
 
           if params[:item][:meta]
             Rails.logger.info "COVER THUMB: has meta #{params[:item][:meta]}"

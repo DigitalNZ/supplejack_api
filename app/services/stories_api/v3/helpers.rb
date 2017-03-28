@@ -24,7 +24,7 @@ module StoriesApi
         response
       end
 
-      # This method is not used now
+      # This method is not used now. Because cover thumb selection on sorting has been disabled
       def first_suitable_image(story)
         item_with_image = story.set_items.sort_by(&:position).detect do |item|
           item.content.present? && (item.type == 'embed') &&

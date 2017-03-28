@@ -47,15 +47,6 @@ module SupplejackApi
       render request.format.to_sym => {
         errors: 'You need Administrator privileges to perform this request'
       }, status: :forbidden
-
-      # if RecordSchema.roles[current_user.role.to_sym].try(:admin)
-      #   return true
-      # else
-      #   render request.format.to_sym => {
-      #     errors: 'You need Administrator privileges to perform this request'
-      #   }, status: :forbidden
-      #   return false
-      # end
     end
 
     def user_key_check!

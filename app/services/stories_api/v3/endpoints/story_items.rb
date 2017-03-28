@@ -57,16 +57,6 @@ module StoriesApi
           create_response(status: 200,
                           payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(story_item))
         end
-
-        # Returns error if story and user were not initialised
-        #
-        # @author Eddie
-        # @last_modified Eddie
-        # @return [Hash] the error
-        # def errors
-        #   return create_error('UserNotFound', id: params[:api_key]) unless user.present?
-        #   return create_error('StoryNotFound', id: params[:story_id]) unless story.present?
-        # end
       end
     end
   end

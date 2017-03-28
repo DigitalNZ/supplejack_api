@@ -113,6 +113,18 @@ module StoriesApi
               end
 
               describe '#caption' do
+                it 'must be a nil' do
+                  result = subject.call(update_meta_value(:caption, nil))
+
+                  expect(result.success?).to eq(true)
+                end
+
+                it 'must be a empty string' do
+                  result = subject.call(update_meta_value(:caption, ''))
+
+                  expect(result.success?).to eq(true)
+                end
+
                 it 'must be a string' do
                   result = subject.call(update_meta_value(:caption, 123))
 

@@ -43,14 +43,16 @@ module SupplejackApi
     end
 
     def authenticate_admin!
-      if RecordSchema.roles[current_user.role.to_sym].try(:admin)
-        return true
-      else
-        render request.format.to_sym => {
-          errors: 'You need Administrator privileges to perform this request'
-        }, status: :forbidden
-        return false
-      end
+      return true if RecordSchema.roles[current_user.role.to_sym].try(:admin)
+      render request.format.to_sym => {
+        errors: 'You need Administrator privileges to perform this request'
+      }, status: :forbidden
+    end
+
+    def user_key_check!
+      render request.format.to_sym => {
+        errors: 'Mandatory parameter user_key missing'
+      }, status: 400 unless params[:user_key]
     end
 
     def find_user_set

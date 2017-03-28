@@ -11,6 +11,7 @@ FactoryGirl.define do
     approved false
     tags ['story', 'tags']
     copyright 0
+    cover_thumbnail 'https://thumbnail_url'
 
     after(:create) do |story, evaluator|
       next unless story.set_items.empty?

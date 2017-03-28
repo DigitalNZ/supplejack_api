@@ -18,7 +18,8 @@ module StoriesApi
           :featured,
           :approved,
           :tags,
-          :updated_at
+          :updated_at,
+          :cover_thumbnail
         ].freeze
 
         def call(story, slim = false)
@@ -27,24 +28,19 @@ module StoriesApi
           TOP_LEVEL_FIELDS.each do |field|
             result[field] = story.send(field)
           end
+
           result[:id] = story.id.to_s
           result[:number_of_items] = story.set_items.count
-          result[:cover_thumbnail] = first_suitable_image story
+
           if slim
             result[:record_ids] = story.set_items.sort_by(&:position).map { |x| { record_id: x.record_id } }
           else
-            result[:contents] = story.set_items.sort_by(&:position).map(&StoryItem)
+            result[:contents] = story.set_items.sort_by(&:position).map do |item|
+              StoriesApi::V3::Presenters::StoryItem.new.call(item, story)
+            end
           end
+
           result
-        end
-
-        def first_suitable_image(story)
-          item_with_image = story.set_items.sort_by(&:position).detect do |item|
-            item.content.present? && (item.type == 'embed') &&
-              (item.sub_type == 'dnz') && item.content[:image_url].present?
-          end
-
-          item_with_image.content[:image_url] unless item_with_image.nil?
         end
 
         def self.to_proc

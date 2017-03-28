@@ -23,6 +23,16 @@ module StoriesApi
 
         response
       end
+
+      # This method is not used now. Because cover thumb selection on sorting has been disabled
+      def first_suitable_image(story)
+        item_with_image = story.set_items.sort_by(&:position).detect do |item|
+          item.content.present? && (item.type == 'embed') &&
+            (item.sub_type == 'dnz') && item.content[:image_url].present?
+        end
+
+        item_with_image.content[:image_url] unless item_with_image.nil?
+      end
     end
   end
 end

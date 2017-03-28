@@ -22,7 +22,7 @@ module StoriesApi
           result
         end
 
-        def call(story_item)
+        def call(story_item, story = nil)
           result = {}
 
           result[:record_id] = story_item.record_id if story_item.record_id
@@ -44,6 +44,11 @@ module StoriesApi
           result[:meta] = {}
           story_item.meta.each do |k, v|
             result[:meta][k] = v
+          end
+
+          if story
+            # This will override the value of is_cover in database
+            result[:meta][:is_cover] = (result[:content][:image_url] == story.cover_thumbnail)
           end
 
           result

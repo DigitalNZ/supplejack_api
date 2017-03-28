@@ -22,10 +22,12 @@ module StoriesApi
         end
 
         def get
-          create_response(status: 200, payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(item))
+          return @errors if @errors
+          create_response(status: 200, payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(item, @story))
         end
 
         def patch
+          return @errors if @errors
           return create_error('MandatoryParamMissing', param: :item) unless params[:item]
 
           merge_patch = PerformMergePatch.new(::StoriesApi::V3::Schemas::StoryItem::BlockValidator.new,
@@ -36,10 +38,22 @@ module StoriesApi
           return create_error('SchemaValidationError', errors: merge_patch.validation_errors) unless valid
 
           item.save
+
+          if params[:item][:meta]
+            if params[:item][:meta][:is_cover]
+              story.update_attribute(:cover_thumbnail, item.content[:image_url])
+            elsif story.cover_thumbnail == item.content[:image_url]
+              story.update_attribute(:cover_thumbnail, nil)
+            end
+          end
+
           create_response(status: 200, payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(item))
         end
 
         def delete
+          return @errors if @errors
+          story.update_attribute(:cover_thumbnail, nil) if story.cover_thumbnail == item.content[:image_url]
+
           item.delete
 
           create_response(status: 204)
@@ -50,8 +64,8 @@ module StoriesApi
         # @author Eddie
         # @last_modified Eddie
         def find_user
-          user = SupplejackApi::User.find_by_api_key(params[:api_key])
-          @errors = create_error('UserNotFound', id: params[:api_key]) unless user
+          user = SupplejackApi::User.find_by_api_key(params[:user_key])
+          @errors = create_error('UserNotFound', id: params[:user_key]) unless user
           user
         end
 
@@ -73,9 +87,7 @@ module StoriesApi
         def find_item
           return unless @story
           item = @story.set_items.find_by_id(params[:id])
-          @errors = create_error('StoryItemNotFound',
-                                 item_id: params[:id],
-                                 story_id: params[:story_id]) unless item
+          @errors = create_error('StoryItemNotFound', item_id: params[:id], story_id: params[:story_id]) unless item
           item
         end
       end

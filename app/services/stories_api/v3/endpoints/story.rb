@@ -22,8 +22,7 @@ module StoriesApi
         def get
           story = SupplejackApi::UserSet.custom_find(params[:id])
 
-          return create_error('StoryNotFound',
-                              id: params[:id]) unless story.present?
+          return create_error('StoryNotFound', id: params[:id]) unless story.present?
 
           if story.privacy == 'private'
             return create_error('PrivateStoryNotAuthorised', id: params[:id]) unless user
@@ -38,14 +37,12 @@ module StoriesApi
         def patch
           story = user.user_sets.custom_find(params[:id])
 
-          return create_error('StoryNotFound',
-                              id: params[:id]) unless story.present?
+          return create_error('StoryNotFound', id: params[:id]) unless story.present?
 
           merge_patch = PerformMergePatch.new(::StoriesApi::V3::Schemas::Story, ::StoriesApi::V3::Presenters::Story.new)
 
           valid = merge_patch.call(story, params[:story])
-          return create_error('SchemaValidationError',
-                              errors:  merge_patch.validation_errors) unless valid
+          return create_error('SchemaValidationError', errors:  merge_patch.validation_errors) unless valid
 
           story.save
 
@@ -55,8 +52,7 @@ module StoriesApi
         def delete
           story = user.user_sets.custom_find(params[:id])
 
-          return create_error('StoryNotFound',
-                              id: params[:id]) unless story.present?
+          return create_error('StoryNotFound', id: params[:id]) unless story.present?
 
           story.delete
 

@@ -12,69 +12,50 @@ module StoriesApi
       class StoryItems
         include Helpers
 
-        attr_reader :params, :user, :story
+        attr_reader :params, :user, :story, :errors
 
         def initialize(params)
           @params = params
-          @user = SupplejackApi::User.find_by_api_key(params[:api_key])
-          @story = @user ? @user.user_sets.find_by_id(params[:story_id]) : nil
+          @user = SupplejackApi::User.find_by_api_key(params[:user_key])
+          if @user
+            @story = @user.user_sets.find_by_id(params[:story_id])
+            @errors = create_error('StoryNotFound', id: params[:story_id]) unless @story.present?
+          else
+            @errors = create_error('UserNotFound', id: params[:user_key]) unless @user
+          end
         end
 
         def get
-          presented_story_items = @story.set_items.map(&::StoriesApi::V3::Presenters::StoryItem)
+          return @errors if @errors
+          presented_story_items = @story.set_items.map { |i| StoriesApi::V3::Presenters::StoryItem.new.call(i, @story) }
 
           create_response(status: 200, payload: presented_story_items)
         end
 
         def post
+          return @errors if @errors
           return create_error('MandatoryParamMissing', param: :item) unless params[:item]
 
           validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(params[:item])
-          return create_error('SchemaValidationError',
-                              errors: validator.messages(full: true)) unless validator.success?
+          return create_error('SchemaValidationError', errors: validator.messages(full: true)) unless validator.success?
 
           item_params = params[:item].deep_symbolize_keys
 
           # FIXME: This is a temporary fix
           # Can be removed after user_sets is retired
-          item_params[:record_id] = item_params[:content][:id] if item_params[:content][:id]
+          if item_params[:content][:id]
+            item_params[:record_id] = item_params[:content][:id]
+            record = SupplejackApi::Record.custom_find(item_params[:record_id])
+            item_params[:content][:image_url] = record.large_thumbnail_url || record.thumbnail_url if record
+          end
 
           story_item = story.set_items.build(item_params)
+          story.cover_thumbnail = story_item.content[:image_url] unless story.cover_thumbnail
+
           story.save!
 
           create_response(status: 200,
                           payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(story_item))
-        end
-
-        # Not using this method now
-        def put
-          params[:items].each do |block|
-            validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(block)
-            return create_error('SchemaValidationError',
-                                errors: validator.messages(full: true)) unless validator.success?
-          end
-
-          @story.set_items.destroy
-
-          params[:items].each do |block|
-            story.set_items.build(block.deep_symbolize_keys)
-          end
-
-          story.save!
-
-          presented_story_items = @story.set_items.map(&::StoriesApi::V3::Presenters::StoryItem)
-
-          create_response(status: 200, payload: presented_story_items)
-        end
-
-        # Returns error if story and user were not initialised
-        #
-        # @author Eddie
-        # @last_modified Eddie
-        # @return [Hash] the error
-        def errors
-          return create_error('UserNotFound', id: params[:api_key]) unless user.present?
-          return create_error('StoryNotFound', id: params[:story_id]) unless story.present?
         end
       end
     end

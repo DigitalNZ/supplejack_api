@@ -35,13 +35,5 @@ module SupplejackApi
     def destroy
       render_response(:story)
     end
-
-    private
-
-    def user_key_check!
-      render request.format.to_sym => {
-        errors: 'Mandatory parameter user_key missing'
-      }, status: 400 unless params[:user_key]
-    end
   end
 end

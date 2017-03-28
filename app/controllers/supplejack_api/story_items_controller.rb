@@ -3,6 +3,8 @@ module SupplejackApi
   class StoryItemsController < ApplicationController
     include Concerns::Stories
 
+    before_action :user_key_check!, except: [:create, :update, :destroy]
+
     def index
       render_response(:story_items)
     end

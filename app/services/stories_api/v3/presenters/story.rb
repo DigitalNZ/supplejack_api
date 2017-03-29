@@ -33,7 +33,7 @@ module StoriesApi
           result[:number_of_items] = story.set_items.count
 
           if slim
-            result[:record_ids] = story.set_items.sort_by(&:position).map { |x| { record_id: x.record_id } }
+            result[:record_ids] = story.set_items.sort_by(&:position).map { |x| { record_id: x.record_id, story_item_id: x._id.to_s } }
           else
             result[:contents] = story.set_items.sort_by(&:position).map do |item|
               StoriesApi::V3::Presenters::StoryItem.new.call(item, story)

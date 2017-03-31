@@ -17,9 +17,9 @@ module SupplejackApi
     def create
       updated_params = record_params.merge(type: 'embed',
                                            sub_type: 'dnz',
-                                           content: { record_id: record_params[:record_id] })
+                                           content: { record_id: record_params[:record_id] },
+                                           meta: { align_mode: 0 })
 
-      Rails.logger.info "STORIES: #{updated_params}"
 
       @set_item = @user_set.set_items.build(updated_params)
       @user_set.save

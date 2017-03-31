@@ -24,7 +24,7 @@ module SupplejackApi
     describe "POST 'create'" do
       it 'creates the set item through the @user_set' do
         create(:record_with_fragment, record_id: 12345)
-        expect(@user_set.set_items).to receive(:build).with({"record_id"=>"12345", "type"=>"embed", "sub_type"=>"dnz", "content"=>{"record_id"=>"12345"}}) { @set_item }
+        expect(@user_set.set_items).to receive(:build).with({"record_id"=>"12345", "type"=>"embed", "sub_type"=>"dnz", "content"=>{"record_id"=>"12345"}, "meta"=>{"align_mode"=>0}}) { @set_item }
         expect(@user_set).to receive(:save).and_return(true)
         post :create, user_set_id: @user_set.id, record: { record_id: '12345' }, format: :json
       end

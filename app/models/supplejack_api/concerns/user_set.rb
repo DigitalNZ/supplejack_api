@@ -128,7 +128,6 @@ module SupplejackApi::Concerns::UserSet
           begin
             new_set_items = []
             set_items.each do |set_item_hash|
-
               # This ugly fix should be removed when digitalnz.org is decommissioned
               params = { record_id: set_item_hash['record_id'], type: 'embed',
                          sub_type: 'dnz', content: { record_id: set_item_hash['record_id'] },

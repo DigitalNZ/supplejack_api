@@ -21,7 +21,6 @@ module SupplejackApi
                                            content: { record_id: record_params[:record_id] },
                                            meta: { align_mode: 0 })
 
-
       @set_item = @user_set.set_items.build(updated_params)
       @user_set.save
       respond_with @user_set, @set_item

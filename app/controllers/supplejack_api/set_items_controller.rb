@@ -15,11 +15,11 @@ module SupplejackApi
     respond_to :json
 
     def create
+      # This ugly fix should be removed when digitalnz.org is decommissioned
       updated_params = record_params.merge(type: 'embed',
                                            sub_type: 'dnz',
-                                           content: { record_id: record_params[:record_id] })
-
-      Rails.logger.info "STORIES: #{updated_params}"
+                                           content: { record_id: record_params[:record_id] },
+                                           meta: { align_mode: 0 })
 
       @set_item = @user_set.set_items.build(updated_params)
       @user_set.save

@@ -313,14 +313,14 @@ module SupplejackApi
 
       it "initializes the set_items through the user_set" do
         item = user_set.set_items.build(record_id: 13)
-        expect(user_set.set_items).to receive(:find_or_initialize_by).with({record_id: "13"}) { item }
+        expect(user_set.set_items).to receive(:find_or_initialize_by).with({record_id: "13", :type=>"embed", :sub_type=>"dnz", :content=>{:record_id=>"13"}, :meta=>{:align_mode=>0}}) { item }
         user_set.update_attributes_and_embedded(records: [{"record_id" => "13", "position" => nil}])
       end
 
       it "can replace the set items" do
         user_set.save
-        user_set.set_items.create(record_id: 13)
-        user_set.update_attributes_and_embedded(records: [{"record_id" => "13", "position" => nil}])
+        user_set.set_items.create(record_id: 13, :type=>"embed", :sub_type=>"dnz", :content=>{:record_id=>"13"}, :meta=>{:align_mode=>0})
+        user_set.update_attributes_and_embedded(records: [{"record_id" => "13", "position" => nil, :type=>"embed", :sub_type=>"dnz", :content=>{:record_id=>"13"}, :meta=>{:align_mode=>0}}])
         user_set.reload
         expect(user_set.set_items.size).to eq 1
         expect(user_set.set_items.first.record_id).to eq 13

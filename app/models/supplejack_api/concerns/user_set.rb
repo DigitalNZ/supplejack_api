@@ -130,7 +130,7 @@ module SupplejackApi::Concerns::UserSet
             set_items.each do |set_item_hash|
               set_item_hash.symbolize_keys!
               # This ugly fix should be removed when digitalnz.org is decommissioned
-              params = set_item_hash.merge(record_id: set_item_hash[:record_id:], type: 'embed',
+              params = set_item_hash.merge(record_id: set_item_hash[:record_id], type: 'embed',
                                            sub_type: 'dnz', content: { record_id: set_item_hash[:record_id] },
                                            meta: { align_mode: 0 })
 

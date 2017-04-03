@@ -313,7 +313,7 @@ module SupplejackApi
 
       it "initializes the set_items through the user_set" do
         item = user_set.set_items.build(record_id: 13)
-        expect(user_set.set_items).to receive(:find_or_initialize_by).with({record_id: "13", :type=>"embed", :sub_type=>"dnz", :content=>{:record_id=>"13"}, :meta=>{:align_mode=>0}}) { item }
+        expect(user_set.set_items).to receive(:find_by_record_id).with('13') { item }
         user_set.update_attributes_and_embedded(records: [{"record_id" => "13", "position" => nil}])
       end
 

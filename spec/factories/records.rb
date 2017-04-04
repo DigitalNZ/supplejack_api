@@ -30,6 +30,18 @@ module SupplejackApi
                              tag: tag)]
         end
       end
+
+      factory :record_with_no_large_thumb do
+        fragments do
+          [FactoryGirl.build(:record_fragment,
+                             display_collection: display_collection,
+                             copyright: copyright,
+                             category: category,
+                             tag: tag,
+                             large_thumbnail_url: nil)]
+        end
+      end
+
     end
 
     factory :record_fragment, class: SupplejackApi::ApiRecord::RecordFragment do
@@ -47,6 +59,7 @@ module SupplejackApi
       nz_citizen      true
       display_collection 'test'
       large_thumbnail_url    'http://my-website-that-hosts-images/image.png'
+      thumbnail_url    'http://my-website-that-hosts-images/small-image.png'
     end
   end
 end

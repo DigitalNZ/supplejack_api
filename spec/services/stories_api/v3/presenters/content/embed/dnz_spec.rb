@@ -33,6 +33,17 @@ module StoriesApi
             it 'presents them from the correct record' do
               expect(result[:title]).to eq(record.title)
             end
+
+            context 'no large_thumbnail_url' do
+              let(:record) {create(:record_with_no_large_thumb)}
+              let(:block) {create(:embed_dnz_item, id: record.record_id)}
+              let(:result) {subject.call(block)}
+
+              it 'presents thumbnail_url if there is no large_thumbnail_url' do
+
+                expect(result[:image_url]).to eq record.thumbnail_url
+              end
+            end
           end
         end
       end

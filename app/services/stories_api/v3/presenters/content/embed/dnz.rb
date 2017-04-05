@@ -27,6 +27,8 @@ module StoriesApi
                 result[name] = record.public_send(field)
               end
 
+              result[:image_url] = record.thumbnail_url if result[:image_url].nil?
+
               result
             end
           end

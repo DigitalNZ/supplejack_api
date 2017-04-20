@@ -177,8 +177,9 @@ module SupplejackApi::Concerns::UserSet
       self.tags = self[:tags].map { |t| strip_tags(t) } if tags.try(:any?)
 
       # The code below writes any updates in tags to subjects
-      stripped_subjects = self[:subjects].map { |subject| strip_tags(subject) } if subjects.try(:any?)
-      self.subjects = (tags + (stripped_subjects || [])).uniq
+      self.subjects = tags
+      # stripped_subjects = self[:subjects].map { |subject| strip_tags(subject) } if subjects.try(:any?)
+      # self.subjects = (tags + (stripped_subjects || [])).uniq
 
       # The code below is a temporary solution to keep tags and subjects synced
       # stripped_tags = self[:tags].map { |tag| strip_tags(tag) } if tags.try(:any?)

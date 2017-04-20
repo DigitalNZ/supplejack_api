@@ -174,13 +174,17 @@ module SupplejackApi::Concerns::UserSet
       end
 
       # This is the original code
-      # self.tags = self[:tags].map { |t| strip_tags(t) } if tags.try(:any?)
+      self.tags = self[:tags].map { |t| strip_tags(t) } if tags.try(:any?)
+
+      # The code below writes any updates in tags to subjects
+      stripped_subjects = self[:subjects].map { |subject| strip_tags(subject) } if subjects.try(:any?)
+      self.subjects = (tags + (stripped_subjects || [])).uniq
 
       # The code below is a temporary solution to keep tags and subjects synced
-      stripped_tags = self[:tags].map { |tag| strip_tags(tag) } if tags.try(:any?)
-      stripped_subjects = self[:subjects].map { |subject| strip_tags(subject) } if subjects.try(:any?)
+      # stripped_tags = self[:tags].map { |tag| strip_tags(tag) } if tags.try(:any?)
+      # stripped_subjects = self[:subjects].map { |subject| strip_tags(subject) } if subjects.try(:any?)
 
-      self.tags = self.subjects = ((stripped_tags || []) + (stripped_subjects || [])).uniq       
+      # self.tags = self.subjects = ((stripped_tags || []) + (stripped_subjects || [])).uniq
     end
 
     def update_record

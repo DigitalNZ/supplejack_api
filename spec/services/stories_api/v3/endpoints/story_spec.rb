@@ -159,7 +159,7 @@ module StoriesApi
               updated_story = SupplejackApi::UserSet.custom_find(story.id)
 
               expect(updated_story.description).to eq(patch[:description])
-              expect(updated_story.tags).to eq(patch[:tags] + patch[:subjects])
+              expect(updated_story.tags).to eq(patch[:tags])
               expect(updated_story.subjects).to eq(patch[:tags] + patch[:subjects])
             end
           end

@@ -113,7 +113,8 @@ module StoriesApi
           let(:patch) do
             {
               description: 'foobar',
-              tags: ['tags', 'go', 'here']
+              tags: ['tags', 'go', 'here'],
+              subjects: ['tango', 'charlie']
             }
           end
 
@@ -158,7 +159,8 @@ module StoriesApi
               updated_story = SupplejackApi::UserSet.custom_find(story.id)
 
               expect(updated_story.description).to eq(patch[:description])
-              expect(updated_story.tags).to eq(patch[:tags])
+              expect(updated_story.tags).to eq(patch[:tags] + patch[:subjects])
+              expect(updated_story.subjects).to eq(patch[:tags] + patch[:subjects])
             end
           end
         end

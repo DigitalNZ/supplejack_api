@@ -18,6 +18,7 @@ module StoriesApi
           :featured,
           :approved,
           :tags,
+          :subjects,
           :updated_at,
           :cover_thumbnail
         ].freeze

@@ -48,7 +48,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'compass-rails', '~> 1.0.3'
   s.add_dependency 'zurb-foundation', '~> 4.3.2'
   s.add_dependency 'gabba', '~> 0.3.0'
-  s.add_dependency 'sunspot_rails', '= 2.2.0'
+  s.add_dependency 'sunspot_rails', '= 2.2.7'
   s.add_dependency 'mongoid', '~> 4.0.0'
   s.add_dependency 'mongoid_auto_inc', '~> 0.1.0'
   s.add_dependency 'mongoid-tree', '~> 1.0.0'
@@ -57,7 +57,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'dry-struct'
 
   # Adding sunspot_solr so app has access to sunspot:solr rake tasks
-  s.add_dependency 'sunspot_solr', '= 2.2.0'
+  s.add_dependency 'sunspot_solr', '= 2.2.7'
   s.add_dependency 'json-ld', '~> 1.1.4'
   s.add_dependency 'activeresource'
   s.add_dependency 'rufus-scheduler', '= 2.0.17'
@@ -77,7 +77,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'guard'
   s.add_development_dependency 'guard-rspec'
   s.add_development_dependency 'json_spec', '~> 1.1.4'
-  s.add_development_dependency 'sunspot_matchers', '~> 2.2.0.0'
+  s.add_development_dependency 'sunspot_matchers', '~> 2.2.5.0'
   s.add_development_dependency 'timecop', '~> 0.4.6'
   s.add_development_dependency 'binding_of_caller', '~> 0.7.1'
   s.add_development_dependency 'rb-fsevent', '~> 0.9.1'

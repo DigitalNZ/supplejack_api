@@ -48,8 +48,9 @@ module StoriesApi
         end
 
         describe '#post' do
+          let(:user) { create(:user) }
           it 'returns 400 if the name field is missing for the Story' do
-            response = Stories.new(story: '111').post
+            response = Stories.new(story: '111', user_key: user.api_key).post
 
             expect(response).to eq(
               status: 400,
@@ -60,7 +61,6 @@ module StoriesApi
           end
 
           context 'succesful request' do
-            let(:user) { create(:user) }
             let!(:response) { Stories.new(story: { name: 'Story Name' }, user_key: user.api_key).post }
 
             before do

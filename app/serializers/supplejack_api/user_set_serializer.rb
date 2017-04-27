@@ -8,7 +8,7 @@
 
 module SupplejackApi
   class UserSetSerializer < ActiveModel::Serializer
-    attributes :name, :count, :priority, :featured, :approved, :created_at, :updated_at, :tags, :privacy
+    attributes :name, :count, :priority, :featured, :approved, :created_at, :updated_at, :tags, :privacy, :subjects
     has_one :record, serializer: UserSetRecordSerializer
     root :set
 
@@ -24,6 +24,7 @@ module SupplejackApi
         hash[:description] = object.description
         hash[:privacy] = object.privacy
         hash[:tags] = object.tags
+        hash[:subjects] = object.subjects
         hash[:records] = records
       elsif options[:featured]
         hash[:records] = records(1)

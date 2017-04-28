@@ -231,11 +231,11 @@ module SupplejackApi::Concerns::UserSet
 
     def tag_list=(tags_string)
       tags_string = tags_string.to_s.gsub(/[^A-Za-z0-9\p{Word} ,_-]/, '')
-      self.tags = tags_string.to_s.split(',').map(&:strip).reject(&:blank?)
+      self.subjects = tags_string.to_s.split(',').map(&:strip).reject(&:blank?)
     end
 
     def tag_list
-      tags.join(', ') if tags.present?
+      subjects.join(', ') if subjects.present?
     end
 
     # Return a array of SetItem objects with the actual Record object attached through

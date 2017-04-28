@@ -503,12 +503,12 @@ module SupplejackApi
     describe "#tag_list=" do
       it "should convert the comma seperate string to an array of tags" do
         user_set.tag_list = "dogs, animals, cats"
-        expect(user_set.tags).to include("dogs", "cats", "animals")
+        expect(user_set.subjects).to include("dogs", "cats", "animals")
       end
 
       it "removes empty tags" do
         user_set.tag_list = "dogs, , animals"
-        expect(user_set.tags.size).to eq(2)
+        expect(user_set.subjects.size).to eq(2)
       end
 
       it "handles a nil tag list" do
@@ -518,13 +518,13 @@ module SupplejackApi
 
       it "strips tags from punctuations except - and _" do
         user_set.tag_list = "hola! d-a_s_h @#$\%^&*()+=.;: ,something else"
-        expect(user_set.tags).to eq ["hola d-a_s_h", "something else"]
+        expect(user_set.subjects).to eq ["hola d-a_s_h", "something else"]
       end
     end
 
     describe "#tag_list" do
       it "returns a comma seperated list of tags" do
-        user_set.tags = ["animal","dog","beast"]
+        user_set.subjects = ["animal","dog","beast"]
         expect(user_set.tag_list).to eq("animal, dog, beast")
       end
 

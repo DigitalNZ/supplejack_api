@@ -32,6 +32,7 @@ module StoriesApi
 
           result[:id] = story.id.to_s
           result[:number_of_items] = story.set_items.count
+          result[:creator] = story.user.name
 
           if slim
             result[:record_ids] = story.set_items.sort_by(&:position).map do |item|

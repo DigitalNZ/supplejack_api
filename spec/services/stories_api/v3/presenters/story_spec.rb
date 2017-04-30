@@ -24,6 +24,10 @@ module StoriesApi
             expect(presented_json[:id]).to eq(story.id.to_s)
           end
 
+          it 'presents the story creator' do
+            expect(presented_json[:creator]).to eq(story.user.name)
+          end
+
           it 'presents number_of_items as the count of the items in the UserSet' do
             expect(presented_json[:number_of_items]).to eq(story.set_items.count)
           end

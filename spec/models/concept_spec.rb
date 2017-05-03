@@ -48,9 +48,9 @@ module SupplejackApi
         expect(Concept.custom_find(54321)).to eq(@concept)
       end
 
-      it 'should search for a concept via its ObjectId (MongoDB auto assigned id)' do
-        expect(Concept.custom_find(@concept.id)).to eq(@concept)
-      end
+      # it 'should search for a concept via its ObjectId (MongoDB auto assigned id)' do
+      #   expect(Concept.custom_find(@concept.id)).to eq(@concept)
+      # end
 
       it 'should raise a error when a concept is not found' do
         expect { Concept.custom_find(111) }.to raise_error(Mongoid::Errors::DocumentNotFound)

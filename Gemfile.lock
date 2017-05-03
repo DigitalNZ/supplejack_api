@@ -1,18 +1,4 @@
 GIT
-  remote: git@github.com:boost/sunspot.git
-  revision: ffc459bbec23fa5e72e16c82a2ca79949feb7043
-  branch: fix_unicode_indexing
-  specs:
-    sunspot (2.2.7)
-      pr_geohash (~> 1.0)
-      rsolr (>= 1.1.1, < 3)
-    sunspot_rails (2.2.7)
-      nokogiri
-      rails (>= 3)
-      sunspot (= 2.2.7)
-    sunspot_solr (2.2.7)
-
-GIT
   remote: https://github.com/boost/active_model_serializers
   revision: 74216ebc6e05fe4cad533acd6c3888f5ecc18d48
   specs:
@@ -67,6 +53,8 @@ PATH
       sidekiq (~> 4.2)
       simple_form (~> 3.0.2)
       state_machine (~> 1.1.2)
+      sunspot_rails (~> 2.2.7)
+      sunspot_solr (~> 2.2.7)
       therubyracer (~> 0.12.0)
       thin (~> 1.6.2)
       uglifier (~> 2.5.0)
@@ -428,7 +416,15 @@ GEM
       activesupport (>= 3.0)
       sprockets (>= 2.8, < 4.0)
     state_machine (1.1.2)
+    sunspot (2.2.7)
+      pr_geohash (~> 1.0)
+      rsolr (>= 1.1.1, < 3)
     sunspot_matchers (2.2.5.0)
+    sunspot_rails (2.2.7)
+      nokogiri
+      rails (>= 3)
+      sunspot (= 2.2.7)
+    sunspot_solr (2.2.7)
     sunspot_test (0.4.0)
       sunspot_rails (>= 1.2.1)
     therubyracer (0.12.3)
@@ -490,8 +486,8 @@ DEPENDENCIES
   rubocop
   simplecov
   sunspot_matchers (~> 2.2.5.0)
-  sunspot_rails!
-  sunspot_solr!
+  sunspot_rails (~> 2.2.7)
+  sunspot_solr (~> 2.2.7)
   sunspot_test (~> 0.4.0)
   supplejack_api!
   timecop (~> 0.4.6)

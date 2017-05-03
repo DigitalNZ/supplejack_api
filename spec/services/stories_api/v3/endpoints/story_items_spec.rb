@@ -84,6 +84,51 @@ module StoriesApi
             )          
           end
 
+          context 'when position passed on create item' do
+            before do
+              record = create(:record)
+              @story = create(:story)
+              @user = @story.user
+              @item = create(:story_item, type: 'embed', sub_type: 'dnz', 
+                             position: 0, #@story.set_items.last.position,
+                             content: { id: record.record_id }, meta: {}).attributes.symbolize_keys
+              
+              # @item = create(:story_item, type: 'embed', sub_type: 'dnz', 
+              #                position: @story.set_items.last.position,
+              #                content: { id: record.record_id, title: 'Mover'},
+              #                meta: {}).attributes.symbolize_keys
+
+              @item.delete(:_id)
+            end
+
+            # it 'calls the moves service' do
+            #   expect(StoriesApi::V3::Endpoints::Moves).to receive(:new)
+            #   #.with(story_id: @story.id.to_s, user_key: @user.api_key,
+            #                             # item_id: @item[:id], position: @item[:position])
+
+            #   StoryItems.new(story_id: @story.id, user_key: @user.api_key,
+            #                  item: @item).post
+            # end
+
+            it 'creates a new set item with the provided position' do
+              response = StoryItems.new(story_id: @story.id, user_key: @user.api_key,
+                                        item: @item).post
+            
+              expect(response[:status]).to eq 200
+              expect(response[:payload][:position]).to eq 2
+            end
+
+            # it 'updates positions of each story set item' do
+            #   response = StoryItems.new(story_id: @story.id, user_key: @user.api_key,
+            #                             item: @item).post
+
+
+            #   @story.reload
+            #   positions = @story.set_items.map(&:position)              
+              
+            #   expect(position).to eq(positions.uniq)
+            # end                      
+          end
 
           context 'valid user and story' do
             before do

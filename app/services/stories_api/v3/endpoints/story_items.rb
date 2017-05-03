@@ -58,13 +58,14 @@ module StoriesApi
 
           if position
             response = StoriesApi::V3::Endpoints::Moves.new({story_id: story.id.to_s, 
-                                                  user_key: user.api_key,
-                                                  item_id: story_item.id.to_s,
-                                                  position: position}).post
+                                                             user_key: user.api_key,
+                                                             item_id: story_item.id.to_s,
+                                                             position: position}).post
+            story_item.reload
           end
 
           create_response(status: 200,
-                          payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(story_item.reload))
+                          payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(story_item))
         end
       end
     end

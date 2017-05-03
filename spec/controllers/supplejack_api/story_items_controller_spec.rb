@@ -123,7 +123,9 @@ module SupplejackApi
           result = JSON.parse(response.body).deep_symbolize_keys
           result.delete(:id)
 
-          expect(result).to eq block
+          expect(result).to eq ({ type: 'text', sub_type: 'heading',
+                                  content: { value: 'sometext'},
+                                  meta: { some: 'foo' }, position: 1 })
         end
       end
     end

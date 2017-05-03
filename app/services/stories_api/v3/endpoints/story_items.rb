@@ -36,6 +36,8 @@ module StoriesApi
           return @errors if @errors
           return create_error('MandatoryParamMissing', param: :item) unless params[:item]
 
+          position = params[:item].delete(:position)
+
           validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(params[:item])
           return create_error('SchemaValidationError', errors: validator.messages(full: true)) unless validator.success?
 
@@ -53,6 +55,14 @@ module StoriesApi
           story.cover_thumbnail = story_item.content[:image_url] unless story.cover_thumbnail
 
           story.save!
+
+          if position
+            StoriesApi::V3::Endpoints::Moves.new(story_id: story.id.to_s,
+                                                 user_key: user.api_key,
+                                                 item_id: story_item.id.to_s,
+                                                 position: position).post
+            story_item.reload
+          end
 
           create_response(status: 200,
                           payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(story_item))

@@ -29,8 +29,8 @@ gem 'rb-fsevent', require: false
 gem 'rubocop', require: false
 gem 'simplecov', require: false
 gem 'yard', require: false, group: :development
-gem 'sunspot_rails', git: 'git@github.com:boost/sunspot.git', branch: 'fix_unicode_indexing'
-gem 'sunspot_solr', git: 'git@github.com:boost/sunspot.git', branch: 'fix_unicode_indexing'
+gem 'sunspot_rails', '~> 2.2.7'
+gem 'sunspot_solr', '~> 2.2.7'
 # This is a gem created by fedegl to test the XML responses, its part of the Boost github organization account
 gem 'xml_spec', git: 'https://github.com/boost/xml_spec', require: false
 

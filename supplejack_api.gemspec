@@ -56,6 +56,8 @@ Gem::Specification.new do |s|
   s.add_dependency 'dry-struct'
 
   # Adding sunspot_solr so app has access to sunspot:solr rake tasks
+  s.add_dependency 'sunspot_rails', '~> 2.2.7'
+  s.add_dependency 'sunspot_solr', '~> 2.2.7'
   s.add_dependency 'json-ld', '~> 1.1.4'
   s.add_dependency 'activeresource'
   s.add_dependency 'rufus-scheduler', '= 2.0.17'

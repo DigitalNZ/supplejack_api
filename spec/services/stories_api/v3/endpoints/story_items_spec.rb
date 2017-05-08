@@ -84,6 +84,42 @@ module StoriesApi
             )          
           end
 
+          context 'when position passed on create item' do
+            before do
+              record = create(:record)
+              @story = create(:story)
+              @user = @story.user
+              @item = create(:story_item, type: 'embed', sub_type: 'dnz', 
+                             position: 1, # This value is the index for the array of set items. ie position 2
+                             content: { id: record.record_id }, meta: {}).attributes.symbolize_keys
+              
+              @item.delete(:_id)
+            end
+
+            it 'calls the moves service' do
+              expect_any_instance_of(StoriesApi::V3::Endpoints::Moves).to receive(:post)
+
+              StoryItems.new(story_id: @story.id, user_key: @user.api_key,
+                             item: @item).post
+            end
+
+            it 'creates a new set item with the provided position' do
+              response = StoryItems.new(story_id: @story.id, user_key: @user.api_key,
+                                        item: @item).post
+            
+              expect(response[:status]).to eq 200
+              expect(response[:payload][:position]).to eq 2
+            end
+
+            it 'updates positions of each story set item' do
+              response = StoryItems.new(story_id: @story.id, user_key: @user.api_key,
+                                        item: @item).post
+
+              @story.reload
+
+              expect(@story.set_items.last.position).to eq 2
+            end
+          end
 
           context 'valid user and story' do
             before do
@@ -158,10 +194,10 @@ module StoriesApi
             # Text Items
             context 'text item' do
               before do
-                factory = create(:story_item, type: 'text', sub_type: 'rich-text',
+                @factory = create(:story_item, type: 'text', sub_type: 'rich-text',
                                              content: { value: 'Some Text' },
                                              meta: { metadata: 'Some Meta' })
-                @item = factory.attributes.symbolize_keys
+                @item = @factory.attributes.symbolize_keys
                 @item.delete(:_id)
               end
 
@@ -186,7 +222,10 @@ module StoriesApi
 
                 result = response[:payload]
                 result.delete(:id)
-                expect(result).to eq @item
+                result.delete(:record_id) 
+                expect(result).to eq ({ position: 3, type: "text", 
+                                        sub_type: "rich-text", content: { value: "Some Text" },
+                                        meta: { metadata: "Some Meta"}})
               end
             end
 

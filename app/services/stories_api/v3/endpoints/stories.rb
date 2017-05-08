@@ -34,6 +34,8 @@ module StoriesApi
         end
 
         def post
+          return create_error('UserNotFound', id: params[:user_key]) unless user.present?
+
           story = params[:story]
 
           return create_error('MandatoryParamMissing', param: :name) unless story.is_a?(Hash) && story[:name].present?

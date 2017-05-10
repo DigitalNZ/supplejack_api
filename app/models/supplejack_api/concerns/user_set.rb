@@ -173,7 +173,8 @@ module SupplejackApi::Concerns::UserSet
         send("#{attr}=", strip_tags(self[attr])) if self[attr].present?
       end
 
-      self.subjects = self[:subjects].map { |subject| strip_tags(subject) } if subjects.try(:any?)
+      self[:subjects] = [] unless self[:subjects]
+      self.subjects = self[:subjects].map { |subject| strip_tags(subject) }
       self.tags = subjects
 
       # Uncomment this when tags to subject syncing is removed

@@ -43,6 +43,7 @@ module SupplejackApi
         expect(user_set.privacy).to eq "public"
       end
 
+
       describe "set_default_privacy" do
         it "should not override the privacy if set" do
           user_set.privacy = "private"
@@ -52,6 +53,12 @@ module SupplejackApi
       end
 
       describe "#strip_html_tags" do
+        it "sets the subjects field to [] if it is nil" do
+          user_set.subjects = nil
+          user_set.save
+          user_set.reload
+          expect(user_set.subjects).to eq []
+        end
         it "removes html tags from the name" do
           user_set.name = "Dogs and <b>Cats</b>"
           user_set.strip_html_tags

@@ -24,7 +24,7 @@ module SupplejackApi
         options.reverse_merge!(root: false, items: false, user: false, total: false)
         hash = { 'sets' => [] }
         user_sets.each do |set|
-          hash['sets'] << UserSetSerializer.new(set, options).as_json
+          hash['sets'] << StoriesModerationSerializer.new(set, options).as_json
         end
         hash['total'] = UserSet.public_sets_count if options[:total]
         hash

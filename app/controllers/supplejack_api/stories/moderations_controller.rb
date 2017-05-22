@@ -13,7 +13,7 @@ module SupplejackApi
       respond_to :json
       before_action :authenticate_admin!
 
-      def index
+      def show
         @user_sets = UserSet.public_sets(page: params[:page])
         render json: serializable_array(@user_sets, user: true, total: true).to_json
       end

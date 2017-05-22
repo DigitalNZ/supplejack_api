@@ -77,12 +77,11 @@ module SupplejackApi
           expect(user_set.subjects).to eq ["Dogs", "Cats"]
         end
 
-        # Suspended till subject to tag syn is removed
-        # it "removes html tags from the tags" do
-        #   user_set.tags = ["Dogs", "<b>Cats</b>"]
-        #   user_set.strip_html_tags
-        #   expect(user_set.tags).to eq ["Dogs", "Cats"]
-        # end
+        it "removes html tags from the tags" do
+          user_set.tags = ["Dogs", "<b>Cats</b>"]
+          user_set.strip_html_tags
+          expect(user_set.tags).to eq ["Dogs", "Cats"]
+        end
       end
 
       it "calls update_record before saving" do

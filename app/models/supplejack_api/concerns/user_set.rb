@@ -175,10 +175,9 @@ module SupplejackApi::Concerns::UserSet
 
       self[:subjects] = [] unless self[:subjects]
       self.subjects = self[:subjects].map { |subject| strip_tags(subject) }
-      self.tags = subjects
 
-      # Uncomment this when tags to subject syncing is removed
-      # self.tags = self[:tags].map { |tag| strip_tags(tag) } if tags.try(:any?)
+      self[:tags] = [] unless self[:tags]
+      self.tags = self[:tags].map { |tag| strip_tags(tag) } # if tags.try(:any?)
     end
 
     def update_record

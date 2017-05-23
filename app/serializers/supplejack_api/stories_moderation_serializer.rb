@@ -11,4 +11,3 @@ module SupplejackApi
     attributes :id, :name, :user, :count, :approved, :created_at, :updated_at
   end
 end
-

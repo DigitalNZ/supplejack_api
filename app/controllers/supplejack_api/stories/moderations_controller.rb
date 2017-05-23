@@ -9,7 +9,6 @@
 module SupplejackApi
   module Stories
     class ModerationsController < ApplicationController
-
       respond_to :json
       before_action :authenticate_admin!
 

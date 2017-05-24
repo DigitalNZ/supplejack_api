@@ -113,7 +113,8 @@ module StoriesApi
           let(:patch) do
             {
               description: 'foobar',
-              subjects: ['tags', 'go', 'here']
+              tags: ['tags', 'go', 'here'],
+              subjects: ['subjects', 'go', 'here']
             }
           end
 
@@ -159,6 +160,7 @@ module StoriesApi
 
               expect(updated_story.description).to eq(patch[:description])
               expect(updated_story.subjects).to eq(patch[:subjects])
+              expect(updated_story.tags).to eq(patch[:tags])
             end
           end
         end

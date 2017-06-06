@@ -16,7 +16,7 @@ module SupplejackApi
             user.user_sets.create(attributes_for(:story))
           end
 
-          get :index, api_key: api_key, user_key: api_key
+          get :index, api_key: api_key, user_key: api_key, slim: 'false'
         end
 
         it 'returns a 200 http code' do

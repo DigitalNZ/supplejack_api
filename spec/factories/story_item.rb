@@ -63,7 +63,6 @@ FactoryGirl.define do
       end
 
       after(:create) do |item|
-        binding.pry if item.record.nil?
         item.record.save!
       end
     end

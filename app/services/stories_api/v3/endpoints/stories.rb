@@ -22,13 +22,11 @@ module StoriesApi
         def get
           return create_error('UserNotFound', id: params[:user_key]) unless user.present?
 
-          presented_stories = if params[:slim].present? && params[:slim]
-                                user.user_sets.order_by(updated_at: 'desc').map do |user_set|
-                                  ::StoriesApi::V3::Presenters::Story.new.call(user_set, true)
-                                end
-                              else
-                                user.user_sets.map(&::StoriesApi::V3::Presenters::Story)
-                              end
+          slim = !(params[:slim] == 'false')
+
+          presented_stories = user.user_sets.order_by(updated_at: 'desc').map do |user_set|
+            ::StoriesApi::V3::Presenters::Story.new.call(user_set, slim)
+          end
 
           create_response(status: 200, payload: presented_stories)
         end

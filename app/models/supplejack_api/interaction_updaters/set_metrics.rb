@@ -8,6 +8,8 @@ module SupplejackApi
         @model = SupplejackApi::InteractionModels::Set
       end
 
+      # For every set interaction UsageMetric is either created or found for today
+      # And the records_added_to_user_sets value is incermented
       def process(set_interactions)
         unique_facets = set_interactions.map(&:facet).uniq
 

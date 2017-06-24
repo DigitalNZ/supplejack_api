@@ -11,6 +11,8 @@ module SupplejackApi
         @model = OpenStruct.new(all: OpenStruct.new(delete_all: true))
       end
 
+      # Sums up UsageMetrics entries for the day for all afacets and
+      # writes it in UsageMetrics with record_field_value all
       def process(*)
         usage_metrics = SupplejackApi::UsageMetrics
                         .where(:record_field_value.ne => 'all')

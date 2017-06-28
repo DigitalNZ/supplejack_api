@@ -41,9 +41,6 @@ module SupplejackApi
               :name => {
                 '@id' => 'foaf:name'
               },
-              :title => {
-                '@id' => 'dc:title'
-              },
               :date => {
                 '@id' => 'dc:date'
               },
@@ -67,6 +64,18 @@ module SupplejackApi
         s.include_context_fields!(@hash)
         expect(@hash['@context']).to eq "#{ENV['HTTP_HOST']}/schema"
         expect(@hash[:name]).to eq 'McCahon'
+      end
+    end
+
+    describe '#include_place_fields!' do
+      context 'emd:Agent' do
+        it 'shows the :biographicalInformation, :dateOfBirth, and :dateOfDeath fields'
+        it 'does not show the :note, :latitude, and :longitude fields'
+      end
+
+      context 'edm:Place' do
+        it 'shows the :note, :latitude, and :longitude fields'
+        it 'does not show the :biographicalInformation, :dateOfBirth, and :dateOfDeath fields'
       end
     end
 

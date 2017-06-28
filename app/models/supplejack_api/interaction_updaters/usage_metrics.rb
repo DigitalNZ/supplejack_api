@@ -8,6 +8,9 @@ module SupplejackApi
         @model = SupplejackApi::InteractionModels::Record
       end
 
+      # Record interactions are fetched for search, get and user_set
+      # UsageMetrics is created or found with facet from interaction
+      # search, gets, user_set_views and total_views are computed and updated
       def process(record_interactions)
         search_counts = build_hash_for(record_interactions, 'search')
         get_counts = build_hash_for(record_interactions, 'get')

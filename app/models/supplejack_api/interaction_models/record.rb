@@ -6,6 +6,8 @@
 # Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
+# This model is a temporary store to log every request to index, show action for a Record
+# This data is used by interaction udpaters to create UsageMetric entries and deleted after
 module SupplejackApi
   module InteractionModels
     class Record
@@ -19,6 +21,7 @@ module SupplejackApi
 
       @field = :display_collection
 
+      # Creates an entry for record search
       def self.create_search(object)
         results = object.results.map(&@field).flatten
         create(request_type: 'search', log_values: results) unless results.empty?
@@ -26,6 +29,7 @@ module SupplejackApi
         Rails.logger.warn "[RecordInteraction] Field #{field} does not exist"
       end
 
+      # Creates an entry for a record view
       def self.create_find(object)
         return if object.nil?
         result = object.send(@field)

@@ -41,6 +41,7 @@ module SupplejackApi
 
       include_individual_fields!(hash)
       include_context_fields!(hash)
+      include_place_fields!(hash)
       include_reverse_fields!(hash) if reverse?
       include!(:source_authorities, node: hash) if source_authorities?
       hash
@@ -63,6 +64,14 @@ module SupplejackApi
       hash
     end
 
+    def include_place_fields!(hash)
+      if object.concept_type == 'edm:Agent'
+        hash.except!(:latitude, :longitude, :note)
+      elsif object.concept_type == 'edm:Place'
+        hash.except!(:dateOfBirth, :dateOfDeath, :biographicalInformation)
+      end
+    end
+
     def include_individual_fields!(hash)
       if options[:fields].present?
         options[:fields].push(:concept_id)
@@ -81,7 +90,7 @@ module SupplejackApi
       hash
     end
 
-    def field_value(field)
+    def field_value(field, _options = {})
       value = if ConceptSchema.fields[field].try(:search_value) && ConceptSchema.fields[field].try(:store) == false
                 ConceptSchema.fields[field].search_value.call(object)
               else

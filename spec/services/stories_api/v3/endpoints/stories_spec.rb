@@ -26,7 +26,7 @@ module StoriesApi
           end
 
           context 'successful request' do
-            let(:response) { Stories.new(user_key: @user.api_key).get }
+            let(:response) { Stories.new(user_key: @user.api_key, slim: 'false').get }
             before do
               # So we have two users, because a story creates a user
               create(:story)

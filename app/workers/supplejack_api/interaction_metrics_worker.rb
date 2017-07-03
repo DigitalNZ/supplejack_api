@@ -17,6 +17,8 @@ module SupplejackApi
     # Contains list of +InteractionUpdater+ classes to be executed by worker
     @interaction_updaters = []
 
+    # This worker calls all the InteractionUpdater modules, which are now spread across
+    # supplejack_api and dnz api. All these updaters update UsageMetrics, different fields.
     def perform
       self.class.interaction_updaters.each do |interaction_updater|
         models_to_process = interaction_updater.model.all

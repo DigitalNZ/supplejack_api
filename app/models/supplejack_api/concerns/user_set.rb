@@ -58,7 +58,7 @@ module SupplejackApi::Concerns::UserSet
 
     before_validation :set_default_privacy
     before_save :calculate_count
-    before_save :strip_html_tags
+    before_save :strip_html_tags!
     before_save :update_record
     after_save :reindex_items
     before_destroy :delete_record
@@ -168,17 +168,16 @@ module SupplejackApi::Concerns::UserSet
 
     # Remove HTML tags from the name, description and tags
     #
-    def strip_html_tags
+    def strip_html_tags!
       [:name, :description].each do |attr|
         send("#{attr}=", strip_tags(self[attr])) if self[attr].present?
       end
 
       self[:subjects] = [] unless self[:subjects]
       self.subjects = self[:subjects].map { |subject| strip_tags(subject) }
-      self.tags = subjects
 
-      # Uncomment this when tags to subject syncing is removed
-      # self.tags = self[:tags].map { |tag| strip_tags(tag) } if tags.try(:any?)
+      self[:tags] = [] unless self[:tags]
+      self.tags = self[:tags].map { |tag| strip_tags(tag) } # if tags.try(:any?)
     end
 
     def update_record

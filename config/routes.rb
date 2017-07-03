@@ -1,8 +1,8 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 require 'sidekiq/web'
@@ -12,6 +12,10 @@ SupplejackApi::Engine.routes.draw do
   root to: 'records#index'
 
   devise_for :users, class_name: 'SupplejackApi::User'
+
+  namespace :stories do
+    resource :moderation, only: [:show]
+  end
 
   # Admin level authentication
   namespace :admin do
@@ -31,7 +35,7 @@ SupplejackApi::Engine.routes.draw do
     resources :concepts, only: [:index, :show] do
       resources :records, only: [:index], on: :member
     end
-    
+
     # Records
     resources :records, only: [:index, :show] do
       get :multiple, on: :collection
@@ -80,6 +84,7 @@ SupplejackApi::Engine.routes.draw do
       get :link_check_records, on: :member
     end
   end
+
 
   # Sources
   resources :sources, only: [:index, :update], constraints: SupplejackApi::HarvesterConstraint.new

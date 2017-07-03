@@ -28,8 +28,9 @@ module StoriesApi
             expect(presented_json[:creator]).to eq(story.user.name)
           end
 
-          it 'presents number_of_items as the count of the items in the UserSet' do
-            expect(presented_json[:number_of_items]).to eq(story.set_items.count)
+          it 'presents number_of_items as the count of non-text the items in the UserSet' do
+            story.set_items.first.type = 'embed'
+            expect(presented_json[:number_of_items]).to eq 1
           end
 
           it 'presents the contents field as an array of valid StoryItems' do
@@ -60,8 +61,9 @@ module StoriesApi
             expect(presented_json[:id]).to eq(story.id.to_s)
           end
 
-          it 'presents number_of_items as the count of the items in the UserSet' do
-            expect(presented_json[:number_of_items]).to eq(story.set_items.count)
+          it 'presents non-text block number_of_items as the count of the items in the UserSet' do
+            story.set_items.first.type = 'embed'
+            expect(presented_json[:number_of_items]).to eq 1
           end
 
           it 'presents the contents field as nil' do

@@ -89,7 +89,7 @@ module StoriesApi
               record = create(:record)
               @story = create(:story)
               @user = @story.user
-              @item = create(:story_item, type: 'embed', sub_type: 'dnz', 
+              @item = create(:story_item, type: 'embed', sub_type: 'record', 
                              position: 1, # This value is the index for the array of set items. ie position 2
                              content: { id: record.record_id }, meta: {}).attributes.symbolize_keys
               
@@ -129,7 +129,7 @@ module StoriesApi
 
             it 'should return error when type is missing' do
               response = StoryItems.new(story_id: @story.id, user_key: @user.api_key,
-                                        item: { sub_type: 'dnz', meta: {} }).post
+                                        item: { sub_type: 'record', meta: {} }).post
               expect(response).to eq(
                 status: 400,
                 exception: {
@@ -151,7 +151,7 @@ module StoriesApi
 
             it 'should return error when content is missing' do
               response = StoryItems.new(story_id: @story.id, user_key: @user.api_key,
-                                        item: { type: 'embed', sub_type: 'dnz', meta: {} }).post
+                                        item: { type: 'embed', sub_type: 'record', meta: {} }).post
 
               expect(response).to eq(
                 status: 400,
@@ -162,7 +162,7 @@ module StoriesApi
             end
 
             it 'should return error when type is not valid' do
-              item = create(:story_item, type: 'youtube', sub_type: 'dnz', content: {}, meta: {}).attributes.symbolize_keys
+              item = create(:story_item, type: 'youtube', sub_type: 'record', content: {}, meta: {}).attributes.symbolize_keys
               item.delete(:_id)
 
               response = StoryItems.new(story_id: @story.id, user_key: @user.api_key,
@@ -186,7 +186,7 @@ module StoriesApi
               expect(response).to eq(
                 status: 400,
                 exception: {
-                  message: 'Unsupported Values: sub_type must be one of: dnz, heading, rich-text'
+                  message: 'Unsupported Values: sub_type must be one of: record, heading, rich-text'
                 }
               )
             end
@@ -233,7 +233,7 @@ module StoriesApi
             context 'embed item' do
               before do
                 record = create(:record)
-                factory = create(:story_item, type: 'embed', sub_type: 'dnz',
+                factory = create(:story_item, type: 'embed', sub_type: 'record',
                                              content: { id: record.record_id},
                                              meta: { metadata: 'Some Meta' })
 
@@ -288,7 +288,7 @@ module StoriesApi
 
               it 'updates the cover thumbnail if it dosent exist' do
                 @story.update_attribute(:cover_thumbnail, nil)
-                factory = create(:story_item, type: 'embed', sub_type: 'dnz',
+                factory = create(:story_item, type: 'embed', sub_type: 'record',
                              content: { id: record.record_id},
                              meta: { metadata: 'Some Meta' })
 

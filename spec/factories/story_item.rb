@@ -35,7 +35,7 @@ FactoryGirl.define do
       end
 
       type 'embed'
-      sub_type 'dnz'
+      sub_type 'record'
       content {{
         id: id,
         record: {

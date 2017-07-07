@@ -13,26 +13,25 @@ source 'http://rubygems.org'
 # development dependencies will be added by default to the :development group.
 gemspec
 
-# jquery-rails is used by the dummy application
-gem 'jquery-rails'
-
 # Xml doesn't get support in AMS, this is an existing fork
 gem 'active_model_serializers', git: 'https://github.com/boost/active_model_serializers'
+gem 'codeclimate-test-reporter', group: :test, require: nil
+gem 'cucumber-rails', require: false
+gem 'dimensions', require: false
+gem 'factory_girl_rails', require: false
+# jquery-rails is used by the dummy application
+gem 'jquery-rails'
+gem 'mimemagic', require: false
 gem 'mongoid_auto_inc', git: 'https://github.com/boost/mongoid_auto_inc.git'
-
 # Must add 'require' statments in Gemfile
 gem 'mongoid-tree', require: 'mongoid/tree'
-gem 'dimensions', require: false
-gem 'mimemagic', require: false
 gem 'rb-fsevent', require: false
-gem 'cucumber-rails', require: false
-gem 'factory_girl_rails', require: false
+gem 'rubocop', require: false
 gem 'simplecov', require: false
 gem 'yard', require: false, group: :development
 # This is a gem created by fedegl to test the XML responses, its part of the Boost github organization account
 gem 'xml_spec', git: 'https://github.com/boost/xml_spec', require: false
-gem 'codeclimate-test-reporter', group: :test, require: nil
-gem 'rubocop', require: false
+
 group :test do
   gem 'faker'
   gem 'json-schema'

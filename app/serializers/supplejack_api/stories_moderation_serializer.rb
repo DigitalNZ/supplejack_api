@@ -8,6 +8,6 @@
 
 module SupplejackApi
   class StoriesModerationSerializer < ActiveModel::Serializer
-    attributes :id, :name, :user, :count, :approved, :created_at, :updated_at
+    attributes :id, :name, :user, :count, :approved, :featured, :created_at, :updated_at
   end
 end

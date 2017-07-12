@@ -12,7 +12,7 @@ module SupplejackApi
       include Concerns::Stories
 
       def index
-        render_response(:stories)
+        render_response(:featured)
       end
     end
   end

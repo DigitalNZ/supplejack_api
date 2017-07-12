@@ -59,7 +59,6 @@ SupplejackApi::Engine.routes.draw do
       end
     end
   end
-  # get 'stories/featured', to: 'featured#index'
 
   scope '/:version/metrics', version: /v3/, defaults: {format: 'json'} do
     get '/', to: 'metrics_api#root'

@@ -11,6 +11,10 @@ module StoriesApi
     module Endpoints
       class Featured
         include Helpers
+        attr_reader :params, :errors
+
+        def initialize(params = nil)
+        end
 
         def get
           stories = SupplejackApi::UserSet.featured_sets(4)

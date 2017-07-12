@@ -79,7 +79,6 @@ class ConceptSchema
     store false
     search_as [:filter]
     type :string
-    namespace :owl
     search_value do |concept|
       concept.concept_type
     end

@@ -50,12 +50,16 @@ SupplejackApi::Engine.routes.draw do
     end
 
     # Stories
+    namespace 'stories' do
+      resources :featured, only: [:index]
+    end
     resources :stories, except: [:new, :edit] do
       resources :items, controller: :story_items, except: [:new, :edit] do
         resources :moves, only: [:create], to: 'story_item_moves'
       end
     end
   end
+  # get 'stories/featured', to: 'featured#index'
 
   scope '/:version/metrics', version: /v3/, defaults: {format: 'json'} do
     get '/', to: 'metrics_api#root'

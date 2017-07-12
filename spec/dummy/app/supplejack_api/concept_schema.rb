@@ -75,6 +75,14 @@ class ConceptSchema
   model_field :note, field_options: { type: String }, namespace: :wgs84
   model_field :latitude, field_options: { type: Integer }, namespace: :wgs84
   model_field :longitude, field_options: { type: Integer }, namespace: :wgs84
+  model_field :type do
+    store false
+    search_as [:filter]
+    type :string
+    search_value do |concept|
+      concept.concept_type
+    end
+  end
 
   # Use store: false to display the fields in the /schema
   model_field :date, store: false, namespace: :dc

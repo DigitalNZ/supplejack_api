@@ -11,7 +11,7 @@ module StoriesApi
     module Schemas
       module StoryItem
         module Embed
-          Dnz = Dry::Validation.Schema(Block) do
+          Record = Dry::Validation.Schema(Block) do
             configure do
               def valid_alignments
                 %w(left center right)

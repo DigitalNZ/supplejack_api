@@ -16,7 +16,7 @@ module StoriesApi
           end
 
           def valid_sub_types
-            %w(dnz heading rich-text)
+            %w(record heading rich-text)
           end
 
           define! do

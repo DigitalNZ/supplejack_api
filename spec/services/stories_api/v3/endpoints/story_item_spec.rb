@@ -134,7 +134,7 @@ module StoriesApi
 
         describe '#patch' do
           it 'fails with no content id error' do
-            item = create(:story_item, type: 'embed', sub_type: 'dnz', position: 1,
+            item = create(:story_item, type: 'embed', sub_type: 'record', position: 1,
                           content: { title: 'Title', display_collection: 'Marama', value: 'bar',
                                      category: ['Te Papa'], image_url: 'url', tags: %w(foo bar)},
                           meta: { size: 1, metadata: 'Some Meta' }).attributes.symbolize_keys
@@ -150,7 +150,7 @@ module StoriesApi
           end
 
           it 'fails with content must be an intiger error' do
-            item = create(:story_item, type: 'embed', sub_type: 'dnz', position: 1,
+            item = create(:story_item, type: 'embed', sub_type: 'record', position: 1,
                           content: { id: "zfkjg"},
                           meta: { size: 1, metadata: 'Some Meta' }).attributes.symbolize_keys
             item.delete(:_id)
@@ -166,7 +166,7 @@ module StoriesApi
 
           it 'updates given set item' do
             record = create(:record)
-            item = create(:story_item, type: 'embed', sub_type: 'dnz', position: 1,
+            item = create(:story_item, type: 'embed', sub_type: 'record', position: 1,
                           content: { id: record.record_id},
                           meta: { size: 1, metadata: 'Some Meta' }).attributes.symbolize_keys
             item.delete(:_id)
@@ -185,7 +185,7 @@ module StoriesApi
             let(:record) { create(:record) }
 
             it 'updates cover thumbnail of story if meta is_cover true' do
-              item = create(:story_item, type: 'embed', sub_type: 'dnz', position: 1,
+              item = create(:story_item, type: 'embed', sub_type: 'record', position: 1,
                             content: { id: record.record_id},
                             meta: { size: 1, metadata: 'Some Meta', is_cover: true}).attributes.symbolize_keys
 
@@ -199,7 +199,7 @@ module StoriesApi
             end
 
             it 'updates cover thumbnail of story as nil if meta is_cover false' do
-              item = create(:story_item, type: 'embed', sub_type: 'dnz', position: 1,
+              item = create(:story_item, type: 'embed', sub_type: 'record', position: 1,
                             content: { id: record.record_id},
                             meta: { size: 1, metadata: 'Some Meta', is_cover: false}).attributes.symbolize_keys
               @story.update_attribute(:cover_thumbnail, @story.set_items.first.content[:image_url])

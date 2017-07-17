@@ -17,7 +17,7 @@ module SupplejackApi
     def create
       # This ugly fix should be removed when digitalnz.org is decommissioned
       updated_params = record_params.merge(type: 'embed',
-                                           sub_type: 'dnz',
+                                           sub_type: 'record',
                                            content: { record_id: record_params[:record_id] },
                                            meta: { align_mode: 0 })
 

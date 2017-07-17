@@ -338,8 +338,8 @@ module SupplejackApi
 
       it "can replace the set items" do
         user_set.save
-        user_set.set_items.create(record_id: 13, :type=>"embed", :sub_type=>"dnz", :content=>{:record_id=>"13"}, :meta=>{:align_mode=>0})
-        user_set.update_attributes_and_embedded(records: [{"record_id" => "13", "position" => nil, :type=>"embed", :sub_type=>"dnz", :content=>{:record_id=>"13"}, :meta=>{:align_mode=>0}}])
+        user_set.set_items.create(record_id: 13, :type=>"embed", :sub_type=>"record", :content=>{:record_id=>"13"}, :meta=>{:align_mode=>0})
+        user_set.update_attributes_and_embedded(records: [{"record_id" => "13", "position" => nil, :type=>"embed", :sub_type=>"record", :content=>{:record_id=>"13"}, :meta=>{:align_mode=>0}}])
         user_set.reload
         expect(user_set.set_items.size).to eq 1
         expect(user_set.set_items.first.record_id).to eq 13

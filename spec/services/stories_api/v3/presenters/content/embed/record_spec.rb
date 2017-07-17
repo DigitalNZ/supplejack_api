@@ -3,7 +3,7 @@ module StoriesApi
     module Presenters
       module Content
         module Embed
-          RSpec.describe Dnz do
+          RSpec.describe Record do
             let(:record) {create(:record_with_fragment)}
             let(:block) {create(:embed_dnz_item, id: record.record_id)}
             let(:result) {subject.call(block)}

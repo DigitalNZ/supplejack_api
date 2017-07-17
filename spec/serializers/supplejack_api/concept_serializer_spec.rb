@@ -41,6 +41,9 @@ module SupplejackApi
               :name => {
                 '@id' => 'foaf:name'
               },
+              :type => {
+                '@id' => ':type'
+              },
               :date => {
                 '@id' => 'dc:date'
               },

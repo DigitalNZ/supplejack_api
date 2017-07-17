@@ -103,7 +103,7 @@ module SupplejackApi
         it 'should return error for unknow values for sub type' do
           post :create, story_id: story.id.to_s, api_key: api_key, user_key: api_key, item: { type: 'text', sub_type: 'foo' }
           expect(response.status).to eq 400
-          expect(JSON.parse(response.body)['errors']).to eq 'Unsupported Values: sub_type must be one of: dnz, heading, rich-text'
+          expect(JSON.parse(response.body)['errors']).to eq 'Unsupported Values: sub_type must be one of: record, heading, rich-text'
         end
 
         it 'should return error if content and meta is not posted' do

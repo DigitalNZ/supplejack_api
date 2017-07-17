@@ -4,7 +4,7 @@ module StoriesApi
     module Presenters
       module Content
         module Embed
-          class Dnz
+          class Record
             RECORD_FIELDS = {
               title: :title,
               display_collection: :display_collection,

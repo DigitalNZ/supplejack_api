@@ -33,6 +33,10 @@ module SupplejackApi
         expect(serialized_user_set).to have_key :approved
       end
 
+      it 'renders the approved field' do
+        expect(serialized_user_set).to have_key :featured
+      end
+
       it 'renders the created_at field' do
         expect(serialized_user_set).to have_key :created_at
       end

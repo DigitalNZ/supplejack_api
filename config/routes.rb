@@ -50,6 +50,9 @@ SupplejackApi::Engine.routes.draw do
     end
 
     # Stories
+    namespace 'stories' do
+      resources :featured, only: [:index]
+    end
     resources :stories, except: [:new, :edit] do
       resources :items, controller: :story_items, except: [:new, :edit] do
         resources :moves, only: [:create], to: 'story_item_moves'

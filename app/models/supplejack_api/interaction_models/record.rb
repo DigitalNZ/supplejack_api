@@ -25,8 +25,8 @@ module SupplejackApi
       def self.create_search(object)
         results = object.results.map(&@field).flatten
         create(request_type: 'search', log_values: results) unless results.empty?
-      rescue
-        Rails.logger.warn "[RecordInteraction] Field #{field} does not exist"
+      rescue StandardError => e
+        Rails.logger.warn "[RecordInteraction] #{e.message}"
       end
 
       # Creates an entry for a record view
@@ -35,8 +35,8 @@ module SupplejackApi
         result = object.send(@field)
         result = [result] unless result.is_a? Array
         create(request_type: 'get', log_values: result) unless result.empty?
-      rescue
-        Rails.logger.warn "[RecordInteraction] Field #{field} does not exist"
+      rescue StandardError => e
+        Rails.logger.warn "[RecordInteraction] #{e.message}"
       end
 
       # Creates one Interaction Model that contains set items in a set
@@ -56,8 +56,8 @@ module SupplejackApi
         end
 
         create(request_type: 'user_set', log_values: results.flatten) unless results.empty?
-      rescue
-        Rails.logger.warn "[RecordInteraction] Field #{field} does not exist"
+      rescue StandardError => e
+        Rails.logger.warn "[RecordInteraction] #{e.message}"
       end
     end
   end

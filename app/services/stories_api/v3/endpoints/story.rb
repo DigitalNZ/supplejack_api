@@ -43,7 +43,6 @@ module StoriesApi
                     @user.user_sets.custom_find(params[:id])
                   end
 
-
           return create_error('StoryNotFound', id: params[:id]) unless story.present?
 
           merge_patch = PerformMergePatch.new(::StoriesApi::V3::Schemas::Story, ::StoriesApi::V3::Presenters::Story.new)

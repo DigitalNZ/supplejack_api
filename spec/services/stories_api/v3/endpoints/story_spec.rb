@@ -162,6 +162,38 @@ module StoriesApi
               expect(updated_story.subjects).to eq(patch[:subjects])
               expect(updated_story.tags).to eq(patch[:tags])
             end
+
+            it 'cannot be updated by a non admin user' do
+              updated_story = SupplejackApi::UserSet.custom_find(story.id)
+
+              expect(updated_story.approved).to be false
+              expect(updated_story.featured).to be false
+            end
+          end
+
+          context 'admin fields' do
+            let(:user) { create(:admin_user) }
+
+            let(:patch) do
+              {
+                description: 'foobar',
+                tags: ['tags', 'go', 'here'],
+                subjects: ['subjects', 'go', 'here'],
+                approved: true,
+                featured: true,
+              }
+            end
+            let(:response) { Story.new(id: story.id, story: patch, user_key: user.authentication_token).patch }
+
+            context
+
+            it 'can be updated by and admin user' do
+              updated_story = SupplejackApi::UserSet.custom_find(story.id)
+
+              expect(updated_story.approved).to be true
+              expect(updated_story.featured).to be true
+            end
+
           end
         end
       end

@@ -60,7 +60,6 @@ RSpec.configure do |config|
       klass = "#{model.capitalize}Schema".constantize
 
       allow(klass).to receive(:default_role) { double(:role, name: :developer) }
-      allow(klass).to receive_message_chain(:roles, :keys) { [:developer] }
     end
   end
 

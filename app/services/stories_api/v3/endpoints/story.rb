@@ -16,6 +16,7 @@ module StoriesApi
 
         def initialize(params)
           @params = params
+          # user from user_key, not api_key
           @user = current_user(params)
         end
 
@@ -35,7 +36,13 @@ module StoriesApi
         end
 
         def patch
-          story = user.user_sets.custom_find(params[:id])
+          story = if RecordSchema.roles[@user.role.to_sym].try(:admin)
+                    ::SupplejackApi::UserSet.custom_find(params[:id])
+                  else
+                    strip_admin_params
+                    @user.user_sets.custom_find(params[:id])
+                  end
+
 
           return create_error('StoryNotFound', id: params[:id]) unless story.present?
 
@@ -57,6 +64,12 @@ module StoriesApi
           story.delete
 
           create_response(status: 204)
+        end
+
+        def strip_admin_params
+          [:approved, :featured].map do |field|
+            @params[:story].delete(field) if @params[:story].present?
+          end
         end
       end
     end

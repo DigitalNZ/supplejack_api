@@ -36,7 +36,7 @@ module StoriesApi
         end
 
         def patch
-          story = if RecordSchema.roles[@user.role.to_sym].try(:admin)
+          story = if @user.admin?
                     ::SupplejackApi::UserSet.custom_find(params[:id])
                   else
                     strip_admin_params
@@ -65,8 +65,10 @@ module StoriesApi
           create_response(status: 204)
         end
 
+        private
+
         def strip_admin_params
-          [:approved, :featured].map do |field|
+          [:approved, :featured].each do |field|
             @params[:story].delete(field) if @params[:story].present?
           end
         end

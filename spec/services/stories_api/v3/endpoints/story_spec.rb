@@ -185,8 +185,6 @@ module StoriesApi
             end
             let(:response) { Story.new(id: story.id, story: patch, user_key: user.authentication_token).patch }
 
-            context
-
             it 'can be updated by and admin user' do
               updated_story = SupplejackApi::UserSet.custom_find(story.id)
 

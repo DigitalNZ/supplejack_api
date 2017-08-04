@@ -276,5 +276,25 @@ module SupplejackApi
       end
     end
 
+    describe '#remove_from_index' do
+      before(:each) do
+        @record = FactoryGirl.build(:record)
+      end
+
+      it 'calls Sunspot remove on a record that does not have active status' do
+        @record.update_attribute(:status, 'suppressed')
+        expect(Sunspot).to receive(:remove)
+
+        @record.remove_from_index
+      end
+
+      it 'does nothing if the record has active status' do
+        @record.update_attribute(:status, 'active')
+        expect(Sunspot).not_to receive(:remove)
+
+        @record.remove_from_index
+      end
+    end
+
   end
 end

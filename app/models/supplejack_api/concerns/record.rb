@@ -19,6 +19,7 @@ module SupplejackApi::Concerns::Record
 
     # Callbacks
     before_save :merge_fragments
+    after_save :remove_from_index
 
     # Scopes
     scope :active,          -> { where(status: 'active') }
@@ -103,6 +104,10 @@ module SupplejackApi::Concerns::Record
 
     def fragment_class
       SupplejackApi::ApiRecord::RecordFragment
+    end
+
+    def remove_from_index
+      Sunspot.remove(self) unless active?
     end
   end
 end

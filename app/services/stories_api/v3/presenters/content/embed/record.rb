@@ -10,6 +10,7 @@ module StoriesApi
               display_collection: :display_collection,
               category: :category,
               image_url: :large_thumbnail_url,
+              landing_url: :landing_url,
               tags: :tag,
               description: :description,
               content_partner: :content_partner

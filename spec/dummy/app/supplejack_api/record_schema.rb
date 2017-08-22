@@ -33,6 +33,7 @@ class RecordSchema
 
   string  :thumbnail_url
   string  :large_thumbnail_url
+  string  :landing_url, namespace: :dc
 
   # Groups
   group :default do
@@ -49,7 +50,8 @@ class RecordSchema
       :children,
       :nz_citizen,
       :birth_date,
-      :age
+      :age,
+      :landing_url
     ]
   end
 

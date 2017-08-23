@@ -16,6 +16,7 @@ module StoriesApi
           :privacy,
           :copyright,
           :featured,
+          :featured_at,
           :approved,
           :tags,
           :subjects,

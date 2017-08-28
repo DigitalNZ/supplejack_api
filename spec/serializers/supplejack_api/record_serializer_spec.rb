@@ -14,22 +14,6 @@ module SupplejackApi
       allow(RecordSchema).to receive(:roles) { double(:developer).as_null_object }
     end
 
-    def record_hash(attributes={}, method=nil, options={})
-      record_fields = Record.fields.keys
-      record_attributes = Hash[attributes.map {|k,v| [k,v] if record_fields.include?(k.to_s)}.compact]
-      attributes.delete_if {|k,v| record_fields.include?(k.to_s) }
-
-      @record = FactoryGirl.build(:record, record_attributes)
-      @record.fragments.build(attributes)
-      @serializer = RecordSerializer.new(@record, options)
-
-      if method
-        @serializer.send(method)
-      else
-        @serializer.as_json[:record]
-      end
-    end
-
     def serializer(options={}, attributes={})
       record_fields = Record.fields.keys
       record_attributes = Hash[attributes.map {|k,v| [k,v] if record_fields.include?(k.to_s)}.compact]

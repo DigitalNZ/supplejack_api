@@ -10,7 +10,7 @@ module SupplejackApi
   class Concept
     include Support::Concept::Storable
     include Support::Concept::Searchable
-    include ActiveModel::SerializerSupport
+    # include ActiveModel::SerializerSupport
 
     def self.build_context(fields)
       context = {}

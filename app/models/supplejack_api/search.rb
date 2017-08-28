@@ -8,7 +8,7 @@
 
 module SupplejackApi
   class Search
-    include ActiveModel::SerializerSupport
+    # include ActiveModel::SerializerSupport
     include SupplejackApi::Concerns::Searchable
   end
 end

@@ -8,6 +8,18 @@
 
 module SupplejackApi
   class RecordSerializer < ActiveModel::Serializer
-    include SupplejackApi::Concerns::RecordSerializable
+    # include SupplejackApi::Concerns::RecordSerializable
+
+    RecordSchema.fields.each do |name, definition|
+      if definition.search_value.present? && !definition.store
+        attribute name do
+          definition.search_value.call(object)
+        end
+      else
+        attribute name do
+          object.public_send(name)
+        end
+      end
+    end
   end
 end

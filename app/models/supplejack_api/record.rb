@@ -12,7 +12,7 @@ module SupplejackApi
     include Support::Searchable
     include Support::Harvestable
     include Support::FragmentHelpers
-    include ActiveModel::SerializerSupport
+    # include ActiveModel::SerializerSupport
     include SupplejackApi::Concerns::Record
   end
 end

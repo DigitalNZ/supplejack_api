@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# app/services/determine_serializable_fields.rb
-class DetermineSerializableFields
+# app/services/determine_available_fields.rb
+class DetermineAvailableFields
   attr_reader :options
 
   def initialize(options = {})

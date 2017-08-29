@@ -30,5 +30,4 @@ module SupplejackApi
       end
     end
   end
-
 end

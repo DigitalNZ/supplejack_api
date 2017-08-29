@@ -9,16 +9,28 @@
 
 module SupplejackApi
   class RecordSerializer < ActiveModel::Serializer
+    attribute :id
+
     RecordSchema.fields.each do |name, definition|
-      if definition.search_value.present? && !definition.store
+      if definition.search_value.present? && definition.store == false
         attribute name do
           definition.search_value.call(object)
         end
       else
         attribute name do
-          object.public_send(name)
+          if object.public_send(name).nil?
+            definition.default_value
+          elsif definition.date_format.present?
+            format_date(object.public_send(name), definition.date_format)
+          else
+            object.public_send(name)
+          end
         end
       end
+    end
+
+    def format_date(date, format)
+      Time.zone.parse(date[0]).strftime(format)
     end
   end
 end

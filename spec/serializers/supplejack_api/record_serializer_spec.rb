@@ -14,6 +14,8 @@ module SupplejackApi
       allow(RecordSchema).to receive(:roles) { double(:developer).as_null_object }
     end
 
+    ## Check functionality but most likely replace with specs that cover the functionality of turning a schema into a serialized record. 
+
     def serializer(options={}, attributes={})
       record_fields = Record.fields.keys
       record_attributes = Hash[attributes.map {|k,v| [k,v] if record_fields.include?(k.to_s)}.compact]

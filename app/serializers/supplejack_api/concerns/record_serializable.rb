@@ -16,27 +16,27 @@ module SupplejackApi::Concerns::RecordSerializable
 
 
   # REFACTOR -- Used in concept_serializer.rb too
-  def field_value(field, _options = {})
-    # So this will find the search value of store is false in the Record Schema DSL
-    # Otherwise it will just send it to the object (which is the default behaviour of AMS)
-    value = if RecordSchema.fields[field].try(:search_value) && RecordSchema.fields[field].try(:store) == false
-              RecordSchema.fields[field].search_value.call(object)
-            else
-              object.public_send(field)
-            end
-
-    # If it's nil try the default_value
-
-    value = RecordSchema.fields[field].try(:default_value) if value.nil? rescue nil
-
-    # Something to do with dates
-
-    if RecordSchema.fields[field].try(:date_format)
-      value = format_date(value, RecordSchema.fields[field].try(:date_format))
-    end
-
-    value
-  end
+  # def field_value(field, _options = {})
+  #   # So this will find the search value of store is false in the Record Schema DSL
+  #   # Otherwise it will just send it to the object (which is the default behaviour of AMS)
+  #   value = if RecordSchema.fields[field].try(:search_value) && RecordSchema.fields[field].try(:store) == false
+  #             RecordSchema.fields[field].search_value.call(object)
+  #           else
+  #             object.public_send(field)
+  #           end
+  #
+  #   # If it's nil try the default_value
+  #
+  #   value = RecordSchema.fields[field].try(:default_value) if value.nil? rescue nil
+  #
+  #   # Something to do with dates
+  #
+  #   if RecordSchema.fields[field].try(:date_format)
+  #     value = format_date(value, RecordSchema.fields[field].try(:date_format))
+  #   end
+  #
+  #   value
+  # end
 
   # def role
   #   @role ||= options[:scope].role.to_sym rescue nil
@@ -88,31 +88,31 @@ module SupplejackApi::Concerns::RecordSerializable
   # end
 
 
-  # Returns a hash including all desirable record attributes and its associations
-  def serializable_hash
-    hash = attributes # {}
-    groups = (options[:groups] & RecordSchema.groups.keys) || [] # potentially [:default]
-    fields = Set.new # {}
-
-    groups.each do |group|
-      fields.merge(RecordSchema.groups[group].try(:fields)) # merge the fields into the empty set
-    end
-
-    # hash[:id] = field_value(:record_id, options) if fields.any?
-    # fields.each do |field|
-    #   hash[field] = field_value(field, options)
-    # end
-
-    # include_individual_fields!(hash)
-    # remove_restricted_fields!(hash)
-
-    hash[:next_page] = object.next_page if object.next_page.present?
-    hash[:next_record] = object.next_record if object.next_record.present?
-    hash[:previous_page] = object.previous_page if object.previous_page.present?
-    hash[:previous_record] = object.previous_record if object.previous_record.present?
-
-    hash
-  end
+  # # Returns a hash including all desirable record attributes and its associations
+  # def serializable_hash
+  #   hash = attributes # {}
+  #   groups = (options[:groups] & RecordSchema.groups.keys) || [] # potentially [:default]
+  #   fields = Set.new # {}
+  #
+  #   groups.each do |group|
+  #     fields.merge(RecordSchema.groups[group].try(:fields)) # merge the fields into the empty set
+  #   end
+  #
+  #   # hash[:id] = field_value(:record_id, options) if fields.any?
+  #   # fields.each do |field|
+  #   #   hash[field] = field_value(field, options)
+  #   # end
+  #
+  #   # include_individual_fields!(hash)
+  #   # remove_restricted_fields!(hash)
+  #
+  #   hash[:next_page] = object.next_page if object.next_page.present?
+  #   hash[:next_record] = object.next_record if object.next_record.present?
+  #   hash[:previous_page] = object.previous_page if object.previous_page.present?
+  #   hash[:previous_record] = object.previous_record if object.previous_record.present?
+  #
+  #   hash
+  # end
 
   # def include_individual_fields!(hash)
   #   if options[:fields].present?

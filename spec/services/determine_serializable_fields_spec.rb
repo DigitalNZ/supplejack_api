@@ -15,10 +15,6 @@ RSpec.describe DetermineSerializableFields do
         service = DetermineSerializableFields.new({ groups: [:default], fields: [:children]})
         expect(service.call).to eq [:name, :address, :email, :children]
       end
-
-      it 'removes fields that are restricted' do
-        
-      end
     end
   end
 end

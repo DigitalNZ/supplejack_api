@@ -21,7 +21,7 @@ module SupplejackApi
 
       begin
         if @search.valid?
-          respond_with @search, serializer: RecordSearchSerializer
+          respond_with @search, serializer: RecordSearchSerializer, record_fields: available_fields, root: 'search', adapter: :json
         else
           render request.format.to_sym => { errors: @search.errors }, status: :bad_request
         end
@@ -38,7 +38,7 @@ module SupplejackApi
 
     def show
       @record = SupplejackApi::Record.custom_find(params[:id], current_user, params[:search])
-      respond_with @record, serializer: RecordSerializer
+      respond_with @record, serializer: RecordSerializer, fields: available_fields, root: 'record', adapter: :json
     rescue Mongoid::Errors::DocumentNotFound
       render request.format.to_sym => { errors: "Record with ID #{params[:id]} was not found" }, status: :not_found
     end
@@ -66,6 +66,10 @@ module SupplejackApi
         params[:and] ||= {}
         params[:and][:concept_id] = params[:concept_id]
       end
+    end
+
+    def available_fields
+      DetermineAvailableFields.new(default_serializer_options).call
     end
   end
 end

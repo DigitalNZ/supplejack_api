@@ -34,6 +34,15 @@ class RecordSchema
   string  :thumbnail_url
   string  :large_thumbnail_url
   string  :landing_url, namespace: :dc
+  string :block_example do
+    store false
+    search_value do |record|
+      "Value of the block"
+    end
+  end
+
+  string :default_example, default_value: 'Default value'
+  datetime :created_at, date_format: "%y/%d/%m"
 
   # Groups
   group :default do

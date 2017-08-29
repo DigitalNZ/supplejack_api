@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -8,32 +9,20 @@
 
 module SupplejackApi
   class RecordSearchSerializer < ActiveModel::Serializer
-
     attribute :result_count do
       object.total
     end
 
+    attribute :results do
+      options = { fields: instance_options[:record_fields] }
+      ActiveModelSerializers::SerializableResource.new(object.results, options)
+    end
+
     attributes :per_page, :page, :request_url
+    attribute :solr_request_params, if: -> { object.solr_request_params }
+    attribute :warnings, if: -> { object.warnings.present? }
+    attribute :suggestion, if: -> { object.options[:suggets] }
 
-
-    hash[:result_count] = object.total
-    hash[:results] = records_serialized_array
-    hash[:per_page] = object.per_page
-    hash[:page] = object.page
-    hash[:request_url] = object.request_url
-    hash[:solr_request_params] = object.solr_request_params if object.solr_request_params
-    hash[:warnings] = object.warnings if object.warnings.present?
-    hash[:suggestion] = object.collation if object.options[:suggest]
-
-
-
-    # RecordSchema.groups.keys.each do |group|
-    #   define_method("#{group}?") do
-    #     return false unless options[:groups].try(:any?)
-    #     options[:groups].include?(group)
-    #   end
-    # end
-    #
     # def json_facets
     #   facets = {}
     #   object.facets.map do |facet|

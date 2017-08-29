@@ -14,7 +14,7 @@ module SupplejackApi
       allow(RecordSchema).to receive(:roles) { double(:developer).as_null_object }
     end
 
-    ## Check functionality but most likely replace with specs that cover the functionality of turning a schema into a serialized record. 
+    ## Check functionality but most likely replace with specs that cover the functionality of turning a schema into a serialized record.
 
     def serializer(options={}, attributes={})
       record_fields = Record.fields.keys
@@ -50,87 +50,6 @@ module SupplejackApi
         s = serializer({ fields: [:age] }, { age: 22 })
         s.include_individual_fields!(@hash)
         expect(@hash).to eq({ age: 22 })
-      end
-    end
-
-    describe '#remove_restricted_fields!' do
-      let(:hash) { {name: 'John Doe', address: "Wellington", email: ["johndoe@example.com"], age: 30} }
-      let(:user) { User.new(role: "developer") }
-      let(:restrictions) { { address: {"Wellington"=>["name"], "Auckland"=>["email"]},
-                             email: {/example.com/ => ["address", "age"]} } }
-      let(:developer_role) { double(:developer_role, field_restrictions: restrictions) }
-      let(:admin_role) { double(:admin_role, field_restrictions: nil) }
-
-      before(:each) do
-        allow(RecordSchema).to receive(:roles).and_return({ developer: developer_role, admin: admin_role })
-      end
-
-      context "string conditions" do
-        context "Wellington" do
-          let(:s) { serializer({scope: user}, {address: ["Wellington"]}) }
-
-          it "removes name field" do
-            s.remove_restricted_fields!(hash)
-            expect(hash[:name]).to be_nil
-          end
-
-          it "doesn't remove non-restriected fields" do
-            s.remove_restricted_fields!(hash)
-            expect(hash[:age]).to eq 30
-          end
-        end
-
-        context "Auckland" do
-          let(:s) { serializer({scope: user}, {address: ["Auckland"]}) }
-
-          it "removes email field" do
-            s.remove_restricted_fields!(hash)
-            expect(hash[:email]).to be_nil
-          end
-        end
-      end
-
-      context "regex conditions" do
-        let(:s) { serializer({scope: user}, {email: ["johndoe@example.com"]}) }
-
-        it "removes address field" do
-          s.remove_restricted_fields!(hash)
-          expect(hash[:address]).to be_nil
-        end
-      end
-
-      context "remove multiple fields" do
-        let(:s) { serializer({scope: user}, {email: ['johndoe@example.com']}) }
-
-        it "removes all fields that match the restrictions" do
-          s.remove_restricted_fields!(hash)
-          expect(hash[:large_thumbnail_url]).to be_nil
-          expect(hash[:thumbnail_url]).to be_nil
-        end
-      end
-
-      context "field value is empty" do
-        let(:s) { serializer({scope: user}, {address: nil}) }
-
-        it "doesn't fail when a string condition field value is empty" do
-          s.remove_restricted_fields!(hash)
-          expect(hash[:name]).to eq 'John Doe'
-        end
-
-        it "doesn't fail when a regex condition field value is empty" do
-          s.remove_restricted_fields!(hash)
-          expect(hash[:email]).to eq ['johndoe@example.com']
-        end
-      end
-
-      context "no restrictions for role" do
-        let(:admin_user) { User.new(role: "admin") }
-        let(:s) { serializer({scope: admin_user}) }
-
-        it "returns all fields" do
-          s.remove_restricted_fields!(hash)
-          expect(hash.keys).to eq [:name, :address, :email, :age]
-        end
       end
     end
 
@@ -186,25 +105,6 @@ module SupplejackApi
           end
         end
       end
-    end
-
-    describe '#field_restricted?' do
-    	let(:s) { serializer({groups: [:default]}) }
-
-  		it 'returns true if the field is restricted' do
-  			allow(s).to receive(:field_value) { 'Wellington' }
-  			expect(s.send(:field_restricted?, 'address', "Wellington")).to be_truthy
-  		end
-
-  		it 'returns false if the field is not restricted' do
-  			allow(s).to receive(:field_value) { 'Auckland' }
-  			expect(s.send(:field_restricted?, 'address', "Wellington")).to be_falsey
-  		end
-
-  		it 'handles multi-value fields' do
-  			allow(s).to receive(:field_value) { ['jdoe@test.com', 'johndoe@example.com'] }
-  			expect(s.send(:field_restricted?, 'email', /test.com/)).to be_truthy
-  		end
     end
 
     describe "#format_date" do

@@ -10,6 +10,10 @@
 module SupplejackApi
   class RecordSerializer < ActiveModel::Serializer
     attribute :id
+    attribute :next_page, if: -> { object.next_page.present? }
+    attribute :next_record, if: -> { object.next_record.present? }
+    attribute :previous_page, if: -> { object.previous_page.present? }
+    attribute :previous_record, if: -> { object.previous_record.present? }
 
     RecordSchema.fields.each do |name, definition|
       if definition.search_value.present? && definition.store == false
@@ -29,8 +33,10 @@ module SupplejackApi
       end
     end
 
+    private
+
     def format_date(date, format)
-      Time.zone.parse(date[0]).strftime(format)
+      date.strftime(format)
     end
   end
 end

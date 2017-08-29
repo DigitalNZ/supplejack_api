@@ -14,15 +14,6 @@ module SupplejackApi::Concerns::RecordSerializable
   #   serializable_hash.to_xml(root: 'record')
   # end
 
-  # def remove_restricted_fields!(hash)
-  #   role_field_restrictions.each do |conditional_field, restrictions|
-  #     restrictions.each do |condition, restricted_fields|
-  #       if field_restricted?(conditional_field, condition)
-  #         remove_field_values(restricted_fields, hash)
-  #       end
-  #     end
-  #   end
-  # end
 
   # REFACTOR -- Used in concept_serializer.rb too
   def field_value(field, _options = {})
@@ -85,6 +76,17 @@ module SupplejackApi::Concerns::RecordSerializable
   #     hash[field.to_sym] = nil
   #   end
   # end
+
+  # def remove_restricted_fields!(hash)
+  #   role_field_restrictions.each do |conditional_field, restrictions|
+  #     restrictions.each do |condition, restricted_fields|
+  #       if field_restricted?(conditional_field, condition)
+  #         remove_field_values(restricted_fields, hash)
+  #       end
+  #     end
+  #   end
+  # end
+
 
   # Returns a hash including all desirable record attributes and its associations
   def serializable_hash

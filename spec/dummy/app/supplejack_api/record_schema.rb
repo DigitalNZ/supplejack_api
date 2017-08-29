@@ -39,11 +39,12 @@ class RecordSchema
   group :default do
     fields [
       :name,
-      :address
+      :address,
+      :email
     ]
   end
 
-  group :all do
+  group :verbose do
     includes [:default]
     fields [
       :email,

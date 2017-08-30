@@ -15,6 +15,9 @@ class DetermineAvailableFields
 
     fields += options[:fields] if options[:fields].present?
 
+    # These fields are for paging between records
+    fields += %i[next_page next_record previous_page previous_record]
+
     fields
   end
 end

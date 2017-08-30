@@ -10,9 +10,9 @@
 module SupplejackApi
   class RecordSerializer < ActiveModel::Serializer
     attribute :id
-    attribute :next_page, if: -> { object.next_page.present? }
-    attribute :next_record, if: -> { object.next_record.present? }
-    attribute :previous_page, if: -> { object.previous_page.present? }
+    attribute :next_page,       if: -> { object.next_page.present? }
+    attribute :next_record,     if: -> { object.next_record.present? }
+    attribute :previous_page,   if: -> { object.previous_page.present? }
     attribute :previous_record, if: -> { object.previous_record.present? }
 
     RecordSchema.fields.each do |name, definition|

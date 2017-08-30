@@ -9,25 +9,32 @@ require 'spec_helper'
 
 module SupplejackApi
   describe RecordSearchSerializer do
+    let!(:record) { FactoryGirl.create(:record) }
+    let(:search)  { SupplejackApi::RecordSearch.new }
+    let(:serialized_search) { described_class.new(search).as_json }
 
-    def serializer(options={}, attributes={})
-      @user = FactoryGirl.build(:user, attributes)
-      @serializer = RecordSearchSerializer.new(@user, options)
+    it 'renders the :result_count' do
+      expect(serialized_search).to have_key :result_count
     end
 
-    describe '#default?' do
-      it 'should return true when default is part of the groups' do
-        expect(serializer(groups: [:default]).default?).to be_truthy
-      end
+    it 'renders the :results' do
+      expect(serialized_search).to have_key :results
+    end
 
-      it 'should return false when the group is verbose' do
-        expect(serializer(groups: [:verbose]).default?).to be_falsey
-      end
+    it 'renders :per_page' do
+      expect(serialized_search).to have_key :per_page
+    end
 
-      it 'should return false' do
-        expect(serializer(groups: nil).default?).to be_falsey
-        expect(serializer(groups: []).default?).to be_falsey
-      end
+    it 'renders :page' do
+      expect(serialized_search).to have_key :page
+    end
+
+    it 'renders :request_url' do
+      expect(serialized_search).to have_key :request_url
+    end
+
+    it 'renders the facets' do
+      expect(serialized_search).to have_key :facets
     end
   end
 end

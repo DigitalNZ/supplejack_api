@@ -44,6 +44,11 @@ module SupplejackApi
       expect(serialized_record[:children]).to eq ['Sally Doe', 'James Doe']
     end
 
+    # The purpose of these fields is so that if a user has made a search and clicked on a landing page for that record,
+    # we are able to go next and previous from the show page of that record between the search results.
+    # This saves us from attempting to store the search results on the client app
+    # The url looks like this /records/:record_jd.json?api_key=:api_key&search[text]=:search_term&text=:search_term
+
     it 'includes :next_record when it is present' do
       record.next_record = 2
       expect(serialized_record[:next_record]).to eq 2

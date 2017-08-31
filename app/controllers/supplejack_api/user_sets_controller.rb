@@ -51,14 +51,14 @@ module SupplejackApi
       if @user_set
         render json: @user_set, user: true, root: 'set', adapter: :json
       else
-        rende json: { errors: "Set with id: #{params[:id]} was not found." }, status: :not_found
+        render json: { errors: "Set with id: #{params[:id]} was not found." }, status: :not_found
       end
     end
 
     def create
       @user_set = current_user.user_sets.build
       if @user_set.update_attributes_and_embedded(params[:set])
-        render json: UserSetSerializer.new(@user_set, user: true)
+        render json: @user_set, user: true
       else
         render json: { errors: @user_set.errors.to_hash }, status: :unprocessable_entity
       end
@@ -66,7 +66,7 @@ module SupplejackApi
 
     def update
       if @user_set.update_attributes_and_embedded(params[:set], current_user)
-        render json: UserSetSerializer.new(@user_set, user: true)
+        render json: @user_set, user: true
       else
         render json: { errors: @user_set.errors.to_hash }, status: :unprocessable_entity
       end

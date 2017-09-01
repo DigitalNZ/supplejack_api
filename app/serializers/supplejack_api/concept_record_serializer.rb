@@ -13,7 +13,7 @@ module SupplejackApi
     end
 
     attribute '@type' do
-      hash['@type'] = 'edm:ProvidedCHO'
+      'edm:ProvidedCHO'
     end
 
     attributes :title, :description, :date, :display_content_partner, :display_collection, :thumbnail_url

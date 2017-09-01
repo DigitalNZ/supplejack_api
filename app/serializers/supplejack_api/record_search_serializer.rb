@@ -37,19 +37,6 @@ module SupplejackApi
       end
     end
 
-    # TODO jsonp?
-    # def to_json(options = {})
-    #   rendered_json = as_json(options).to_json
-    #   rendered_json = "#{object.jsonp}(#{rendered_json})" if object.jsonp
-    #   rendered_json
-    # end
-    #
-    # def as_json(_options = {})
-    #   hash = { search: serializable_hash }
-    #   hash[:search][:facets] = json_facets
-    #   hash
-    # end
-    #
     # TODO XML?
     # def to_xml(*args)
     #   hash = serializable_hash

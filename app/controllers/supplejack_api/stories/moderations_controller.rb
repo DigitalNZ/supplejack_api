@@ -1,4 +1,5 @@
-# frozen_string_literal: true# frozen_string_literal: true
+# frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -14,19 +15,7 @@ module SupplejackApi
 
       def show
         @user_sets = UserSet.public_sets(page: params[:page])
-        render json: serializable_array(@user_sets, user: true, total: true).to_json
-      end
-
-      private
-
-      def serializable_array(user_sets, options = {})
-        options.reverse_merge!(root: false, items: false, user: false, total: false)
-        hash = { 'sets' => [] }
-        user_sets.each do |set|
-          hash['sets'] << StoriesModerationSerializer.new(set, options).as_json
-        end
-        hash['total'] = UserSet.public_sets_count if options[:total]
-        hash
+        render json: @user_sets, each_serializer: StoriesModerationSerializer, meta: { total: UserSet.public_sets_count }, root: 'sets', adapter: :json
       end
     end
   end

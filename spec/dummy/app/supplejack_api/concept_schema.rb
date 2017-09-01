@@ -38,6 +38,16 @@ class ConceptSchema
   string      :note
   integer     :latitude
   integer     :longitude
+  string      :_mn_family_name
+  string      :_mn_given_name
+  string      :concept_id
+  integer     :concept_score
+  string      :internal_identifier
+  string      :source_id
+  string      :source_name
+  string      :url
+  string      :updated_at
+  string      :created_at
 
   group :source_authorities
   group :reverse

@@ -13,16 +13,10 @@ module SupplejackApi
       object.concept_type
     end
 
-    attributes :_mn_family_name, :_mn_given_name, :altLabel, :biographicalInformation,
-               :birthYear, :concept_id, :concept_score, :dateOfBirth, :dateOfDeath, :deathYear,
-               :familyName, :givenName, :internal_identifier, :name, :prefLabel, :sameAs,
-               :source_id, :source_name, :url, :updated_at, :created_at
-
-    # def serializable_hash
-    #   hash = {}
-    #   hash['@type'] = object.concept_type
-    #   hash = hash.merge!(attributes)
-    #   hash
-    # end
+    ConceptSchema.fields.each do |name, _definition|
+      attribute name do
+        object.public_send(name)
+      end
+    end
   end
 end

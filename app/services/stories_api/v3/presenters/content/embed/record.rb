@@ -13,7 +13,10 @@ module StoriesApi
               landing_url: :landing_url,
               tags: :tag,
               description: :description,
-              content_partner: :content_partner
+              content_partner: :content_partner,
+              creator: :creator,
+              rights: :rights,
+              contributing_partner: :contributing_partner
             }.freeze
 
             def call(block)

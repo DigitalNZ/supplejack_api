@@ -25,7 +25,7 @@ module StoriesApi
             end
 
             it 'presents the record fields' do
-              [:title, :display_collection, :category, :image_url, :landing_url, :tags, :content_partner].each do |key|
+              [:title, :display_collection, :category, :image_url, :landing_url, :tags, :content_partner, :creator, :contributing_partner, :rights].each do |key|
                 expect(result).to have_key(key)
               end
             end

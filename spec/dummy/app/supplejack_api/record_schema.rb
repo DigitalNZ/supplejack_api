@@ -25,7 +25,10 @@ class RecordSchema
   string    :display_collection,                                search_as: [:filter, :fulltext],  namespace: :sj
   string    :tag,         multi_value: true,      search_as: [:filter]
   string    :description,                         search_boost: 2,      search_as: [:filter, :fulltext],  namespace: :dc
+  string    :rights,                              search_as: [:filter], namespace: :dc
   string    :content_partner, multi_value: true,                                                          namespace: :dc
+  string    :creator,     multi_value: true,    search_as: [:filter, :fulltext],  namespace: :dc
+  string    :contributing_partner,  multi_value: true,    search_as: [:fulltext], namespace: :dc
 
   # facets
   string    :category,     multi_value: true,     search_as: [:filter]

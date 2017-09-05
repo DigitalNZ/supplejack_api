@@ -10,7 +10,6 @@ module SupplejackApi
   module Harvester
     class RecordsController < ActionController::Base
       respond_to :json
-
       def create
         klass = params[:preview] ? SupplejackApi::PreviewRecord : SupplejackApi::Record
         @record = klass.find_or_initialize_by_identifier(params[:record])
@@ -26,9 +25,21 @@ module SupplejackApi
         end
 
         @record.set_status(params[:required_fragments])
-        @record.save
+        @record.fragments.map(&:save!)
+        @record.save!
         @record.unset_null_fields
-        render json: { record_id: @record.record_id }
+
+        render json: { status: :success, record_id: @record.record_id }
+      rescue StandardError => e
+        Rails.logger.error "Fail to process record #{@record}: #{e.inspect}"
+        render json: {
+          status: :failed,
+          exception_class: e.class.to_s,
+          message: e.message,
+          backtrace: e.backtrace,
+          raw_data: @record.try(:to_json),
+          record_id: @record.try(:record_id)
+        }
       end
 
       def flush
@@ -37,9 +48,22 @@ module SupplejackApi
       end
 
       def delete
-        @record = Record.where(internal_identifier: params[:id]).first
+        # FIXME: This removes record even if it's a preview
+        @record = SupplejackApi::Record.where(internal_identifier: params[:id]).first
         @record.update_attribute(:status, 'deleted') if @record.present?
-        render nothing: true, status: 204
+
+        render json: { status: :success, record_id: params[:id] }
+      rescue StandardError => e
+        Rails.logger.error "Fail to set deleted status to record #{@record}: #{e.inspect}"
+
+        render json: {
+          status: :failed,
+          exception_class: e.class.to_s,
+          message: e.message,
+          backtrace: e.backtrace,
+          raw_data: @record.try(:to_json),
+          record_id: params[:id]
+        }
       end
 
       def update

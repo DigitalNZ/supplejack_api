@@ -11,7 +11,7 @@ module SupplejackApi
     class RecordsController < ActionController::Base
       respond_to :json
       def create
-        klass = params[:preview] ? SupplejackApi::PreviewRecord : SupplejackApi::Record
+        klass = params[:preview] ? PreviewRecord : Record
         @record = klass.find_or_initialize_by_identifier(params[:record])
 
         # In the long run this condition shouldn't be here.
@@ -49,7 +49,7 @@ module SupplejackApi
 
       def delete
         # FIXME: This removes record even if it's a preview
-        @record = SupplejackApi::Record.where(internal_identifier: params[:id]).first
+        @record = Record.where(internal_identifier: params[:id]).first
         @record.update_attribute(:status, 'deleted') if @record.present?
 
         render json: { status: :success, record_id: params[:id] }

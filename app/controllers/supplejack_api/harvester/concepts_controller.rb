@@ -13,10 +13,10 @@ module SupplejackApi
 
       def create
         if params[:preview]
-          klass = SupplejackApi::PreviewRecord
+          klass = PreviewRecord
           attribute = :record_id
         else
-          klass = SupplejackApi::Concept
+          klass = Concept
           attribute = :concept_id
         end
 

@@ -12,7 +12,7 @@ module SupplejackApi
       respond_to :json
 
       def create
-        klass = params[:preview] ? ::PreviewRecord : ::Record
+        klass = params[:preview] ? PreviewRecord : Record
         @record = klass.find(params[:record_id])
         @record.create_or_update_fragment(params[:fragment])
         @record.set_status(params[:required_fragments])
@@ -34,8 +34,8 @@ module SupplejackApi
       end
 
       def destroy
-        record = SupplejackApi::Record.where("fragments.source_id": params[:id])
-                                      .update_all('$pull' => { fragments: { source_id: params[:id] } })
+        record = Record.where("fragments.source_id": params[:id])
+                       .update_all('$pull' => { fragments: { source_id: params[:id] } })
 
         render json: { status: :success, record_id: params[:id] }
       rescue StandardError => e

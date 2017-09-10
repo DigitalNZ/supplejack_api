@@ -12,6 +12,14 @@ module SupplejackApi
     has_many :source_authorities
     has_many :records, serializer: ConceptRecordSerializer
 
+    attribute '@context' do
+      if instance_options[:inline_context]
+        Concept.build_context(ConceptSchema.model_fields.keys)
+      else
+        object.context
+      end
+    end
+
     attribute '@type' do
       object.concept_type
     end

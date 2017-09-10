@@ -28,6 +28,8 @@ module SupplejackApi
       object.site_id
     end
 
+    attribute :concept_id
+
     attribute '@reverse' do
       { object.edm_type => object.records.map { |record| ConceptRecordSerializer.new(record) } }
     end

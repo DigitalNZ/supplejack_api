@@ -45,6 +45,7 @@ module SupplejackApi::Concerns::Record
     end
 
     # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/AbcSize
     # FIXME: make me smaller!
     def find_next_and_previous_records(scope, options = {})
       return unless options.try(:any?)

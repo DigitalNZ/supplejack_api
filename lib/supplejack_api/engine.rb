@@ -57,4 +57,3 @@ module SupplejackApi
     Rails.application.config
   end
 end
-

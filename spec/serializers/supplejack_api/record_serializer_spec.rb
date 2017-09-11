@@ -17,9 +17,10 @@ module SupplejackApi
     end
 
     describe 'it renders attributes based on your schema' do
-      RecordSchema.fields.keys.each do |field|
-        it "renders the #{field} field" do
-          expect(serialized_record).to have_key field
+      RecordSchema.fields.each do |name, definition|
+        next if definition.store == false
+        it "renders the #{name} field" do
+          expect(serialized_record).to have_key name
         end
       end
     end

@@ -27,7 +27,7 @@ module SupplejackApi
 
     def index
       @partners = Partner.all
-      render json: @partners
+      render json: { partners: @partners }
     end
 
     def update

@@ -43,14 +43,14 @@ module SupplejackApi
       end
 
       it 'renders a the solr error when the query is invalid' do
-        allow(RecordSearchSerializer).to receive(:new).and_raise(RSolr::Error::Http.new({}, {}))
+        allow(SearchSerializer).to receive(:new).and_raise(RSolr::Error::Http.new({}, {}))
         allow(controller).to receive(:solr_error_message).and_return('Error')
         get :index, api_key: 'apikey', format: 'json'
         expect(response.body).to eq({errors: 'Error'}.to_json)
       end
 
       it "renders a error when the requested field doesn't exist" do
-        allow(RecordSearchSerializer).to receive(:new).and_raise(Sunspot::UnrecognizedFieldError.new('No field configured for Record with name "something"'))
+        allow(SearchSerializer).to receive(:new).and_raise(Sunspot::UnrecognizedFieldError.new('No field configured for Record with name "something"'))
         get :index, api_key: 'apikey', format: 'json', and: {:something => true}
         expect(response.body).to eq({:errors => 'No field configured for Record with name "something"'}.to_json)
       end

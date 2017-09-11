@@ -44,4 +44,17 @@ module SupplejackApi
       ApplicationController.helper(ActionView::Helpers::ApplicationHelper)
     end
   end
+
+  def self.setup(&block)
+    config.record_class = Record
+    config.preview_record_class = PreviewRecord
+
+    @config ||= SupplejackApi::Engine::Configuration.new
+    yield @config if block
+  end
+
+  def self.config
+    Rails.application.config
+  end
 end
+

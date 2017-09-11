@@ -74,7 +74,7 @@ module SupplejackApi::Concerns::Record
       end
 
       if previous_primary_key.present?
-        self.previous_record = SupplejackApi::Record.find(previous_primary_key).try(:record_id) rescue nil
+        self.previous_record = SupplejackApi.config.record_class.find(previous_primary_key).try(:record_id) rescue nil
       end
 
       if record_index == search.hits.size - 1
@@ -89,7 +89,7 @@ module SupplejackApi::Concerns::Record
 
       return unless next_primary_key.present?
 
-      self.next_record = ::SupplejackApi::Record.find(next_primary_key).try(:record_id) rescue nil
+      self.next_record = SupplejackApi.config.record_class.find(next_primary_key).try(:record_id) rescue nil
     end
     # rubocop:enable Metrics/MethodLength
 

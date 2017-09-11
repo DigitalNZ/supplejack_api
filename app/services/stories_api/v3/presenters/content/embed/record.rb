@@ -24,7 +24,7 @@ module StoriesApi
               # This is because I changed from record_id to id after Eddy migrated
               # all the existing user sets
               record_id = block[:content][:id] || block[:content][:record_id]
-              record = SupplejackApi::Record.find_by(record_id: record_id) rescue nil
+              record = SupplejackApi.config.record_class.find_by(record_id: record_id) rescue nil
               result = { id: record_id.to_i }
 
               RECORD_FIELDS.each do |name, field|

@@ -47,7 +47,7 @@ module SupplejackApi
         unless object.set_items.empty?
           object.set_items.each do |item|
             next if item.record.nil?
-            record = SupplejackApi::Record.custom_find(item.record_id)
+            record = SupplejackApi.config.record_class.custom_find(item.record_id)
             if record
               result = record.send(@field)
               results << result if result

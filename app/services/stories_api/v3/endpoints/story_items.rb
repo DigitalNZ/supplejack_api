@@ -47,7 +47,7 @@ module StoriesApi
           # Can be removed after user_sets is retired
           if item_params[:content][:id]
             item_params[:record_id] = item_params[:content][:id]
-            record = SupplejackApi::Record.custom_find(item_params[:record_id])
+            record = SupplejackApi.config.record_class.custom_find(item_params[:record_id])
             item_params[:content][:image_url] = record.large_thumbnail_url || record.thumbnail_url if record
           end
 

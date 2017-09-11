@@ -36,26 +36,5 @@ module SupplejackApi
         facets[facet.name] = rows
       end
     end
-
-    # TODO XML?
-    # def to_xml(*args)
-    #   hash = serializable_hash
-    #   hash[:facets] = xml_facets
-    #
-    #   options = {}
-    #   options = args.first.merge(root: :search) if args.first.is_a?(Hash)
-    #
-    #   hash.to_xml(options)
-    # end
-    # def xml_facets
-    #   facets = []
-    #   object.facets.map do |facet|
-    #     values = facet.rows.map do |row|
-    #       { name: row.value, count: row.count }
-    #     end
-    #     facets << { name: facet.name.to_s, values: values }
-    #   end
-    #   facets
-    # end
   end
 end

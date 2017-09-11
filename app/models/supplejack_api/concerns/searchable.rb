@@ -1,11 +1,12 @@
 # frozen_string_literal: true
+
 # rubocop:disable Metrics/ModuleLength
 module SupplejackApi::Concerns::Searchable
   extend ActiveSupport::Concern
 
   included do
     INTEGER_ATTRIBUTES ||= [:page, :per_page, :facets_per_page, :facets_page, :record_type].freeze
-    alias :read_attribute_for_serialization :send
+    alias_method :read_attribute_for_serialization, :send
 
     attr_accessor :options, :request_url, :scope, :solr_request_params, :errors, :warnings
 

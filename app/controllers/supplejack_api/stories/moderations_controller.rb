@@ -15,7 +15,9 @@ module SupplejackApi
 
       def show
         @user_sets = UserSet.public_sets(page: params[:page])
-        render json: @user_sets, each_serializer: StoriesModerationSerializer, meta: { total: UserSet.public_sets_count }, root: 'sets', adapter: :json
+        render json: @user_sets, each_serializer: StoriesModerationSerializer,
+               meta: { total: UserSet.public_sets_count },
+               root: 'sets', adapter: :json
       end
     end
   end

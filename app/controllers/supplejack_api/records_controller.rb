@@ -22,7 +22,7 @@ module SupplejackApi
 
       begin
         if @search.valid?
-          respond_with @search, serializer: RecordSearchSerializer, record_fields: available_fields, root: 'search', adapter: :json
+          respond_with @search, serializer: SearchSerializer, record_fields: available_fields, root: 'search', adapter: :json
         else
           render request.format.to_sym => { errors: @search.errors }, status: :bad_request
         end

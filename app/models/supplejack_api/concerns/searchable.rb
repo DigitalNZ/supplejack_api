@@ -277,10 +277,6 @@ module SupplejackApi::Concerns::Searchable
       solr_search_object.results
     end
 
-    def jsonp
-      @options[:jsonp].present? ? @options[:jsonp] : nil
-    end
-
     # It's currently required to make the active_model_serializers gem to work with XML
     # The XML Serialization is handled by the respective serializer
     #

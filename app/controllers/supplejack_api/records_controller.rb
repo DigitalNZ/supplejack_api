@@ -11,7 +11,7 @@ module SupplejackApi
   class RecordsController < ApplicationController
     include SupplejackApi::Concerns::RecordsControllerMetrics
 
-    skip_before_action :authenticate_user!, only: [:source, :status]
+    skip_before_action :authenticate_user!, only: %i(source status)
     before_action :set_concept_param, only: :index
     respond_to :json, :xml, :rss
 
@@ -23,15 +23,18 @@ module SupplejackApi
       begin
         if @search.valid?
           respond_to do |format|
-            format.json { respond_with @search, serializer: SearchSerializer, record_fields: available_fields, root: 'search', adapter: :json }
+            format.json do
+              respond_with @search, serializer: SearchSerializer,
+                                    record_fields: available_fields,
+                                    root: 'search', adapter: :json
+            end
             format.xml do
-            options = { serializer: SearchSerializer, record_fields: available_fields }
-            serializable_resource = ActiveModelSerializers::SerializableResource.new(@search, options)
+              options = { serializer: SearchSerializer, record_fields: available_fields }
+              serializable_resource = ActiveModelSerializers::SerializableResource.new(@search, options)
 
-            render xml: serializable_resource.as_json.as_json.to_xml(root: 'search')
+              render xml: serializable_resource.as_json.as_json.to_xml(root: 'search')
             end
           end
-
         else
           render request.format.to_sym => { errors: @search.errors }, status: :bad_request
         end
@@ -49,7 +52,11 @@ module SupplejackApi
     def show
       @record = SupplejackApi::Record.custom_find(params[:id], current_user, params[:search])
       respond_to do |format|
-        format.json { respond_with @record, serializer: RecordSerializer, fields: available_fields, root: 'record', adapter: :json }
+        format.json do
+          respond_with @record, serializer: RecordSerializer,
+                                fields: available_fields,
+                                root: 'record', adapter: :json
+        end
         format.xml do
           options = { serializer: RecordSerializer, fields: available_fields }
           serializable_resource = ActiveModelSerializers::SerializableResource.new(@record, options)

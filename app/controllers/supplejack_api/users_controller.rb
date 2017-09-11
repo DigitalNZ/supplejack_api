@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -13,7 +14,15 @@ module SupplejackApi
 
     def show
       @user = User.custom_find(params[:id])
-      render json: @user, root: 'user', adapter: :json
+      respond_to do |format|
+        format.json { render json: @user, root: 'user', adapter: :json }
+        format.xml  do
+          options = { serializer: UserSerializer }
+          serializable_resource = ActiveModelSerializers::SerializableResource.new(@user, options)
+
+          render xml: serializable_resource.as_json.to_xml(root: 'user')
+        end
+      end
     end
 
     def create

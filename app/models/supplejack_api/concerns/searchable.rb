@@ -277,11 +277,6 @@ module SupplejackApi::Concerns::Searchable
       solr_search_object.results
     end
 
-    # It's currently required to make the active_model_serializers gem to work with XML
-    # The XML Serialization is handled by the respective serializer
-    #
-    def to_xml; end
-
     # IMPORTANT !!!!
     #
     # Try to make this a bit prettier

@@ -22,7 +22,16 @@ module SupplejackApi
 
       begin
         if @search.valid?
-          respond_with @search, serializer: SearchSerializer, record_fields: available_fields, root: 'search', adapter: :json
+          respond_to do |format|
+            format.json { respond_with @search, serializer: SearchSerializer, record_fields: available_fields, root: 'search', adapter: :json }
+            format.xml do
+            options = { serializer: SearchSerializer, record_fields: available_fields }
+            serializable_resource = ActiveModelSerializers::SerializableResource.new(@search, options)
+
+            render xml: serializable_resource.as_json.as_json.to_xml(root: 'search')
+            end
+          end
+
         else
           render request.format.to_sym => { errors: @search.errors }, status: :bad_request
         end
@@ -39,7 +48,14 @@ module SupplejackApi
 
     def show
       @record = SupplejackApi::Record.custom_find(params[:id], current_user, params[:search])
-      respond_with @record, serializer: RecordSerializer, fields: available_fields, root: 'record', adapter: :json
+      respond_to do |format|
+        format.json { respond_with @record, serializer: RecordSerializer, fields: available_fields, root: 'record', adapter: :json }
+        format.xml do
+          options = { serializer: RecordSerializer, fields: available_fields }
+          serializable_resource = ActiveModelSerializers::SerializableResource.new(@record, options)
+          render xml: serializable_resource.as_json.to_xml(root: 'record')
+        end
+      end
     rescue Mongoid::Errors::DocumentNotFound
       render request.format.to_sym => { errors: "Record with ID #{params[:id]} was not found" }, status: :not_found
     end

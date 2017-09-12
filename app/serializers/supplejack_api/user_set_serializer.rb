@@ -16,6 +16,8 @@ module SupplejackApi
     has_many :items_with_records, key: :records do |serializer|
       if serializer.featured?
         object.items_with_records.first
+      elsif serializer.full_set_items?
+        object.items_with_records
       else
         object.items_with_records.map do |record|
           { record_id: record.record_id, position: record.position }
@@ -40,6 +42,10 @@ module SupplejackApi
 
     def featured?
       instance_options[:featured]
+    end
+
+    def full_set_items?
+      instance_options[:full_set_items]
     end
   end
 end

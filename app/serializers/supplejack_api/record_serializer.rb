@@ -16,7 +16,6 @@ module SupplejackApi
     attribute :previous_record, if: -> { object.previous_record.present? }
 
     RecordSchema.fields.each do |name, definition|
-      next if definition.search_value.blank? && definition.store == false
       if definition.search_value.present? && definition.store == false
         attribute name do
           definition.search_value.call(object)

@@ -13,7 +13,7 @@ RSpec.describe DetermineAvailableFields do
 
       it 'includes fields that have been passed in the options hash' do
         service = described_class.new({ groups: [:default], fields: [:children]})
-        expect(service.call).to eq [:name, :address, :email, :children, :next_page, :next_record, :previous_page, :previous_record, :updated_at, :created_at]
+        expect(service.call).to eq [:name, :address, :email, :children, :next_page, :next_record, :previous_page, :previous_record]
       end
     end
   end

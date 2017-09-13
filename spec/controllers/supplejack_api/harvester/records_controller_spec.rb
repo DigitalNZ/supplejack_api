@@ -60,6 +60,33 @@ module SupplejackApi
         expect(record).to receive(:unset_null_fields)
         post :create, record: {"internal_identifier" => "1234"}
       end
+
+      it 'returns status success and record_id if no exception is raised' do
+        allow(Record).to receive(:find_or_initialize_by_identifier) { record }
+
+        post :create, record: { 'internal_identifier' => '1234' }
+
+        data = JSON.parse(response.body)
+
+        expect(data['status']).to eq 'success'
+        expect(data['record_id']).to eq record.record_id
+      end
+
+      it 'returns status failed and backtrace metadata when an exception is raised' do
+        allow(Record).to receive(:find_or_initialize_by_identifier) { record }
+        allow(record).to receive(:save!).and_raise(StandardError.new('bang'))
+
+        post :create, record: { 'internal_identifier' => '1234' }
+
+        data = JSON.parse(response.body)
+
+        expect(data['status']).to eq 'failed'
+        expect(data['exception_class']).to eq 'StandardError'
+        expect(data['message']).to eq 'bang'
+        expect(data['raw_data']).to eq record.to_json
+        expect(data['backtrace']).not_to be_empty
+        expect(data['record_id']).to eq record.record_id
+      end
     end
 
     describe "PUT delete" do
@@ -78,6 +105,27 @@ module SupplejackApi
       it "handles a nil record" do
         allow(Record).to receive(:where) { [] }
         expect { put :delete, id: "abc123" }.to_not raise_exception
+      end
+
+      it 'returns status success if no exception is raised' do
+        allow(Record).to receive(:where) { [record] }
+        put :delete, id: 'abc123'
+
+        data = JSON.parse(response.body)
+        expect(data['status']).to eq 'success'
+        expect(data['record_id']).to eq 'abc123'
+      end
+
+      it 'returns status failed and backtrace metadata when an exception is raised' do
+        allow(Record).to receive(:where).and_raise(StandardError.new('bang'))
+        put :delete, id: 'abc123'
+
+        data = JSON.parse(response.body)
+        expect(data['status']).to eq 'failed'
+        expect(data['exception_class']).to eq 'StandardError'
+        expect(data['message']).to eq 'bang'
+        expect(data['backtrace']).not_to be_empty
+        expect(data['record_id']).to eq 'abc123'
       end
     end
 

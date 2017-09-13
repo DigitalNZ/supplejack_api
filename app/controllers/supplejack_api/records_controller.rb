@@ -37,14 +37,14 @@ module SupplejackApi
     end
 
     def show
-      @record = SupplejackApi::Record.custom_find(params[:id], current_user, params[:search])
+      @record = SupplejackApi.config.record_class.custom_find(params[:id], current_user, params[:search])
       respond_with @record, serializer: RecordSerializer
     rescue Mongoid::Errors::DocumentNotFound
       render request.format.to_sym => { errors: "Record with ID #{params[:id]} was not found" }, status: :not_found
     end
 
     def multiple
-      @records = Record.find_multiple(params[:record_ids])
+      @records = SupplejackApi.config.record_class.find_multiple(params[:record_ids])
       respond_with @records
     end
 

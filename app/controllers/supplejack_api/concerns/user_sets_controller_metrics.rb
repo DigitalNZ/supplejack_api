@@ -19,7 +19,7 @@ module SupplejackApi
           return unless @user_set && log_request_for_metrics?
           return if @user_set.set_items.empty?
 
-          record = SupplejackApi::Record.custom_find(@user_set.set_items.first.record_id)
+          record = SupplejackApi.config.record_class.custom_find(@user_set.set_items.first.record_id)
           SupplejackApi::InteractionModels::Set.create(interaction_type: :creation, facet: record.display_collection)
         end
       end

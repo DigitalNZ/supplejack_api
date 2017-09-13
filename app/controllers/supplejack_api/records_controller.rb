@@ -51,7 +51,7 @@ module SupplejackApi
     end
 
     def show
-      @record = SupplejackApi::Record.custom_find(params[:id], current_user, params[:search])
+      @record = SupplejackApi.config.record_class.custom_find(params[:id], current_user, params[:search])
       respond_to do |format|
         format.json do
           respond_with @record, serializer: RecordSerializer,
@@ -69,7 +69,7 @@ module SupplejackApi
     end
 
     def multiple
-      @records = Record.find_multiple(params[:record_ids])
+      @records = SupplejackApi.config.record_class.find_multiple(params[:record_ids])
       respond_with @records
     end
 

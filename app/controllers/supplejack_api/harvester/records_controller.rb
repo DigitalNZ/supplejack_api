@@ -10,9 +10,8 @@ module SupplejackApi
   module Harvester
     class RecordsController < ActionController::Base
       respond_to :json
-
       def create
-        klass = params[:preview] ? SupplejackApi::PreviewRecord : SupplejackApi::Record
+        klass = params[:preview] ? SupplejackApi.config.preview_record_class : SupplejackApi.config.record_class
         @record = klass.find_or_initialize_by_identifier(params[:record])
 
         # In the long run this condition shouldn't be here.
@@ -26,9 +25,21 @@ module SupplejackApi
         end
 
         @record.set_status(params[:required_fragments])
-        @record.save
+        @record.fragments.map(&:save!)
+        @record.save!
         @record.unset_null_fields
-        render json: { record_id: @record.record_id }
+
+        render json: { status: :success, record_id: @record.record_id }
+      rescue StandardError => e
+        Rails.logger.error "Fail to process record #{@record}: #{e.inspect}"
+        render json: {
+          status: :failed,
+          exception_class: e.class.to_s,
+          message: e.message,
+          backtrace: e.backtrace,
+          raw_data: @record.try(:to_json),
+          record_id: @record.try(:record_id)
+        }
       end
 
       def flush
@@ -37,13 +48,26 @@ module SupplejackApi
       end
 
       def delete
-        @record = Record.where(internal_identifier: params[:id]).first
+        # FIXME: This removes record even if it's a preview
+        @record = SupplejackApi.config.record_class.where(internal_identifier: params[:id]).first
         @record.update_attribute(:status, 'deleted') if @record.present?
-        render nothing: true, status: 204
+
+        render json: { status: :success, record_id: params[:id] }
+      rescue StandardError => e
+        Rails.logger.error "Fail to set deleted status to record #{@record}: #{e.inspect}"
+
+        render json: {
+          status: :failed,
+          exception_class: e.class.to_s,
+          message: e.message,
+          backtrace: e.backtrace,
+          raw_data: @record.try(:to_json),
+          record_id: params[:id]
+        }
       end
 
       def update
-        @record = Record.custom_find(params[:id], nil, status: :all)
+        @record = SupplejackApi.config.record_class.custom_find(params[:id], nil, status: :all)
         if params[:record].present? && params[:record][:status].present?
           @record.update_attribute(:status, params[:record][:status])
         end
@@ -51,7 +75,7 @@ module SupplejackApi
       end
 
       def show
-        @record = Record.where(record_id: params[:id]).first
+        @record = SupplejackApi.config.record_class.where(record_id: params[:id]).first
 
         if @record.present?
           render json: {

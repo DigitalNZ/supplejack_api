@@ -7,7 +7,7 @@ module SupplejackApi::Concerns::UserSet
     store_in collection: 'user_sets', session: 'strong'
 
     belongs_to :user, class_name: 'SupplejackApi::User'
-    belongs_to :record, class_name: 'SupplejackApi::Record', inverse_of: nil
+    belongs_to :record, class_name: SupplejackApi.config.record_class.to_s, inverse_of: nil
 
     embeds_many :set_items, class_name: 'SupplejackApi::SetItem' do
       def find_by_record_id(record_id)

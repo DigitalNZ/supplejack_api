@@ -67,7 +67,7 @@ module SupplejackApi
     end
 
     def reindex_record
-      SupplejackApi::Record.custom_find(record_id).index rescue nil
+      SupplejackApi.config.record_class.custom_find(record_id).index rescue nil
     end
   end
 end

@@ -12,18 +12,43 @@ module SupplejackApi
       respond_to :json
 
       def create
-        klass = params[:preview] ? PreviewRecord : Record
+        klass = params[:preview] ? SupplejackApi.config.preview_record_class : SupplejackApi.config.record_class
         @record = klass.find(params[:record_id])
         @record.create_or_update_fragment(params[:fragment])
         @record.set_status(params[:required_fragments])
-        @record.save
-        render json: { record_id: @record.record_id }
+        @record.fragments.map(&:save!)
+        @record.save!
+
+        render json: { status: :success, record_id: @record.record_id }
+      rescue StandardError => e
+        Rails.logger.error "Fail to process fragment #{@record}: #{e.inspect}"
+
+        render json: {
+          status: :failed,
+          exception_class: e.class.to_s,
+          message: e.message,
+          backtrace: e.backtrace,
+          raw_data: @record.to_json,
+          record_id: @record.record_id
+        }
       end
 
       def destroy
-        SupplejackApi::Record.where("fragments.source_id": params[:id])
-                             .update_all('$pull' => { fragments: { source_id: params[:id] } })
-        respond_with
+        record = SupplejackApi.config.record_class.where("fragments.source_id": params[:id])
+                              .update_all('$pull' => { fragments: { source_id: params[:id] } })
+
+        render json: { status: :success, record_id: params[:id] }
+      rescue StandardError => e
+        Rails.logger.error "Fail to set deleted status to fragment id #{params[:id]}"
+
+        render json: {
+          status: :failed,
+          exception_class: e.class.to_s,
+          message: e.message,
+          backtrace: e.backtrace,
+          raw_data: record.try(:to_json),
+          record_id: params[:id]
+        }
       end
     end
   end

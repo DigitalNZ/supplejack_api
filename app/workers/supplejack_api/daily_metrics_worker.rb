@@ -61,7 +61,7 @@ module SupplejackApi
 
     def update_total_new_records(facets)
       facets = facets.dup
-      records = Record.active.created_on(Date.current)
+      records = SupplejackApi.config.record_class.active.created_on(Date.current)
       counts_grouped_by_primary_key = records.group_by(&primary_key.to_sym).map { |k, v| [k, v.length] }
 
       counts_grouped_by_primary_key.each do |primary_key, count|
@@ -80,7 +80,7 @@ module SupplejackApi
         a.merge(e) { |_, oldVal, newVal| oldVal + newVal }
       end
 
-      active_records = Record.active
+      active_records = SupplejackApi.config.record_class.active
       total_records = active_records.count
       total_new_records = active_records.created_on(Date.current).count
       total_copyright_counts = facets.map { |x| x[:copyright_counts] }.reduce({}, &merge_block)

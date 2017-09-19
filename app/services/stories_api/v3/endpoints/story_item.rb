@@ -52,7 +52,9 @@ module StoriesApi
 
         def delete
           return @errors if @errors
-          story.update_attribute(:cover_thumbnail, first_suitable_image(story)) if story.cover_thumbnail == item.content[:image_url]
+          if story.cover_thumbnail == item.content[:image_url]
+            story.update_attribute(:cover_thumbnail, first_suitable_image(story))
+          end
 
           item.delete
 

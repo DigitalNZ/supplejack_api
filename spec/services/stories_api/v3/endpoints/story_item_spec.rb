@@ -121,14 +121,16 @@ module StoriesApi
             )
           end
 
-          it 'updates the story cover_thumbanil as nil if the item has same image_url' do
-            expect(@story.cover_thumbnail).to be_truthy # ie not nil
+          it 'updates the story cover_thumbanil to new image and not to be nil' do
+            # Add two dnz embed items to the story that both have image_urls
+            2.times { @story.set_items.create(attributes_for(:embed_dnz_item)) }
+            @story.save!
 
-            @story.update_attribute(:cover_thumbnail, @story.set_items.first.content[:image_url])
-            StoryItem.new(id: @story.set_items.first.id.to_s, story_id: @story.id, user_key: @user.api_key).delete
+            @story.update_attribute(:cover_thumbnail, @story.set_items.last.content[:image_url])
+            StoryItem.new(id: @story.set_items.last.id.to_s, story_id: @story.id, user_key: @user.api_key).delete
             @story.reload
 
-            expect(@story.cover_thumbnail).to be_nil
+            expect(@story.cover_thumbnail).to_not be_nil
           end
         end
 

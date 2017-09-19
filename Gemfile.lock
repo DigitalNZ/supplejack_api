@@ -1,11 +1,4 @@
 GIT
-  remote: https://github.com/boost/active_model_serializers
-  revision: 74216ebc6e05fe4cad533acd6c3888f5ecc18d48
-  specs:
-    active_model_serializers (0.1.0)
-      activemodel (>= 3.0)
-
-GIT
   remote: https://github.com/boost/mongoid_auto_inc.git
   revision: 8893486e0b69c77174e869c69e001734210a85bb
   specs:
@@ -77,6 +70,11 @@ GEM
       activesupport (= 4.1.12)
       builder (~> 3.1)
       erubis (~> 2.7.0)
+    active_model_serializers (0.10.6)
+      actionpack (>= 4.1, < 6)
+      activemodel (>= 4.1, < 6)
+      case_transform (>= 0.2)
+      jsonapi-renderer (>= 0.1.1.beta1, < 0.2)
     activemodel (4.1.12)
       activesupport (= 4.1.12)
       builder (~> 3.1)
@@ -105,7 +103,7 @@ GEM
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
     bson (3.1.2)
-    builder (3.2.2)
+    builder (3.2.3)
     byebug (9.0.5)
     capybara (2.2.1)
       mime-types (>= 1.16)
@@ -113,6 +111,8 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (~> 2.0)
+    case_transform (0.2)
+      activesupport
     chunky_png (1.3.8)
     climate_control (0.1.0)
     cocaine (0.5.8)
@@ -230,13 +230,13 @@ GEM
       rspec (>= 2.99.0, < 4.0)
     hash-deep-merge (0.1.1)
     hike (1.2.3)
-    i18n (0.7.0)
+    i18n (0.8.6)
     ice_nine (0.11.2)
     inflecto (0.0.2)
     jquery-rails (3.1.3)
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
-    json (1.8.3)
+    json (1.8.6)
     json-ld (1.1.11.1)
       multi_json (~> 1.11)
       rdf (~> 1.1, >= 1.1.17, < 1.99)
@@ -245,6 +245,7 @@ GEM
     json_spec (1.1.4)
       multi_json (~> 1.0)
       rspec (>= 2.0, < 4.0)
+    jsonapi-renderer (0.1.3)
     kaminari (0.14.1)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
@@ -265,7 +266,7 @@ GEM
     mime-types (1.25.1)
     mimemagic (0.1.9)
     mini_portile (0.6.2)
-    minitest (5.8.0)
+    minitest (5.10.3)
     mongoid (4.0.0)
       activemodel (~> 4.0)
       moped (~> 2.0.0)
@@ -435,10 +436,10 @@ GEM
       eventmachine (~> 1.0, >= 1.0.4)
       rack (~> 1.0)
     thor (0.19.1)
-    thread_safe (0.3.5)
+    thread_safe (0.3.6)
     tilt (1.4.1)
     timecop (0.4.6)
-    tzinfo (1.2.2)
+    tzinfo (1.2.3)
       thread_safe (~> 0.1)
     uglifier (2.5.3)
       execjs (>= 0.3.0)
@@ -457,7 +458,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  active_model_serializers!
+  active_model_serializers
   better_errors
   binding_of_caller (~> 0.7.1)
   capybara (~> 2.2.0)
@@ -495,4 +496,4 @@ DEPENDENCIES
   yard
 
 BUNDLED WITH
-   1.12.5
+   1.15.3

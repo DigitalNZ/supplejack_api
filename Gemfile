@@ -13,8 +13,7 @@ source 'http://rubygems.org'
 # development dependencies will be added by default to the :development group.
 gemspec
 
-# Xml doesn't get support in AMS, this is an existing fork
-gem 'active_model_serializers', git: 'https://github.com/boost/active_model_serializers'
+gem 'active_model_serializers'
 gem 'codeclimate-test-reporter', group: :test, require: nil
 gem 'cucumber-rails', require: false
 gem 'dimensions', require: false

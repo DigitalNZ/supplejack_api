@@ -1,8 +1,8 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 def search_options(text, facet, format, filters)
@@ -32,10 +32,6 @@ end
 
 When /^I search record for a field "(.*)"$/ do |search_text|
   execute_record_search(search_text.gsub('\\', ''), nil, @format)
-end
-
-When /^I search record for "(.*?)" with suggest$/ do |search_text|
-  execute_record_search(search_text, nil, @format, {suggest: true})
 end
 
 # Concept search

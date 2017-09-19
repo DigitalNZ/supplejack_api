@@ -9,263 +9,85 @@ require 'spec_helper'
 
 module SupplejackApi
   describe RecordSerializer do
+    let(:record) { FactoryGirl.create(:record_with_fragment) }
+    let(:serialized_record) { described_class.new(record).as_json}
 
-    before(:each) do
-      allow(RecordSchema).to receive(:roles) { double(:developer).as_null_object }
+    it 'renders the id' do
+      expect(serialized_record).to have_key :id
     end
 
-    def record_hash(attributes={}, method=nil, options={})
-      record_fields = Record.fields.keys
-      record_attributes = Hash[attributes.map {|k,v| [k,v] if record_fields.include?(k.to_s)}.compact]
-      attributes.delete_if {|k,v| record_fields.include?(k.to_s) }
-
-      @record = FactoryGirl.build(:record, record_attributes)
-      @record.fragments.build(attributes)
-      @serializer = RecordSerializer.new(@record, options)
-
-      if method
-        @serializer.send(method)
-      else
-        @serializer.as_json[:record]
-      end
-    end
-
-    def serializer(options={}, attributes={})
-      record_fields = Record.fields.keys
-      record_attributes = Hash[attributes.map {|k,v| [k,v] if record_fields.include?(k.to_s)}.compact]
-      attributes.delete_if {|k,v| record_fields.include?(k.to_s) }
-
-      @record = FactoryGirl.build(:record, record_attributes)
-      @record.fragments.build(attributes)
-      @serializer = RecordSerializer.new(@record, options)
-    end
-
-    describe '#as_json' do
-      let(:record) { FactoryGirl.build(:record) }
-      let(:serializer) { RecordSerializer.new(record) }
-
-      [:next_record, :previous_record, :next_page, :previous_page].each do |attribute|
-        it "should include #{attribute} when present" do
-          record.send("#{attribute}=", 2)
-          expect(serializer.as_json[:record][attribute]).to eq 2
-        end
-
-        it "should not include #{attribute} when null" do
-          record.send("#{attribute}=", nil)
-          expect(serializer.as_json[:record]).to_not have_key(attribute)
+    describe 'it renders attributes based on your schema' do
+      RecordSchema.fields.each do |name, definition|
+        next if definition.store == false
+        it "renders the #{name} field" do
+          expect(serialized_record).to have_key name
         end
       end
     end
 
-    describe '#include_individual_fields!' do
-      before { @hash = {} }
-
-      it 'merges in the hash the requested fields' do
-        s = serializer({ fields: [:age] }, { age: 22 })
-        s.include_individual_fields!(@hash)
-        expect(@hash).to eq({ age: 22 })
-      end
+    it 'allows a field to be overriden by passing a block and setting store to false on the schema' do
+      expect(serialized_record[:block_example]).to eq 'Value of the block'
     end
 
-    describe '#remove_restricted_fields!' do
-      let(:hash) { {name: 'John Doe', address: "Wellington", email: ["johndoe@example.com"], age: 30} }
-      let(:user) { User.new(role: "developer") }
-      let(:restrictions) { { address: {"Wellington"=>["name"], "Auckland"=>["email"]},
-                             email: {/example.com/ => ["address", "age"]} } }
-      let(:developer_role) { double(:developer_role, field_restrictions: restrictions) }
-      let(:admin_role) { double(:admin_role, field_restrictions: nil) }
-
-      before(:each) do
-        allow(RecordSchema).to receive(:roles).and_return({ developer: developer_role, admin: admin_role })
-      end
-
-      context "string conditions" do
-        context "Wellington" do
-          let(:s) { serializer({scope: user}, {address: ["Wellington"]}) }
-
-          it "removes name field" do
-            s.remove_restricted_fields!(hash)
-            expect(hash[:name]).to be_nil
-          end
-
-          it "doesn't remove non-restriected fields" do
-            s.remove_restricted_fields!(hash)
-            expect(hash[:age]).to eq 30
-          end
-        end
-
-        context "Auckland" do
-          let(:s) { serializer({scope: user}, {address: ["Auckland"]}) }
-
-          it "removes email field" do
-            s.remove_restricted_fields!(hash)
-            expect(hash[:email]).to be_nil
-          end
-        end
-      end
-
-      context "regex conditions" do
-        let(:s) { serializer({scope: user}, {email: ["johndoe@example.com"]}) }
-
-        it "removes address field" do
-          s.remove_restricted_fields!(hash)
-          expect(hash[:address]).to be_nil
-        end
-      end
-
-      context "remove multiple fields" do
-        let(:s) { serializer({scope: user}, {email: ['johndoe@example.com']}) }
-
-        it "removes all fields that match the restrictions" do
-          s.remove_restricted_fields!(hash)
-          expect(hash[:large_thumbnail_url]).to be_nil
-          expect(hash[:thumbnail_url]).to be_nil
-        end
-      end
-
-      context "field value is empty" do
-        let(:s) { serializer({scope: user}, {address: nil}) }
-
-        it "doesn't fail when a string condition field value is empty" do
-          s.remove_restricted_fields!(hash)
-          expect(hash[:name]).to eq 'John Doe'
-        end
-
-        it "doesn't fail when a regex condition field value is empty" do
-          s.remove_restricted_fields!(hash)
-          expect(hash[:email]).to eq ['johndoe@example.com']
-        end
-      end
-
-      context "no restrictions for role" do
-        let(:admin_user) { User.new(role: "admin") }
-        let(:s) { serializer({scope: admin_user}) }
-
-        it "returns all fields" do
-          s.remove_restricted_fields!(hash)
-          expect(hash.keys).to eq [:name, :address, :email, :age]
-        end
-      end
+    it 'falls back to the provided default value if its value is nil' do
+      expect(serialized_record[:default_example]).to eq 'Default value'
     end
 
-    describe '#serializable_hash' do
-      context 'include groups of fields' do
-        let(:default_group) { double(:default_group, fields: [:name, :email]) }
-        let(:details_group) { double(:details_group, fields: [:name, :email, :age]) }
-        let(:s) { serializer({groups: [:default]}) }
-        let(:record) { double(:record).as_null_object }
-
-        before(:each) do
-          @hash = {}
-          allow(RecordSchema).to receive(:groups) { {default: default_group, details: details_group} }
-          allow(s).to receive(:record) { record }
-          allow(s).to receive(:field_value)
-        end
-
-        context 'handling groups' do
-          it 'should include fields from given group' do
-            expect(default_group).to receive(:fields)
-            expect(details_group).to_not receive(:fields)
-            s.serializable_hash
-          end
-
-          it 'should handle non-existent groups' do
-            allow(s).to receive(:options) { { groups: [:dogs] } }
-            expect(s.serializable_hash.size).to eq 0
-          end
-
-          it 'should remove non-existent groups (or field names)' do
-            allow(s).to receive(:options) { { groups: [:default, :description] } }
-            allow(s).to receive(:field_value).with(:name, anything()) { 'John Doe' }
-            expect(s.serializable_hash[:name]).to eq 'John Doe'
-          end
-
-          it 'should include fields from multiple groups' do
-            allow(s).to receive(:options) { { groups: [:default, :details] } }
-            [:name, :email, :age].each do |field|
-              expect(s.serializable_hash.keys).to include field
-            end
-          end
-        end
-
-        it 'should remove restricted fields' do
-          expect(s).to receive(:remove_restricted_fields!)
-          s.serializable_hash
-        end
-
-        context 'field/group doesn\'t exist' do
-          it 'returns an empty record hash' do
-            allow(s).to receive(:options) { { groups: [:dogs] } }
-            expect(s.serializable_hash).to be_empty
-          end
-        end
-      end
+    it 'uses a provided date format' do
+      expect(serialized_record[:created_at]).to eq record.created_at.strftime("%y/%d/%m")
     end
 
-    describe '#field_restricted?' do
-    	let(:s) { serializer({groups: [:default]}) }
-
-  		it 'returns true if the field is restricted' do
-  			allow(s).to receive(:field_value) { 'Wellington' }
-  			expect(s.send(:field_restricted?, 'address', "Wellington")).to be_truthy
-  		end
-
-  		it 'returns false if the field is not restricted' do
-  			allow(s).to receive(:field_value) { 'Auckland' }
-  			expect(s.send(:field_restricted?, 'address', "Wellington")).to be_falsey
-  		end
-
-  		it 'handles multi-value fields' do
-  			allow(s).to receive(:field_value) { ['jdoe@test.com', 'johndoe@example.com'] }
-  			expect(s.send(:field_restricted?, 'email', /test.com/)).to be_truthy
-  		end
+    it 'returns a value from the record' do
+      expect(serialized_record[:title]).to eq record.title
     end
 
-    describe "#format_date" do
-      let(:s) { serializer({groups: [:default]}) }
-
-      it "returns formated date for a date string" do
-        date_time = Time.now
-        expect(s.send(:format_date, date_time, "%y/%d/%m")).to eq (date_time.strftime("%y/%d/%m"))
-      end
+    it 'returns multi values correctly' do
+      expect(serialized_record[:children]).to eq ['Sally Doe', 'James Doe']
     end
 
-    describe "#field_value" do
-      let(:s) { serializer({groups: [:default]}) }
-      let(:record) { double(:record, name: 'John Doe', address: nil, email: ['johndoe@example.com', 'jdoe@test.com'], children: ['Sara', 'Bob']) }
+    # The purpose of these fields is so that if a user has made a search and clicked on a landing page for that record,
+    # we are able to go next and previous from the show page of that record between the search results.
+    # This saves us from attempting to store the search results on the client app
+    # The url looks like this /records/:record_jd.json?api_key=:api_key&search[text]=:search_term&text=:search_term
 
-      before(:each) do
-        allow(s).to receive(:object) { record }
-      end
+    it 'includes :next_record when it is present' do
+      record.next_record = 2
+      expect(serialized_record[:next_record]).to eq 2
+    end
 
-      it "should return the single field value" do
-        expect(s.field_value(:name)).to eq 'John Doe'
-      end
+    it 'includes :previous_record when it is present' do
+      record.previous_record = 2
+      expect(serialized_record[:previous_record]).to eq 2
+    end
 
-      it "should return the multipe field value" do
-        expect(s.field_value(:email)).to eq ['johndoe@example.com', 'jdoe@test.com']
-      end
+    it 'includes :next_page when it is provided' do
+      record.next_page = 2
+      expect(serialized_record[:next_page]).to eq 2
+    end
 
-      it "return nil for nil value" do
-        expect(s.field_value(:address)).to be_nil
-      end
+    it 'includes :previous_page when it is provided' do
+      record.previous_page = 2
+      expect(serialized_record[:previous_page]).to eq 2
+    end
 
-      context 'search_value defined' do
-        context 'field not stored in mongo' do
-          it 'uses the value of the search_value block' do
-            allow(RecordSchema).to receive(:fields) { { age: double(:field, store: false, search_value: Proc.new{ 21 }) } }
-            expect(s.field_value(:age)).to eq 21
-          end
-        end
+    it 'does not include :next_record when it is null' do
+      record.next_record = nil
+      expect(serialized_record).to_not have_key(:next_record)
+    end
 
-        context 'field stored in mongo' do
-          it "uses the value from mongo" do
-            allow(RecordSchema).to receive(:fields) { {children: double(:field, search_value: Proc.new{1}).as_null_object} }
-            expect(s.field_value(:children)).to eq ['Sara', 'Bob']
-          end
-        end
-      end
+    it 'does not include :previous_record when it is null' do
+      record.previous_record = nil
+      expect(serialized_record).to_not have_key(:previous_record)
+    end
+
+    it 'does not include :next_page when it is null' do
+      record.next_page = nil
+      expect(serialized_record).to_not have_key(:next_page)
+    end
+
+    it 'does not include :previous_page when it is null' do
+      record.previous_page = nil
+      expect(serialized_record).to_not have_key(:previous_page)
     end
   end
-
 end

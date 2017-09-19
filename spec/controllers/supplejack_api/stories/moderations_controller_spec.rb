@@ -48,7 +48,7 @@ module SupplejackApi
               expect(set).to have_key 'updated_at'
             end
 
-            expect(sets).to have_key 'total'
+            expect(sets['meta']).to have_key 'total'
           end
         end
       end

@@ -28,34 +28,20 @@ module SupplejackApi
       end
     end
 
-    # describe 'PUT update' do
-    #   before :each do
-    #     User.stub(:custom_find) { user }
-    #   end
+    describe 'PUT update' do
+      it 'updates the user attributes' do
+        user_params = FactoryGirl.attributes_for(:user, name: 'Richard')
+        patch :update, id: user.api_key, api_key: user.authentication_token, user: user_params
+        user.reload
+        expect(user.name).to eq 'Richard'
+      end
+    end
 
-    #   it 'should find the user' do
-    #     put :update, id: user.api_key, api_key: user.authentication_token
-    #     assigns(:user).should eq user
-    #   end
-
-    #   it 'updates the user attributes' do
-    #     user.should_receive(:update_attributes).with({'username' => 'john'})
-    #     put :update, id: user.api_key, api_key: user.authentication_token, user: {username: 'john'}
-    #   end
-    # end
-
-    # describe 'DELETE destroy' do
-    #   it 'should find the user' do
-    #     delete :destroy, id: user.id, api_key: user.authentication_token
-    #     assigns(:user).should eq user
-    #   end
-
-    #   it 'destroys the user' do
-    #     User.stub(:find) { user }
-    #     user.should_receive(:destroy)
-    #     delete :destroy, id: user.id, api_key: user.authentication_token
-    #   end
-    # end
-
+    describe 'DELETE destroy' do
+      it 'destroys the user' do
+        delete :destroy, id: user.id, api_key: user.authentication_token
+        expect(User.count).to eq 0
+      end
+    end
   end
 end

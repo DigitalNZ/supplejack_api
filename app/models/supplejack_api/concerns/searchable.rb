@@ -1,10 +1,12 @@
 # frozen_string_literal: true
+
 # rubocop:disable Metrics/ModuleLength
 module SupplejackApi::Concerns::Searchable
   extend ActiveSupport::Concern
 
   included do
     INTEGER_ATTRIBUTES ||= [:page, :per_page, :facets_per_page, :facets_page, :record_type].freeze
+    alias_method :read_attribute_for_serialization, :send
 
     attr_accessor :options, :request_url, :scope, :solr_request_params, :errors, :warnings
 
@@ -275,15 +277,6 @@ module SupplejackApi::Concerns::Searchable
     def records
       solr_search_object.results
     end
-
-    def jsonp
-      @options[:jsonp].present? ? @options[:jsonp] : nil
-    end
-
-    # It's currently required to make the active_model_serializers gem to work with XML
-    # The XML Serialization is handled by the respective serializer
-    #
-    def to_xml; end
 
     # IMPORTANT !!!!
     #

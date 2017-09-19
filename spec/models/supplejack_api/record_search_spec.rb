@@ -247,7 +247,7 @@ module SupplejackApi
       #   without(:email, 'jd@example.com')
       #   without(:email, 'johnd@test.com')
       #   without(:name, 'James Cook')
-      # end      
+      # end
 
       it 'should sort by the specified field' do
         @search.options[:sort] = 'name'
@@ -292,14 +292,6 @@ module SupplejackApi
 
         alt = @session.searches.last.last.instance_variable_get(:@query).to_params['q.alt']
         expect(alt).to eq('title:dogs')
-      end
-
-      it 'should add spellcheck if suggest parameter is true' do
-        @search.options.merge!(suggest: true)
-        @search.execute_solr_search
-        expect(@session.searches.last.last.instance_variable_get(:@query).to_params[:spellcheck]).to be_truthy
-        expect(@session.searches.last.last.instance_variable_get(:@query).to_params['spellcheck.collate']).to be_truthy
-        expect(@session.searches.last.last.instance_variable_get(:@query).to_params['spellcheck.onlyMorePopular']).to be_truthy
       end
 
       context 'nested queries' do

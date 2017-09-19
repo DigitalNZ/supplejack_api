@@ -8,20 +8,25 @@
 module SupplejackApi
   FactoryGirl.define do
     factory :user_set, class: SupplejackApi::UserSet do
-      name            "Dogs and cats"
-      description     "Ugly dogs and cats"
+      name            'Dogs and cats'
+      description     'Ugly dogs and cats'
       user
+
       factory :user_set_with_set_item do
         after(:create) do |user_set|
-          user_set.set_items.build(attributes_for(:set_item))
-          user_set.save
+          # This is needed to reset the memoized instance variable
+          # @records that has been set in user_set
+          # Without it you will not have set_items
+          user_set.instance_variable_set(:@records, nil)
+          record = FactoryGirl.create(:record)
+           FactoryGirl.create(:set_item, record_id: record.record_id, user_set: user_set)
+           user_set.update_record
         end
       end
     end
 
     factory :set_item, class: SupplejackApi::SetItem do
-      record_id 12345
-      position  1
+      sequence(:position)
     end
   end
 end

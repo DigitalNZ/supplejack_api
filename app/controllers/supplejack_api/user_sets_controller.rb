@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -17,7 +18,7 @@ module SupplejackApi
 
     def index
       @user_sets = current_user.user_sets
-      render json: serializable_array(@user_sets).to_json
+      render json: @user_sets, root: 'sets', adapter: :json
     end
 
     # Endpoint for the administrator to get a list of sets for any user.
@@ -27,7 +28,7 @@ module SupplejackApi
 
       if @user
         @user_sets = @user.user_sets
-        render json: serializable_array(@user_sets).to_json
+        render json: @user_sets, root: 'sets', user: true, adapter: :json
       else
         render json: { errors: "The user with api key: '#{params[:user_id]}' was not found" }, status: :not_found
       end
@@ -37,18 +38,18 @@ module SupplejackApi
     #
     def public_index
       @user_sets = UserSet.public_sets(page: params[:page])
-      render json: serializable_array(@user_sets, user: true, total: true).to_json
+      render json: @user_sets, root: 'sets', user: true, adapter: :json, meta: { total: UserSet.public_sets_count }
     end
 
     def featured_sets_index
       @user_sets = UserSet.featured_sets(4)
-      render json: serializable_array(@user_sets, user: true, featured: true).to_json
+      render json: @user_sets, root: 'sets', user: true, featured: true, adapter: :json
     end
 
     def show
       @user_set = UserSet.custom_find(params[:id])
       if @user_set
-        render json: UserSetSerializer.new(@user_set, user: current_user, fields: params[:fields])
+        render json: @user_set, user: true, root: 'set', full_set_items: true, adapter: :json
       else
         render json: { errors: "Set with id: #{params[:id]} was not found." }, status: :not_found
       end
@@ -57,7 +58,7 @@ module SupplejackApi
     def create
       @user_set = current_user.user_sets.build
       if @user_set.update_attributes_and_embedded(params[:set])
-        render json: UserSetSerializer.new(@user_set, user: true)
+        render json: @user_set, user: true
       else
         render json: { errors: @user_set.errors.to_hash }, status: :unprocessable_entity
       end
@@ -65,7 +66,7 @@ module SupplejackApi
 
     def update
       if @user_set.update_attributes_and_embedded(params[:set], current_user)
-        render json: UserSetSerializer.new(@user_set, user: true)
+        render json: @user_set, user: true
       else
         render json: { errors: @user_set.errors.to_hash }, status: :unprocessable_entity
       end
@@ -74,18 +75,6 @@ module SupplejackApi
     def destroy
       @user_set.destroy
       respond_with(@user_set)
-    end
-
-    private
-
-    def serializable_array(user_sets, options = {})
-      options.reverse_merge!(root: false, items: false, user: false, total: false)
-      hash = { 'sets' => [] }
-      user_sets.each do |set|
-        hash['sets'] << UserSetSerializer.new(set, options).as_json
-      end
-      hash['total'] = UserSet.public_sets_count if options[:total]
-      hash
     end
 
     rescue_from UserSet::WrongRecordsFormat do |_exception|

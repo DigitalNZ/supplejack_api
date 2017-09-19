@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -9,95 +11,83 @@ require 'spec_helper'
 
 module SupplejackApi
   describe ConceptSerializer do
-    before { allow(ConceptSchema).to receive(:roles) { double(:developer).as_null_object } }
+    let(:concept) { FactoryGirl.create(:concept) }
+    let(:serialized_concept) { ConceptSerializer.new(concept).as_json }
+    let(:serialized_concept_with_inline_context) { ConceptSerializer.new(concept, inline_context: true).as_json }
 
-    def serializer(options={}, attributes={})
-      concept_fields = Concept.fields.keys
-      concept_attributes = Hash[attributes.map {|k, v| [k, v] if concept_fields.include?(k.to_s)}.compact]
-      attributes.delete_if {|k, v| concept_fields.include?(k.to_s) }
-
-      @concept = FactoryGirl.build(:concept, concept_attributes)
-      @concept.id = "http://localhost/concepts/#{@concept.concept_id}"
-      @serializer = ConceptSerializer.new(@concept, options)
+    it 'renders @context' do
+      expect(serialized_concept).to have_key '@context'
     end
 
-    describe '#include_context_fields!' do
-      before {
-        @hash = {'@context' => {}, name: 'McCahon'}
-      }
-
-      it 'include inline context in concept' do
-        s = serializer({ inline_context: 'true'})
-        s.include_context_fields!(@hash)
-        concept = {
-          '@context'=>{
-              :foaf => 'http://xmlns.com/foaf/0.1/',
-              :dc => 'http://purl.org/dc/elements/1.1/',
-              :edm => 'http://www.europeana.eu/schemas/edm/',
-              :dcterms => 'http://purl.org/dc/terms/',
-              :concept_id => {
-                '@id' => 'dcterms:identifier'
-              },
-              :name => {
-                '@id' => 'foaf:name'
-              },
-              :type => {
-                '@id' => ':type'
-              },
-              :date => {
-                '@id' => 'dc:date'
-              },
-              :description => {
-                '@id' => 'dc:description'
-              },
-              :agents => {
-                '@id'=>'edm:agents'
-              },
-              :source_authority=> {
-                '@id' => 'foaf:source_authority'
-              },
-          },
-          :name => 'McCahon'
-        }
-        expect(@hash).to eq concept
-      end
-
-      it 'show context document url' do
-        s = serializer()
-        s.include_context_fields!(@hash)
-        expect(@hash['@context']).to eq "#{ENV['HTTP_HOST']}/schema"
-        expect(@hash[:name]).to eq 'McCahon'
-      end
+    it 'renders @type' do
+      expect(serialized_concept).to have_key '@type'
     end
 
-    describe '#include_place_fields!' do
-      context 'emd:Agent' do
-        it 'shows the :biographicalInformation, :dateOfBirth, and :dateOfDeath fields'
-        it 'does not show the :note, :latitude, and :longitude fields'
-      end
-
-      context 'edm:Place' do
-        it 'shows the :note, :latitude, and :longitude fields'
-        it 'does not show the :biographicalInformation, :dateOfBirth, and :dateOfDeath fields'
-      end
+    it 'renders @id' do
+      expect(serialized_concept).to have_key '@id'
     end
 
-    describe '#include_individual_fields!' do
-      it 'merges in the hash the requested fields' do
-        hash = {}
-        s = serializer({ fields: [:name] }, { name: 'McCahon' })
-        s.include_individual_fields!(hash)
-        expect(hash).to eq({ name: 'McCahon', concept_id: 1})
-      end
+    it 'renders the :concept_id' do
+      expect(serialized_concept).to have_key :concept_id
     end
 
-    describe '#include_reverse_fields!' do
-      it 'includes reverse field' do
-        hash = {}
-        s = serializer({ fields: [:name] }, { name: 'McCahon' })
-        s.include_reverse_fields!(hash)
-        expect(hash['@reverse']).to include 'agents'
-        expect(hash['@reverse']['agents']).to eq []
+    it 'renders @reverse' do
+      expect(serialized_concept).to have_key '@reverse'
+    end
+
+    describe 'inline_context' do
+      it 'includes the :foaf information' do
+        expect(serialized_concept_with_inline_context['@context'][:foaf]).to eq 'http://xmlns.com/foaf/0.1/'
+      end
+
+      it 'includes the :dc information' do
+        expect(serialized_concept_with_inline_context['@context'][:dc]).to eq 'http://purl.org/dc/elements/1.1/'
+      end
+
+      it 'includes the :edm information' do
+        expect(serialized_concept_with_inline_context['@context'][:edm]).to eq 'http://www.europeana.eu/schemas/edm/'
+      end
+
+      it 'includes the :dcterms information' do
+        expect(serialized_concept_with_inline_context['@context'][:dcterms]).to eq 'http://purl.org/dc/terms/'
+      end
+
+      it 'includes the :concept_id' do
+        expect(serialized_concept_with_inline_context['@context'][:concept_id]).to eq '@id' => 'dcterms:identifier'
+      end
+
+      it 'includes the :name' do
+        expect(serialized_concept_with_inline_context['@context'][:name]).to eq  '@id' => 'foaf:name'
+      end
+
+      it 'includes the :type' do
+        expect(serialized_concept_with_inline_context['@context'][:type]).to eq '@id' => ':type'
+      end
+
+      it 'includes the :date' do
+        expect(serialized_concept_with_inline_context['@context'][:date]).to eq '@id' => 'dc:date'
+      end
+
+      it 'includes the :description' do
+        expect(serialized_concept_with_inline_context['@context'][:description]).to eq '@id' => 'dc:description'
+      end
+
+      it 'includes the :agents' do
+        expect(serialized_concept_with_inline_context['@context'][:agents]).to eq '@id'=>'edm:agents'
+      end
+
+      it 'includes the :source_authority' do
+        expect(serialized_concept_with_inline_context['@context'][:source_authority]).to eq '@id' => 'foaf:source_authority'
+      end
+
+    end
+
+    describe 'it renders attributes based on your schema' do
+      ConceptSchema.model_fields.each do |name, definition|
+        next if definition.store == false
+        it "renders the #{name} field" do
+          expect(serialized_concept).to have_key name
+        end
       end
     end
   end

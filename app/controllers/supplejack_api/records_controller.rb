@@ -35,6 +35,7 @@ module SupplejackApi
               # The double as_json is required to render the inner json object as json as well as the exterior object
               render xml: serializable_resource.as_json.as_json.to_xml(root: 'search')
             end
+            format.rss { respond_with @search }
           end
         else
           render request.format.to_sym => { errors: @search.errors }, status: :bad_request
@@ -63,6 +64,7 @@ module SupplejackApi
           serializable_resource = ActiveModelSerializers::SerializableResource.new(@record, options)
           render xml: serializable_resource.as_json.to_xml(root: 'record')
         end
+        format.rss { respond_with @record }
       end
     rescue Mongoid::Errors::DocumentNotFound
       render request.format.to_sym => { errors: "Record with ID #{params[:id]} was not found" }, status: :not_found

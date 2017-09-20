@@ -15,6 +15,7 @@ module SupplejackApi
     before_action :set_concept_param, only: :index
     respond_to :json, :xml, :rss
 
+    # rubocop:disable Metrics/MethodLength
     def index
       @search = SupplejackApi::RecordSearch.new(params)
       @search.request_url = request.original_url
@@ -46,6 +47,7 @@ module SupplejackApi
         render request.format.to_sym => { errors: e.to_s }, status: :bad_request
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
     def status
       render nothing: true

@@ -175,6 +175,16 @@ module SupplejackApi
             user_set.update_attribute(:description, 'A new description')
           end
         end
+
+        context 'an un-active user_set that is approved' do
+          before do
+            expect(Sunspot).to receive(:index)
+          end
+
+          it 'calls sunspot index' do
+            user_set.update_attribute(:approved, true)
+          end
+        end
       end
     end
 

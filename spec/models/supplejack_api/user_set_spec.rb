@@ -106,12 +106,15 @@ module SupplejackApi
       end
 
       describe '#reindex_if_changed' do
+        before do
+          allow(Sunspot).to receive(:commit).and_return("true")
+        end
+
+        let(:user_set) { FactoryGirl.create(:user_set) }
         context 'an active user_set has a index-able field changed' do
-          let(:user_set) { FactoryGirl.create(:user_set) }
 
           before do
             allow(user_set).to receive(:record_status).and_return("active")
-            allow(Sunspot).to receive(:commit).and_return("true")
             expect(Sunspot).to receive(:index)
           end
 
@@ -129,6 +132,29 @@ module SupplejackApi
 
           it 'calls sunspot index if approved field changed' do
             user_set.update_attribute(:approved, !user_set.approved)
+          end
+        end
+
+        context 'an active user_set does not have a index-able field changed' do
+          before do
+            allow(user_set).to receive(:record_status).and_return("active")
+            expect(Sunspot).to_not receive(:index)
+          end
+
+          it 'does not call sunspot index if privacy field changed' do
+            user_set.update_attribute(:privacy, user_set.privacy)
+          end
+
+          it 'does not call sunspot index if name field changed' do
+            user_set.update_attribute(:name, user_set.name)
+          end
+
+          it 'does not call sunspot index if description field changed' do
+            user_set.update_attribute(:description, user_set.description)
+          end
+
+          it 'does not call sunspot index if approved field changed' do
+            user_set.update_attribute(:approved, user_set.approved)
           end
         end
       end

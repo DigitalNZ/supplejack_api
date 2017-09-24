@@ -157,6 +157,24 @@ module SupplejackApi
             user_set.update_attribute(:approved, user_set.approved)
           end
         end
+
+        context 'an un-active user_set has a index-able field changed' do
+          before do
+            expect(Sunspot).to_not receive(:index)
+          end
+
+          it 'calls sunspot index if privacy field changed' do
+            user_set.update_attribute(:privacy, 'hidden')
+          end
+
+          it 'calls sunspot index if name field changed' do
+            user_set.update_attribute(:name, 'A new name')
+          end
+
+          it 'calls sunspot index if description field changed' do
+            user_set.update_attribute(:description, 'A new description')
+          end
+        end
       end
     end
 

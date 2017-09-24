@@ -74,7 +74,7 @@ module SupplejackApi
 
     def multiple
       @records = SupplejackApi.config.record_class.find_multiple(params[:record_ids])
-      respond_with @records
+      respond_with @records, each_serializer: RecordSerializer, root: 'records', adapter: :json
     end
 
     # This options are merged with the serializer options. Which will allow the serializer

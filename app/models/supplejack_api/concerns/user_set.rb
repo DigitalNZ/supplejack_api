@@ -62,7 +62,19 @@ module SupplejackApi::Concerns::UserSet
     before_save :strip_html_tags!
     before_save :update_record
     after_save :reindex_items
+    after_save :reindex_if_changed
     before_destroy :delete_record
+
+    def reindex_if_changed
+      return if record_status != 'active'
+
+      return unless [name_changed?, description_changed?, subjects_changed?,
+                                  approved_changed?, privacy_changed?].any?
+
+      Sunspot.session = Sunspot::Rails.build_session
+      Sunspot.index record
+      Sunspot.commit
+    end
 
     # Force-capitalize only the first word of the set name
     #

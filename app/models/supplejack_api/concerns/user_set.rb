@@ -69,7 +69,7 @@ module SupplejackApi::Concerns::UserSet
       return if record_status != 'active'
 
       return unless [name_changed?, description_changed?, subjects_changed?,
-                                  approved_changed?, privacy_changed?].any?
+                     approved_changed?, privacy_changed?].any?
 
       Sunspot.session = Sunspot::Rails.build_session
       Sunspot.index record

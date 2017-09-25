@@ -12,8 +12,9 @@ module SupplejackApi
     include SupplejackApi::Concerns::RecordsControllerMetrics
 
     skip_before_action :authenticate_user!, only: %i(source status)
+    skip_before_filter :verify_authenticity_token
     before_action :set_concept_param, only: :index
-    respond_to :json, :xml, :rss
+    respond_to :json, :xml
 
     # rubocop:disable Metrics/MethodLength
     def index
@@ -25,9 +26,9 @@ module SupplejackApi
         if @search.valid?
           respond_to do |format|
             format.json do
-              respond_with @search, serializer: SearchSerializer,
-                                    record_fields: available_fields,
-                                    root: 'search', adapter: :json
+              render json: @search, serializer: SearchSerializer, record_fields: available_fields,
+                     record_includes: available_fields, root: 'search', adapter: :json,
+                     callback: params['jsonp']
             end
             format.xml do
               options = { serializer: SearchSerializer, record_fields: available_fields }
@@ -36,7 +37,6 @@ module SupplejackApi
               # The double as_json is required to render the inner json object as json as well as the exterior object
               render xml: serializable_resource.as_json.as_json.to_xml(root: 'search')
             end
-            format.rss { respond_with @search }
           end
         else
           render request.format.to_sym => { errors: @search.errors }, status: :bad_request
@@ -57,16 +57,14 @@ module SupplejackApi
       @record = SupplejackApi.config.record_class.custom_find(params[:id], current_user, params[:search])
       respond_to do |format|
         format.json do
-          respond_with @record, serializer: RecordSerializer,
-                                fields: available_fields,
-                                root: 'record', adapter: :json
+          render json: @record, serializer: RecordSerializer, fields: available_fields, root: 'record',
+                 include: available_fields, adapter: :json, callback: params['jsonp']
         end
         format.xml do
           options = { serializer: RecordSerializer, fields: available_fields }
           serializable_resource = ActiveModelSerializers::SerializableResource.new(@record, options)
           render xml: serializable_resource.as_json.to_xml(root: 'record')
         end
-        format.rss { respond_with @record }
       end
     rescue Mongoid::Errors::DocumentNotFound
       render request.format.to_sym => { errors: "Record with ID #{params[:id]} was not found" }, status: :not_found

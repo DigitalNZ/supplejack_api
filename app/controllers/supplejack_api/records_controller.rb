@@ -12,8 +12,9 @@ module SupplejackApi
     include SupplejackApi::Concerns::RecordsControllerMetrics
 
     skip_before_action :authenticate_user!, only: %i(source status)
+    skip_before_action :verify_authenticity_token
     before_action :set_concept_param, only: :index
-    respond_to :json, :xml, :rss
+    respond_to :json, :xml
 
     def index
       @search = SupplejackApi::RecordSearch.new(params)
@@ -24,9 +25,9 @@ module SupplejackApi
         if @search.valid?
           respond_to do |format|
             format.json do
-              respond_with @search, serializer: SearchSerializer,
-                                    record_fields: available_fields,
-                                    root: 'search', adapter: :json
+              render json: @search, serializer: SearchSerializer, record_fields: available_fields,
+                     record_includes: available_fields, root: 'search', adapter: :json,
+                     callback: params['jsonp']
             end
             format.xml do
               options = { serializer: SearchSerializer, record_fields: available_fields }
@@ -54,9 +55,8 @@ module SupplejackApi
       @record = SupplejackApi.config.record_class.custom_find(params[:id], current_user, params[:search])
       respond_to do |format|
         format.json do
-          respond_with @record, serializer: RecordSerializer,
-                                fields: available_fields,
-                                root: 'record', adapter: :json
+          render json: @record, serializer: RecordSerializer, fields: available_fields, root: 'record',
+                 include: available_fields, adapter: :json, callback: params['jsonp']
         end
         format.xml do
           options = { serializer: RecordSerializer, fields: available_fields }
@@ -70,7 +70,7 @@ module SupplejackApi
 
     def multiple
       @records = SupplejackApi.config.record_class.find_multiple(params[:record_ids])
-      respond_with @records
+      respond_with @records, each_serializer: RecordSerializer, root: 'records', adapter: :json
     end
 
     # This options are merged with the serializer options. Which will allow the serializer

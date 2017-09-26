@@ -10,6 +10,8 @@ require 'spec_helper'
 module SupplejackApi
   describe RecordsController, type: :controller do
     routes { SupplejackApi::Engine.routes }
+    let!(:record) { create(:record) }
+    let!(:user)   { create(:user) }
 
     before {
       @user = FactoryGirl.create(:user, authentication_token: 'apikey', role: 'developer')
@@ -61,6 +63,48 @@ module SupplejackApi
         get :index, api_key: 'apikey', page: 100001, format: 'json'
         expect(response.body).to eq({errors: ['The page parameter can not exceed 100,000']}.to_json)
       end
+
+      context 'json' do
+        before do
+          get :index, api_key: user.authentication_token, format: :json, use_route: :supplejack_api
+        end
+
+        it 'has a succesful response code' do
+          expect(response).to have_http_status(:success)
+        end
+
+        it 'sets the correct Content-Type' do
+          expect(response.header['Content-Type']).to eq "application/json; charset=utf-8"
+        end
+      end
+
+      context 'jsonp' do
+        before do
+          get :index, api_key: user.authentication_token, format: :json, jsonp: 'jQuery18306022017613970934_1505872751581', use_route: :supplejack_api
+        end
+
+        it 'has a succesful response code' do
+          expect(response).to have_http_status(:success)
+        end
+
+        it 'sets the correct Content-Type' do
+          expect(response.header['Content-Type']).to eq 'text/javascript; charset=utf-8'
+        end
+      end
+
+      context 'xml' do
+        before do
+          get :index, api_key: user.authentication_token, format: :xml, use_route: :supplejack_api
+        end
+
+        it 'has a succesful response code' do
+          expect(response).to have_http_status(:success)
+        end
+
+        it 'sets the correct Content-Type' do
+          expect(response.header['Content-Type']).to eq 'application/xml; charset=utf-8'
+        end
+      end
     end
 
     describe 'GET show' do
@@ -88,6 +132,48 @@ module SupplejackApi
         expect(Record).to receive(:custom_find).with('123', @user, {'and' => {'category' => 'Books'}}).and_return(@record)
         get :show, id: 123, search: {and: {category: 'Books'}}, api_key: 'apikey', format: 'json'
         expect(assigns(:record)).to eq(@record)
+      end
+
+      context 'json' do
+        before do
+          get :show, id: record.id, api_key: user.authentication_token, format: :json, use_route: :supplejack_api
+        end
+
+        it 'has a succesful response code' do
+          expect(response).to have_http_status(:success)
+        end
+
+        it 'sets the correct Content-Type' do
+          expect(response.headers['Content-Type']).to eq 'application/json; charset=utf-8'
+        end
+      end
+
+      context 'jsonp' do
+        before do
+          get :show, id: record.id, api_key: user.authentication_token, format: :json, jsonp: 'jQuery18306022017613970934_1505872751581', use_route: :supplejack_api
+        end
+
+        it 'has a succesful response code' do
+          expect(response).to have_http_status(:success)
+        end
+
+        it 'sets the correct Content-Type' do
+          expect(response.headers['Content-Type']).to eq 'text/javascript; charset=utf-8'
+        end
+      end
+
+      context 'xml' do
+        before do
+          get :show, id: record.id, api_key: user.authentication_token, format: :xml, use_route: :supplejack_api
+        end
+
+        it 'has a succesful response code' do
+          expect(response).to have_http_status(:success)
+        end
+
+        it 'sets the correct type Content-Type' do
+          expect(response.headers['Content-Type']).to eq 'application/xml; charset=utf-8'
+        end
       end
     end
 

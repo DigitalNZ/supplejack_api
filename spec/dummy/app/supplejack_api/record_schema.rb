@@ -29,7 +29,7 @@ class RecordSchema
   string    :content_partner, multi_value: true,                                                          namespace: :dc
   string    :creator,     multi_value: true,    search_as: [:filter, :fulltext],  namespace: :dc
   string    :contributing_partner,  multi_value: true,    search_as: [:fulltext], namespace: :dc
-
+  string    :subject,                       multi_value: true,    search_as: [:filter, :fulltext],  namespace: :dc
   # facets
   string    :category,     multi_value: true,     search_as: [:filter]
   string    :copyright,    multi_value: true,     search_as: [:filter]
@@ -64,7 +64,8 @@ class RecordSchema
       :nz_citizen,
       :birth_date,
       :age,
-      :landing_url
+      :landing_url,
+      :subject
     ]
   end
 

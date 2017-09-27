@@ -71,8 +71,15 @@ module SupplejackApi::Concerns::UserSet
       return unless [name_changed?, description_changed?, subjects_changed?,
                      approved_changed?, privacy_changed?].any?
 
+      primary_fragment = record.primary_fragment
+      primary_fragment.title = name
+      primary_fragment.description = description
+      primary_fragment.subject = subjects
+
+      record.save!
+
       Sunspot.session = Sunspot::Rails.build_session
-      Sunspot.index record
+      record.index
       Sunspot.commit
     end
 

@@ -212,6 +212,7 @@ module SupplejackApi::Concerns::UserSet
       record.internal_identifier = "user_set_#{id}"
 
       primary_fragment = record.primary_fragment
+      primary_fragment.thumbnail_url = cover_thumbnail
 
       record.save!
     end

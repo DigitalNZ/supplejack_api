@@ -58,7 +58,6 @@ module StoriesApi
             story.update_attribute(:cover_thumbnail, first_suitable_image(story))
           end
 
-
           create_response(status: 204)
         end
 

@@ -38,13 +38,11 @@ FactoryGirl.define do
       sub_type 'record'
       content {{
         id: id,
-        record: {
-          title: title,
-          display_collection: display_collection,
-          category: category,
-          image_url: image_url,
-          tags: tags
-        }
+        title: title,
+        display_collection: display_collection,
+        category: category,
+        image_url: image_url,
+        tags: tags
       }}
       meta {{
         alignment: alignment,

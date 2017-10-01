@@ -37,7 +37,7 @@ module SupplejackApi
           exception_class: e.class.to_s,
           message: e.message,
           backtrace: e.backtrace,
-          raw_data: @record.try(:to_json),
+          raw_data: @record.attributes,
           record_id: @record.try(:record_id)
         }
       end

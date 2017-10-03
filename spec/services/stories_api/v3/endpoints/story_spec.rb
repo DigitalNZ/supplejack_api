@@ -108,6 +108,11 @@ module StoriesApi
         end
 
         describe '#patch' do
+          before do
+            allow(Sunspot).to receive(:commit).and_return("true")
+            allow(Sunspot).to receive(:index).and_return("true")
+          end
+
           let(:story) { create(:story, user: @user) }
           let!(:response) { Story.new(id: story.id, story: patch, user_key: @user.authentication_token).patch }
           let(:patch) do

@@ -61,6 +61,7 @@ module SupplejackApi
       large_thumbnail_url    'http://my-website-that-hosts-images/image.png'
       thumbnail_url    'http://my-website-that-hosts-images/small-image.png'
       landing_url      'http://my-website'
+      subject         []
     end
   end
 end

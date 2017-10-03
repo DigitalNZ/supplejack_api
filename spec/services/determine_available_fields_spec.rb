@@ -8,7 +8,7 @@ RSpec.describe DetermineAvailableFields do
 
       it 'returns the default and verbose groups' do
         service = described_class.new({ groups: [:default, :verbose]})
-        expect(service.call).to eq [:name, :address, :email, :children, :nz_citizen, :birth_date, :age, :landing_url, :next_page, :next_record, :previous_page, :previous_record, :updated_at, :created_at]
+        expect(service.call).to eq [:name, :address, :email, :children, :nz_citizen, :birth_date, :age, :landing_url, :subject, :next_page, :next_record, :previous_page, :previous_record, :updated_at, :created_at]
       end
 
       it 'includes fields that have been passed in the options hash' do

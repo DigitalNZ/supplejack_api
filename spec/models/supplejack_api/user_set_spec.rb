@@ -104,6 +104,91 @@ module SupplejackApi
         expect(user_set).to receive(:reindex_items)
         user_set.save
       end
+
+      describe '#reindex_if_changed' do
+        before do
+          allow(Sunspot).to receive(:commit).and_return("true")
+        end
+
+        let(:record) { FactoryGirl.create(:record_with_fragment) }
+        let(:user_set) { FactoryGirl.create(:user_set) }
+        context 'an active user_set has a index-able field changed' do
+
+          before do
+            allow(user_set).to receive(:record_status).and_return("active")
+            allow(user_set).to receive(:record).and_return(record)
+            expect(record).to receive(:index)
+          end
+
+          it 'calls sunspot index if privacy field changed' do
+            user_set.update_attribute(:privacy, 'hidden')
+          end
+
+          it 'calls sunspot index if name field changed' do
+            user_set.update_attribute(:name, 'A new name')
+          end
+
+          it 'calls sunspot index if description field changed' do
+            user_set.update_attribute(:description, 'A new description')
+          end
+
+          it 'calls sunspot index if approved field changed' do
+            user_set.update_attribute(:approved, !user_set.approved)
+          end
+        end
+
+        context 'an active user_set does not have a index-able field changed' do
+          before do
+            allow(user_set).to receive(:record_status).and_return("active")
+            expect(Sunspot).to_not receive(:index)
+          end
+
+          it 'does not call sunspot index if privacy field changed' do
+            user_set.update_attribute(:privacy, user_set.privacy)
+          end
+
+          it 'does not call sunspot index if name field changed' do
+            user_set.update_attribute(:name, user_set.name)
+          end
+
+          it 'does not call sunspot index if description field changed' do
+            user_set.update_attribute(:description, user_set.description)
+          end
+
+          it 'does not call sunspot index if approved field changed' do
+            user_set.update_attribute(:approved, user_set.approved)
+          end
+        end
+
+        context 'an un-active user_set has a index-able field changed' do
+          before do
+            expect(Sunspot).to_not receive(:index)
+          end
+
+          it 'calls sunspot index if privacy field changed' do
+            user_set.update_attribute(:privacy, 'hidden')
+          end
+
+          it 'calls sunspot index if name field changed' do
+            user_set.update_attribute(:name, 'A new name')
+          end
+
+          it 'calls sunspot index if description field changed' do
+            user_set.update_attribute(:description, 'A new description')
+          end
+        end
+
+        context 'an un-active user_set that is approved' do
+          before do
+            allow(user_set).to receive(:record).and_return(record)
+            expect(record).to receive(:index)
+          end
+
+          it 'calls sunspot index' do
+            user_set.update_attribute(:approved, true)
+          end
+        end
+      end
     end
 
     describe ".find_by_record_id" do

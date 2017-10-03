@@ -283,7 +283,7 @@ module StoriesApi
               end
             end
 
-            context 'setting cover thumbnail' do
+            context 'setting cover thumbnail on story and record fragment' do
               let(:record) { create(:record_with_fragment) }
 
               it 'updates the cover thumbnail if it dosent exist' do
@@ -303,6 +303,7 @@ module StoriesApi
                 @story.reload
 
                 expect(@story.cover_thumbnail).to eq record.large_thumbnail_url
+                expect(@story.record.primary_fragment.thumbnail_url).to eq @story.cover_thumbnail
               end
             end
           end

@@ -12,10 +12,10 @@ module SupplejackApi
     routes { SupplejackApi::Engine.routes }
 
     context 'admin user' do
-      let(:user) { FactoryGirl.create(:admin_user, authentication_token: 'abc123') }
+      let(:user) { create(:admin_user, authentication_token: 'abc123') }
 
       describe 'GET show' do
-        it 'should assign @user when api key belongs to an admin' do
+        it 'should assign @user' do
           get :show, id: user.id, api_key: 'abc123', format: :json
           expect(assigns(:user)).to eq(user)
         end
@@ -31,7 +31,7 @@ module SupplejackApi
 
       describe 'PUT update' do
         it 'updates the user attributes' do
-          user_params = FactoryGirl.attributes_for(:user, name: 'Richard')
+          user_params = attributes_for(:user, name: 'Richard')
           patch :update, id: user.api_key, api_key: user.authentication_token, user: user_params
           user.reload
           expect(user.name).to eq 'Richard'
@@ -40,6 +40,9 @@ module SupplejackApi
 
       describe 'DELETE destroy' do
         it 'destroys the user' do
+          user.save!
+          expect(User.count).to eq 1
+
           delete :destroy, id: user.id, api_key: user.authentication_token
           expect(User.count).to eq 0
         end
@@ -47,32 +50,32 @@ module SupplejackApi
     end
 
     context 'not an admin user' do
-      let(:user) { FactoryGirl.create(:user, authentication_token: 'abc123') }
+      let(:user) { create(:user, authentication_token: 'abc123') }
 
       describe 'GET show' do
-        it 'returns status forbidden when api key does not belongs to an admin' do
+        it 'returns status forbidden' do
           get :show, id: user.id, api_key: 'abc123', format: :json
           expect(response).to have_http_status(:forbidden)
         end
       end
 
       describe 'POST create' do
-        it 'returns status forbidden when api key does not belongs to an admin' do
+        it 'returns status forbidden' do
           post :create, api_key: 'abc123', user: { name: 'Ben' }, format: 'json'
           expect(response).to have_http_status(:forbidden)
         end
       end
 
       describe 'PUT update' do
-        it 'returns status forbidden when api key does not belongs to an admin' do
-          user_params = FactoryGirl.attributes_for(:user, name: 'Richard')
+        it 'returns status forbidden' do
+          user_params = attributes_for(:user, name: 'Richard')
           patch :update, id: user.api_key, api_key: user.authentication_token, user: user_params
           expect(response).to have_http_status(:forbidden)
         end
       end
 
       describe 'DELETE destroy' do
-        it 'returns status forbidden when api key does not belongs to an admin' do
+        it 'returns status forbidden' do
           delete :destroy, id: user.id, api_key: user.authentication_token
           expect(response).to have_http_status(:forbidden)
         end

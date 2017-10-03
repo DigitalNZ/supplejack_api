@@ -83,7 +83,7 @@ module SupplejackApi
         expect(data['status']).to eq 'failed'
         expect(data['exception_class']).to eq 'StandardError'
         expect(data['message']).to eq 'bang'
-        expect(data['raw_data']).to eq record.to_json
+        expect(data['raw_data']).not_to be_empty
         expect(data['backtrace']).not_to be_empty
         expect(data['record_id']).to eq record.record_id
       end

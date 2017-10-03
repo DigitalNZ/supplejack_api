@@ -10,7 +10,7 @@
 module SupplejackApi
   class UsersController < ApplicationController
     respond_to :xml, :json
-    before_action :authenticate_admin!, except: :show
+    before_action :authenticate_admin!
 
     def show
       @user = User.custom_find(params[:id])

@@ -24,7 +24,7 @@ module SupplejackApi
 
     def index
       @sources = params[:source].nil? ? Source.all : Source.where(params[:source])
-      render json: @sources
+      render json: { sources: @sources }
     end
 
     def show

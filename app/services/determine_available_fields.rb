@@ -19,7 +19,7 @@ class DetermineAvailableFields
     # These fields are for paging between records
     fields += %i(next_page next_record previous_page previous_record)
 
-    fields += %i(updated_at created_at) unless options[:fields].present?
+    fields += %i(updated_at created_at) if options[:fields].blank?
 
     fields
   end

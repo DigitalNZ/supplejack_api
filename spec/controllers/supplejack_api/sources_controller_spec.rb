@@ -1,8 +1,8 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 require 'spec_helper'
@@ -67,6 +67,11 @@ module SupplejackApi
         expect(response.body).to include sources.to_json
       end
 
+      it 'presents the sources in a top level node' do
+        get :index
+        expect(JSON.parse(response.body)['sources']).to eq []
+      end
+
       context "search" do
 
         let(:suppressed_source) { FactoryGirl.build(:source)  }
@@ -107,9 +112,9 @@ module SupplejackApi
     end
 
     describe 'GET "link_check_records"' do
-      let(:records) { [ double(:record, landing_url: 'http://1'), 
-                        double(:record, landing_url: 'http://2'), 
-                        double(:record, landing_url: 'http://3'), 
+      let(:records) { [ double(:record, landing_url: 'http://1'),
+                        double(:record, landing_url: 'http://2'),
+                        double(:record, landing_url: 'http://3'),
                         double(:record, landing_url: 'http://4')] }
 
       let(:source) { FactoryGirl.build(:source, source_id: 'source_name') }
@@ -129,7 +134,7 @@ module SupplejackApi
         get :link_check_records, id: source.id
 
         expect(response.body).to eq "[\"http://1\",\"http://2\",\"http://3\",\"http://4\"]"
-      end      
+      end
     end
   end
 end

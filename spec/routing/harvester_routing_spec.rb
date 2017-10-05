@@ -11,10 +11,6 @@ module SupplejackApi
   describe "Harvester routes", :type => :routing do
     routes { SupplejackApi::Engine.routes }
 
-    before(:each) do
-      allow_any_instance_of(HarvesterConstraint).to receive(:matches?).and_return(true)
-    end
-
     context "Record routes" do
       it "routes /harvester/records to harvester/records#create" do
         expect(post('/harvester/records.json')).to route_to(controller: 'supplejack_api/harvester/records', action: 'create', format: 'json')

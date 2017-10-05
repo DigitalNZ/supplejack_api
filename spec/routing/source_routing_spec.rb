@@ -11,28 +11,24 @@ module SupplejackApi
   describe 'Source routes', type: :routing do
     routes { SupplejackApi::Engine.routes }
 
-    before(:each) do
-      allow_any_instance_of(HarvesterConstraint).to receive(:matches?).and_return(true)
+    it 'routes /harvester/partners/123/sources to sources#create' do
+      expect(post('/harvester/partners/123/sources.json')).to route_to(controller: 'supplejack_api/harvester/sources', action: 'create', partner_id: '123', format: 'json')
     end
 
-    it 'routes /partners/123/sources to sources#create' do
-      expect(post('/partners/123/sources.json')).to route_to(controller: 'supplejack_api/sources', action: 'create', partner_id: '123', format: 'json')
+    it 'routes /harvester/sources/1234 to sources#show' do
+      expect(get('/harvester/sources/1234.json')).to route_to(controller: 'supplejack_api/harvester/sources', action: 'show', id: '1234', format: 'json')
     end
 
-    it 'routes /sources/1234 to sources#show' do
-      expect(get('/sources/1234.json')).to route_to(controller: 'supplejack_api/sources', action: 'show', id: '1234', format: 'json')
+    it "routes /harvester/sources to sources#index" do
+      expect(get('/harvester/sources.json')).to route_to(controller: 'supplejack_api/harvester/sources', action: 'index', format: 'json')
     end
 
-    it "routes /sources to sources#index" do
-      expect(get('/sources.json')).to route_to(controller: 'supplejack_api/sources', action: 'index', format: 'json')
+    it "routes /harvester/sources/1234 to sources#update" do
+      expect(put('/harvester/sources/1234.json')).to route_to(controller: 'supplejack_api/harvester/sources', action: 'update', id: '1234', format: 'json')
     end
 
-    it "routes /sources/1234 to sources#update" do
-      expect(put('/sources/1234.json')).to route_to(controller: 'supplejack_api/sources', action: 'update', id: '1234', format: 'json')
-    end
-
-    it "routes /sources/1234/reindex to sources#reindex" do
-     expect(get('/sources/1234/reindex.json')).to route_to(controller: 'supplejack_api/sources', action: 'reindex', id: '1234', format: 'json')
+    it "routes /harvester/sources/1234/reindex to sources#reindex" do
+     expect(get('/harvester/sources/1234/reindex.json')).to route_to(controller: 'supplejack_api/harvester/sources', action: 'reindex', id: '1234', format: 'json')
     end
   end
 end

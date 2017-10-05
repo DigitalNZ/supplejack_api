@@ -8,8 +8,9 @@
 
 module SupplejackApi
   module Harvester
-    class FragmentsController < ActionController::Base
+    class FragmentsController < ApplicationController
       respond_to :json
+      before_action :authenticate_harvester!
 
       def create
         klass = params[:preview] ? SupplejackApi.config.preview_record_class : SupplejackApi.config.record_class

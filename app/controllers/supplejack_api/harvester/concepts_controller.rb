@@ -8,8 +8,9 @@
 
 module SupplejackApi
   module Harvester
-    class ConceptsController < ActionController::Base
+    class ConceptsController < ApplicationController
       respond_to :json
+      before_action :authenticate_harvester!
 
       def create
         if params[:preview]

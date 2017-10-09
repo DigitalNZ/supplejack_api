@@ -1,8 +1,8 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 require 'spec_helper'
@@ -18,20 +18,22 @@ module SupplejackApi
         allow(RecordSchema).to receive(:roles) { { harvester: double(:harvester, harvester: true) } }
       end
 
-      describe "POST 'create'" do
-        it "creates a new partner" do
-          expect(Partner).to receive(:create).with("name" => "Statistics New Zealand").and_call_original
-          post :create, partner: FactoryGirl.attributes_for(:partner), api_key: api_key
+      describe 'POST create' do
+        it 'creates a new partner' do
+          expect do
+            post :create, partner: FactoryGirl.attributes_for(:partner), api_key: api_key
+          end.to change { Partner.count }.by 1
+
           expect(response).to be_success
         end
 
-        it "returns the partner" do
+        it 'returns the partner' do
           post :create, partner: FactoryGirl.attributes_for(:partner), api_key: api_key
           expect(response.body).to include Partner.last.to_json
         end
 
-        context "partner already exists" do
-          it "updates the partner" do
+        context 'partner already exists' do
+          it 'updates the partner' do
             partner = FactoryGirl.create(:partner, name: 'partner1')
             post :create, partner: {_id: partner.id, name: 'partner2'}, api_key: api_key
             partner.reload
@@ -40,44 +42,41 @@ module SupplejackApi
         end
       end
 
-      describe "GET 'show'" do
-        let(:partner) { FactoryGirl.create(:partner) }
+      describe 'GET show' do
 
-        it "finds the partner" do
-          expect(Partner).to receive(:find).with("1")
+        it 'finds the partner by id' do
+          expect(Partner).to receive(:find).with('1')
           get :show, id: 1, api_key: api_key
         end
 
-        it "returns the partner" do
-          allow(Partner).to receive(:find) {partner}
-          get :show, id: 1, api_key: api_key
+        it 'returns the partner' do
+          partner = FactoryGirl.create(:partner)
+          get :show, id: partner.id, api_key: api_key
           expect(response.body).to eq partner.to_json
         end
       end
 
-      describe "GET 'index'" do
-        let(:partners) { [FactoryGirl.create(:partner), 
-                          FactoryGirl.create(:partner, name: "Down to the wire")] }
+      describe 'GET index' do
 
-        it "finds all partners" do
-          expect(Partner).to receive(:all) {partners}
+        it 'return all partners' do
+          expect(Partner).to receive(:all)
           get :index, api_key: api_key
         end
 
-        it "returns the partners as a JSON array" do
-          allow(Partner).to receive(:all) {partners}
+        it 'returns the partners as a JSON array' do
+          partners =  [FactoryGirl.create(:partner),
+                       FactoryGirl.create(:partner, name: "Down to the wire")]
           get :index, api_key: api_key
           expect(response.body).to eq({partners: partners}.to_json)
         end
       end
 
-      describe "PUT 'update'" do
-        let(:partner) { FactoryGirl.create(:partner) }
-
+      describe 'PUT update' do
         it "finds and updates the partner" do
-          expect(Partner).to receive(:find).with(partner.id.to_s) {partner}
-          expect(partner).to receive(:update_attributes).with("name" => 'Down to the wire')
-          put :update, id: partner.id, partner: {name: 'Down to the wire'}, api_key: api_key
+          partner = FactoryGirl.create(:partner)
+          expect do
+            put :update, id: partner.id, partner: {name: 'Down to the wire'}, api_key: api_key
+          end.to change { Partner.last.name }.to 'Down to the wire'
         end
       end
     end

@@ -20,10 +20,12 @@ module SupplejackApi
         allow(RecordSchema).to receive(:roles) { { harvester: double(:harvester, harvester: true) } }
       end
 
-      describe 'POST "create"' do
+      describe 'POST create' do
         it 'creates a new source' do
-          expect(Source).to receive(:create).with('name' => 'Sample source', 'source_id' => '1234', "partner_id" => partner.id.to_s)
-          post :create, partner_id: partner, source: FactoryGirl.attributes_for(:source), api_key: api_key
+          expect do
+            post :create, partner_id: partner, source: FactoryGirl.attributes_for(:source), api_key: api_key
+          end.to change { Source.count }.by 1
+
           expect(response).to be_success
         end
 
@@ -33,8 +35,8 @@ module SupplejackApi
           expect(response.body).to include Source.last.to_json
         end
 
-        context "source all ready exists" do
-          it "updates the source" do
+        context 'source already exists' do
+          it 'updates the source' do
             source = partner.sources.create(FactoryGirl.attributes_for(:source, name: "source_1"))
             post :create, partner_id: partner, source: {_id: source.id, name: 'source2'}, api_key: api_key
             source.reload
@@ -59,33 +61,31 @@ module SupplejackApi
         end
       end
 
-      describe 'GET "index"' do
+      describe 'GET index' do
         let(:sources) { [FactoryGirl.build(:source)] }
 
         it 'assigns all sources' do
-          expect(Source).to receive(:all) { sources }
           get :index, api_key: api_key
-          expect(assigns(:sources)).to eq sources
+          expect(assigns(:sources)).to eq Source.all
         end
 
         it 'returns all sources' do
-          expect(Source).to receive(:all) { sources }
           get :index, api_key: api_key
-          expect(response.body).to include sources.to_json
+          expect(response.body).to include Source.all.to_json
         end
 
-        context "search" do
+        context 'search' do
 
           let(:suppressed_source) { FactoryGirl.build(:source)  }
 
-          it "searches the sources if params source is defined" do
-            expect(Source).to receive(:where).with("status" => "suppressed") { [suppressed_source] }
-            get :index, source: { status: "suppressed" }, api_key: api_key
+          it 'searches the sources if params source is defined' do
+            expect(Source).to receive(:where).with('status' => 'suppressed')
+            get :index, source: { status: 'suppressed' }, api_key: api_key
           end
         end
       end
 
-      describe 'PUT "update"' do
+      describe 'PUT update' do
         let(:source) { FactoryGirl.create(:source) }
 
         it 'finds and update source' do

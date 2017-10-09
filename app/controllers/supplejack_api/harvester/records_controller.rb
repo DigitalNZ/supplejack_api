@@ -8,8 +8,10 @@
 
 module SupplejackApi
   module Harvester
-    class RecordsController < ActionController::Base
+    class RecordsController < ApplicationController
       respond_to :json
+      before_action :authenticate_harvester!
+
       def create
         klass = params[:preview] ? SupplejackApi.config.preview_record_class : SupplejackApi.config.record_class
         @record = klass.find_or_initialize_by_identifier(params[:record])

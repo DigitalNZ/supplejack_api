@@ -49,6 +49,16 @@ module SupplejackApi
       }, status: :forbidden
     end
 
+    def authenticate_harvester!
+      format = request.format.to_sym || :json
+      return true if RecordSchema.roles[current_user.role.to_sym].try(:harvester)
+      render format => {
+        errors: "You need Harvester privileges to perform this request.\
+        Your API key role must have the attribute { harvester: true }.\
+        Check the available roles in your record_schema.rb file."
+      }, status: :forbidden
+    end
+
     def user_key_check!
       render request.format.to_sym => {
         errors: 'Mandatory parameter user_key missing'

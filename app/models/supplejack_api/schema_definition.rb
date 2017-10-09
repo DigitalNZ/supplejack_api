@@ -14,7 +14,7 @@ module SupplejackApi
       field: [:type, :search_value, :search_boost, :multi_value, :search_as, :store,
               :solr_name, :namespace, :namespace_field, :default_value, :date_format],
       group: [:fields, :includes],
-      role: [:default, :field_restrictions, :record_restrictions, :admin],
+      role: [:default, :field_restrictions, :record_restrictions, :admin, :harvester],
       namespace: [:url],
       mongo_index: [:fields, :index_options],
       model_field: [:type, :field_options, :validation, :index_fields, :index_options,

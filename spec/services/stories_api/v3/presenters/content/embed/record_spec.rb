@@ -44,6 +44,16 @@ module StoriesApi
                 expect(result[:image_url]).to eq record.thumbnail_url
               end
             end
+
+            context 'no title' do
+              let(:record) { create(:record, title: nil) }
+              let(:block) {create(:embed_dnz_item, id: record.record_id)}
+              let(:result) {subject.call(block)}
+
+              it 'says Untitled if the title is nil' do
+                expect(result[:title]).to eq 'Untitled'
+              end
+            end
           end
         end
       end

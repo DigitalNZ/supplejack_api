@@ -25,7 +25,7 @@ module StoriesApi
             it 'hands off the content field to the custom presenter' do
             # FIXME This test isn't testing anything.  It is testing that nil is nil, because the key is not present on the hash or the record
               expect(presented_json[:content][:description]).to eq(record.description)
-              expect(presented_json[:content][:title]).to eq(record.title)
+              expect(presented_json[:content][:title]).to eq('Untitled')
             end
           end
         end

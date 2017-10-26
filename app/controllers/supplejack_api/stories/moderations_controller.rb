@@ -13,10 +13,9 @@ module SupplejackApi
       respond_to :json
       before_action :authenticate_admin!
 
-      def show
-        @user_sets = UserSet.public_sets(page: params[:page])
+      def index
+        @user_sets = UserSet.all_public_sets
         render json: @user_sets, each_serializer: StoriesModerationSerializer,
-               meta: { total: UserSet.public_sets_count },
                root: 'sets', adapter: :json
       end
     end

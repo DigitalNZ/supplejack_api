@@ -14,7 +14,7 @@ SupplejackApi::Engine.routes.draw do
   devise_for :users, class_name: 'SupplejackApi::User'
 
   namespace :stories do
-    resource :moderation, only: [:show]
+    resources :moderations, only: [:index]
   end
 
   # Admin level authentication

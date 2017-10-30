@@ -21,7 +21,7 @@ module SupplejackApi
           allow(controller).to receive(:current_user) { @user }
         end
 
-        describe '#show' do
+        describe '#index' do
           let!(:user_set) { FactoryGirl.create(:user_set, name: "Dogs and cats", priority: 5) }
 
           before :each do
@@ -31,12 +31,12 @@ module SupplejackApi
           end
 
           it 'finds all public sets' do
-            expect(UserSet).to receive(:public_sets).with(page: nil) { [] }
-            get :show, format: 'json'
+            expect(UserSet).to receive(:all_public_sets) { [] }
+            get :index, format: 'json'
           end
 
           it 'renders the public sets as JSON' do
-            get :show, format: 'json'
+            get :index, format: 'json'
             sets = JSON.parse(response.body)
 
             sets['sets'].each do |set|
@@ -47,15 +47,13 @@ module SupplejackApi
               expect(set).to have_key 'created_at'
               expect(set).to have_key 'updated_at'
             end
-
-            expect(sets['meta']).to have_key 'total'
           end
         end
       end
 
       describe 'without an admin account' do
         it 'renders the appropriate message' do
-          get :show, format: 'json'
+          get :index, format: 'json'
           expect(response.body).to eq '{"errors":"Please provide a API Key"}'
         end
       end

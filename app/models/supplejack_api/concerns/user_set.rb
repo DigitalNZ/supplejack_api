@@ -99,6 +99,10 @@ module SupplejackApi::Concerns::UserSet
                  end
     end
 
+    def self.all_public_sets
+      where(privacy: 'public', :name.ne => 'Favourites')
+    end
+
     def self.public_sets(options = {})
       options.reverse_merge!(page: 1, per_page: 100)
       page = options[:page].to_i

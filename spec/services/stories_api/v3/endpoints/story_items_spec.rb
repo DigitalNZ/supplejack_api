@@ -289,11 +289,10 @@ module StoriesApi
               it 'updates the cover thumbnail if it dosent exist' do
                 @story.update_attribute(:cover_thumbnail, nil)
                 factory = create(:story_item, type: 'embed', sub_type: 'record',
-                             content: { id: record.record_id},
+                             content: { id: record.record_id, image_url: record.large_thumbnail_url},
                              meta: { metadata: 'Some Meta' })
 
                 item = factory.attributes.symbolize_keys
-
                 expect(@story.cover_thumbnail).to be_nil
 
                 StoryItems.new(story_id: @story.id,

@@ -43,8 +43,7 @@ module StoriesApi
           validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(params[:item])
           return create_error('SchemaValidationError', errors: validator.messages(full: true)) unless validator.success?
 
-          # FIXME: record_id is being posted in params by dnz website but not showing up here.
-          story_item = story.set_items.build(@item_params.merge(record_id: @item_params[:content][:record_id]))
+          story_item = story.set_items.build(@item_params)
           story.cover_thumbnail = story_item.content[:image_url] unless story.cover_thumbnail
           story.save!
 

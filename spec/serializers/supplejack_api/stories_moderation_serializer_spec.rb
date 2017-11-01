@@ -21,10 +21,6 @@ module SupplejackApi
         expect(serialized_user_set).to have_key :name
       end
 
-      it 'renders the user field' do
-        expect(serialized_user_set).to have_key :user
-      end
-
       it 'renders the count field' do
         expect(serialized_user_set).to have_key :count
       end

@@ -16,7 +16,9 @@ module StoriesApi
 
         def initialize(params)
           @params = params
+          @item_params = params[:item]&.deep_symbolize_keys
           @user = SupplejackApi::User.find_by_api_key(params[:user_key])
+
           if @user
             @story = @user.user_sets.find_by_id(params[:story_id])
             @errors = create_error('StoryNotFound', id: params[:story_id]) unless @story.present?
@@ -36,24 +38,13 @@ module StoriesApi
           return @errors if @errors
           return create_error('MandatoryParamMissing', param: :item) unless params[:item]
 
-          position = params[:item].delete(:position)
+          position = @item_params.delete(:position)
 
           validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(params[:item])
           return create_error('SchemaValidationError', errors: validator.messages(full: true)) unless validator.success?
 
-          item_params = params[:item].deep_symbolize_keys
-
-          # FIXME: This is a temporary fix
-          # Can be removed after user_sets is retired
-          if item_params[:content][:id]
-            item_params[:record_id] = item_params[:content][:id]
-            record = SupplejackApi.config.record_class.custom_find(item_params[:record_id])
-            item_params[:content][:image_url] = record.large_thumbnail_url || record.thumbnail_url if record
-          end
-
-          story_item = story.set_items.build(item_params)
+          story_item = story.set_items.build(@item_params)
           story.cover_thumbnail = story_item.content[:image_url] unless story.cover_thumbnail
-
           story.save!
 
           if position
@@ -66,6 +57,12 @@ module StoriesApi
 
           create_response(status: 200,
                           payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(story_item))
+        end
+
+        private
+
+        def text_item?
+          @item_params[:type] == 'text'
         end
       end
     end

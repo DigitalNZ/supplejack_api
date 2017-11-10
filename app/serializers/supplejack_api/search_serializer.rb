@@ -29,11 +29,11 @@ module SupplejackApi
       end
     end
 
-    private
-
     def xml?
       instance_options[:request_format] == 'xml'
     end
+
+    private
 
     # This is because the structure of XML Facets and JSON facets are different.
 

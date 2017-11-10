@@ -36,5 +36,17 @@ module SupplejackApi
     it 'renders the facets' do
       expect(serialized_search).to have_key :facets
     end
+
+    describe '#xml?' do
+      it 'returns true when the serializer has been initialized for XML' do
+        serializer = described_class.new(search, { request_format: 'xml'} )
+        expect(serializer.xml?).to eq true
+      end
+
+      it 'returns false when the serializer has not been initialized for XML' do
+        serializer = described_class.new(search)
+        expect(serializer.xml?).to eq false
+      end
+    end
   end
 end

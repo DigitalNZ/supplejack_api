@@ -30,7 +30,7 @@ module SupplejackApi
                      callback: params['jsonp']
             end
             format.xml do
-              options = { serializer: SearchSerializer, record_fields: available_fields }
+              options = { serializer: SearchSerializer, record_fields: available_fields, request_format: 'xml' }
               serializable_resource = ActiveModelSerializers::SerializableResource.new(@search, options)
 
               # The double as_json is required to render the inner json object as json as well as the exterior object

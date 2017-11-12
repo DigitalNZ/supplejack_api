@@ -66,7 +66,7 @@ module SupplejackApi
 
       context 'json' do
         before do
-          get :index, api_key: user.authentication_token, format: :json, use_route: :supplejack_api
+          get :index, api_key: user.authentication_token, format: :json
         end
 
         it 'has a succesful response code' do
@@ -80,7 +80,7 @@ module SupplejackApi
 
       context 'jsonp' do
         before do
-          get :index, api_key: user.authentication_token, format: :json, jsonp: 'jQuery18306022017613970934_1505872751581', use_route: :supplejack_api
+          get :index, api_key: user.authentication_token, format: :json, jsonp: 'jQuery18306022017613970934_1505872751581'
         end
 
         it 'has a succesful response code' do
@@ -94,7 +94,7 @@ module SupplejackApi
 
       context 'xml' do
         before do
-          get :index, api_key: user.authentication_token, format: :xml, use_route: :supplejack_api
+          get :index, api_key: user.authentication_token, format: :xml
         end
 
         it 'has a succesful response code' do
@@ -136,7 +136,7 @@ module SupplejackApi
 
       context 'json' do
         before do
-          get :show, id: record.id, api_key: user.authentication_token, format: :json, use_route: :supplejack_api
+          get :show, id: record.id, api_key: user.authentication_token, format: :json
         end
 
         it 'has a succesful response code' do
@@ -150,7 +150,7 @@ module SupplejackApi
 
       context 'jsonp' do
         before do
-          get :show, id: record.id, api_key: user.authentication_token, format: :json, jsonp: 'jQuery18306022017613970934_1505872751581', use_route: :supplejack_api
+          get :show, id: record.id, api_key: user.authentication_token, format: :json, jsonp: 'jQuery18306022017613970934_1505872751581'
         end
 
         it 'has a succesful response code' do
@@ -164,7 +164,7 @@ module SupplejackApi
 
       context 'xml' do
         before do
-          get :show, id: record.id, api_key: user.authentication_token, format: :xml, use_route: :supplejack_api
+          get :show, id: record.id, api_key: user.authentication_token, format: :xml
         end
 
         it 'has a succesful response code' do

@@ -100,9 +100,9 @@ module SupplejackApi
           @email = double
           allow(SupplejackApi::RequestLimitMailer).to receive(:at90percent) { @email }
         }
-          
+
         it 'should send an email if the user is at 90% daily requests' do
-          expect(@email).to receive(:deliver)
+          expect(@email).to receive(:deliver_now)
           user.attributes = {daily_requests: 89, updated_at: Time.now, max_requests: 100}
           expect(SupplejackApi::RequestLimitMailer).to receive(:at90percent).with(user) {@email}
           user.check_daily_requests
@@ -115,7 +115,7 @@ module SupplejackApi
         end
 
         it 'should send an email if the user has reached 100%' do
-          expect(@email).to receive(:deliver)
+          expect(@email).to receive(:deliver_now)
           user.attributes = {daily_requests: 99, updated_at: Time.now, max_requests: 100}
           expect(SupplejackApi::RequestLimitMailer).to receive(:at100percent).with(user) {@email}
           user.check_daily_requests

@@ -24,7 +24,7 @@ Dummy::Application.configure do
   config.eager_load = false
 
   config.cache_store = :null_store
-  
+
   # Show full error reports and disable caching
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching = false
@@ -43,4 +43,7 @@ Dummy::Application.configure do
 
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
+
+  # Run tests in order for rails upgrades (rails 5 does random)
+  config.active_support.test_order = :sorted
 end

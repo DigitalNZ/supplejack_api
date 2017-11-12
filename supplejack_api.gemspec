@@ -22,7 +22,8 @@ Gem::Specification.new do |s|
   s.files = Dir['{app,config,db,lib}/**/*'] + ['Rakefile', 'README.md']
   s.test_files = Dir['spec/**/*']
 
-  s.add_dependency 'rails', '~> 4.1.0'
+  s.add_dependency 'rails', '~> 4.2.0'
+  s.add_dependency 'responders', '~> 2.0'
   s.add_dependency 'protected_attributes'
   s.add_dependency 'thin', '~> 1.6.2'
   s.add_dependency 'kaminari', '~> 0.14.0'
@@ -63,6 +64,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'rufus-scheduler', '= 2.0.17'
 
   ## Development dependancies
+  s.add_development_dependency 'web-console', '~> 2.0'
   s.add_development_dependency 'rspec-rails', '~> 3.1.0'
   s.add_development_dependency 'cucumber-rails', '~> 1.3.0'
   s.add_development_dependency 'capybara', '~> 2.2.0'

@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   s.files = Dir['{app,config,db,lib}/**/*'] + ['Rakefile', 'README.md']
   s.test_files = Dir['spec/**/*']
 
-  s.add_dependency 'rails', '~> 4.2.0'
+  s.add_dependency 'rails', '~> 4.2.10'
   s.add_dependency 'responders', '~> 2.0'
   s.add_dependency 'protected_attributes'
   s.add_dependency 'thin', '~> 1.6.2'

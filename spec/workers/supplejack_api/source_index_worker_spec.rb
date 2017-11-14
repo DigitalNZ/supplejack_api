@@ -1,8 +1,8 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 require "spec_helper"
@@ -14,33 +14,33 @@ module SupplejackApi
 
       before do
         records.each do |r|
-          r.primary_fragment.source_id = 'tapuhi'
+          r.primary_fragment.source_id = 'source_id'
           r.save
         end
 
-        allow(Record).to receive(:where).with(hash_including(:'fragments.source_id' => 'tapuhi')).and_call_original
+        allow(Record).to receive(:where).with(hash_including(:'fragments.source_id' => 'source_id')).and_call_original
       end
 
       it "finds all active records and indexes them" do
-        expect(Record).to receive(:where).with(:'fragments.source_id' => 'tapuhi').and_call_original
+        expect(Record).to receive(:where).with(:'fragments.source_id' => 'source_id').and_call_original
         expect(Sunspot).to receive(:index).with(records)
 
-        IndexSourceWorker.new.perform('tapuhi')
+        IndexSourceWorker.new.perform('source_id')
       end
 
       it "finds all deleted records and removes them from solr" do
         records.each { |r| r.update_attribute(:status, 'deleted') }
 
-        expect(Record).to receive(:where).with(:'fragments.source_id' => 'tapuhi').and_call_original
+        expect(Record).to receive(:where).with(:'fragments.source_id' => 'source_id').and_call_original
         expect(Sunspot).to receive(:remove).with(records)
-        IndexSourceWorker.new.perform('tapuhi')
+        IndexSourceWorker.new.perform('source_id')
       end
 
       it "finds records updated more recently than the date given" do
         date = Time.now
         allow(Time).to receive(:parse) { date }
-        expect(Record).to receive(:where).with(:'fragments.source_id' => 'tapuhi', :updated_at.gt => date)
-        IndexSourceWorker.new.perform('tapuhi', date.to_s)
+        expect(Record).to receive(:where).with(:'fragments.source_id' => 'source_id', :updated_at.gt => date)
+        IndexSourceWorker.new.perform('source_id', date.to_s)
       end
     end
 

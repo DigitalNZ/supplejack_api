@@ -7,7 +7,7 @@ module SupplejackApi
       title                 'A record'
       creator               ['John Kennedy']
       dnz_type              'Unknown'
-      primary_collection    ['TAPUHI']
+      primary_collection    ['PRIMARY_COLLECTION']
       thumbnail {FactoryGirl.build(:thumbnail)}
     end
   end

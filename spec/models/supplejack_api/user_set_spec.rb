@@ -327,10 +327,10 @@ module SupplejackApi
     end
 
     describe "#update_attributes_and_embedded" do
-      before { 
+      before {
         developer = double(:developer)
         admin = double(:admin, admin: true, role: 'admin')
-        allow(RecordSchema).to receive(:roles) { { admin: admin, developer: developer } } 
+        allow(RecordSchema).to receive(:roles) { { admin: admin, developer: developer } }
       }
 
       it "updates the set attributes" do
@@ -499,7 +499,7 @@ module SupplejackApi
 
         it "should not create a new record if already linked" do
           allow(user_set).to receive(:record) { double(:record).as_null_object }
-          expect(SupplejackApi::Record).to_not receive(:new) 
+          expect(SupplejackApi::Record).to_not receive(:new)
           user_set.update_record
         end
 
@@ -527,7 +527,7 @@ module SupplejackApi
         @record = FactoryGirl.build(:record)
         allow(user_set).to receive(:record) { @record }
       end
-        
+
       it "should set record status to deleted" do
         user_set.delete_record
         expect(user_set.record.status).to eq "deleted"
@@ -634,7 +634,7 @@ module SupplejackApi
     describe "#items_with_records" do
       it "returns an array of set items with record information" do
         record = FactoryGirl.create(:record, record_id: 5)
-        fragment = record.fragments.create( title: "Dog", description: "Ugly dog", display_content_partner: "ATL", display_collection: "Tapuhi", large_thumbnail_attributes: {url: "goo.gle/large"}, thumbnail_attributes: {url: "goo.gle/small"})
+        fragment = record.fragments.create( title: "Dog", description: "Ugly dog", display_content_partner: "ATL", display_collection: "Display collection", large_thumbnail_attributes: {url: "goo.gle/large"}, thumbnail_attributes: {url: "goo.gle/small"})
         user_set.set_items.build(record_id: 5, position: 1)
         expect(user_set.items_with_records.first.record).to eq record
       end

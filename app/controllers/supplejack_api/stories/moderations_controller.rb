@@ -15,6 +15,7 @@ module SupplejackApi
 
       def index
         @user_sets = UserSet.all_public_sets
+        request.env['HTTP_ACCEPT_ENCODING'] = 'gzip'
         render json: @user_sets, each_serializer: StoriesModerationSerializer,
                root: 'sets', adapter: :json
       end

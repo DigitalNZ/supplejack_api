@@ -11,7 +11,6 @@ module SupplejackApi
     include Mongoid::Document
     include Mongoid::Timestamps
     include ActionView::Helpers::SanitizeHelper
-    include ActiveModel::MassAssignmentSecurity
     include SupplejackApi::Concerns::UserSet
 
     # Finds and returns a UserSet with id

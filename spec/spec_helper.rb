@@ -20,13 +20,12 @@ require 'rspec/rails'
 require 'factory_girl_rails'
 require 'timecop'
 require 'sunspot_matchers'
-require 'mongoid-rspec'
-require 'simplecov'
+# require 'simplecov'
 require 'rspec/active_model/mocks'
 require 'sunspot_test/rspec'
 
-require "codeclimate-test-reporter"
-CodeClimate::TestReporter.start
+# require "codeclimate-test-reporter"
+# CodeClimate::TestReporter.start
 # SimpleCov.start
 
 Rails.backtrace_cleaner.remove_silencers!
@@ -64,6 +63,5 @@ RSpec.configure do |config|
   end
 
   config.include SunspotMatchers
-  config.include Mongoid::Matchers
   config.include FactoryGirl::Syntax::Methods
 end

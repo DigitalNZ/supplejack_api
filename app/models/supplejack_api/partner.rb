@@ -9,11 +9,8 @@
 module SupplejackApi
   class Partner
     include Mongoid::Document
-    include ActiveModel::MassAssignmentSecurity
 
-    store_in collection: 'partners', session: 'strong'
-
-    attr_accessible :_id, :name
+    store_in collection: 'partners', client: 'strong'
 
     field :name, type: String
 

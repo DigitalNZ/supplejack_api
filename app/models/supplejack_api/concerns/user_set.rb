@@ -4,7 +4,7 @@ module SupplejackApi::Concerns::UserSet
   extend ActiveSupport::Concern
 
   included do
-    store_in collection: 'user_sets', session: 'strong'
+    store_in collection: 'user_sets', client: 'strong'
 
     belongs_to :user, class_name: 'SupplejackApi::User'
     belongs_to :record, class_name: SupplejackApi.config.record_class.to_s, inverse_of: nil
@@ -51,8 +51,6 @@ module SupplejackApi::Concerns::UserSet
 
     index 'set_items.record_id' => 1
     index featured: 1
-
-    attr_accessible :name, :description, :privacy, :priority, :tags, :tag_list, :records, :approved
 
     validates :name, presence: true
     validates :privacy, inclusion: { in: %w(public hidden private) }

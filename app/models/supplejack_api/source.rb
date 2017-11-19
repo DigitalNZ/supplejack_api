@@ -9,11 +9,8 @@
 module SupplejackApi
   class Source
     include Mongoid::Document
-    include ActiveModel::MassAssignmentSecurity
 
-    store_in collection: 'sources', session: 'strong'
-
-    attr_accessible :name, :source_id, :_id, :partner_id, :status
+    store_in collection: 'sources', client: 'strong'
 
     field :name,        type: String
     field :source_id,   type: String

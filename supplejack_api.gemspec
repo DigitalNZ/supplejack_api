@@ -24,7 +24,6 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'rails', '~> 5.0.0'
   s.add_dependency 'responders', '~> 2.0'
-  # s.add_dependency 'protected_attributes'  PART OF RAILS 5
   s.add_dependency 'thin', '~> 1.6.2'
   s.add_dependency 'kaminari', '~> 0.14.0'
   s.add_dependency 'unicode_utils', '~> 1.4.0'
@@ -33,6 +32,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'devise', '~> 4.0.0'
   s.add_dependency 'devise-token_authenticatable', '<= 1.0.0'
   s.add_dependency 'active_model_serializers'
+  s.add_dependency 'activemodel-serializers-xml'
   s.add_dependency 'paperclip', '~> 3.1.4'
   s.add_dependency 'progressbar', '~> 0.11.0'
   s.add_dependency 'dimensions', '~> 1.2.0'

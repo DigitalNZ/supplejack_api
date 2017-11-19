@@ -11,7 +11,8 @@ module SupplejackApi
   # FIXME: make log lines smaller
   class StatusController < ApplicationController
     skip_before_action :authenticate_user!, only: [:show]
-    skip_before_action :verify_limits!,     only: [:show]
+    # skip_before_action :verify_limits!,     only: [:show] This devise method doesn't work with rails 5 upgrade.
+    # We need find out how this works with the version of devise we are up to. 
     around_action :handle_timeout, only: :show
 
     newrelic_ignore if defined? NewRelic

@@ -13,25 +13,25 @@ source 'http://rubygems.org'
 # development dependencies will be added by default to the :development group.
 gemspec
 
-gem 'active_model_serializers'
 gem 'codeclimate-test-reporter', group: :test, require: nil
 gem 'cucumber-rails', require: false
 gem 'dimensions', require: false
 gem 'factory_girl_rails', require: false
-# jquery-rails is used by the dummy application
+
+# # jquery-rails is used by the dummy application
 gem 'jquery-rails'
 gem 'mimemagic', require: false
 gem 'mongoid_auto_inc', git: 'https://github.com/boost/mongoid_auto_inc.git'
-# Must add 'require' statments in Gemfile
+
+# # Must add 'require' statments in Gemfile
 gem 'mongoid-tree', require: 'mongoid/tree'
 gem 'rb-fsevent', require: false
 gem 'rubocop', require: false
 gem 'simplecov', require: false
 gem 'yard', require: false, group: :development
-gem 'sunspot_rails', '~> 2.2.7'
-gem 'sunspot_solr', '~> 2.2.7'
-# This is a gem created by fedegl to test the XML responses, its part of the Boost github organization account
-gem 'xml_spec', git: 'https://github.com/boost/xml_spec', require: false
+
+# # This is a gem created by fedegl to test the XML responses, its part of the Boost github organization account
+gem 'xml_spec', git: 'https://github.com/boost/xml_spec',  require: false
 
 group :test do
   gem 'faker'

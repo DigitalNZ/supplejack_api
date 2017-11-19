@@ -6,7 +6,7 @@
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 development:
-  sessions:
+  clients:
     default:
       database: supplejack_api_development
       hosts:
@@ -18,7 +18,7 @@ development:
         <%= ENV['MONGOID_HOSTS'].gsub(/\s+/, "").split(',') %>
 
 test:
-  sessions:
+  clients:
     default:
       database: supplejack_api_test
       hosts:

@@ -85,6 +85,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'simplecov', '~> 0.6.4'
   s.add_development_dependency 'sunspot_test', '~> 0.4.0'
   s.add_development_dependency 'rspec-activemodel-mocks', '~> 1.0.1'
+  s.add_development_dependency 'rails-controller-testing'
 
   if RUBY_VERSION =~ /1.9/
     Encoding.default_external = Encoding::UTF_8

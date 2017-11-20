@@ -24,6 +24,8 @@ require 'sunspot_matchers'
 require 'rspec/active_model/mocks'
 require 'sunspot_test/rspec'
 
+require 'rails-controller-testing'
+Rails::Controller::Testing.install
 # require "codeclimate-test-reporter"
 # CodeClimate::TestReporter.start
 # SimpleCov.start

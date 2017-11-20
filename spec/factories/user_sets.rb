@@ -8,6 +8,7 @@
 module SupplejackApi
   FactoryBot.define do
     factory :user_set, class: SupplejackApi::UserSet do
+      association :record, factory: :record
       name            'Dogs and cats'
       description     'Ugly dogs and cats'
       user
@@ -18,7 +19,7 @@ module SupplejackApi
           # @records that has been set in user_set
           # Without it you will not have set_items
           user_set.instance_variable_set(:@records, nil)
-          record = FactoryBot.create(:record)
+          record = FactoryBot.create(:record, record_id: 543_210)
            FactoryBot.create(:set_item, record_id: record.record_id, user_set: user_set)
            user_set.update_record
         end

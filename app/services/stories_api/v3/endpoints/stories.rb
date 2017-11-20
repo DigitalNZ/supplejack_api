@@ -34,13 +34,21 @@ module StoriesApi
         def post
           return create_error('UserNotFound', id: params[:user_key]) unless user.present?
 
-          story = params[:story]
+          return create_error('MandatoryParamMissing', param: :name) unless story_params[:name].present?
 
-          return create_error('MandatoryParamMissing', param: :name) unless story.is_a?(Hash) && story[:name].present?
+          new_story = user.user_sets.create(name: story_params[:name])
 
-          new_story = user.user_sets.create(name: story[:name])
+          if new_story.valid?
+            create_response(status: 200, payload: ::StoriesApi::V3::Presenters::Story.new.call(new_story))
+          else
+            create_response(status: 400, payload: "Story not saved: #{new_story.errors}")
+          end
+        end
 
-          create_response(status: 200, payload: ::StoriesApi::V3::Presenters::Story.new.call(new_story))
+        private
+
+        def story_params
+          @story_params ||= params.require(:story).permit(:name).to_h
         end
       end
     end

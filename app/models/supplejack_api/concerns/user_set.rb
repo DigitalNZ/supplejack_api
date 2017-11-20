@@ -7,7 +7,7 @@ module SupplejackApi::Concerns::UserSet
     store_in collection: 'user_sets', client: 'strong'
 
     belongs_to :user, class_name: 'SupplejackApi::User'
-    belongs_to :record, class_name: SupplejackApi.config.record_class.to_s, inverse_of: nil
+    belongs_to :record, class_name: SupplejackApi.config.record_class.to_s, inverse_of: nil, touch: true
 
     embeds_many :set_items, class_name: 'SupplejackApi::SetItem' do
       def find_by_record_id(record_id)
@@ -58,6 +58,7 @@ module SupplejackApi::Concerns::UserSet
     before_validation :set_default_privacy
     before_save :calculate_count
     before_save :strip_html_tags!
+    after_build :create_record
     before_save :update_record
     after_save :reindex_items
     after_save :reindex_if_changed
@@ -205,10 +206,13 @@ module SupplejackApi::Concerns::UserSet
     def update_record
       if set_items.empty?
         suppress_record
-        return nil
+        nil
       end
+    end
 
-      self.record = SupplejackApi::Record.new if record.nil?
+    def create_record
+      return unless record.nil?
+      self.record = SupplejackApi::Record.new
 
       record.status = record_status
       record.internal_identifier = "user_set_#{id}"

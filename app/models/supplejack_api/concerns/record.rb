@@ -15,7 +15,9 @@ module SupplejackApi::Concerns::Record
     store_in collection: 'records'
     index(concept_ids: 1)
     index({ record_id: 1 }, unique: true)
-    auto_increment :record_id, session: 'strong'
+
+    # UPGRADE: auto inc is waaaaaay out of date.  See if we can make tests pass without it
+    # auto_increment :record_id, client: 'strong'
 
     # Callbacks
     before_save :merge_fragments

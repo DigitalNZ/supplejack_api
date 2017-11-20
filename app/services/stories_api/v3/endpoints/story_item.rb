@@ -33,14 +33,14 @@ module StoriesApi
           merge_patch = PerformMergePatch.new(::StoriesApi::V3::Schemas::StoryItem::BlockValidator.new,
                                               ::StoriesApi::V3::Presenters::StoryItem.new)
 
-          valid = merge_patch.call(item, params[:item])
+          valid = merge_patch.call(item, item_params)
 
           return create_error('SchemaValidationError', errors: merge_patch.validation_errors) unless valid
 
           item.save
 
-          if params[:item][:meta]
-            if params[:item][:meta][:is_cover]
+          if item_params[:meta]
+            if item_params[:meta][:is_cover]
               story.update_attribute(:cover_thumbnail, item.content[:image_url])
             elsif story.cover_thumbnail == item.content[:image_url]
               story.update_attribute(:cover_thumbnail, nil)
@@ -91,6 +91,16 @@ module StoriesApi
           item = @story.set_items.find_by_id(params[:id])
           @errors = create_error('StoryItemNotFound', item_id: params[:id], story_id: params[:story_id]) unless item
           item
+        end
+
+        private
+
+        def item_params
+          @item_params ||= params.require(:item).permit(:position,
+                                                        :type,
+                                                        :sub_type,
+                                                        content: [:value],
+                                                        meta: %i(align_mode is_cover caption title)).to_h
         end
       end
     end

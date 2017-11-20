@@ -9,7 +9,6 @@
 module SupplejackApi
   RSpec.describe StoryItemsController do
     routes { SupplejackApi::Engine.routes }
-
     let(:story) { create(:story) }
     let(:user) { story.user }
     let(:api_key) { user.api_key }
@@ -91,7 +90,7 @@ module SupplejackApi
         it 'should return 400 if required params are not posted' do
           post :create, story_id: story.id.to_s, api_key: api_key, user_key: api_key, item: {}
           expect(response.status).to eq 400
-          expect(JSON.parse(response.body)['errors']).to eq 'Mandatory Parameters Missing: type is missing sub_type is missing'
+          expect(JSON.parse(response.body)['errors']).to eq 'Mandatory Parameter item missing in request'
         end
 
         it 'should return error for unknow values for type' do
@@ -117,7 +116,7 @@ module SupplejackApi
         it 'should return created Story Item' do
           block = { type: 'text', sub_type: 'heading',
                     content: { value: 'sometext'},
-                    meta: { some: 'foo' }, position: 0 }
+                    meta: { title: 'foo' }, position: 0 }
 
           post :create, story_id: story.id.to_s, api_key: api_key, user_key: api_key, item: block
           result = JSON.parse(response.body).deep_symbolize_keys
@@ -125,7 +124,7 @@ module SupplejackApi
 
           expect(result).to eq ({ type: 'text', sub_type: 'heading',
                                   content: { value: 'sometext'},
-                                  meta: { some: 'foo' }, position: 1 })
+                                  meta: { title: 'foo' }, position: 1 })
         end
       end
     end
@@ -151,8 +150,8 @@ module SupplejackApi
         before do
           item = { type: 'text', sub_type: 'heading',
                    content: { value: 'sometext' },
-                   meta: { some: 'foo' }, position: 0 }
-          
+                   meta: { title: 'foo' }, position: 0 }
+
           patch(:update, story_id: story.id.to_s,
                          id: story.set_items.first.id.to_s,
                          api_key: api_key, user_key: api_key, item: item)

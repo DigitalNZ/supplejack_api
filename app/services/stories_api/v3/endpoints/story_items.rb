@@ -16,7 +16,7 @@ module StoriesApi
 
         def initialize(params)
           @params = params
-          @item_params = params[:item]&.deep_symbolize_keys
+
           @user = SupplejackApi::User.find_by_api_key(params[:user_key])
 
           if @user
@@ -38,12 +38,11 @@ module StoriesApi
           return @errors if @errors
           return create_error('MandatoryParamMissing', param: :item) unless params[:item]
 
-          position = @item_params.delete(:position)
-
-          validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(params[:item])
+          validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(item_params)
           return create_error('SchemaValidationError', errors: validator.messages(full: true)) unless validator.success?
+          position = item_params.delete(:position)
 
-          story_item = story.set_items.build(@item_params)
+          story_item = story.set_items.build(item_params)
           story.cover_thumbnail = story_item.content[:image_url] unless story.cover_thumbnail
           story.save!
 
@@ -62,7 +61,15 @@ module StoriesApi
         private
 
         def text_item?
-          @item_params[:type] == 'text'
+          item_params[:type] == 'text'
+        end
+
+        def item_params
+          @item_params ||= params.require(:item).permit(:position,
+                                                        :type,
+                                                        :sub_type,
+                                                        content: [:value],
+                                                        meta: %i(align_mode is_cover caption title)).to_h
         end
       end
     end

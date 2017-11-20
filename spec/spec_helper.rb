@@ -23,8 +23,8 @@ require 'sunspot_matchers'
 # require 'simplecov'
 require 'rspec/active_model/mocks'
 require 'sunspot_test/rspec'
-
 require 'rails-controller-testing'
+
 Rails::Controller::Testing.install
 # require "codeclimate-test-reporter"
 # CodeClimate::TestReporter.start
@@ -51,10 +51,10 @@ RSpec.configure do |config|
 
   config.before(:each) do
     # We have added this as database cleaner appears to not be working for mongo
+    Sunspot.session = Sunspot::Rails::StubSessionProxy.new(Sunspot.session)
     SupplejackApi::Record.destroy_all
     SupplejackApi::Concept.destroy_all
     DatabaseCleaner.clean
-    Sunspot.session = Sunspot::Rails::StubSessionProxy.new(Sunspot.session)
     Timecop.return
 
     %w(record concept).each do |model|

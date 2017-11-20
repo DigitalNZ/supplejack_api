@@ -6,7 +6,7 @@
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
-  FactoryGirl.define do
+  FactoryBot.define do
     factory :source_authority, class: SupplejackApi::SourceAuthority do
       add_attribute :_mn_given_name do
         'name'

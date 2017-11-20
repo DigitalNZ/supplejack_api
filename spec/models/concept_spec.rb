@@ -41,7 +41,7 @@ module SupplejackApi
 
     # describe '#custom_find' do
     #   before(:each) do
-    #     @concept = FactoryGirl.create(:concept, concept_id: 54321)
+    #     @concept = FactoryBot.create(:concept, concept_id: 54321)
     #   end
 
     #   it 'should search for a concept via its concept_id' do

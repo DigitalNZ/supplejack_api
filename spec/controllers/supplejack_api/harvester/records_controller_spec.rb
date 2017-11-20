@@ -11,7 +11,7 @@ module SupplejackApi
   describe Harvester::RecordsController, type: :controller do
     routes { SupplejackApi::Engine.routes }
 
-    let(:record) { FactoryGirl.build(:record) }
+    let(:record) { FactoryBot.build(:record) }
 
     context 'with a api_key with harvester role' do
       let(:api_key) { create(:user, role: 'harvester').api_key }

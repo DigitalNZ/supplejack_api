@@ -10,7 +10,7 @@ require 'spec_helper'
 module SupplejackApi
   describe UserSet do
 
-    let(:user_set) { FactoryGirl.build(:user_set)}
+    let(:user_set) { FactoryBot.build(:user_set)}
     before(:each) do
       allow(user_set).to receive(:update_record)
       allow(user_set).to receive(:reindex_items)
@@ -110,8 +110,8 @@ module SupplejackApi
           allow(Sunspot).to receive(:commit).and_return("true")
         end
 
-        let(:record) { FactoryGirl.create(:record_with_fragment) }
-        let(:user_set) { FactoryGirl.create(:user_set) }
+        let(:record) { FactoryBot.create(:record_with_fragment) }
+        let(:user_set) { FactoryBot.create(:user_set) }
         context 'an active user_set has a index-able field changed' do
 
           before do
@@ -223,7 +223,7 @@ module SupplejackApi
     end
 
     describe "#name" do
-      let(:user_set) { FactoryGirl.build(:user_set, user_id: User.new.id, url: "1234abc")}
+      let(:user_set) { FactoryBot.build(:user_set, user_id: User.new.id, url: "1234abc")}
 
       it "titlizes the name" do
         user_set.name = "set name"
@@ -238,7 +238,7 @@ module SupplejackApi
 
     describe "#custom_find" do
       before(:each) do
-        @user_set = FactoryGirl.build(:user_set, user_id: User.new.id, url: "1234abc")
+        @user_set = FactoryBot.build(:user_set, user_id: User.new.id, url: "1234abc")
         allow(@user_set).to receive(:update_record)
         @user_set.save
       end
@@ -266,8 +266,8 @@ module SupplejackApi
 
     describe "#public_sets" do
       before :each do
-        @set1 = FactoryGirl.create(:user_set, privacy: "public")
-        @set2 = FactoryGirl.create(:user_set, privacy: "hidden")
+        @set1 = FactoryBot.create(:user_set, privacy: "public")
+        @set2 = FactoryBot.create(:user_set, privacy: "hidden")
       end
 
       it "returns all public sets" do
@@ -275,7 +275,7 @@ module SupplejackApi
       end
 
       it "ignores favourites" do
-        @set3 = FactoryGirl.create(:user_set, privacy: "public", name: "Favourites")
+        @set3 = FactoryBot.create(:user_set, privacy: "public", name: "Favourites")
         expect(UserSet.public_sets.to_a).to_not include(@set3)
       end
 
@@ -301,12 +301,12 @@ module SupplejackApi
 
     describe "#featured_sets" do
       before :each do
-        @record = FactoryGirl.create(:record, status: "active", record_id: 1234)
-        @set1 = FactoryGirl.create(:user_set, privacy: "public", featured: true, featured_at: Time.now - 4.hours)
+        @record = FactoryBot.create(:record, status: "active", record_id: 1234)
+        @set1 = FactoryBot.create(:user_set, privacy: "public", featured: true, featured_at: Time.now - 4.hours)
         @set1.set_items.create(record_id: 1234)
-        @set2 = FactoryGirl.create(:user_set, privacy: "hidden", featured: true)
+        @set2 = FactoryBot.create(:user_set, privacy: "hidden", featured: true)
         @set2.set_items.create(record_id: 1234)
-        @set3 = FactoryGirl.create(:user_set, privacy: "public", featured: false)
+        @set3 = FactoryBot.create(:user_set, privacy: "public", featured: false)
         @set3.set_items.create(record_id: 1234)
       end
 
@@ -315,13 +315,13 @@ module SupplejackApi
       end
 
       it "orders the sets based on when they were added" do
-        @set4 = FactoryGirl.create(:user_set, privacy: "public", featured: true, featured_at: Time.now)
+        @set4 = FactoryBot.create(:user_set, privacy: "public", featured: true, featured_at: Time.now)
         @set4.set_items.create(record_id: 1234)
         expect(UserSet.featured_sets.first).to eq @set4
       end
 
       it "doesn't return sets without active records" do
-        @set4 = FactoryGirl.create(:user_set, privacy: "public", featured: true, name: "No records")
+        @set4 = FactoryBot.create(:user_set, privacy: "public", featured: true, name: "No records")
         expect(UserSet.featured_sets).to_not include(@set4)
       end
     end
@@ -370,24 +370,24 @@ module SupplejackApi
       end
 
       it "regular users should not be able to change the :featured attribute" do
-        regular_user = FactoryGirl.create(:user, role: "developer")
-        user_set = FactoryGirl.create(:user_set, user_id: regular_user.id, featured: false)
+        regular_user = FactoryBot.create(:user, role: "developer")
+        user_set = FactoryBot.create(:user_set, user_id: regular_user.id, featured: false)
         user_set.update_attributes_and_embedded({featured: true}, regular_user)
         user_set.reload
         expect(user_set.featured).to be_falsey
       end
 
       it "should allow admins to change the :featured attribute" do
-        admin_user = FactoryGirl.create(:user, role: "admin")
-        user_set = FactoryGirl.create(:user_set, user_id: admin_user.id)
+        admin_user = FactoryBot.create(:user, role: "admin")
+        user_set = FactoryBot.create(:user_set, user_id: admin_user.id)
         user_set.update_attributes_and_embedded({featured: true}, admin_user)
         user_set.reload
         expect(user_set.featured).to be_truthy
       end
 
       it "should update the featured_at when the featured attribute is updated" do
-        admin_user = FactoryGirl.create(:user, role: "admin")
-        user_set = FactoryGirl.create(:user_set, user_id: admin_user.id)
+        admin_user = FactoryBot.create(:user, role: "admin")
+        user_set = FactoryBot.create(:user_set, user_id: admin_user.id)
         Timecop.freeze(Time.now) do
           user_set.update_attributes_and_embedded({featured: true}, admin_user)
           user_set.reload
@@ -396,9 +396,9 @@ module SupplejackApi
       end
 
       it "should not update the featured_at if the featured hasn't changed" do
-        admin_user = FactoryGirl.create(:user, role: "admin")
+        admin_user = FactoryBot.create(:user, role: "admin")
         time = Time.now-1.day
-        user_set = FactoryGirl.create(:user_set, user_id: admin_user.id, featured: true, featured_at: time)
+        user_set = FactoryBot.create(:user_set, user_id: admin_user.id, featured: true, featured_at: time)
         Timecop.freeze(Time.now) do
           user_set.update_attributes_and_embedded({featured: true}, admin_user)
           user_set.reload
@@ -407,9 +407,9 @@ module SupplejackApi
       end
 
       it "removes the set from the featured" do
-        admin_user = FactoryGirl.create(:user, role: "admin")
+        admin_user = FactoryBot.create(:user, role: "admin")
         time = Time.now-1.day
-        user_set = FactoryGirl.create(:user_set, user_id: admin_user.id, featured: true, featured_at: time)
+        user_set = FactoryBot.create(:user_set, user_id: admin_user.id, featured: true, featured_at: time)
         user_set.update_attributes_and_embedded({featured: false}, admin_user)
         user_set.reload
         expect(user_set.featured).to be_falsey
@@ -524,7 +524,7 @@ module SupplejackApi
 
     describe "delete_record" do
       before(:each) do
-        @record = FactoryGirl.build(:record)
+        @record = FactoryBot.build(:record)
         allow(user_set).to receive(:record) { @record }
       end
         
@@ -566,20 +566,20 @@ module SupplejackApi
       end
 
       it "should get the active record objects included in the set" do
-        @record1 = FactoryGirl.create(:record, record_id:100, status: "active")
-        @record2 = FactoryGirl.create(:record, record_id:101, status: "deleted")
+        @record1 = FactoryBot.create(:record, record_id:100, status: "active")
+        @record2 = FactoryBot.create(:record, record_id:101, status: "deleted")
         expect(user_set.records).to eq([@record1])
       end
 
       it "limits the amount of records" do
-        @record1 = FactoryGirl.create(:record, record_id:100, status: "active")
-        @record2 = FactoryGirl.create(:record, record_id:101, status: "active")
+        @record1 = FactoryBot.create(:record, record_id:100, status: "active")
+        @record2 = FactoryBot.create(:record, record_id:101, status: "active")
         expect(user_set.records(1)).to eq([@record1])
       end
 
       it "it returns the first active record" do
-        @record1 = FactoryGirl.create(:record, record_id:100, status: "deleted")
-        @record2 = FactoryGirl.create(:record, record_id:101, status: "active")
+        @record1 = FactoryBot.create(:record, record_id:100, status: "deleted")
+        @record2 = FactoryBot.create(:record, record_id:101, status: "active")
         expect(user_set.records(1)).to eq([@record2])
       end
 
@@ -633,7 +633,7 @@ module SupplejackApi
 
     describe "#items_with_records" do
       it "returns an array of set items with record information" do
-        record = FactoryGirl.create(:record, record_id: 5)
+        record = FactoryBot.create(:record, record_id: 5)
         fragment = record.fragments.create( title: "Dog", description: "Ugly dog", display_content_partner: "ATL", display_collection: "Tapuhi", large_thumbnail_attributes: {url: "goo.gle/large"}, thumbnail_attributes: {url: "goo.gle/small"})
         user_set.set_items.build(record_id: 5, position: 1)
         expect(user_set.items_with_records.first.record).to eq record
@@ -645,8 +645,8 @@ module SupplejackApi
       end
 
       it "returns items_with_records sorted by position" do
-        FactoryGirl.create(:record, record_id: 5)
-        FactoryGirl.create(:record, record_id: 6)
+        FactoryBot.create(:record, record_id: 5)
+        FactoryBot.create(:record, record_id: 6)
         user_set.set_items.build(record_id: 5, position: 2)
         user_set.set_items.build(record_id: 6, position: 1)
         expect(user_set.items_with_records[0].record_id).to eq 6
@@ -654,7 +654,7 @@ module SupplejackApi
       end
 
       it "only fetches the amount of records specified" do
-        record = FactoryGirl.create(:record, record_id: 6)
+        record = FactoryBot.create(:record, record_id: 6)
         user_set.set_items.build(record_id: 5, position: 2)
         user_set.set_items.build(record_id: 6, position: 1)
         expect(user_set).to receive(:records).with(1) { [record] }

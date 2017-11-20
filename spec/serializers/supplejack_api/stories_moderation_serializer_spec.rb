@@ -9,7 +9,7 @@ require 'spec_helper'
 
 module SupplejackApi
   describe StoriesModerationSerializer do
-    let(:user_set) { FactoryGirl.create(:user_set, name: "Dogs and cats", priority: 5) }
+    let(:user_set) { FactoryBot.create(:user_set, name: "Dogs and cats", priority: 5) }
     let(:serialized_user_set) { StoriesModerationSerializer.new(user_set).as_json }
 
     describe 'attributes' do

@@ -14,7 +14,7 @@ module SupplejackApi
     let!(:user)   { create(:user) }
 
     before {
-      @user = FactoryGirl.create(:user, authentication_token: 'apikey', role: 'developer')
+      @user = FactoryBot.create(:user, authentication_token: 'apikey', role: 'developer')
     }
 
     describe 'GET index' do

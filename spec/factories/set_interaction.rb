@@ -6,7 +6,7 @@
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
-  FactoryGirl.define do
+  FactoryBot.define do
     factory :set_interaction, class: SupplejackApi::InteractionModels::Set do
       facet 'test'
       interaction_type :creation

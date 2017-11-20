@@ -10,8 +10,8 @@ require "spec_helper"
 module SupplejackApi
   describe IndexWorker do
     describe "#find_all" do
-      let(:record1) { FactoryGirl.create(:record, record_id: 12345) }
-      let(:record2) { FactoryGirl.create(:record, record_id: 67890) }
+      let(:record1) { FactoryBot.create(:record, record_id: 12345) }
+      let(:record2) { FactoryBot.create(:record, record_id: 67890) }
 
       it "finds all records by id" do
         expect(IndexWorker.new.find_all("Record", [record1.id, record2.id])).to eq [record1, record2]

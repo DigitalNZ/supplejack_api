@@ -6,7 +6,7 @@
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 Given /^a user with an? API Key$/ do
-  @user = FactoryGirl.create(:user, authentication_token: '12345', daily_requests: 0, username: 'Test User')
+  @user = FactoryBot.create(:user, authentication_token: '12345', daily_requests: 0, username: 'Test User')
 end
 
 When /^the user requests an API resource with (?:his|her) API key$/ do  

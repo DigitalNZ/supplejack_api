@@ -16,7 +16,7 @@ gemspec
 gem 'codeclimate-test-reporter', group: :test, require: nil
 gem 'cucumber-rails', require: false
 gem 'dimensions', require: false
-gem 'factory_girl_rails', require: false
+gem 'factory_bot_rails', require: false
 
 # # jquery-rails is used by the dummy application
 gem 'jquery-rails'

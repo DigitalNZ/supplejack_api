@@ -1,7 +1,7 @@
 require 'faker'
 
 module SupplejackApi
-  FactoryGirl.define do
+  FactoryBot.define do
     factory :faceted_metrics, class: SupplejackApi::FacetedMetrics do
       date {Date.current}
       total_active_records 10

@@ -6,7 +6,7 @@
 # the Department of Internal Affairs. http//digitalnz.org/supplejack
 
 module SupplejackApi
-  FactoryGirl.define do
+  FactoryBot.define do
     factory :concept, class: SupplejackApi::Concept do
       concept_id    1
       concept_type  'edm:Agent'

@@ -1,5 +1,5 @@
 module SupplejackApi
-  FactoryGirl.define do
+  FactoryBot.define do
 
     factory :fragment, class: SupplejackApi::ApiRecord::RecordFragment do
       source_id             'source_name'
@@ -8,7 +8,7 @@ module SupplejackApi
       creator               ['John Kennedy']
       dnz_type              'Unknown'
       primary_collection    ['TAPUHI']
-      thumbnail {FactoryGirl.build(:thumbnail)}
+      thumbnail {FactoryBot.build(:thumbnail)}
     end
   end
 end

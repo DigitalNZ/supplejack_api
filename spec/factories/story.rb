@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :story, class: SupplejackApi::UserSet do
     transient do
       number_of_story_items 2

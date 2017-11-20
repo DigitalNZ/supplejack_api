@@ -12,7 +12,7 @@ module SupplejackApi
     routes { SupplejackApi::Engine.routes }
 
     before(:each) do
-      @user = FactoryGirl.create(:user, authentication_token: "abc123")
+      @user = FactoryBot.create(:user, authentication_token: "abc123")
       allow(RecordSchema).to receive(:roles) { { admin: double(:admin, admin: true) } }
       allow(controller).to receive(:authenticate_user!) { true }
       allow(controller).to receive(:current_user) { @user }
@@ -20,7 +20,7 @@ module SupplejackApi
 
     describe "GET 'index'" do
       before(:each) do
-        @sets = [FactoryGirl.build(:user_set)]
+        @sets = [FactoryBot.build(:user_set)]
       end
 
       it "should return all the user's sets" do
@@ -103,7 +103,7 @@ module SupplejackApi
 
     describe "GET 'show'" do
       before(:each) do
-        @user_set = FactoryGirl.build(:user_set)
+        @user_set = FactoryBot.build(:user_set)
       end
 
       it "finds the @user_set" do
@@ -121,7 +121,7 @@ module SupplejackApi
 
     describe "POST 'create'" do
       before(:each) do
-        @user_set = FactoryGirl.build(:user_set)
+        @user_set = FactoryBot.build(:user_set)
         allow(controller.current_user.user_sets).to receive(:build) { @user_set }
         create(:record, record_id: 12345)
         allow(@user_set).to receive(:set_items).and_return(double(first: double(record_id: 12345), empty?: false))
@@ -157,7 +157,7 @@ module SupplejackApi
 
     describe "PUT 'update'" do
       before(:each) do
-        @user_set = FactoryGirl.create(:user_set, user_id: @user.id)
+        @user_set = FactoryBot.create(:user_set, user_id: @user.id)
         allow(@user_set).to receive(:update_attributes_and_embedded) { true }
       end
 
@@ -208,7 +208,7 @@ module SupplejackApi
 
     describe "DELETE 'destroy'" do
       before(:each) do
-        @user_set = FactoryGirl.create(:user_set, user_id: @user.id)
+        @user_set = FactoryBot.create(:user_set, user_id: @user.id)
         allow(controller.current_user.user_sets).to receive(:custom_find) { @user_set }
       end
 

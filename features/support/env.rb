@@ -21,7 +21,7 @@ require 'cucumber/rails'
 require 'sunspot_test/cucumber'
 require 'json_spec/cucumber'
 require 'xml_spec/cucumber'
-require 'factory_girl_rails'
+require 'factory_bot_rails'
 require 'timecop'
 
 # Capybara defaults to CSS3 selectors rather than XPath.
@@ -74,7 +74,7 @@ end
 # See https://github.com/cucumber/cucumber-rails/blob/master/features/choose_javascript_database_strategy.feature
 Cucumber::Rails::Database.javascript_strategy = :truncation
 
-World(FactoryGirl::Syntax::Methods)
+World(FactoryBot::Syntax::Methods)
 
 # include Engine routes in Cucumber world
 module EngineRoutesHelper

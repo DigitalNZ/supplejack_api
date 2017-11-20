@@ -11,7 +11,7 @@ module SupplejackApi
   describe Harvester::SourcesController, type: :controller do
     routes { SupplejackApi::Engine.routes }
 
-    let(:partner) { FactoryGirl.create(:partner) }
+    let(:partner) { FactoryBot.create(:partner) }
 
     context 'with a api_key with harvester role' do
       let(:api_key) { create(:user, role: 'harvester').api_key }
@@ -23,21 +23,21 @@ module SupplejackApi
       describe 'POST create' do
         it 'creates a new source' do
           expect do
-            post :create, partner_id: partner, source: FactoryGirl.attributes_for(:source), api_key: api_key
+            post :create, partner_id: partner, source: FactoryBot.attributes_for(:source), api_key: api_key
           end.to change { Source.count }.by 1
 
           expect(response).to be_success
         end
 
         it 'returns the source' do
-          post :create, partner_id: partner, source: FactoryGirl.attributes_for(:source), api_key: api_key
+          post :create, partner_id: partner, source: FactoryBot.attributes_for(:source), api_key: api_key
           partner.reload
           expect(response.body).to include Source.last.to_json
         end
 
         context 'source already exists' do
           it 'updates the source' do
-            source = partner.sources.create(FactoryGirl.attributes_for(:source, name: "source_1"))
+            source = partner.sources.create(FactoryBot.attributes_for(:source, name: "source_1"))
             post :create, partner_id: partner, source: {_id: source.id, name: 'source2'}, api_key: api_key
             source.reload
             expect(source.name).to eq 'source2'
@@ -47,7 +47,7 @@ module SupplejackApi
 
       describe 'GET "show"' do
         before(:each )do
-          Source.create(FactoryGirl.attributes_for(:source))
+          Source.create(FactoryBot.attributes_for(:source))
         end
 
         it 'assigns the source' do
@@ -62,7 +62,7 @@ module SupplejackApi
       end
 
       describe 'GET index' do
-        let(:sources) { [FactoryGirl.build(:source)] }
+        let(:sources) { [FactoryBot.build(:source)] }
 
         it 'assigns all sources' do
           get :index, api_key: api_key
@@ -76,7 +76,7 @@ module SupplejackApi
 
         context 'search' do
 
-          let(:suppressed_source) { FactoryGirl.build(:source)  }
+          let(:suppressed_source) { FactoryBot.build(:source)  }
 
           it 'searches the sources if params source is defined' do
             expect(Source).to receive(:where).with('status' => 'suppressed')
@@ -86,7 +86,7 @@ module SupplejackApi
       end
 
       describe 'PUT update' do
-        let(:source) { FactoryGirl.create(:source) }
+        let(:source) { FactoryBot.create(:source) }
 
         it 'finds and update source' do
           put :update, id: source.id, source: {status: "suppressed"}, api_key: api_key
@@ -102,7 +102,7 @@ module SupplejackApi
       describe 'GET "reindex"' do
 
         before(:each) do
-          @source = Source.create(FactoryGirl.attributes_for(:source))
+          @source = Source.create(FactoryBot.attributes_for(:source))
         end
 
         it "enqueues the job with the source_id and date if given" do
@@ -119,7 +119,7 @@ module SupplejackApi
                           double(:record, landing_url: 'http://3'),
                           double(:record, landing_url: 'http://4')] }
 
-        let(:source) { FactoryGirl.build(:source, source_id: 'source_name') }
+        let(:source) { FactoryBot.build(:source, source_id: 'source_name') }
 
         before do
           allow(Source).to receive(:find) { source }
@@ -184,7 +184,7 @@ module SupplejackApi
 
       describe 'POST "create"' do
         it 'returns forbidden' do
-          post :create, partner_id: 1, source: FactoryGirl.attributes_for(:source), api_key: api_key
+          post :create, partner_id: 1, source: FactoryBot.attributes_for(:source), api_key: api_key
           expect(response).to be_forbidden
         end
       end

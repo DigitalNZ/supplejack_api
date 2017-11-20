@@ -6,7 +6,7 @@
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
-  FactoryGirl.define do
+  FactoryBot.define do
 	  factory :user_activity, class: SupplejackApi::UserActivity do
 	    total 10
 	  end

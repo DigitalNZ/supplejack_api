@@ -6,7 +6,7 @@
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
-  FactoryGirl.define do
+  FactoryBot.define do
     factory :user_set, class: SupplejackApi::UserSet do
       name            'Dogs and cats'
       description     'Ugly dogs and cats'
@@ -18,8 +18,8 @@ module SupplejackApi
           # @records that has been set in user_set
           # Without it you will not have set_items
           user_set.instance_variable_set(:@records, nil)
-          record = FactoryGirl.create(:record)
-           FactoryGirl.create(:set_item, record_id: record.record_id, user_set: user_set)
+          record = FactoryBot.create(:record)
+           FactoryBot.create(:set_item, record_id: record.record_id, user_set: user_set)
            user_set.update_record
         end
       end

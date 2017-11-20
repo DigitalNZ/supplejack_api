@@ -410,7 +410,7 @@ module SupplejackApi
       end
 
       it 'removes blacklisted collections from results' do
-        FactoryGirl.create(:source, source_id: 'DNZ', status: 'suppressed' )
+        FactoryBot.create(:source, source_id: 'DNZ', status: 'suppressed' )
         @search.execute_solr_search
         expect(@session).to have_search_params(:without, :source_id, 'DNZ')
       end

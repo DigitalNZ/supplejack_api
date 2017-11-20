@@ -9,7 +9,7 @@ require 'spec_helper'
 
 module SupplejackApi
   describe Record do
-    let(:record) { FactoryGirl.build(:record, record_id: 1234) }
+    let(:record) { FactoryBot.build(:record, record_id: 1234) }
 
     subject { record }
 
@@ -17,7 +17,7 @@ module SupplejackApi
 
     describe '#custom_find' do
       before(:each) do
-        @record = FactoryGirl.create(:record, record_id: 54321)
+        @record = FactoryBot.create(:record, record_id: 54321)
         allow(@record).to receive(:find_next_and_previous_records).and_return(nil)
       end
 
@@ -86,26 +86,26 @@ module SupplejackApi
 
     describe '#find_multiple' do
       before(:each) do
-        @record = FactoryGirl.create(:record, record_id: 54321)
+        @record = FactoryBot.create(:record, record_id: 54321)
       end
 
       it 'should find multiple records by numeric id' do
-        r1 = FactoryGirl.create(:record, record_id: 999)
-        r2 = FactoryGirl.create(:record, record_id: 998)
+        r1 = FactoryBot.create(:record, record_id: 999)
+        r2 = FactoryBot.create(:record, record_id: 998)
         expect(Record.find_multiple([999, 998])).to include(r1, r2)
         expect(Record.find_multiple([999, 998]).length).to eq(2)
       end
 
       it 'should find multiple records by ObjectId' do
-        r1 = FactoryGirl.create(:record)
-        r2 = FactoryGirl.create(:record)
+        r1 = FactoryBot.create(:record)
+        r2 = FactoryBot.create(:record)
         expect(Record.find_multiple([r1.id, r2.id])).to include(r1, r2)
         expect(Record.find_multiple([r1.id, r2.id]).length).to eq(2)
       end
 
       it "should find multiple records with ObjectId's and numeric id's" do
-        r1 = FactoryGirl.create(:record, record_id: 997)
-        r2 = FactoryGirl.create(:record)
+        r1 = FactoryBot.create(:record, record_id: 997)
+        r2 = FactoryBot.create(:record)
         expect(Record.find_multiple([997, r2.id])).to include(r1, r2)
         expect(Record.find_multiple([997, r2.id]).length).to eq(2)
       end
@@ -115,16 +115,16 @@ module SupplejackApi
       end
 
       it 'should not return inactive records' do
-        r1 = FactoryGirl.create(:record, record_id: 997, status: 'deleted')
-        r2 = FactoryGirl.create(:record, record_id: 667, status: 'active')
+        r1 = FactoryBot.create(:record, record_id: 997, status: 'deleted')
+        r2 = FactoryBot.create(:record, record_id: 667, status: 'active')
         records = Record.find_multiple([997, 667]).to_a
         expect(records).to_not include(r1)
         expect(records).to include(r2)
       end
 
       it 'returns the records in the same order as requested' do
-        r1 = FactoryGirl.create(:record, record_id: 1, created_at: Time.now-10.days)
-        r2 = FactoryGirl.create(:record, record_id: 2, created_at: Time.now)
+        r1 = FactoryBot.create(:record, record_id: 1, created_at: Time.now-10.days)
+        r2 = FactoryBot.create(:record, record_id: 2, created_at: Time.now)
         records = Record.find_multiple([2,1]).to_a
         expect(records.first).to eq r2
       end
@@ -133,11 +133,11 @@ module SupplejackApi
     describe '#find_next_and_previous_records' do
       pending 'Implement record search'
       # before(:each) do
-      #   @record = FactoryGirl.create(:record, :record_id => 123)
+      #   @record = FactoryBot.create(:record, :record_id => 123)
       #   @search = Search.new
       #   @search.stub(:total).and_return(3)
       #   Search.stub(:new).and_return(@search)
-      #   @user = FactoryGirl.build(:user)
+      #   @user = FactoryBot.build(:user)
       # end
 
       # it 'should not do anything when options are empty' do
@@ -233,7 +233,7 @@ module SupplejackApi
 
     # describe 'harvest_job_id=()' do
     #   it 'finds a harvest job and assigns it to harvest_job' do
-    #     harvest_job = FactoryGirl.create(:harvest_job, harvest_job_id: 13)
+    #     harvest_job = FactoryBot.create(:harvest_job, harvest_job_id: 13)
     #     record = Record.new(harvest_job_id: 13)
     #     record.harvest_job).to eq(harvest_job)
     #   end
@@ -246,7 +246,7 @@ module SupplejackApi
 
     describe '#active?' do
       before(:each) do
-        @record = FactoryGirl.build(:record)
+        @record = FactoryBot.build(:record)
       end
 
       it 'returns true when state is active' do
@@ -262,7 +262,7 @@ module SupplejackApi
 
     describe '#should_index?' do
       before(:each) do
-        @record = FactoryGirl.build(:record)
+        @record = FactoryBot.build(:record)
       end
 
       it 'returns false when active? is false' do
@@ -278,7 +278,7 @@ module SupplejackApi
 
     describe '#remove_from_index' do
       before(:each) do
-        @record = FactoryGirl.build(:record)
+        @record = FactoryBot.build(:record)
       end
 
       it 'calls Sunspot remove on a record that does not have active status' do

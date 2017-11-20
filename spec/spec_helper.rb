@@ -17,7 +17,7 @@ require File.expand_path("../dummy/config/environment.rb", __FILE__)
 require 'rails/application'
 require 'rails/mongoid'
 require 'rspec/rails'
-require 'factory_girl_rails'
+require 'factory_bot_rails'
 require 'timecop'
 require 'sunspot_matchers'
 # require 'simplecov'
@@ -65,5 +65,5 @@ RSpec.configure do |config|
   end
 
   config.include SunspotMatchers
-  config.include FactoryGirl::Syntax::Methods
+  config.include FactoryBot::Syntax::Methods
 end

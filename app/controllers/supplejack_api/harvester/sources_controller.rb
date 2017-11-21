@@ -13,19 +13,18 @@ module SupplejackApi
       before_action :authenticate_harvester!
 
       def create
-        params[:source][:partner_id] = params[:partner_id]
-        if params[:source][:_id].present?
-          @source = Source.find_or_initialize_by(_id: params[:source][:_id])
-          @source.update_attributes(params[:source])
+        if source_params[:_id].present?
+          @source = Source.find_or_initialize_by(_id: source_params[:_id])
+          @source.update_attributes(source_params)
         else
-          @source = Source.create(params[:source])
+          @source = Source.create(source_params)
         end
 
         render json: @source
       end
 
       def index
-        @sources = params[:source].nil? ? Source.all : Source.where(params[:source])
+        @sources = params[:source].blank? ? Source.all : Source.where(source_params)
         render json: @sources
       end
 
@@ -36,7 +35,7 @@ module SupplejackApi
 
       def update
         @source = Source.find(params[:id])
-        @source.update_attributes(params[:source])
+        @source.update_attributes(source_params)
         render json: @source
       end
 
@@ -44,7 +43,7 @@ module SupplejackApi
         @source = Source.find(params[:id])
         IndexSourceWorker.perform_async(@source.source_id, params[:date])
 
-        render nothing: true
+        head :created
       end
 
       # Returns 4 random records for the source
@@ -52,6 +51,16 @@ module SupplejackApi
         source = Source.find(params[:id])
         records = source.random_records(4).map(&:landing_url)
         render json: records.to_json
+      end
+
+      private
+
+      def source_params
+        @source_params ||= begin
+          source_params = params.require(:source).permit(:name, :_id, :id, :source_id, :status).to_h
+          partner_params = params.permit(:partner_id).to_h
+          source_params.merge(partner_params)
+        end
       end
     end
   end

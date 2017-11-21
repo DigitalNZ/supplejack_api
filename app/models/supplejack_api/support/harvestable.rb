@@ -71,7 +71,7 @@ module SupplejackApi
             end
           end
         end
-        collection.find(atomic_selector).update('$unset' => unset_hash) if unset_hash.any?
+        collection.find(atomic_selector).update_one('$unset' => unset_hash) if unset_hash.any?
       end
 
       module ClassMethods

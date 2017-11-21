@@ -14,11 +14,11 @@ module SupplejackApi
       before_action :authenticate_harvester!
 
       def create
-        if params[:partner][:_id].present?
-          @partner = Partner.find_or_initialize_by(_id: params[:partner][:_id])
-          @partner.update_attributes(params[:partner])
+        if partner_params[:_id].present?
+          @partner = Partner.find_or_initialize_by(_id: partner_params[:_id])
+          @partner.update_attributes(partner_params)
         else
-          @partner = Partner.create(params[:partner])
+          @partner = Partner.create(partner_params)
         end
         render json: @partner
       end
@@ -35,8 +35,14 @@ module SupplejackApi
 
       def update
         @partner = Partner.find(params[:id])
-        @partner.update_attributes(params[:partner])
+        @partner.update_attributes(partner_params)
         render json: @partner
+      end
+
+      private
+
+      def partner_params
+        params.require(:partner).permit(:_id, :name)
       end
     end
   end

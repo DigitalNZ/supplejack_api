@@ -21,7 +21,7 @@ module SupplejackApi::Concerns::Searchable
 
     def initialize(options = {})
       @options = options.dup
-      @options.reverse_merge!(
+      @options.merge!(
         facets: '',
         and: {},
         or: {},

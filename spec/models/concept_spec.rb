@@ -14,13 +14,6 @@ module SupplejackApi
 
     subject { concept }
 
-    it { should be_stored_in :concepts }
-    it { should be_timestamped_document }
-    it { should be_timestamped_document.with(:created) }
-    it { should be_timestamped_document.with(:updated) }
-
-    it { should have_many(:source_authorities) }
-
     describe 'fields' do
       context '.model fields' do
         %w(concept_type concept_id).each do |field|

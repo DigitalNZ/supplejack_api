@@ -14,7 +14,7 @@ module SupplejackApi
     let(:set_item) { user_set.set_items.build(record_id: 10, position: 1) }
 
     before(:each) do
-      allow(user_set).to receive(:record) {double(:record, record_id: 4321)}
+      allow(user_set).to receive(:record) {double(:record, record_id: 4321, touch: true)}
       allow(user_set).to receive(:update_record)
     end
 

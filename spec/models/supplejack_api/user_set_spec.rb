@@ -485,7 +485,7 @@ module SupplejackApi
     end
 
     describe "update record" do
-      let(:user_set) { FactoryBot.build(:user_set, record: nil)}
+      let(:user_set) { FactoryBot.build(:user_set)}
       before(:each) do
         allow(user_set).to receive(:update_record).and_call_original
         allow(SupplejackApi::Record).to receive(:custom_find) { double(:record).as_null_object }
@@ -496,10 +496,11 @@ module SupplejackApi
           allow(user_set).to receive(:set_items) { [double(:set_item).as_null_object] }
         end
 
-        it "should create a new record if not linked" do
-          expect(SupplejackApi::Record).to receive(:new) { mock_model(SupplejackApi::Record).as_null_object }
-          user_set.update_record
-        end
+        # I have introduced a user set before create call back, so we don't need this anymore.
+        # it "should create a new record if not linked" do
+        #   expect(SupplejackApi::Record).to receive(:new) { mock_model(SupplejackApi::Record).as_null_object }
+        #   user_set.update_record
+        # end
 
         it "should not create a new record if already linked" do
           allow(user_set).to receive(:record) { double(:record).as_null_object }
@@ -511,7 +512,7 @@ module SupplejackApi
           let(:user_set) { FactoryBot.build(:user_set)}
           it "should default the status to supressed" do
             user_set.privacy = "private"
-
+            # binding.pry
             user_set.update_record
             expect(user_set.record.status).to eq "suppressed"
           end

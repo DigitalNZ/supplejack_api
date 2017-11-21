@@ -206,8 +206,15 @@ module SupplejackApi::Concerns::UserSet
     def update_record
       if set_items.empty?
         suppress_record
-        nil
       end
+
+      record.status = record_status
+      record.internal_identifier = "user_set_#{id}"
+
+      primary_fragment = record.primary_fragment
+      primary_fragment.thumbnail_url = cover_thumbnail
+
+      record.save!
     end
 
     def create_record

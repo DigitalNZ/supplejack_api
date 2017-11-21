@@ -13,8 +13,6 @@ module SupplejackApi
 
     subject { record }
 
-    it { should have_and_belong_to_many(:concepts) }
-
     describe '#custom_find' do
       before(:each) do
         @record = FactoryBot.create(:record, record_id: 54321)

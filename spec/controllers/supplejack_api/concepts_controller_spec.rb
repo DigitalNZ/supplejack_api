@@ -20,14 +20,14 @@ module SupplejackApi
       }
 
       it 'should find the concept and assign it' do
-        expect(Concept).to receive(:custom_find).with('123', @user, {}).and_return(@concept)
-        get :show, id: 123, search: {}, api_key: 'abc123', format: "json"
+        expect(Concept).to receive(:custom_find).with('123', @user, nil).and_return(@concept)
+        get :show, params: { id: 123, search: {}, api_key: 'abc123' }, format: "json"
         expect(assigns(:concept)).to eq(@concept)
       end
 
       it 'renders a error when records is not found' do
         allow(Concept).to receive(:custom_find).and_raise(Mongoid::Errors::DocumentNotFound.new(Concept, ['123'], ['123']))
-        get :show, id: 123, search: {}, api_key: 'abc123', :format => 'json'
+        get :show, params: { id: 123, search: {}, api_key: 'abc123' }, :format => 'json'
         expect(response.body).to eq({:errors => 'Concept with ID 123 was not found'}.to_json)
       end
     end

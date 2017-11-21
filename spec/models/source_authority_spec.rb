@@ -13,12 +13,12 @@ module SupplejackApi
 
     subject { source_authority }
 
-    it { should be_stored_in :source_authorities }
-    it { should be_timestamped_document }
-    it { should be_timestamped_document.with(:created) }
-    it { should be_timestamped_document.with(:updated) }
+    # it { should be_stored_in :source_authorities }
+    # it { should be_timestamped_document }
+    # it { should be_timestamped_document.with(:created) }
+    # it { should be_timestamped_document.with(:updated) }
 
-    it { should belong_to(:concept) }
+    # it { should belong_to(:concept) }
 
     describe 'fields' do
       context '.model fields' do

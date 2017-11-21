@@ -13,6 +13,7 @@ module SupplejackApi::Concerns::Record
 
     # From storable
     store_in collection: 'records'
+    field :record_id
     index(concept_ids: 1)
     index({ record_id: 1 }, unique: true)
 

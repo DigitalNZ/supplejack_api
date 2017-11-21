@@ -16,7 +16,7 @@ module SupplejackApi
       end
 
       internal_identifier 'nlnz:1234'
-      record_id              54_321
+      sequence(:record_id)
       status                 'active'
       source_url             'http://google.com/landing.html'
       record_type            0

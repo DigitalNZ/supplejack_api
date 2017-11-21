@@ -19,14 +19,16 @@ module SupplejackApi
           # @records that has been set in user_set
           # Without it you will not have set_items
           user_set.instance_variable_set(:@records, nil)
-          record = FactoryBot.create(:record, record_id: 543_210)
-           FactoryBot.create(:set_item, record_id: record.record_id, user_set: user_set)
-           user_set.update_record
+          create :set_item, user_set: user_set
         end
       end
     end
 
     factory :set_item, class: SupplejackApi::SetItem do
+      before(:create) do |set_item|
+        record = create(:record)
+        set_item.record_id = record.record_id
+      end
       sequence(:position)
     end
   end

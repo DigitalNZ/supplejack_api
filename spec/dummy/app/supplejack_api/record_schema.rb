@@ -12,7 +12,7 @@ class RecordSchema
   namespace :dc, url: 'http://purl.org/dc/elements/1.1/'
 
   # Fields
-  string    :record_id,    store: false
+  string    :record_id
   string    :name,         search_boost: 10,      search_as: [:filter, :fulltext], namespace: :dc
   string    :title,         search_boost: 10,      search_as: [:filter, :fulltext], namespace: :dc
   string    :address,      search_boost: 2,       search_as: [:filter, :fulltext]

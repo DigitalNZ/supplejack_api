@@ -33,8 +33,7 @@ module StoriesApi
 
         def post
           return create_error('UserNotFound', id: params[:user_key]) unless user.present?
-
-          return create_error('MandatoryParamMissing', param: :name) unless story_params[:name].present?
+          return create_error('MandatoryParamMissing', param: :name) unless story_params.present?
 
           new_story = user.user_sets.create(name: story_params[:name])
 
@@ -49,6 +48,8 @@ module StoriesApi
 
         def story_params
           @story_params ||= params.require(:story).permit(:name).to_h
+        rescue
+          false
         end
       end
     end

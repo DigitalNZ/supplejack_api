@@ -50,7 +50,8 @@ module StoriesApi
         describe '#post' do
           let(:user) { create(:user) }
           it 'returns 400 if the name field is missing for the Story' do
-            response = Stories.new(story: '111', user_key: user.api_key).post
+            params = ActionController::Parameters.new({story: '111', user_key: user.api_key})
+            response = Stories.new(params).post
 
             expect(response).to eq(
               status: 400,
@@ -61,7 +62,8 @@ module StoriesApi
           end
 
           context 'succesful request' do
-            let!(:response) { Stories.new(story: { name: 'Story Name' }, user_key: user.api_key).post }
+            let(:params) { ActionController::Parameters.new({story: { name: 'Story Name' }, user_key: user.api_key}) }
+            let!(:response) { Stories.new(params).post }
 
             before do
               user.reload

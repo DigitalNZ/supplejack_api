@@ -51,8 +51,8 @@ module SupplejackApi
         :email,
         :encrypted_password,
         :authentication_token,
-        sets: [:name, :privacy, :priority]
-      )
+        sets: %i[name privacy priority]
+      ).to_h
     end
   end
 end

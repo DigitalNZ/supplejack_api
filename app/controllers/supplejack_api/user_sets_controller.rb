@@ -86,7 +86,7 @@ module SupplejackApi
     def set_params
       # Not using require here because we handle missing params seperately.
       # require method throws and error if the :set is not there
-      params[:set]&.permit(:id, :name, :approved, :description, :privacy, records: %i(record_id position)).to_h
+      params[:set]&.permit(:id, :name, :approved, :description, :privacy, records: %i[record_id position]).to_h
     end
   end
 end

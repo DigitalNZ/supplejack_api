@@ -69,7 +69,7 @@ module StoriesApi
                                                         :type,
                                                         :sub_type,
                                                         content: [:value],
-                                                        meta: %i(align_mode is_cover caption title)).to_h
+                                                        meta: %i[align_mode is_cover caption title]).to_h
         end
       end
     end

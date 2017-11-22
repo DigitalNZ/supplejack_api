@@ -48,7 +48,7 @@ module SupplejackApi
       private
 
       def user_params
-        params.require(:user).permit(:max_requests)
+        params.require(:user).permit(:max_requests).to_h
       end
     end
   end

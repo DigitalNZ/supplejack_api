@@ -35,6 +35,7 @@ module StoriesApi
         end
 
         def post
+          # binding.pry
           return @errors if @errors
           return create_error('MandatoryParamMissing', param: :item) unless params[:item]
 
@@ -68,8 +69,14 @@ module StoriesApi
           @item_params ||= params.require(:item).permit(:position,
                                                         :type,
                                                         :sub_type,
-                                                        content: [:value],
-                                                        meta: %i[align_mode is_cover caption title]).to_h
+                                                        content: [:id,
+                                                                  :title,
+                                                                  :display_collection,
+                                                                  :value,
+                                                                  :image_url,
+                                                                  category: [],
+                                                                  tags: []],
+                                                        meta: %i[align_mode is_cover caption title size metadata]).to_h
         end
       end
     end

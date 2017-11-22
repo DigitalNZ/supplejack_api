@@ -124,7 +124,6 @@ module SupplejackApi
         @user_set = FactoryBot.build(:user_set)
         allow(controller.current_user.user_sets).to receive(:build) { @user_set }
         create(:record, record_id: 12345)
-        allow(@user_set).to receive(:set_items).and_return(double(first: double(record_id: 12345), empty?: false))
       end
 
       it "should build a new set with the params" do
@@ -134,9 +133,8 @@ module SupplejackApi
       end
 
       it "saves the user set" do
-        pending # This is broken because it doesn't create sets properly and I don't know how to make it create sets properly
-        expect(@user_set).to receive(:save).and_return(true)
-        post :create, params: { set: {} }
+        post :create, params: { set: {name: 'A new set for dnz'} }
+        expect(SupplejackApi::UserSet.last.name).to eq 'A new set for dnz'
       end
 
       it "returns a 422 error when the set is invalid" do

@@ -41,19 +41,19 @@ end
     end
 
     it 'does not create an interaction model when ignore_metrics :true' do
-      get :index, ignore_metrics: true
+      get :index, params: { ignore_metrics: true }
       expect(SupplejackApi::InteractionModels::Record.count).to eq 0
     end
   end
 
   describe 'GET#show' do
     it 'creates an interaction model when ignore_metrics is not set' do
-      get :show, id: 1
+      get :show, params: { id: 1 }
       expect(SupplejackApi::InteractionModels::Record.first.request_type).to eq "get"
     end
 
     it 'does not create an interaction model when ignore_metrics :true' do
-      get :show, id: 1, ignore_metrics: true
+      get :show, params: { id: 1, ignore_metrics: true }
       expect(SupplejackApi::InteractionModels::Record.count).to eq 0
     end
   end

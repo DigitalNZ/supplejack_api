@@ -24,6 +24,7 @@ module SupplejackApi
       end
 
       def update_from_harvest(attributes = {})
+
         attributes[:status] ||= 'active'
 
         self.class.fields.each do |name, _field|
@@ -74,6 +75,8 @@ module SupplejackApi
 
       module ClassMethods
         def find_or_initialize_by_identifier(attributes)
+          identifier = attributes.delete(:internal_identifier)
+          identifier = identifier.first if identifier.is_a?(Array)
           find_or_initialize_by(internal_identifier: identifier)
         end
 

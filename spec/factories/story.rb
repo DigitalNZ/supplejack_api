@@ -24,6 +24,16 @@ FactoryBot.define do
 
       story.save!
     end
+
+    factory :story_with_dnz_story_items do
+      after(:create) do |story, evaluator|
+        evaluator.number_of_story_items.times do
+          story.set_items.build(attributes_for(:embed_dnz_item))
+        end
+        story.save!
+      end
+    end
+
   end
 
   factory :story_json, class: Hash do

@@ -27,14 +27,14 @@ module SupplejackApi
       end
 
       if both_ok
-        render status: 200, nothing: true
+        head :ok
       else
-        render status: 500, nothing: true
+        head :internal_server_error
       end
     rescue Timeout::Error => e
       Support::StatusLogger.logger.error("Solr or MongoDB is down or took longer than #{TIMEOUT} seconds to respond. Exception is #{e}.\nBacktrace #{e.backtrace[0..2].join("\n")}")
 
-      render status: 500, nothing: true
+      head :internal_server_error
     end
 
     private

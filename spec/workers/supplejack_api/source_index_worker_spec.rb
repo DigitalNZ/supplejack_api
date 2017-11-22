@@ -10,7 +10,7 @@ require "spec_helper"
 module SupplejackApi
   describe IndexSourceWorker do
     describe ".perform" do
-      let(:records) { [FactoryBot.create(:record_with_fragment), FactoryGirl.create(:record_with_fragment)] }
+      let(:records) { [FactoryBot.create(:record_with_fragment), FactoryBot.create(:record_with_fragment)] }
 
       before do
         records.each do |r|

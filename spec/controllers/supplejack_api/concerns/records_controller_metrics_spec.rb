@@ -21,12 +21,12 @@ controller do
 
   def index
     @search = DummySearch.new(SupplejackApi::Record.all.to_a)
-    render nothing: true
+    head :ok
   end
 
   def show
     @record = SupplejackApi::Record.first
-    render nothing: true
+    head :ok
   end
 end
 

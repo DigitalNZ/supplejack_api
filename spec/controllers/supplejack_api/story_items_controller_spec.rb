@@ -18,7 +18,7 @@ module SupplejackApi
         let(:response_body) { JSON.parse(response.body).map(&:deep_symbolize_keys) }
 
         before do
-          get :index, story_id: story.id.to_s, api_key: api_key, user_key: api_key
+          get :index, params: { story_id: story.id.to_s, api_key: api_key, user_key: api_key}
         end
 
         it 'returns a 200 http code' do
@@ -36,19 +36,19 @@ module SupplejackApi
 
       context 'unsuccessful requests' do
         it 'returns 400 if user_key not passed' do
-          get :index, story_id: 'madeupkey', api_key: api_key
+          get :index, params: { story_id: 'madeupkey', api_key: api_key}
 
           expect(response.status).to eq(400)
         end
 
         it 'returns a 404 if story dosent exist' do
-          get :index, story_id: 'madeupkey', api_key: api_key, user_key: api_key
+          get :index, params: { story_id: 'madeupkey', api_key: api_key, user_key: api_key}
           expect(response.status).to eq(404)
           expect(JSON.parse(response.body)['errors']).to eq("Story with provided Id madeupkey not found")
         end
 
         it 'returns a 404 if user dosent exist' do
-          get :index, story_id: story.id.to_s, api_key: 'madeupkey'
+          get :index, params: { story_id: story.id.to_s, api_key: 'madeupkey'}
           expect(response.status).to eq(403)
           expect(JSON.parse(response.body)['errors']).to eq("Invalid API Key")
         end
@@ -58,7 +58,7 @@ module SupplejackApi
     describe 'GET show' do
       context 'successfull requests' do
         before do
-          get :show, story_id: story.id.to_s, id: story.set_items.first.id.to_s, api_key: api_key, user_key: api_key
+          get :show, params: { story_id: story.id.to_s, id: story.set_items.first.id.to_s, api_key: api_key, user_key: api_key}
         end
 
         it 'returns a 200 http code' do
@@ -78,7 +78,7 @@ module SupplejackApi
 
       context 'unsuccessfull requests' do
         it 'should return 404 if Story Item dosent exist' do
-          get :show, story_id: story.id.to_s, id: 'storyitemid', api_key: api_key, user_key: api_key
+          get :show, params: { story_id: story.id.to_s, id: 'storyitemid', api_key: api_key, user_key: api_key}
           expect(response.status).to eq(404)
           expect(JSON.parse(response.body)['errors']).to eq("StoryItem with provided Id storyitemid not found for Story with provided Story Id #{story.id}")
         end
@@ -88,25 +88,25 @@ module SupplejackApi
     describe 'POST create' do
       context 'unsuccessfull create requests' do
         it 'should return 400 if required params are not posted' do
-          post :create, story_id: story.id.to_s, api_key: api_key, user_key: api_key, item: {}
+          post :create, params: {story_id: story.id.to_s, api_key: api_key, user_key: api_key, item: {}}
           expect(response.status).to eq 400
           expect(JSON.parse(response.body)['errors']).to eq 'Mandatory Parameter item missing in request'
         end
 
         it 'should return error for unknow values for type' do
-          post :create, story_id: story.id.to_s, api_key: api_key, user_key: api_key, item: { type: 'foo' }
+          post :create, params: {story_id: story.id.to_s, api_key: api_key, user_key: api_key, item: { type: 'foo' }}
           expect(response.status).to eq 400
           expect(JSON.parse(response.body)['errors']).to eq 'Mandatory Parameters Missing: type must be one of: embed, text sub_type is missing'
         end
 
         it 'should return error for unknow values for sub type' do
-          post :create, story_id: story.id.to_s, api_key: api_key, user_key: api_key, item: { type: 'text', sub_type: 'foo' }
+          post :create, params: {story_id: story.id.to_s, api_key: api_key, user_key: api_key, item: { type: 'text', sub_type: 'foo' }}
           expect(response.status).to eq 400
           expect(JSON.parse(response.body)['errors']).to eq 'Unsupported Values: sub_type must be one of: record, heading, rich-text'
         end
 
         it 'should return error if content and meta is not posted' do
-          post :create, story_id: story.id.to_s, api_key: api_key, user_key: api_key, item: { type: 'text', sub_type: 'heading' }
+          post :create, params: {story_id: story.id.to_s, api_key: api_key, user_key: api_key, item: { type: 'text', sub_type: 'heading' }}
           expect(response.status).to eq 400
           expect(JSON.parse(response.body)['errors']).to eq 'Mandatory Parameters Missing: content is missing meta is missing'
         end
@@ -118,7 +118,7 @@ module SupplejackApi
                     content: { value: 'sometext'},
                     meta: { title: 'foo' }, position: 0 }
 
-          post :create, story_id: story.id.to_s, api_key: api_key, user_key: api_key, item: block
+          post :create, params: {story_id: story.id.to_s, api_key: api_key, user_key: api_key, item: block}
           result = JSON.parse(response.body).deep_symbolize_keys
           result.delete(:id)
 
@@ -132,14 +132,14 @@ module SupplejackApi
     describe 'DELETE story item' do
       context 'successfull deletion' do
         it 'should return 204' do
-          delete :destroy, story_id: story.id.to_s, id: story.set_items.last.id.to_s, api_key: api_key, user_key: api_key
+          delete :destroy, params: { story_id: story.id.to_s, id: story.set_items.last.id.to_s, api_key: api_key, user_key: api_key}
           expect(response.status).to eq 204
         end
       end
 
       context 'unsuccessfull deletion' do
         it 'should return 404 id story item dosent exist' do
-          delete :destroy, story_id: story.id.to_s, id: 'storyitemid', api_key: api_key, user_key: api_key
+          delete :destroy, params: { story_id: story.id.to_s, id: 'storyitemid', api_key: api_key, user_key: api_key}
           expect(response.status).to eq 404
         end
       end
@@ -152,9 +152,9 @@ module SupplejackApi
                    content: { value: 'sometext' },
                    meta: { title: 'foo' }, position: 0 }
 
-          patch(:update, story_id: story.id.to_s,
-                         id: story.set_items.first.id.to_s,
-                         api_key: api_key, user_key: api_key, item: item)
+          patch(:update, params: {story_id: story.id.to_s,
+                                   id: story.set_items.first.id.to_s,
+                                   api_key: api_key, user_key: api_key, item: item})
         end
 
         it 'returns a 200 http code' do

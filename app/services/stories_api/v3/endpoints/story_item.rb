@@ -96,11 +96,18 @@ module StoriesApi
         private
 
         def item_params
-          @item_params ||= params.require(:item).permit(:position,
+          @item_params ||= params.require(:item).permit(:title,
+                                                        :position,
                                                         :type,
                                                         :sub_type,
-                                                        content: [:value],
-                                                        meta: %i[align_mode is_cover caption title]).to_h
+                                                        content: [:id,
+                                                                  :title,
+                                                                  :display_collection,
+                                                                  :value,
+                                                                  :image_url,
+                                                                  category: [],
+                                                                  tags: []],
+                                                        meta: %i[align_mode is_cover caption title size metadata]).to_h
         end
       end
     end

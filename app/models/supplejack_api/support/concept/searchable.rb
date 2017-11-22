@@ -34,7 +34,7 @@ module SupplejackApi
             class_scope = unscoped
 
             if id.to_s =~ /^\d+$/
-              data = class_scope.where(concept_id: id).first
+              data = class_scope.where(concept_id: id.to_i).first
             elsif id.to_s =~ /^[0-9a-f]{24}$/i
               data = class_scope.find(id)
             end

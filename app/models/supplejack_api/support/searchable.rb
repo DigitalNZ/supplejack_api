@@ -46,7 +46,7 @@ module SupplejackApi
           column = "#{name.demodulize.downcase}_id"
 
           if id.to_s =~ /^\d+$/
-            data = class_scope.where(column => id).first
+            data = class_scope.where(column => id.to_i).first
           elsif id.to_s =~ /^[0-9a-f]{24}$/i
             data = class_scope.find(id)
           end

@@ -22,8 +22,7 @@ module SupplejackApi
     }
 
     describe "POST 'create'" do
-      it 'creates the set item through the @user_set *** this test fails because \
-          support/searchable.rb needs updating, because mongoid base driver code requires updating' do
+      it 'creates the set item through the @user_set' do
         create(:record_with_fragment, record_id: 12345)
         rec = {
           "record_id"=>"12345",
@@ -43,8 +42,7 @@ module SupplejackApi
           allow(controller).to receive(:current_user) { @user }
         end
 
-        it "creates a new Set Interaction model to log the interaction  *** this test fails because \
-          support/searchable.rb needs updating, because mongoid base driver code requires updating" do
+        it "creates a new Set Interaction model to log the interaction" do
           create(:record_with_fragment, record_id: 12, display_collection: 'test')
 
           post :create, params: { user_set_id: @user_set.id, record: {record_id: 12} }

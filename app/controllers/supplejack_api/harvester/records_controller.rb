@@ -90,8 +90,10 @@ module SupplejackApi
         end
       end
 
+      private
+
       def record_params
-        params.require(:record).permit(:status, :internal_identifier, :name, :priority, :title).to_h
+        params.require(:record).to_unsafe_h
       end
     end
   end

@@ -14,9 +14,9 @@ source 'http://rubygems.org'
 gemspec
 
 gem 'codeclimate-test-reporter', group: :test, require: nil
-gem 'cucumber-rails', require: false
+# gem 'cucumber-rails', require: false
 gem 'dimensions', require: false
-gem 'factory_bot_rails', require: false
+# gem 'factory_bot_rails', require: false
 
 # # jquery-rails is used by the dummy application
 gem 'jquery-rails'
@@ -24,9 +24,9 @@ gem 'mimemagic', require: false
 
 # # Must add 'require' statments in Gemfile
 gem 'mongoid-tree', require: 'mongoid/tree'
-gem 'rb-fsevent', require: false
+# gem 'rb-fsevent', require: false
 gem 'rubocop', require: false
-gem 'simplecov', require: false
+# gem 'simplecov', require: false
 gem 'yard', require: false, group: :development
 
 # # This is a gem created by fedegl to test the XML responses, its part of the Boost github organization account

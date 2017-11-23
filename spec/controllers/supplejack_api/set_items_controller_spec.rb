@@ -23,17 +23,17 @@ module SupplejackApi
 
     describe "POST 'create'" do
       it 'creates the set item through the @user_set' do
-        create(:record_with_fragment, record_id: 12345)
+        record = create(:record_with_fragment)
         rec = {
-          "record_id"=>"12345",
+          "record_id"=>record.record_id.to_s,
           "type"=>"embed",
           "sub_type"=>"record",
-          "content"=>{"record_id"=>"12345"},
+          "content"=>{"record_id"=>record.record_id.to_s},
           "meta"=>{"align_mode"=>0}}
 
         expect(@user_set.set_items).to receive(:build).with(rec) { @set_item }
         expect(@user_set).to receive(:save).and_return(true)
-        post :create, params: { user_set_id: @user_set.id, record: { record_id: '12345' } }, format: :json
+        post :create, params: { user_set_id: @user_set.id, record: { record_id: record.record_id } }, format: :json
       end
 
       context 'Set Interactions' do
@@ -43,9 +43,9 @@ module SupplejackApi
         end
 
         it "creates a new Set Interaction model to log the interaction" do
-          create(:record_with_fragment, record_id: 12, display_collection: 'test')
+          rec = create(:record_with_fragment, display_collection: 'test')
 
-          post :create, params: { user_set_id: @user_set.id, record: {record_id: 12} }
+          post :create, params: { user_set_id: @user_set.id, record: {record_id: rec.record_id} }
 
           expect(InteractionModels::Set.first).to be_present
           expect(InteractionModels::Set.first.facet).to eq('test')

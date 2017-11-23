@@ -13,12 +13,11 @@ module SupplejackApi::Concerns::Record
 
     # From storable
     store_in collection: 'records'
-    field :record_id
     index(concept_ids: 1)
     index({ record_id: 1 }, unique: true)
 
     # UPGRADE: auto inc is waaaaaay out of date.  See if we can make tests pass without it
-    # auto_increment :record_id, client: 'strong'
+    auto_increment :record_id, client: 'strong'
 
     # Callbacks
     before_save :merge_fragments

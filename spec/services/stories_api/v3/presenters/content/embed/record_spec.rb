@@ -5,7 +5,7 @@ module StoriesApi
         module Embed
           RSpec.describe Record do
             let(:record) {create(:record_with_fragment)}
-            let(:block) {create(:embed_dnz_item, id: record.record_id)}
+            let(:block) {create(:embed_dnz_item, record: record, record_id: record.record_id)}
             let(:result) {subject.call(block)}
 
             context 'record_id' do
@@ -36,7 +36,7 @@ module StoriesApi
 
             context 'no large_thumbnail_url' do
               let(:record) {create(:record_with_no_large_thumb)}
-              let(:block) {create(:embed_dnz_item, id: record.record_id)}
+              let(:block) {create(:embed_dnz_item, record: record, record_id: record.record_id)}
               let(:result) {subject.call(block)}
 
               it 'presents thumbnail_url if there is no large_thumbnail_url' do

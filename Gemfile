@@ -21,7 +21,6 @@ gem 'factory_bot_rails', require: false
 # # jquery-rails is used by the dummy application
 gem 'jquery-rails'
 gem 'mimemagic', require: false
-gem 'mongoid_auto_inc', git: 'https://github.com/boost/mongoid_auto_inc.git'
 
 # # Must add 'require' statments in Gemfile
 gem 'mongoid-tree', require: 'mongoid/tree'

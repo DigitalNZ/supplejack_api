@@ -16,7 +16,7 @@ module SupplejackApi
       end
 
       internal_identifier 'nlnz:1234'
-      sequence(:record_id)
+      record_id 54123
       status                 'active'
       source_url             'http://google.com/landing.html'
       record_type            0
@@ -28,6 +28,9 @@ module SupplejackApi
                              copyright: copyright,
                              category: category,
                              tag: tag)]
+        end
+        after(:build) do |record_with_fragment|
+          record_with_fragment.save!
         end
       end
 

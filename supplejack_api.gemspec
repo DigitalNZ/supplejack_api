@@ -50,7 +50,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'zurb-foundation', '~> 4.3.2'
   s.add_dependency 'gabba', '~> 0.3.0'
   s.add_dependency 'mongoid', '~> 6.1.0'
-  s.add_dependency 'mongoid_auto_inc', '~> 0.1.0'
+  s.add_dependency 'mongoid_auto_increment'
   s.add_dependency 'mongoid-tree', '~> 2.1.0'
   s.add_dependency 'sidekiq', '~> 4.2'
   s.add_dependency 'dry-validation', '~> 0.10.0'

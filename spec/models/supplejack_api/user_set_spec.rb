@@ -303,13 +303,13 @@ module SupplejackApi
 
     describe "#featured_sets" do
       before :each do
-        @record = FactoryBot.create(:record, status: "active", record_id: 1234)
+        @record = FactoryBot.create(:record, status: "active")
         @set1 = FactoryBot.create(:user_set, privacy: "public", featured: true, featured_at: Time.now - 4.hours)
-        @set1.set_items.create(record_id: 1234)
+        @set1.set_items.create(record_id: @record.record_id)
         @set2 = FactoryBot.create(:user_set, privacy: "hidden", featured: true)
-        @set2.set_items.create(record_id: 1234)
+        @set2.set_items.create(record_id: @record.record_id)
         @set3 = FactoryBot.create(:user_set, privacy: "public", featured: false)
-        @set3.set_items.create(record_id: 1234)
+        @set3.set_items.create(record_id: @record.record_id)
       end
 
       it "returns public sets" do
@@ -318,7 +318,7 @@ module SupplejackApi
 
       it "orders the sets based on when they were added" do
         @set4 = FactoryBot.create(:user_set, privacy: "public", featured: true, featured_at: Time.now)
-        @set4.set_items.create(record_id: 1234)
+        @set4.set_items.create(record_id: @record.record_id)
         expect(UserSet.featured_sets.first).to eq @set4
       end
 
@@ -329,10 +329,10 @@ module SupplejackApi
     end
 
     describe "#update_attributes_and_embedded" do
-      before { 
+      before {
         developer = double(:developer)
         admin = double(:admin, admin: true, role: 'admin')
-        allow(RecordSchema).to receive(:roles) { { admin: admin, developer: developer } } 
+        allow(RecordSchema).to receive(:roles) { { admin: admin, developer: developer } }
       }
 
       it "updates the set attributes" do
@@ -504,7 +504,7 @@ module SupplejackApi
 
         it "should not create a new record if already linked" do
           allow(user_set).to receive(:record) { double(:record).as_null_object }
-          expect(SupplejackApi::Record).to_not receive(:new) 
+          expect(SupplejackApi::Record).to_not receive(:new)
           user_set.update_record
         end
 
@@ -533,7 +533,7 @@ module SupplejackApi
         @record = FactoryBot.build(:record)
         allow(user_set).to receive(:record) { @record }
       end
-        
+
       it "should set record status to deleted" do
         user_set.delete_record
         expect(user_set.record.status).to eq "deleted"
@@ -567,25 +567,25 @@ module SupplejackApi
     end
 
     describe "#records" do
-      before :each do
-        allow(user_set).to receive(:record_ids){[100,101]}
-      end
 
       it "should get the active record objects included in the set" do
-        @record1 = FactoryBot.create(:record, record_id:100, status: "active")
-        @record2 = FactoryBot.create(:record, record_id:101, status: "deleted")
+        @record1 = FactoryBot.create(:record, status: "active")
+        @record2 = FactoryBot.create(:record, status: "deleted")
+        allow(user_set).to receive(:record_ids){[@record1.record_id,@record2.record_id]}
         expect(user_set.records).to eq([@record1])
       end
 
       it "limits the amount of records" do
-        @record1 = FactoryBot.create(:record, record_id:100, status: "active")
-        @record2 = FactoryBot.create(:record, record_id:101, status: "active")
+        @record1 = FactoryBot.create(:record, status: "active")
+        @record2 = FactoryBot.create(:record, status: "active")
+        allow(user_set).to receive(:record_ids){[@record1.record_id,@record2.record_id]}
         expect(user_set.records(1)).to eq([@record1])
       end
 
       it "it returns the first active record" do
-        @record1 = FactoryBot.create(:record, record_id:100, status: "deleted")
-        @record2 = FactoryBot.create(:record, record_id:101, status: "active")
+        @record1 = FactoryBot.create(:record, status: "deleted")
+        @record2 = FactoryBot.create(:record, status: "active")
+        allow(user_set).to receive(:record_ids){[@record1.record_id,@record2.record_id]}
         expect(user_set.records(1)).to eq([@record2])
       end
 
@@ -639,9 +639,9 @@ module SupplejackApi
 
     describe "#items_with_records" do
       it "returns an array of set items with record information" do
-        record = FactoryBot.create(:record, record_id: 5)
+        record = FactoryBot.create(:record)
         fragment = record.fragments.create( title: "Dog", description: "Ugly dog", display_content_partner: "ATL", display_collection: "Tapuhi", large_thumbnail_attributes: {url: "goo.gle/large"}, thumbnail_attributes: {url: "goo.gle/small"})
-        user_set.set_items.build(record_id: 5, position: 1)
+        user_set.set_items.build(record_id: record.record_id, position: 1)
         expect(user_set.items_with_records.first.record).to eq record
       end
 
@@ -651,18 +651,18 @@ module SupplejackApi
       end
 
       it "returns items_with_records sorted by position" do
-        FactoryBot.create(:record, record_id: 5)
-        FactoryBot.create(:record, record_id: 6)
-        user_set.set_items.build(record_id: 5, position: 2)
-        user_set.set_items.build(record_id: 6, position: 1)
-        expect(user_set.items_with_records[0].record_id).to eq 6
-        expect(user_set.items_with_records[1].record_id).to eq 5
+        r1 = FactoryBot.create(:record)
+        r2 = FactoryBot.create(:record)
+        user_set.set_items.build(record_id: r1.record_id, position: 2)
+        user_set.set_items.build(record_id: r2.record_id, position: 1)
+        expect(user_set.items_with_records[0].record_id).to eq r2.record_id
+        expect(user_set.items_with_records[1].record_id).to eq r1.record_id
       end
 
       it "only fetches the amount of records specified" do
-        record = FactoryBot.create(:record, record_id: 6)
+        record = FactoryBot.create(:record)
         user_set.set_items.build(record_id: 5, position: 2)
-        user_set.set_items.build(record_id: 6, position: 1)
+        user_set.set_items.build(record_id: record.record_id, position: 1)
         expect(user_set).to receive(:records).with(1) { [record] }
         expect(user_set.items_with_records(1).size).to eq 1
       end

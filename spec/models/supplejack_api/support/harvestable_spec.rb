@@ -1,8 +1,8 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 require 'spec_helper'
@@ -17,7 +17,7 @@ module SupplejackApi
 
         context 'existing fragment' do
           before do
-            @fragment = record.fragments.create(source_id: 'nz_census', name: 'John Smith', age: 50) 
+            @fragment = record.fragments.create(source_id: 'nz_census', name: 'John Smith', age: 50)
             record.create_or_update_fragment({'source_id' => 'nz_census', 'age' => 100})
           end
 
@@ -75,7 +75,7 @@ module SupplejackApi
           record.clear_attributes
           expect(record._id).to_not be_nil
         end
-  
+
       end
 
       describe '#unset_null_fields' do
@@ -88,8 +88,9 @@ module SupplejackApi
         end
 
         it 'should unset null fields inside fragments' do
-          record = FactoryBot.build(:record_with_fragment, record_id: 1234)
+          record = FactoryBot.build(:record_with_fragment)
           record.primary_fragment.update_attributes(address: nil)
+          record.reload
           record.unset_null_fields
           raw_record = record.reload.raw_attributes
           expect(raw_record['fragments'][0]).to_not have_key('address')
@@ -110,10 +111,10 @@ module SupplejackApi
         end
 
         it 'doesn\'t unset any field with values' do
-          record = FactoryBot.create(:record_with_fragment, record_id: 1234)
+          record = FactoryBot.create(:record_with_fragment)
           record.unset_null_fields
           raw_record = record.reload.raw_attributes
-          expect(raw_record).to include({'record_id' => 1234})
+          expect(raw_record).to include({'record_id' => record.record_id})
           expect(raw_record['fragments'][0]).to include({'address' => 'Wellington'})
         end
 

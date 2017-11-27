@@ -143,11 +143,11 @@ module SupplejackApi
         end
 
         it "calls flush_old_records" do
-          delete :flush, params: {source_id: 'tapuhi', job_id: 'abc123', api_key: api_key}
+          delete :flush, params: {source_id: 'source_id', job_id: 'abc123', api_key: api_key}
         end
 
         it "returns a 204" do
-          delete :flush, params: {source_id: 'tapuhi', job_id: 'abc123', api_key: api_key}
+          delete :flush, params: {source_id: 'source_id', job_id: 'abc123', api_key: api_key}
 
           expect(response.code).to eq '204'
         end

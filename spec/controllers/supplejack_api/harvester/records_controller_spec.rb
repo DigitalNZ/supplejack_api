@@ -139,7 +139,7 @@ module SupplejackApi
       describe "DELETE flush" do
         before do
           allow(Record).to receive(:flush_old_records)
-          expect(FlushOldRecordsWorker).to receive(:perform_async).with('tapuhi', 'abc123')
+          expect(FlushOldRecordsWorker).to receive(:perform_async).with('source_id', 'abc123')
         end
 
         it "calls flush_old_records" do

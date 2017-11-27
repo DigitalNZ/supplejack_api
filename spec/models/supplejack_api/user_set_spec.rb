@@ -640,7 +640,7 @@ module SupplejackApi
     describe "#items_with_records" do
       it "returns an array of set items with record information" do
         record = FactoryBot.create(:record)
-        fragment = record.fragments.create( title: "Dog", description: "Ugly dog", display_content_partner: "ATL", display_collection: "Tapuhi", large_thumbnail_attributes: {url: "goo.gle/large"}, thumbnail_attributes: {url: "goo.gle/small"})
+        fragment = record.fragments.create( title: "Dog", description: "Ugly dog", display_content_partner: "ATL", display_collection: "Display collection", large_thumbnail_attributes: {url: "goo.gle/large"}, thumbnail_attributes: {url: "goo.gle/small"})
         user_set.set_items.build(record_id: record.record_id, position: 1)
         expect(user_set.items_with_records.first.record).to eq record
       end

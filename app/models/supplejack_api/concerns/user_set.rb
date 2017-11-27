@@ -207,6 +207,8 @@ module SupplejackApi::Concerns::UserSet
         suppress_record
       end
 
+      self.record = SupplejackApi::Record.new if record.nil?
+
       record.status = record_status
       record.internal_identifier = "user_set_#{id}"
 

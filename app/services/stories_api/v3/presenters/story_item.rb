@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -10,7 +11,7 @@ module StoriesApi
   module V3
     module Presenters
       class StoryItem
-        TOP_LEVEL_FIELDS = [:id, :position, :type, :sub_type].freeze
+        TOP_LEVEL_FIELDS = %i[id position type sub_type].freeze
         CUSTOM_PRESENTER_BASE = 'StoriesApi::V3::Presenters::Content'
         DEFAULT_CONTENT_PRESENTER = lambda do |block|
           result = {}

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -20,9 +21,9 @@ module StoriesApi
         end
 
         def get
-          return create_error('UserNotFound', id: params[:user_key]) unless user.present?
+          return create_error('UserNotFound', id: params[:user_key]) if user.blank?
 
-          slim = !(params[:slim] == 'false')
+          slim = params[:slim] != 'false'
 
           presented_stories = user.user_sets.order_by(updated_at: 'desc').map do |user_set|
             ::StoriesApi::V3::Presenters::Story.new.call(user_set, slim)
@@ -32,8 +33,8 @@ module StoriesApi
         end
 
         def post
-          return create_error('UserNotFound', id: params[:user_key]) unless user.present?
-          return create_error('MandatoryParamMissing', param: :name) unless story_params.present?
+          return create_error('UserNotFound', id: params[:user_key]) if user.blank?
+          return create_error('MandatoryParamMissing', param: :name) if story_params.blank?
 
           new_story = user.user_sets.create(name: story_params[:name])
 
@@ -48,7 +49,7 @@ module StoriesApi
 
         def story_params
           @story_params ||= params.require(:story).permit(:name).to_h
-        rescue
+        rescue StandardError
           false
         end
       end

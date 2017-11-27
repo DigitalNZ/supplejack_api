@@ -5,7 +5,7 @@ module SupplejackApi::Concerns::Searchable
   extend ActiveSupport::Concern
 
   included do
-    INTEGER_ATTRIBUTES ||= [:page, :per_page, :facets_per_page, :facets_page, :record_type].freeze
+    INTEGER_ATTRIBUTES ||= %i[page per_page facets_per_page facets_page record_type].freeze
     alias_method :read_attribute_for_serialization, :send
 
     attr_accessor :options, :request_url, :scope, :solr_request_params, :errors, :warnings
@@ -225,7 +225,7 @@ module SupplejackApi::Concerns::Searchable
     def to_proper_value(_name, value)
       return false if value == 'false'
       return true if value == 'true'
-      return nil if %w(nil null).include?(value)
+      return nil if %w[nil null].include?(value)
 
       value = value.strip if value.is_a?(String)
       value
@@ -255,7 +255,7 @@ module SupplejackApi::Concerns::Searchable
     def valid?
       self.errors ||= []
       self.warnings ||= []
-      self.class.max_values.each do |attribute, max_value|
+      self.class.max_values.each_key do |attribute|
         max_value = self.class.max_values[attribute]
         if @options[attribute].to_i > max_value
           self.warnings << "The #{attribute} parameter can not exceed #{max_value}"
@@ -302,7 +302,7 @@ module SupplejackApi::Concerns::Searchable
     end
 
     def direction
-      if %w(asc desc).include?(@options[:direction])
+      if %w[asc desc].include?(@options[:direction])
         @options[:direction].to_sym
       else
         :desc

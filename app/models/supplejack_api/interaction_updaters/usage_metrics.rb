@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module SupplejackApi
   module InteractionUpdaters
     class UsageMetrics
@@ -61,7 +62,7 @@ module SupplejackApi
         counts_by_facet = {}
 
         filtered_record_interactions.each do |rl|
-          next unless rl.log_values.present?
+          next if rl.log_values.blank?
 
           rl.log_values.each do |facet|
             counts_by_facet[facet] = 0 unless counts_by_facet.key? facet

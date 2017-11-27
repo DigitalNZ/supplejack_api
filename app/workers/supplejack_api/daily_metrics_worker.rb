@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -20,10 +21,10 @@ module SupplejackApi
       # if the secondary_keys are changed the FacetedMetrics model must be updated
       # so that the field names match the new secondary_key names (the name must have '_counts' appended to it)
       @primary_key = 'display_collection'
-      @secondary_keys = %w(
+      @secondary_keys = %w[
         category
         copyright
-      )
+      ]
     end
 
     def perform
@@ -67,7 +68,7 @@ module SupplejackApi
       counts_grouped_by_primary_key.each do |primary_key, count|
         facet_to_update = facets.find { |x| x[:name] == primary_key }
 
-        next unless facet_to_update.present?
+        next if facet_to_update.blank?
 
         facet_to_update[:total_new_records] = count
       end

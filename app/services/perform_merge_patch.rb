@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 #
 # Service for performing a merge patch operation against two Hash objects
 #

@@ -13,8 +13,8 @@ module SupplejackApi
 
     respond_to :json
 
-    prepend_before_action :find_user_set, only: [:update, :destroy]
-    before_action :authenticate_admin!, only: [:admin_index, :public_index]
+    prepend_before_action :find_user_set, only: %i[update destroy]
+    before_action :authenticate_admin!, only: %i[admin_index public_index]
 
     def index
       @user_sets = current_user.user_sets

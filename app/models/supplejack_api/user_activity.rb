@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -27,7 +28,7 @@ module SupplejackApi
       user_activity = new
       daily_activity ||= {}
 
-      %w(user_sets search records custom_searches).each do |group|
+      %w[user_sets search records custom_searches].each do |group|
         group_activity = daily_activity[group]
 
         if group_activity
@@ -44,7 +45,7 @@ module SupplejackApi
       total = 0
 
       if activities = self[field]
-        activities.each { |_action, count| total += count.to_i }
+        activities.each_value { |count| total += count.to_i }
       else
         activities = {}
       end
@@ -55,7 +56,7 @@ module SupplejackApi
 
     def calculate_total
       count = 0
-      %w(user_sets search records custom_searches).each do |group|
+      %w[user_sets search records custom_searches].each do |group|
         values = send(group)
         count += values['total'].to_i if values && values.is_a?(Hash)
       end

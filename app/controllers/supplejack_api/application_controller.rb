@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -31,7 +32,7 @@ module SupplejackApi
       end
 
       format = :json
-      format = request.format.to_sym if [:xml, :json, :rss].include?(request.format.try(:to_sym))
+      format = request.format.to_sym if %i[xml json rss].include?(request.format.try(:to_sym))
 
       if error_message
         render format => { errors: error_message }, status: :forbidden

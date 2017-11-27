@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -21,7 +22,7 @@ module StoriesApi
 
           if @user
             @story = @user.user_sets.find_by_id(params[:story_id])
-            @errors = create_error('StoryNotFound', id: params[:story_id]) unless @story.present?
+            @errors = create_error('StoryNotFound', id: params[:story_id]) if @story.blank?
           else
             @errors = create_error('UserNotFound', id: params[:user_key]) unless @user
           end

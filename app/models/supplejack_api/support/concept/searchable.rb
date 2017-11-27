@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -25,8 +26,8 @@ module SupplejackApi
 
           searchable do
             build_sunspot_schema(self)
-          end # searchable
-        end # included
+          end
+        end
 
         module ClassMethods
           def custom_find(id, _scope = nil, options = {})
@@ -45,7 +46,7 @@ module SupplejackApi
           end
 
           def build_sunspot_schema(builder)
-            ConceptSchema.model_fields.each do |_name, field|
+            ConceptSchema.model_fields.each_value do |field|
               options = {}
               search_as = field.search_as || []
 
@@ -72,8 +73,8 @@ module SupplejackApi
               end
             end
           end
-        end # module ClassMethods
-      end # module Searchable
-    end # module Concept
-  end # module Support
-end # module SupplejackApi
+        end
+      end
+    end
+  end
+end

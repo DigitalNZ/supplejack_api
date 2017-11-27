@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # This was authored by HeyZap (http://www.heyzap.com/) and is available at http://stdout.heyzap.com/2011/08/17/sunspot-resque-session-proxy/
 
 module Sunspot
@@ -17,7 +18,7 @@ module Sunspot
 
     alias session original_session
 
-    [:index, :index!, :remove, :remove!].each do |method|
+    %i[index index! remove remove!].each do |method|
       define_method(method) do |*objects|
         @buffer = SupplejackApi::IndexBuffer.new
         method = method.to_s.delete('!').to_sym
@@ -29,7 +30,7 @@ module Sunspot
       end
     end
 
-    [:remove_by_id, :remove_by_id!].each do |method|
+    %i[remove_by_id remove_by_id!].each do |method|
       define_method(method) do |clazz, id|
         SupplejackApi::IndexWorker.perform_async(method, class: clazz, id: id.to_s)
       end

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module MetricsApi
   module V3
     module Presenters
@@ -21,7 +22,7 @@ module MetricsApi
               relavent_models = metric[:models].select { |key| key == date }.values.first
               presenter = (PRESENTERS_BASE + metric[:metric].camelize).constantize
 
-              next { metric[:metric] => [] } unless relavent_models.present?
+              next { metric[:metric] => [] } if relavent_models.blank?
 
               { metric[:metric] => relavent_models.map(&presenter) }
             end

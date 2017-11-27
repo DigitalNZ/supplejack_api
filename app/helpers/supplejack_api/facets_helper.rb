@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module SupplejackApi
   module FacetsHelper
     # Given a facet key, returns list of facets under that key

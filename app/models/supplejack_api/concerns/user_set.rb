@@ -53,7 +53,7 @@ module SupplejackApi::Concerns::UserSet
     index featured: 1
 
     validates :name, presence: true
-    validates :privacy, inclusion: { in: %w(public hidden private) }
+    validates :privacy, inclusion: { in: %w[public hidden private] }
 
     before_validation :set_default_privacy
     before_save :calculate_count
@@ -191,7 +191,7 @@ module SupplejackApi::Concerns::UserSet
     # Remove HTML tags from the name, description and tags
     #
     def strip_html_tags!
-      [:name, :description].each do |attr|
+      %i[name description].each do |attr|
         send("#{attr}=", strip_tags(self[attr])) if self[attr].present?
       end
 
@@ -203,9 +203,7 @@ module SupplejackApi::Concerns::UserSet
     end
 
     def update_record
-      if set_items.empty?
-        suppress_record
-      end
+      suppress_record if set_items.empty?
 
       self.record = SupplejackApi::Record.new if record.nil?
 

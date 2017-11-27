@@ -1,8 +1,9 @@
 # frozen_string_literal: true
+
 module SupplejackApi
   module InteractionUpdaters
     class AllUsageMetric
-      BLACKLISTED_FIELDS = [:_id, :created_at, :updated_at, :date, :record_field_value].freeze
+      BLACKLISTED_FIELDS = %i[_id created_at updated_at date record_field_value].freeze
       attr_reader :model
 
       def initialize

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -12,7 +13,7 @@ module SupplejackApi
   class StatusController < ApplicationController
     skip_before_action :authenticate_user!, only: [:show]
     # skip_before_action :verify_limits!,     only: [:show] This devise method doesn't work with rails 5 upgrade.
-    # We need find out how this works with the version of devise we are up to. 
+    # We need find out how this works with the version of devise we are up to.
     around_action :handle_timeout, only: :show
 
     newrelic_ignore if defined? NewRelic

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # frozen_string_literal: true# frozen_string_literal: true
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.

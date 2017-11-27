@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -23,7 +24,7 @@ module SupplejackApi
 
     validates :date, uniqueness: true
 
-    IMPLICIT_FIELDS = %w(_type _id created_at updated_at).freeze
+    IMPLICIT_FIELDS = %w[_type _id created_at updated_at].freeze
 
     def self.generate_activity(time = Time.now)
       site_activity_date = time.to_date
@@ -32,7 +33,7 @@ module SupplejackApi
       attributes = { user_sets: 0, search: 0, records: 0 }
 
       user_activities.each do |user_activity|
-        [:user_sets, :search, :records].each do |field|
+        %i[user_sets search records].each do |field|
           attributes[field] += user_activity.send(field)['total'] if user_activity.send(field)
         end
       end
@@ -49,7 +50,7 @@ module SupplejackApi
     end
 
     def self.activities
-      %w(date search user_sets records source_clicks total) - IMPLICIT_FIELDS
+      %w[date search user_sets records source_clicks total] - IMPLICIT_FIELDS
     end
 
     def calculate_total

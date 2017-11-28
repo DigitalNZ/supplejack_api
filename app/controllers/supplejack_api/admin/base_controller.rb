@@ -10,7 +10,7 @@
 module SupplejackApi
   module Admin
     class BaseController < ApplicationController
-      skip_before_action :authenticate_user!
+      skip_before_action :authenticate_user!, raise: false
       before_action :authenticate_admin_user!
       before_action :restrict_to_admin_users!
 

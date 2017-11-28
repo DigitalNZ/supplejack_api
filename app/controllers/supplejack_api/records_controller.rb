@@ -11,8 +11,8 @@ module SupplejackApi
   class RecordsController < ApplicationController
     include SupplejackApi::Concerns::RecordsControllerMetrics
 
-    skip_before_action :authenticate_user!, only: %i[source status]
-    skip_before_action :verify_authenticity_token
+    skip_before_action :authenticate_user!, only: %i[source status], raise: false
+    skip_before_action :verify_authenticity_token, raise: false
     before_action :set_concept_param, only: :index
     respond_to :json, :xml
 

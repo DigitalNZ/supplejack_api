@@ -2,7 +2,7 @@
 
 module SupplejackApi
   class MetricsApiController < ApplicationController
-    skip_before_action :authenticate_user!
+    skip_before_action :authenticate_user!, raise: false
 
     API_VERSIONS = {
       'v3' => MetricsApi::V3::Api

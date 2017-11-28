@@ -18,6 +18,7 @@
  *
  *= require_self
  *= require_tree .
+ *= require foundation
  */
 
 .table { 

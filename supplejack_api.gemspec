@@ -27,6 +27,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'activemodel-serializers-xml'
   s.add_dependency 'coffee-rails'
   s.add_dependency 'compass-rails'
+  s.add_dependency 'zurb-foundation', '~> 4.3.2'
   s.add_dependency 'dalli'
   s.add_dependency 'devise'
   s.add_dependency 'devise-token_authenticatable', '<= 1.0.0'

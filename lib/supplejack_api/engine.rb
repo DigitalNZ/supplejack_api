@@ -27,6 +27,7 @@ require 'lazy_high_charts'
 require 'sidekiq'
 require 'json/ld'
 require 'dry-validation'
+require 'zurb-foundation'
 
 module SupplejackApi
   class Engine < ::Rails::Engine

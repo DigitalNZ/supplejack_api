@@ -17,7 +17,6 @@ module SupplejackApi::Concerns::Record
     index(concept_ids: 1)
     index({ record_id: 1 }, unique: true)
 
-    # UPGRADE: auto inc is waaaaaay out of date.  See if we can make tests pass without it
     auto_increment :record_id, client: 'strong'
 
     # Callbacks

@@ -76,7 +76,7 @@ module SupplejackApi
           string = [""]
           string << "gem 'sunspot_rails', '~> 2.2.0'"
           string << "gem 'active_model_serializers', git: 'https://github.com/boost/active_model_serializers.git'"
-          string << "gem 'mongoid_auto_inc', git: 'https://github.com/boost/mongoid_auto_inc.git'"
+          string << "gem 'mongoid_auto_increment"
           string << "gem 'whenever', '~> 0.9'"
 
           string.join("\n")

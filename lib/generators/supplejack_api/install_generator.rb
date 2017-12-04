@@ -75,7 +75,7 @@ module SupplejackApi
         inject_into_file('Gemfile', after: /^gem.*supplejack_api.*/) do
           string = [""]
           string << "gem 'sunspot_rails', '~> 2.2.0'"
-          string << "gem 'active_model_serializers', git: 'https://github.com/boost/active_model_serializers.git'"
+          string << "gem 'active_model_serializers'"
           string << "gem 'mongoid_auto_inc', git: 'https://github.com/boost/mongoid_auto_inc.git'"
           string << "gem 'whenever', '~> 0.9'"
 

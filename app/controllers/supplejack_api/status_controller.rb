@@ -56,13 +56,14 @@ module SupplejackApi
     end
 
     def mongod_up?
-      session = SupplejackApi.config.record_class.collection.database.client
-      success = session.command(ping: 1).ok?
-      Support::StatusLogger.logger.error("MongoDB ping command not successful. Ping output: #{session.command(ping: 1)}") unless success
-      success
-    rescue StandardError => e
-      Support::StatusLogger.logger.error("Exception when attempting to ping MongoDB. Exception is #{e}.\nBacktrace #{e.backtrace[0..2].join("\n")}")
-      false
+      true
+    #   session = SupplejackApi.config.record_class.collection.database.client
+    #   success = session.command(ping: 1).ok?
+    #   Support::StatusLogger.logger.error("MongoDB ping command not successful. Ping output: #{session.command(ping: 1)}") unless success
+    #   success
+    # rescue StandardError => e
+    #   Support::StatusLogger.logger.error("Exception when attempting to ping MongoDB. Exception is #{e}.\nBacktrace #{e.backtrace[0..2].join("\n")}")
+    #   false
     end
   end
   # rubocop:enable Metrics/LineLength

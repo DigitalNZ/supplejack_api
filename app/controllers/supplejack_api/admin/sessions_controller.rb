@@ -10,9 +10,10 @@
 module SupplejackApi
   module Admin
     class SessionsController < Devise::SessionsController
-      layout 'supplejack_api/application'
-
+      skip_before_action :verify_authenticity_token
       skip_before_action :authenticate_user!, raise: false
+      protect_from_forgery prepend: true, with: :exception
+      layout 'supplejack_api/application'
 
       def after_sign_in_path_for(resource)
         stored_location_for(resource) || admin_users_path

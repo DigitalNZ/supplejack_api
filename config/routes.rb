@@ -55,7 +55,7 @@ SupplejackApi::Engine.routes.draw do
     end
     resources :stories, except: [:new, :edit] do
       resources :items, controller: :story_items, except: [:new, :edit] do
-        resources :moves, only: [:create], to: 'story_item_moves'
+        resources :moves, only: [:create], controller: 'story_item_moves'
       end
     end
   end

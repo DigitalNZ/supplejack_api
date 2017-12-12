@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :story_block, class: Hash do
     position 1
     type 'text'

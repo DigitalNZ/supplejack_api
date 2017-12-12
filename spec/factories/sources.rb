@@ -6,8 +6,9 @@
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
-  FactoryGirl.define do
+  FactoryBot.define do
     factory :source, class: SupplejackApi::Source do
+      association :partner, factory: :partner
       name        'Sample source'
       source_id   '1234'
     end

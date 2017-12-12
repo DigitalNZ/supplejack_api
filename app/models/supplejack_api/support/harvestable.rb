@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -24,11 +25,9 @@ module SupplejackApi
       end
 
       def update_from_harvest(attributes = {})
-        attributes = attributes.try(:symbolize_keys) || {}
-
         attributes[:status] ||= 'active'
 
-        self.class.fields.each do |name, _field|
+        self.class.fields.each_key do |name|
           if attributes.key?(name.to_sym)
             value = Array(attributes[name.to_sym]).first
             send("#{name}=", value)
@@ -71,12 +70,11 @@ module SupplejackApi
             end
           end
         end
-        collection.find(atomic_selector).update('$unset' => unset_hash) if unset_hash.any?
+        collection.find(atomic_selector).update_one('$unset' => unset_hash) if unset_hash.any?
       end
 
       module ClassMethods
         def find_or_initialize_by_identifier(attributes)
-          attributes = attributes.symbolize_keys
           identifier = attributes.delete(:internal_identifier)
           identifier = identifier.first if identifier.is_a?(Array)
           find_or_initialize_by(internal_identifier: identifier)
@@ -86,7 +84,7 @@ module SupplejackApi
           where(
             :'fragments.source_id' => source_id,
             :'fragments.job_id'.ne => job_id,
-            :status.in => %w(active supressed)
+            :status.in => %w[active supressed]
           ).update_all(status: 'deleted', updated_at: Time.now)
 
           cursor = deleted.where('fragments.source_id': source_id)

@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -50,7 +51,7 @@ module SupplejackApi
     field :daily_activity_stored, type: Boolean, default: true
     index daily_activity_stored: 1
 
-    has_many :user_activities, class_name: 'SupplejackApi::UserActivity'
+    has_many :user_activities, class_name: 'SupplejackApi::UserActivity', dependent: :destroy
 
     scope :with_daily_activity, -> { where(daily_activity_stored: false) }
 
@@ -69,8 +70,11 @@ module SupplejackApi
     end
 
     def sets=(attrs_array)
-      return false unless attrs_array.try(:any?)
-      attrs_array.each { |attrs| user_sets.build(attrs) }
+      if attrs_array.try(:any?)
+        attrs_array.each { |attrs| user_sets.build(attrs) }
+      else
+        false
+      end
     end
 
     def name
@@ -90,11 +94,11 @@ module SupplejackApi
       end
 
       if daily_requests == (max_requests * 0.9).floor
-        SupplejackApi::RequestLimitMailer.at90percent(self).deliver
-        SupplejackApi::RequestLimitMailer.at90percent_admin(self).deliver
+        SupplejackApi::RequestLimitMailer.at90percent(self).deliver_now
+        SupplejackApi::RequestLimitMailer.at90percent_admin(self).deliver_now
       elsif daily_requests == max_requests
-        SupplejackApi::RequestLimitMailer.at100percent(self).deliver
-        SupplejackApi::RequestLimitMailer.at100percent_admin(self).deliver
+        SupplejackApi::RequestLimitMailer.at100percent(self).deliver_now
+        SupplejackApi::RequestLimitMailer.at100percent_admin(self).deliver_now
       end
     end
 
@@ -126,7 +130,7 @@ module SupplejackApi
       if controller == 'records' && action == 'index'
         controller = 'search'
         action = 'records'
-      elsif %w(set_items story_items).include? controller
+      elsif %w[set_items story_items].include? controller
         controller = 'user_sets'
         action = "#{action}_item"
       end

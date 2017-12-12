@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -9,7 +10,7 @@
 module SupplejackApi
   module Admin
     class BaseController < ApplicationController
-      skip_before_action :authenticate_user!
+      skip_before_action :authenticate_user!, raise: false
       before_action :authenticate_admin_user!
       before_action :restrict_to_admin_users!
 

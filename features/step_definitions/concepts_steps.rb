@@ -8,8 +8,8 @@
 Given(/^these concepts:$/) do |table|
   table.hashes.each do |hash|
     hash["name"] = hash["name"].split(',')
-  	concept = FactoryGirl.create(:concept)
-    fragment = FactoryGirl.build(:concept_fragment, hash)
+  	concept = FactoryBot.create(:concept)
+    fragment = FactoryBot.build(:concept_fragment, hash)
     concept.fragments << fragment
     concept.save
     concept.index
@@ -22,8 +22,8 @@ When(/^I visit index page for the concepts$/) do
 end
 
 Given(/^I have a concept$/) do
-  @concept = FactoryGirl.create(:concept)
-  @concept.source_authorities << FactoryGirl.create(:source_authority)
+  @concept = FactoryBot.create(:concept)
+  @concept.source_authorities << FactoryBot.create(:source_authority)
   @concept.save
 end
 

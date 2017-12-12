@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -23,7 +24,7 @@ module StoriesApi
         def get
           story = SupplejackApi::UserSet.custom_find(params[:id])
 
-          return create_error('StoryNotFound', id: params[:id]) unless story.present?
+          return create_error('StoryNotFound', id: params[:id]) if story.blank?
 
           if story.privacy == 'private'
             return create_error('PrivateStoryNotAuthorised', id: params[:id]) unless user
@@ -43,7 +44,7 @@ module StoriesApi
                     @user.user_sets.custom_find(params[:id])
                   end
 
-          return create_error('StoryNotFound', id: params[:id]) unless story.present?
+          return create_error('StoryNotFound', id: params[:id]) if story.blank?
 
           merge_patch = PerformMergePatch.new(::StoriesApi::V3::Schemas::Story, ::StoriesApi::V3::Presenters::Story.new)
 
@@ -58,7 +59,7 @@ module StoriesApi
         def delete
           story = user.user_sets.custom_find(params[:id])
 
-          return create_error('StoryNotFound', id: params[:id]) unless story.present?
+          return create_error('StoryNotFound', id: params[:id]) if story.blank?
 
           story.delete
 
@@ -68,7 +69,7 @@ module StoriesApi
         private
 
         def strip_admin_params
-          [:approved, :featured].each do |field|
+          %i[approved featured].each do |field|
             @params[:story].delete(field) if @params[:story].present?
           end
         end

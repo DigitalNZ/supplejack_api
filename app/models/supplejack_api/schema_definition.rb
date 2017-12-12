@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -11,14 +12,14 @@ module SupplejackApi
     extend ActiveSupport::Concern
 
     ALLOWED_ATTRIBUTES = {
-      field: [:type, :search_value, :search_boost, :multi_value, :search_as, :store,
-              :solr_name, :namespace, :namespace_field, :default_value, :date_format],
-      group: [:fields, :includes],
-      role: [:default, :field_restrictions, :record_restrictions, :admin, :harvester],
+      field: %i[type search_value search_boost multi_value search_as store
+                solr_name namespace namespace_field default_value date_format],
+      group: %i[fields includes],
+      role: %i[default field_restrictions record_restrictions admin harvester],
       namespace: [:url],
-      mongo_index: [:fields, :index_options],
-      model_field: [:type, :field_options, :validation, :index_fields, :index_options,
-                    :search_value, :search_as, :store, :namespace]
+      mongo_index: %i[fields index_options],
+      model_field: %i[type field_options validation index_fields index_options
+                      search_value search_as store namespace]
     }.freeze
 
     included do
@@ -26,7 +27,7 @@ module SupplejackApi
     end
 
     module ClassMethods
-      [:string, :integer, :datetime, :boolean, :latlon].each do |type|
+      %i[string integer datetime boolean latlon].each do |type|
         define_method(type) do |*args, &block|
           field(type, *args, &block)
         end
@@ -128,7 +129,7 @@ module SupplejackApi
 
     class Group < SchemaObject
       def include_groups_from(existing_groups)
-        return unless @options[:includes].present?
+        return if @options[:includes].blank?
 
         included_fields = @options[:includes].collect { |g| existing_groups[g].fields }
         @options[:fields] = included_fields.flatten | @options[:fields]

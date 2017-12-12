@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -19,7 +20,7 @@ module SupplejackApi
 
           store_in collection: 'concepts'
 
-          has_many :source_authorities, class_name: 'SupplejackApi::SourceAuthority'
+          has_many :source_authorities, class_name: 'SupplejackApi::SourceAuthority', dependent: :destroy
 
           # Both of these fields are required in SJ API Core
           # No need to configure in *Schema
@@ -40,7 +41,7 @@ module SupplejackApi
             # Limit the number of records by 50
             SupplejackApi.config.record_class.where(concept_ids: id).limit(50).to_a
           end
-        end # included
+        end
 
         def edm_type
           concept_type.gsub(/edm:/, '').downcase.pluralize
@@ -53,7 +54,7 @@ module SupplejackApi
         def context
           [ENV['HTTP_HOST'], 'schema'].join('/')
         end
-      end # module
+      end
     end
   end
 end

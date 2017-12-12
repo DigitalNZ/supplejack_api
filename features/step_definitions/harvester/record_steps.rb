@@ -14,7 +14,7 @@ Then /^there should be a new record with the identifier "(.*?)"$/ do |identifier
 end
 
 Given /^a record with the identifier "(.*?)"$/ do |identifier|
-  @record = FactoryGirl.create(:record_with_fragment, internal_identifier: identifier)
+  @record = FactoryBot.create(:record_with_fragment, internal_identifier: identifier)
 end
 
 When /^I post a request to flush records with a source_id of "(.*?)" and a job_id of "(.*?)"$/ do |source_id, job_id|

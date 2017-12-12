@@ -9,7 +9,7 @@ require 'spec_helper'
 
 module SupplejackApi
   describe ConceptRecordSerializer do
-    let(:record) { FactoryGirl.create(:record) }
+    let(:record) { FactoryBot.create(:record) }
     let(:serialized_concept_record) { ConceptRecordSerializer.new(record).as_json }
 
     describe 'attributes' do

@@ -100,9 +100,9 @@ module SupplejackApi
           @email = double
           allow(SupplejackApi::RequestLimitMailer).to receive(:at90percent) { @email }
         }
-          
+
         it 'should send an email if the user is at 90% daily requests' do
-          expect(@email).to receive(:deliver)
+          expect(@email).to receive(:deliver_now)
           user.attributes = {daily_requests: 89, updated_at: Time.now, max_requests: 100}
           expect(SupplejackApi::RequestLimitMailer).to receive(:at90percent).with(user) {@email}
           user.check_daily_requests
@@ -115,7 +115,7 @@ module SupplejackApi
         end
 
         it 'should send an email if the user has reached 100%' do
-          expect(@email).to receive(:deliver)
+          expect(@email).to receive(:deliver_now)
           user.attributes = {daily_requests: 99, updated_at: Time.now, max_requests: 100}
           expect(SupplejackApi::RequestLimitMailer).to receive(:at100percent).with(user) {@email}
           user.check_daily_requests
@@ -251,16 +251,16 @@ module SupplejackApi
     end
 
     describe '#calculate_last_30_days_requests' do
-      let!(:user) { FactoryGirl.create(:user) }
-      let!(:user_activity) { FactoryGirl.create(:user_activity, user_id: user.id, total: 5, created_at: Time.now) }
+      let!(:user) { FactoryBot.create(:user) }
+      let!(:user_activity) { FactoryBot.create(:user_activity, user_id: user.id, total: 5, created_at: Time.now) }
 
       it 'adds up the totals of the last 30 days' do
-        FactoryGirl.create(:user_activity, user_id: user.id, total: 2, created_at: Time.now - 5.days)
+        FactoryBot.create(:user_activity, user_id: user.id, total: 2, created_at: Time.now - 5.days)
         expect(user.calculate_last_30_days_requests).to eq 7
       end
 
       it 'ignores requests older than 30 days' do
-        FactoryGirl.create(:user_activity, user_id: user.id, total: 2, created_at: Time.now - 31.days)
+        FactoryBot.create(:user_activity, user_id: user.id, total: 2, created_at: Time.now - 31.days)
         expect(user.calculate_last_30_days_requests).to eq 5
       end
 
@@ -271,11 +271,11 @@ module SupplejackApi
     end
 
     describe '#requests_per_day' do
-      let!(:user) { FactoryGirl.create(:user) }
+      let!(:user) { FactoryBot.create(:user) }
 
       before do
-        FactoryGirl.create(:user_activity, user_id: user.id, total: 5, created_at: Time.now - 1.day)
-        FactoryGirl.create(:user_activity, user_id: user.id, total: 2, created_at: Time.now)
+        FactoryBot.create(:user_activity, user_id: user.id, total: 5, created_at: Time.now - 1.day)
+        FactoryBot.create(:user_activity, user_id: user.id, total: 2, created_at: Time.now)
       end
 
       it 'returns an array with the total requests per day' do
@@ -283,7 +283,7 @@ module SupplejackApi
       end
 
       it "returns 0 for days when there isn't any activity" do
-        FactoryGirl.create(:user_activity, user_id: user.id, total: 1, created_at: Time.now - 3.day)
+        FactoryBot.create(:user_activity, user_id: user.id, total: 1, created_at: Time.now - 3.day)
         expect(user.requests_per_day(4)).to eq [1, 0, 5, 2]
       end
     end
@@ -325,7 +325,7 @@ module SupplejackApi
     end
 
     describe '#custom_find' do
-      let(:user) { FactoryGirl.create(:user) }
+      let(:user) { FactoryBot.create(:user) }
 
       it 'finds the user by the api_key' do
         expect(User.custom_find(user.api_key)).to eq user

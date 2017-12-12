@@ -11,7 +11,7 @@ module SupplejackApi
   module ApiConcept
     describe ConceptFragment do
 
-      # let!(:concept) { FactoryGirl.build(:concept, concept_id: 1234) }
+      # let!(:concept) { FactoryBot.build(:concept, concept_id: 1234) }
       # let!(:fragment) { concept.fragments.build(priority: 0) }
       # let(:fragment_class) { ConceptFragment }
 
@@ -125,7 +125,7 @@ module SupplejackApi
       # end
 
       # describe '#clear_attributes' do
-      #   let(:concept) { FactoryGirl.create(:concept) }
+      #   let(:concept) { FactoryBot.create(:concept) }
       #   let(:fragment) { concept.fragments.create(gender: 'male') }
 
       #   it 'clears the existing gender' do

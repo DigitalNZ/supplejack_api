@@ -7,7 +7,7 @@
 
 module SupplejackApi
   module InteractionModels
-    FactoryGirl.define do
+    FactoryBot.define do
       factory :record_interaction, class: SupplejackApi::InteractionModels::Record do
         request_type 'search'
         log_values   ['Voyager 1', 'Sputnik', 'Explorer']

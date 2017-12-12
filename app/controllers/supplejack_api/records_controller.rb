@@ -11,8 +11,8 @@ module SupplejackApi
   class RecordsController < ApplicationController
     include SupplejackApi::Concerns::RecordsControllerMetrics
 
-    skip_before_action :authenticate_user!, only: %i(source status)
-    skip_before_action :verify_authenticity_token
+    skip_before_action :authenticate_user!, only: %i[source status], raise: false
+    skip_before_action :verify_authenticity_token, raise: false
     before_action :set_concept_param, only: :index
     respond_to :json, :xml
 
@@ -52,7 +52,7 @@ module SupplejackApi
     end
 
     def show
-      @record = SupplejackApi.config.record_class.custom_find(params[:id], current_user, params[:search])
+      @record = SupplejackApi.config.record_class.custom_find(params[:id], current_user, search_params)
       respond_to do |format|
         format.json do
           render json: @record, serializer: RecordSerializer, fields: available_fields, root: 'record',
@@ -95,6 +95,14 @@ module SupplejackApi
 
     def available_fields
       DetermineAvailableFields.new(default_serializer_options).call
+    end
+
+    def search_params
+      # Allowing unsafe params here becuase the requests are read only.
+      # Also the search params are complicated, and have many permutations (AND, OR result in search
+      # params which would otherwise not be nested).  It's easiest to convert them all to an unsafe
+      # hash and work with them that way.
+      params[:search]&.to_unsafe_h
     end
   end
 end

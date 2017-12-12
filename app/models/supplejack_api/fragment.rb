@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -37,12 +38,11 @@ module SupplejackApi
         self.field name, type: type
       end
 
+      return if schema_class.mongo_indexes.blank?
       # Build indexes
-      if schema_class.mongo_indexes.present?
-        schema_class.mongo_indexes.each do |_name, index|
-          index_options = !!index.index_options ? index.index_options : {}
-          self.index index.fields.first, index_options
-        end
+      schema_class.mongo_indexes.each_value do |index|
+        index_options = !!index.index_options ? index.index_options : {}
+        self.index index.fields.first, index_options
       end
     end
 
@@ -53,7 +53,7 @@ module SupplejackApi
     def clear_attributes
       mutable_fields = self.class.mutable_fields.dup
       mutable_fields.delete('priority') if primary?
-      raw_attributes.each do |name, _value|
+      raw_attributes.each_key do |name|
         self[name] = nil if mutable_fields.key?(name)
       end
     end

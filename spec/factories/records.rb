@@ -6,7 +6,7 @@
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
-  FactoryGirl.define do
+  FactoryBot.define do
     factory :record, class: SupplejackApi::Record do
       transient do
         display_collection 'test'
@@ -16,24 +16,27 @@ module SupplejackApi
       end
 
       internal_identifier 'nlnz:1234'
-      record_id              54_321
+      record_id 54123
       status                 'active'
       source_url             'http://google.com/landing.html'
       record_type            0
 
       factory :record_with_fragment do
         fragments do
-          [FactoryGirl.build(:record_fragment,
+          [FactoryBot.build(:record_fragment,
                              display_collection: display_collection,
                              copyright: copyright,
                              category: category,
                              tag: tag)]
         end
+        after(:build) do |record_with_fragment|
+          record_with_fragment.save!
+        end
       end
 
       factory :record_with_no_large_thumb do
         fragments do
-          [FactoryGirl.build(:record_fragment,
+          [FactoryBot.build(:record_fragment,
                              display_collection: display_collection,
                              copyright: copyright,
                              category: category,

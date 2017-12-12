@@ -9,7 +9,7 @@ require 'spec_helper'
 
 module SupplejackApi
   describe UserSetSerializer do
-    let(:user_set) { FactoryGirl.create(:user_set_with_set_item) }
+    let(:user_set) { FactoryBot.create(:user_set_with_set_item) }
     let(:serialized_user_set) { described_class.new(user_set).as_json }
 
     context 'without passing any options' do
@@ -110,7 +110,7 @@ module SupplejackApi
         before do
           described_class.class_eval {
             define_method :current_user do
-              FactoryGirl.create(:user)
+              FactoryBot.create(:user)
             end
           }
         end
@@ -132,7 +132,7 @@ module SupplejackApi
         before do
           described_class.class_eval {
             define_method :current_user do
-              FactoryGirl.create(:admin_user)
+              FactoryBot.create(:admin_user)
             end
           }
 

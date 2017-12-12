@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module MetricsApi
   module V3
     # API entry point for V3 of the MetricsAPI

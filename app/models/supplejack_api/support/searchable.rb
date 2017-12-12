@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -46,7 +47,7 @@ module SupplejackApi
           column = "#{name.demodulize.downcase}_id"
 
           if id.to_s =~ /^\d+$/
-            data = class_scope.where(column => id).first
+            data = class_scope.where(column => id.to_i).first
           elsif id.to_s =~ /^[0-9a-f]{24}$/i
             data = class_scope.find(id)
           end
@@ -67,7 +68,7 @@ module SupplejackApi
         end
 
         def build_sunspot_schema(builder)
-          schema_class.fields.each do |_name, field|
+          schema_class.fields.each_value do |field|
             options = {}
             search_as = field.search_as || []
 

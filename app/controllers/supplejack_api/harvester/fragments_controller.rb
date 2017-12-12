@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -15,7 +16,7 @@ module SupplejackApi
       def create
         klass = params[:preview] ? SupplejackApi.config.preview_record_class : SupplejackApi.config.record_class
         @record = klass.find(params[:record_id])
-        @record.create_or_update_fragment(params[:fragment])
+        @record.create_or_update_fragment(fragment_params)
         @record.set_status(params[:required_fragments])
         @record.fragments.map(&:save!)
         @record.save!
@@ -50,6 +51,12 @@ module SupplejackApi
           raw_data: record.try(:to_json),
           record_id: params[:id]
         }
+      end
+
+      private
+
+      def fragment_params
+        params.require(:fragment).to_unsafe_h
       end
     end
   end

@@ -15,14 +15,14 @@ module SupplejackApi
 
       describe 'with an admin account' do
         before(:each) do
-          @user = FactoryGirl.create(:user, authentication_token: "abc123")
+          @user = FactoryBot.create(:user, authentication_token: "abc123")
           allow(RecordSchema).to receive(:roles) { { admin: double(:admin, admin: true) } }
           allow(controller).to receive(:authenticate_user!) { true }
           allow(controller).to receive(:current_user) { @user }
         end
 
         describe '#index' do
-          let!(:user_set) { FactoryGirl.create(:user_set, name: "Dogs and cats", priority: 5) }
+          let!(:user_set) { FactoryBot.create(:user_set, name: "Dogs and cats", priority: 5) }
 
           before :each do
             allow(controller).to receive(:authenticate_admin!) { true }

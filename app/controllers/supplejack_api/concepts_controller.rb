@@ -9,8 +9,9 @@
 
 module SupplejackApi
   class ConceptsController < ApplicationController
-    skip_before_action :authenticate_user!, only: [:source]
-    skip_before_action :verify_limits!,     only: [:source]
+    skip_before_action :authenticate_user!, only: [:source], raise: false
+    # skip_before_action :verify_limits!,     only: [:source]  This devise method doesn't work with rails 5 upgrade.
+    # We need find out how this works with the version of devise we are up to.
 
     respond_to :json, :xml, :rss
 

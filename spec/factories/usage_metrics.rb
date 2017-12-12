@@ -6,7 +6,7 @@
 # the Department of Internal Affairs. http//digitalnz.org/supplejack
 
 module SupplejackApi
-  FactoryGirl.define do
+  FactoryBot.define do
     factory :usage_metrics, class: SupplejackApi::UsageMetrics do
 			record_field_value         "Voyager 1"
 			searches                   1

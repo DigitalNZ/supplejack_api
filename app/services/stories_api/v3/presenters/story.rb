@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -10,18 +11,18 @@ module StoriesApi
   module V3
     module Presenters
       class Story
-        TOP_LEVEL_FIELDS = [
-          :name,
-          :description,
-          :privacy,
-          :copyright,
-          :featured,
-          :featured_at,
-          :approved,
-          :tags,
-          :subjects,
-          :updated_at,
-          :cover_thumbnail
+        TOP_LEVEL_FIELDS = %i[
+          name
+          description
+          privacy
+          copyright
+          featured
+          featured_at
+          approved
+          tags
+          subjects
+          updated_at
+          cover_thumbnail
         ].freeze
 
         def call(story, slim = false)

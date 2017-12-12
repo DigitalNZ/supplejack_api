@@ -13,10 +13,10 @@ module SupplejackApi
 
         before do
           2.times do
-            user.user_sets.create(attributes_for(:story))
+            create(:story, user: user)
           end
 
-          get :index, api_key: api_key, user_key: api_key, slim: 'false'
+          get :index, params: {api_key: api_key, user_key: api_key, slim: 'false'}
         end
 
         it 'returns a 200 http code' do
@@ -41,7 +41,7 @@ module SupplejackApi
       end
 
       context 'unsuccessful request - provided user id does not exist' do
-        before { get :admin_index, api_key: api_key, user_id: '1231231231' }
+        before { get :admin_index, params: { api_key: api_key, user_id: '1231231231' }}
 
         it 'returns 404' do
           expect(response.status).to eq(404)
@@ -53,7 +53,7 @@ module SupplejackApi
       end
 
       context 'unsuccesful request - not admin' do
-        before { get :admin_index, api_key: user.api_key, user_id: user.api_key }
+        before { get :admin_index, params: { api_key: user.api_key, user_id: user.api_key }}
 
         it 'returns 403' do
           expect(response.status).to eq(403)
@@ -69,10 +69,10 @@ module SupplejackApi
 
         before do
           2.times do
-            user.user_sets.create(attributes_for(:story))
+            create(:story, user: user)
           end
 
-          get :admin_index, api_key: api_key, user_id: user.api_key
+          get :admin_index, params: { api_key: api_key, user_id: user.api_key}
         end
 
         it 'returns a 200 http code' do
@@ -87,7 +87,7 @@ module SupplejackApi
 
     describe 'GET show' do
       context 'unsuccessful request - provided story id does not exist' do
-        before { get :show, api_key: api_key, id: '1231231231' }
+        before { get :show, params: { api_key: api_key, id: '1231231231' }}
 
         it 'returns 404' do
           expect(response.status).to eq(404)
@@ -104,10 +104,10 @@ module SupplejackApi
 
         before do
           2.times do
-            user.user_sets.create(attributes_for(:story))
+            create(:story, user: user)
           end
 
-          get :show, api_key: api_key, id: story_id
+          get :show, params: { api_key: api_key, id: story_id}
         end
 
         it 'returns a 200 http code' do
@@ -126,7 +126,7 @@ module SupplejackApi
 
     describe 'POST create' do
       context 'unsuccessful request - malformed post body' do
-        before { post :create, user_key: api_key, api_key: api_key, story: '1231231231' }
+        before { post :create, params: {user_key: api_key, api_key: api_key, story: {nope: '1231231231'} }}
 
         it 'returns 400' do
           expect(response.status).to eq(400)
@@ -142,7 +142,7 @@ module SupplejackApi
         let(:story_name) { 'StoryNameGoesHere' }
 
         before do
-          post :create, user_key: api_key, api_key: api_key, story: { name: story_name }
+          post :create, params: {user_key: api_key, api_key: api_key, story: { name: story_name }}
         end
 
         it 'returns a 200 http code' do
@@ -164,7 +164,7 @@ module SupplejackApi
 
     describe 'DELETE create' do
       context 'unsuccessful request - story not found' do
-        before { delete :destroy, api_key: api_key, user_key: api_key, id: '1231231231' }
+        before { delete :destroy, params: {api_key: api_key, user_key: api_key, id: '1231231231' }}
 
         it 'returns 404' do
           expect(response.status).to eq(404)
@@ -177,9 +177,9 @@ module SupplejackApi
 
       context 'successful request' do
         before do
-          story = user.user_sets.create(attributes_for(:story))
+          story = create(:story, user: user)
 
-          delete :destroy, api_key: api_key, user_key: api_key, id: story.id
+          delete :destroy, params: {api_key: api_key, user_key: api_key, id: story.id}
         end
 
         it 'returns a 204 http code' do
@@ -197,7 +197,7 @@ module SupplejackApi
 
     describe 'PATCH update' do
       context 'unsuccessful request - story not found' do
-        before { patch :update, api_key: api_key, user_key: api_key, id: '1231231231' }
+        before { patch :update, params: {api_key: api_key, user_key: api_key, id: '1231231231' }}
 
         it 'returns 404' do
           expect(response.status).to eq(404)
@@ -221,7 +221,7 @@ module SupplejackApi
         end
 
         before do
-          patch :update, api_key: api_key, user_key: api_key, id: story.id, story: story_patch
+          patch :update, params: {api_key: api_key, user_key: api_key, id: story.id, story: story_patch}
         end
 
         it 'returns a 200 http code' do

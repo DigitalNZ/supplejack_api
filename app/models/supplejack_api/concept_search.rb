@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -10,7 +11,7 @@ module SupplejackApi
   class ConceptSearch < Search
     def initialize(options = {})
       @options = options.dup
-      @options.reverse_merge!(
+      @options.merge!(
         and: {},
         or: {},
         without: {},
@@ -60,7 +61,7 @@ module SupplejackApi
 
     def query_fields
       query_fields_list = super
-      query_fields_list += [:name, :label] if (query_fields_list && [:name, :label]).present?
+      query_fields_list += %i[name label] if (query_fields_list && %i[name label]).present?
     end
 
     def field_list

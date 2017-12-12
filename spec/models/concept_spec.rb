@@ -14,13 +14,6 @@ module SupplejackApi
 
     subject { concept }
 
-    it { should be_stored_in :concepts }
-    it { should be_timestamped_document }
-    it { should be_timestamped_document.with(:created) }
-    it { should be_timestamped_document.with(:updated) }
-
-    it { should have_many(:source_authorities) }
-
     describe 'fields' do
       context '.model fields' do
         %w(concept_type concept_id).each do |field|
@@ -41,7 +34,7 @@ module SupplejackApi
 
     # describe '#custom_find' do
     #   before(:each) do
-    #     @concept = FactoryGirl.create(:concept, concept_id: 54321)
+    #     @concept = FactoryBot.create(:concept, concept_id: 54321)
     #   end
 
     #   it 'should search for a concept via its concept_id' do
@@ -98,7 +91,7 @@ module SupplejackApi
 
     describe '#site_id' do
       it 'returns the site_id of the concept' do
-        expect(concept.site_id).to eq "#{ENV['CONCEPT_HTTP_HOST']}/concepts/1"
+        expect(concept.site_id).to eq "#{ENV['CONCEPT_HTTP_HOST']}/concepts/#{concept.concept_id}"
       end
     end
 

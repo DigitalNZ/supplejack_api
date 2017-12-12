@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module MetricsApi
   module V3
     module Endpoints
@@ -25,12 +26,12 @@ module MetricsApi
           @facets = parse_csv_param(params[:facets])
           @start_date = parse_date_param(params[:start_date]) || Date.yesterday
           @end_date = parse_date_param(params[:end_date]) || Date.yesterday
-          @metrics = parse_csv_param(params[:metrics]) || %w(record view)
+          @metrics = parse_csv_param(params[:metrics]) || %w[record view]
         end
 
         def call
           # TODO: Figure out a nicer way of handling error responses
-          unless facets.present?
+          if facets.blank?
             return {
               exception: {
                 status: 400,
@@ -87,7 +88,7 @@ module MetricsApi
         # @param param [String] CSV string
         # @return [Array<String>] split CSV
         def parse_csv_param(param)
-          return nil unless param.present?
+          return nil if param.blank?
 
           param.split(',').map(&:strip)
         end

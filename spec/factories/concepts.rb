@@ -6,9 +6,9 @@
 # the Department of Internal Affairs. http//digitalnz.org/supplejack
 
 module SupplejackApi
-  FactoryGirl.define do
+  FactoryBot.define do
     factory :concept, class: SupplejackApi::Concept do
-      concept_id    1
+      sequence(:concept_id)
       concept_type  'edm:Agent'
       name          'Colin McCahon'
       biographicalInformation 'Bio'

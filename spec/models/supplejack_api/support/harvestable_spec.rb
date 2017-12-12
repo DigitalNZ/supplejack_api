@@ -1,8 +1,8 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 require 'spec_helper'
@@ -10,14 +10,14 @@ require 'spec_helper'
 module SupplejackApi
   module Support
     describe Harvestable do
-      let(:record) { FactoryGirl.build(:record) }
+      let(:record) { FactoryBot.build(:record) }
 
       describe '#create_or_update_fragment' do
         before { record.save }
 
         context 'existing fragment' do
           before do
-            @fragment = record.fragments.create(source_id: 'nz_census', name: 'John Smith', age: 50) 
+            @fragment = record.fragments.create(source_id: 'nz_census', name: 'John Smith', age: 50)
             record.create_or_update_fragment({'source_id' => 'nz_census', 'age' => 100})
           end
 
@@ -69,18 +69,18 @@ module SupplejackApi
       end
 
       describe '#clear_attributes' do
-        let(:record) { FactoryGirl.create(:record, internal_identifier: "1234") }
+        let(:record) { FactoryBot.create(:record, internal_identifier: "1234") }
 
         it 'doesn\'t clear the _id attribute' do
           record.clear_attributes
           expect(record._id).to_not be_nil
         end
-  
+
       end
 
       describe '#unset_null_fields' do
         it 'unsets null fields Mongo' do
-          record = FactoryGirl.create(:record, name: 'John Smith')
+          record = FactoryBot.create(:record, name: 'John Smith')
           record.update_attributes(name: nil)
           record.unset_null_fields
           raw_record = record.reload.raw_attributes
@@ -88,21 +88,22 @@ module SupplejackApi
         end
 
         it 'should unset null fields inside fragments' do
-          record = FactoryGirl.build(:record_with_fragment, record_id: 1234)
+          record = FactoryBot.build(:record_with_fragment)
           record.primary_fragment.update_attributes(address: nil)
+          record.reload
           record.unset_null_fields
           raw_record = record.reload.raw_attributes
           expect(raw_record['fragments'][0]).to_not have_key('address')
         end
 
         it 'should handle null fragments' do
-          record = FactoryGirl.create(:record_with_fragment, record_id: 1234)
+          record = FactoryBot.create(:record_with_fragment, record_id: 1234)
           allow(record).to receive(:raw_attributes) { {'fragments' => [nil]} }
           expect { record.unset_null_fields }.to_not raise_exception
         end
 
         it 'should handle false fields inside fragments' do
-          record = FactoryGirl.create(:record_with_fragment, record_id: 1234)
+          record = FactoryBot.create(:record_with_fragment, record_id: 1234)
           record.primary_fragment.update_attributes(nz_citizen: false)
           record.unset_null_fields
           raw_record = record.reload.raw_attributes
@@ -110,15 +111,15 @@ module SupplejackApi
         end
 
         it 'doesn\'t unset any field with values' do
-          record = FactoryGirl.create(:record_with_fragment, record_id: 1234)
+          record = FactoryBot.create(:record_with_fragment)
           record.unset_null_fields
           raw_record = record.reload.raw_attributes
-          expect(raw_record).to include({'record_id' => 1234})
+          expect(raw_record).to include({'record_id' => record.record_id})
           expect(raw_record['fragments'][0]).to include({'address' => 'Wellington'})
         end
 
         it 'should not trigger a db query if there is nothing to unset' do
-          record = FactoryGirl.create(:record)
+          record = FactoryBot.create(:record)
           expect(record.collection).to_not receive(:find)
           record.unset_null_fields
         end
@@ -143,11 +144,11 @@ module SupplejackApi
 
       describe '.flush_old_records' do
         before do
-          @record1 = FactoryGirl.create(:record_with_fragment)
+          @record1 = FactoryBot.create(:record_with_fragment)
           @record1.primary_fragment.job_id = '123'
           @record1.save
 
-          @record2 = FactoryGirl.create(:record_with_fragment)
+          @record2 = FactoryBot.create(:record_with_fragment)
           @record2.primary_fragment.job_id = 'abc'
           @record2.save
         end

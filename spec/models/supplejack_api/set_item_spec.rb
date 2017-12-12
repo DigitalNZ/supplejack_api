@@ -10,11 +10,11 @@ require 'spec_helper'
 module SupplejackApi
   describe SetItem do
 
-  	let(:user_set) { FactoryGirl.build(:user_set) }
+  	let(:user_set) { FactoryBot.build(:user_set) }
     let(:set_item) { user_set.set_items.build(record_id: 10, position: 1) }
 
     before(:each) do
-      allow(user_set).to receive(:record) {double(:record, record_id: 4321)}
+      allow(user_set).to receive(:record) {double(:record, record_id: 4321, touch: true)}
       allow(user_set).to receive(:update_record)
     end
 
@@ -72,7 +72,7 @@ module SupplejackApi
     end
 
     it "delegates record fields to the :record object" do
-      set_item.record = FactoryGirl.create(:record, record_id: 5)
+      set_item.record = FactoryBot.create(:record, record_id: 5)
       set_item.record.fragments.create(name: "Ben", address: "Wellington")
       set_item.record.save
 

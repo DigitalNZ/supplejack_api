@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -10,23 +11,23 @@ require 'rails'
 require 'devise'
 require 'devise-token_authenticatable'
 require 'kaminari'
+require 'kaminari/mongoid'
 require 'simple_form'
 require 'state_machine'
-require 'protected_attributes'
 require 'sunspot'
 require 'active_model_serializers'
 require 'mongoid'
-require 'mongoid_auto_inc'
+require 'mongoid_auto_increment'
 require 'mongoid/tree'
 require 'devise/orm/mongoid'
 require 'figaro'
 require 'unicode_utils'
 require 'rest_client'
 require 'lazy_high_charts'
-require 'zurb-foundation'
 require 'sidekiq'
 require 'json/ld'
 require 'dry-validation'
+require 'zurb-foundation'
 
 module SupplejackApi
   class Engine < ::Rails::Engine
@@ -35,7 +36,7 @@ module SupplejackApi
 
     config.generators do |g|
       g.test_framework      :rspec,        fixture: false
-      g.fixture_replacement :factory_girl, dir: 'spec/factories'
+      g.fixture_replacement :factory_bot, dir: 'spec/factories'
       g.assets false
       g.helper false
     end

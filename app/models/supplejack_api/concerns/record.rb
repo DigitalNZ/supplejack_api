@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module SupplejackApi::Concerns::Record
   extend ActiveSupport::Concern
 
@@ -15,7 +16,8 @@ module SupplejackApi::Concerns::Record
     store_in collection: 'records'
     index(concept_ids: 1)
     index({ record_id: 1 }, unique: true)
-    auto_increment :record_id, session: 'strong'
+
+    auto_increment :record_id, client: 'strong'
 
     # Callbacks
     before_save :merge_fragments
@@ -88,7 +90,7 @@ module SupplejackApi::Concerns::Record
         next_primary_key = search.hits[record_index + 1].try(:primary_key)
       end
 
-      return unless next_primary_key.present?
+      return if next_primary_key.blank?
 
       self.next_record = SupplejackApi.config.record_class.find(next_primary_key).try(:record_id) rescue nil
     end

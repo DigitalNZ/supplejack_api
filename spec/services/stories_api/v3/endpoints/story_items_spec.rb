@@ -69,7 +69,7 @@ module StoriesApi
               exception: {
                 message: 'User with provided Api Key madeupuser not found'
               }
-            )            
+            )
           end
 
           it 'returns 404 if the story dosent exist' do
@@ -81,7 +81,7 @@ module StoriesApi
               exception: {
                 message: 'Story with provided Id madeupkey not found'
               }
-            )          
+            )
           end
 
           context 'when position passed on create item' do
@@ -89,31 +89,31 @@ module StoriesApi
               record = create(:record)
               @story = create(:story)
               @user = @story.user
-              @item = create(:story_item, type: 'embed', sub_type: 'record', 
+              @item = create(:story_item, type: 'embed', sub_type: 'record',
                              position: 1, # This value is the index for the array of set items. ie position 2
                              content: { id: record.record_id }, meta: {}).attributes.symbolize_keys
-              
+
               @item.delete(:_id)
             end
 
             it 'calls the moves service' do
               expect_any_instance_of(StoriesApi::V3::Endpoints::Moves).to receive(:post)
 
-              StoryItems.new(story_id: @story.id, user_key: @user.api_key,
-                             item: @item).post
+              StoryItems.new(ActionController::Parameters.new(story_id: @story.id, user_key: @user.api_key,
+                             item: @item)).post
             end
 
             it 'creates a new set item with the provided position' do
-              response = StoryItems.new(story_id: @story.id, user_key: @user.api_key,
-                                        item: @item).post
-            
+              response = StoryItems.new(ActionController::Parameters.new(story_id: @story.id, user_key: @user.api_key,
+                                        item: @item)).post
+
               expect(response[:status]).to eq 200
               expect(response[:payload][:position]).to eq 2
             end
 
             it 'updates positions of each story set item' do
-              response = StoryItems.new(story_id: @story.id, user_key: @user.api_key,
-                                        item: @item).post
+              response = StoryItems.new(ActionController::Parameters.new(story_id: @story.id, user_key: @user.api_key,
+                                        item: @item)).post
 
               @story.reload
 
@@ -128,8 +128,8 @@ module StoriesApi
             end
 
             it 'should return error when type is missing' do
-              response = StoryItems.new(story_id: @story.id, user_key: @user.api_key,
-                                        item: { sub_type: 'record', meta: {} }).post
+              response = StoryItems.new(ActionController::Parameters.new(story_id: @story.id, user_key: @user.api_key,
+                                        item: { sub_type: 'record', meta: {} })).post
               expect(response).to eq(
                 status: 400,
                 exception: {
@@ -139,8 +139,8 @@ module StoriesApi
             end
 
             it 'should return error when sub_type is missing' do
-              response = StoryItems.new(story_id: @story.id, user_key: @user.api_key,
-                                        item: { type: 'embed', meta: {} }).post
+              response = StoryItems.new(ActionController::Parameters.new(story_id: @story.id, user_key: @user.api_key,
+                                        item: { type: 'embed', meta: {} })).post
               expect(response).to eq(
                 status: 400,
                 exception: {
@@ -150,8 +150,8 @@ module StoriesApi
             end
 
             it 'should return error when content is missing' do
-              response = StoryItems.new(story_id: @story.id, user_key: @user.api_key,
-                                        item: { type: 'embed', sub_type: 'record', meta: {} }).post
+              response = StoryItems.new(ActionController::Parameters.new(story_id: @story.id, user_key: @user.api_key,
+                                        item: { type: 'embed', sub_type: 'record', meta: {} })).post
 
               expect(response).to eq(
                 status: 400,
@@ -165,8 +165,8 @@ module StoriesApi
               item = create(:story_item, type: 'youtube', sub_type: 'record', content: {}, meta: {}).attributes.symbolize_keys
               item.delete(:_id)
 
-              response = StoryItems.new(story_id: @story.id, user_key: @user.api_key,
-                                        item: item).post
+              response = StoryItems.new(ActionController::Parameters.new(story_id: @story.id, user_key: @user.api_key,
+                                        item: item)).post
 
               expect(response).to eq(
                 status: 400,
@@ -180,8 +180,8 @@ module StoriesApi
               item = create(:story_item, type: 'embed', sub_type: 'fancy_text', content: {}, meta: {}).attributes.symbolize_keys
               item.delete(:_id)
 
-              response = StoryItems.new(story_id: @story.id, user_key: @user.api_key,
-                                        item: item).post
+              response = StoryItems.new(ActionController::Parameters.new(story_id: @story.id, user_key: @user.api_key,
+                                        item: item)).post
 
               expect(response).to eq(
                 status: 400,
@@ -205,8 +205,8 @@ module StoriesApi
                 item = @item
                 item[:content].delete(:value)
 
-                response = StoryItems.new(story_id: @story.id, user_key: @user.api_key,
-                                          item: item).post
+                response = StoryItems.new(ActionController::Parameters.new(story_id: @story.id, user_key: @user.api_key,
+                                          item: item)).post
 
                 expect(response).to eq(
                   status: 400,
@@ -217,13 +217,13 @@ module StoriesApi
               end
 
               it 'should return created text rich-text story item' do
-                response = StoryItems.new(story_id: @story.id, user_key: @user.api_key,
-                                          item: @item).post
+                response = StoryItems.new(ActionController::Parameters.new(story_id: @story.id, user_key: @user.api_key,
+                                          item: @item)).post
 
                 result = response[:payload]
                 result.delete(:id)
-                result.delete(:record_id) 
-                expect(result).to eq ({ position: 3, type: "text", 
+                result.delete(:record_id)
+                expect(result).to eq ({ position: 3, type: "text",
                                         sub_type: "rich-text", content: { value: "Some Text" },
                                         meta: { metadata: "Some Meta"}})
               end
@@ -246,9 +246,9 @@ module StoriesApi
                 item = @item
                 item[:content].delete(:id)
 
-                response = StoryItems.new(story_id: @story.id,
+                response = StoryItems.new(ActionController::Parameters.new(story_id: @story.id,
                                           user_key: @user.api_key,
-                                          item: item).post
+                                          item: item)).post
                 expect(response).to eq(
                   status: 400,
                   exception: {
@@ -261,9 +261,9 @@ module StoriesApi
                 item = @item
                 item[:content][:id] = 'zfbgksdgjb'
 
-                response = StoryItems.new(story_id: @story.id,
+                response = StoryItems.new(ActionController::Parameters.new(story_id: @story.id,
                                           user_key: @user.api_key,
-                                          item: item).post
+                                          item: item)).post
                 expect(response).to eq(
                   status: 400,
                   exception: {
@@ -273,9 +273,9 @@ module StoriesApi
               end
 
               it 'should return the created dnz item' do
-                response = StoryItems.new(story_id: @story.id,
+                response = StoryItems.new(ActionController::Parameters.new(story_id: @story.id,
                                           user_key: @user.api_key,
-                                          item: @item).post
+                                          item: @item)).post
                 result = response[:payload]
                 result.delete(:id)
 
@@ -295,9 +295,9 @@ module StoriesApi
                 item = factory.attributes.symbolize_keys
                 expect(@story.cover_thumbnail).to be_nil
 
-                StoryItems.new(story_id: @story.id,
+                StoryItems.new(ActionController::Parameters.new(story_id: @story.id,
                                user_key: @user.api_key,
-                               item: item).post
+                               item: item)).post
 
                 @story.reload
 

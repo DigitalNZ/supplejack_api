@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -10,10 +11,10 @@ module Utils
   extend self
 
   def load_yaml(file_name)
-    path = File.join(Rails.root, 'config', file_name)
+    path = Rails.root.join('config', file_name)
     if File.exist?(path)
       File.open(path) do |file|
-        YAML.load(file.read)
+        YAML.safe_load(file.read)
       end
     else
       {}
@@ -54,7 +55,7 @@ module Utils
 
   def time(value)
     if value.blank?
-      return nil
+      nil
     elsif value.is_a?(Integer)
       number = value.to_s[0..9]
       Time.at(number.to_i)
@@ -75,7 +76,7 @@ module Utils
   # @param string [String] the string
   # @return [String] the string with capital first letter
   def capitalize_first_word(string)
-    return '' unless string.present?
+    return '' if string.blank?
     string_dup = string.dup
     string_dup[0] = string_dup.to_s[0].upcase
     string_dup

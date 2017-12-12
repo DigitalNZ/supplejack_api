@@ -21,7 +21,7 @@ module SupplejackApi
       before(:each) do
         allow(@controller).to receive(:params) { { api_key: '12345' } }
         allow(@controller).to receive(:request) { double(:request, ip: '1.1.1.1', format: :json) }
-        @user = FactoryGirl.create(:user)
+        @user = FactoryBot.create(:user)
         allow(@user).to receive(:update_daily_activity) { nil }
         allow(@controller).to receive(:current_user) { @user }
       end

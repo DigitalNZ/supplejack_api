@@ -9,7 +9,7 @@ require 'spec_helper'
 
 module SupplejackApi
   describe UserSerializer do
-    let(:user) { FactoryGirl.create(:user) }
+    let(:user) { FactoryBot.create(:user) }
     let(:serialized_user) { described_class.new(user).as_json }
 
     it 'renders the :id' do

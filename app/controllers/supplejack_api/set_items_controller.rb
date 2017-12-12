@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -16,12 +17,7 @@ module SupplejackApi
 
     def create
       # This ugly fix should be removed when digitalnz.org is decommissioned
-      updated_params = record_params.merge(type: 'embed',
-                                           sub_type: 'record',
-                                           content: { record_id: record_params[:record_id] },
-                                           meta: { align_mode: 0 })
-
-      @set_item = @user_set.set_items.build(updated_params)
+      @set_item = @user_set.set_items.build(record_params)
       @user_set.save
       respond_with @user_set, @set_item
     end
@@ -37,8 +33,14 @@ module SupplejackApi
       end
     end
 
+    private
+
     def record_params
-      params.require(:record).permit(:record_id)
+      record_id = params[:record][:record_id]
+      params.require(:record).permit(:record_id).to_h.merge(type: 'embed',
+                                                            sub_type: 'record',
+                                                            content: { record_id: record_id },
+                                                            meta: { align_mode: 0 })
     end
   end
 end

@@ -17,16 +17,17 @@ require File.expand_path("../dummy/config/environment.rb", __FILE__)
 require 'rails/application'
 require 'rails/mongoid'
 require 'rspec/rails'
-require 'factory_girl_rails'
+require 'factory_bot_rails'
 require 'timecop'
 require 'sunspot_matchers'
-require 'mongoid-rspec'
-require 'simplecov'
+# require 'simplecov'
 require 'rspec/active_model/mocks'
 require 'sunspot_test/rspec'
+require 'rails-controller-testing'
 
-require "codeclimate-test-reporter"
-CodeClimate::TestReporter.start
+Rails::Controller::Testing.install
+# require "codeclimate-test-reporter"
+# CodeClimate::TestReporter.start
 # SimpleCov.start
 
 Rails.backtrace_cleaner.remove_silencers!
@@ -50,10 +51,10 @@ RSpec.configure do |config|
 
   config.before(:each) do
     # We have added this as database cleaner appears to not be working for mongo
+    Sunspot.session = Sunspot::Rails::StubSessionProxy.new(Sunspot.session)
     SupplejackApi::Record.destroy_all
     SupplejackApi::Concept.destroy_all
     DatabaseCleaner.clean
-    Sunspot.session = Sunspot::Rails::StubSessionProxy.new(Sunspot.session)
     Timecop.return
 
     %w(record concept).each do |model|
@@ -64,6 +65,5 @@ RSpec.configure do |config|
   end
 
   config.include SunspotMatchers
-  config.include Mongoid::Matchers
-  config.include FactoryGirl::Syntax::Methods
+  config.include FactoryBot::Syntax::Methods
 end

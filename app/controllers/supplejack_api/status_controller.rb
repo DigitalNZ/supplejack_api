@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -10,8 +11,9 @@ module SupplejackApi
   # rubocop:disable Metrics/LineLength
   # FIXME: make log lines smaller
   class StatusController < ApplicationController
-    skip_before_action :authenticate_user!, only: [:show]
-    skip_before_action :verify_limits!,     only: [:show]
+    skip_before_action :authenticate_user!, only: [:show], raise: false
+    # skip_before_action :verify_limits!,     only: [:show] This devise method doesn't work with rails 5 upgrade.
+    # We need find out how this works with the version of devise we are up to.
     around_action :handle_timeout, only: :show
 
     newrelic_ignore if defined? NewRelic
@@ -26,14 +28,14 @@ module SupplejackApi
       end
 
       if both_ok
-        render status: 200, nothing: true
+        head :ok
       else
-        render status: 500, nothing: true
+        head :internal_server_error
       end
     rescue Timeout::Error => e
       Support::StatusLogger.logger.error("Solr or MongoDB is down or took longer than #{TIMEOUT} seconds to respond. Exception is #{e}.\nBacktrace #{e.backtrace[0..2].join("\n")}")
 
-      render status: 500, nothing: true
+      head :internal_server_error
     end
 
     private
@@ -54,8 +56,8 @@ module SupplejackApi
     end
 
     def mongod_up?
-      session = SupplejackApi.config.record_class.collection.database.session
-      success = session.command(ping: 1)['ok'] == 1
+      session = SupplejackApi.config.record_class.collection.database.client
+      success = session.command(ping: 1).ok?
       Support::StatusLogger.logger.error("MongoDB ping command not successful. Ping output: #{session.command(ping: 1)}") unless success
       success
     rescue StandardError => e

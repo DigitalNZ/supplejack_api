@@ -4,10 +4,10 @@ module SupplejackApi::Concerns::UserSet
   extend ActiveSupport::Concern
 
   included do
-    store_in collection: 'user_sets', session: 'strong'
+    store_in collection: 'user_sets', client: 'strong'
 
     belongs_to :user, class_name: 'SupplejackApi::User'
-    belongs_to :record, class_name: SupplejackApi.config.record_class.to_s, inverse_of: nil
+    belongs_to :record, class_name: SupplejackApi.config.record_class.to_s, inverse_of: nil, touch: true, optional: true
 
     embeds_many :set_items, class_name: 'SupplejackApi::SetItem' do
       def find_by_record_id(record_id)
@@ -52,10 +52,8 @@ module SupplejackApi::Concerns::UserSet
     index 'set_items.record_id' => 1
     index featured: 1
 
-    attr_accessible :name, :description, :privacy, :priority, :tags, :tag_list, :records, :approved
-
     validates :name, presence: true
-    validates :privacy, inclusion: { in: %w(public hidden private) }
+    validates :privacy, inclusion: { in: %w[public hidden private] }
 
     before_validation :set_default_privacy
     before_save :calculate_count
@@ -193,7 +191,7 @@ module SupplejackApi::Concerns::UserSet
     # Remove HTML tags from the name, description and tags
     #
     def strip_html_tags!
-      [:name, :description].each do |attr|
+      %i[name description].each do |attr|
         send("#{attr}=", strip_tags(self[attr])) if self[attr].present?
       end
 
@@ -205,10 +203,7 @@ module SupplejackApi::Concerns::UserSet
     end
 
     def update_record
-      if set_items.empty?
-        suppress_record
-        return nil
-      end
+      suppress_record if set_items.empty?
 
       self.record = SupplejackApi::Record.new if record.nil?
 

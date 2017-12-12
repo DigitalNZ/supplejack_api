@@ -1,10 +1,11 @@
 # frozen_string_literal: true
+
 module SupplejackApi
   class StoriesController < ApplicationController
     include Concerns::Stories
 
     before_action :authenticate_admin!, only: [:admin_index]
-    before_action :user_key_check!, except: [:admin_index, :show]
+    before_action :user_key_check!, except: %i[admin_index show]
 
     def index
       render_response(:stories)

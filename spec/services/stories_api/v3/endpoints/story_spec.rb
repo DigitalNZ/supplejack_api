@@ -2,7 +2,7 @@ module StoriesApi
   module V3
     module Endpoints
       RSpec.describe Story do
-        before { @user = FactoryGirl.create(:user, authentication_token: 'apikey', role: 'developer') }
+        before { @user = FactoryBot.create(:user, authentication_token: 'apikey', role: 'developer') }
 
         describe '#new' do
           it 'initializes a supplejack user' do

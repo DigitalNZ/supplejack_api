@@ -13,8 +13,8 @@ module SupplejackApi
 
     respond_to :json
 
-    prepend_before_action :find_user_set, only: [:update, :destroy]
-    before_action :authenticate_admin!, only: [:admin_index, :public_index]
+    prepend_before_action :find_user_set, only: %i[update destroy]
+    before_action :authenticate_admin!, only: %i[admin_index public_index]
 
     def index
       @user_sets = current_user.user_sets
@@ -57,7 +57,7 @@ module SupplejackApi
 
     def create
       @user_set = current_user.user_sets.build
-      if @user_set.update_attributes_and_embedded(params[:set])
+      if @user_set.update_attributes_and_embedded(set_params)
         render json: @user_set, user: true
       else
         render json: { errors: @user_set.errors.to_hash }, status: :unprocessable_entity
@@ -65,7 +65,7 @@ module SupplejackApi
     end
 
     def update
-      if @user_set.update_attributes_and_embedded(params[:set], current_user)
+      if @user_set.update_attributes_and_embedded(set_params, current_user)
         render json: @user_set, user: true
       else
         render json: { errors: @user_set.errors.to_hash }, status: :unprocessable_entity
@@ -81,6 +81,12 @@ module SupplejackApi
       render json: {
         errors: { records: ['The records array is not in a valid format.'] }
       }, status: :unprocessable_entity
+    end
+
+    def set_params
+      # Not using require here because we handle missing params seperately.
+      # require method throws and error if the :set is not there
+      params[:set]&.permit(:id, :name, :approved, :description, :privacy, records: %i[record_id position]).to_h
     end
   end
 end

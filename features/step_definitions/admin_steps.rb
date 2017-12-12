@@ -6,7 +6,7 @@
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 Given(/^an admin user$/) do
-  @user = FactoryGirl.create(:admin_user, authentication_token: '12345', daily_requests: 0, username: 'Admin User')
+  @user = FactoryBot.create(:admin_user, authentication_token: '12345', daily_requests: 0, username: 'Admin User')
 end
 
 When(/^I enter my admin credentials$/) do

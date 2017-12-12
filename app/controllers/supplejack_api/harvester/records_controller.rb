@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -14,16 +15,16 @@ module SupplejackApi
 
       def create
         klass = params[:preview] ? SupplejackApi.config.preview_record_class : SupplejackApi.config.record_class
-        @record = klass.find_or_initialize_by_identifier(params[:record])
+        @record = klass.find_or_initialize_by_identifier(record_params)
 
         # In the long run this condition shouldn't be here.
         # It's because the data_handler interfaces are using update_from_harvest,
         # and clear_attributes that I can't factor it back in.
         if params[:record][:priority] && params[:record][:priority].to_i.nonzero?
-          @record.create_or_update_fragment(params[:record])
+          @record.create_or_update_fragment(record_params)
         else
           @record.clear_attributes
-          @record.update_from_harvest(params[:record])
+          @record.update_from_harvest(record_params)
         end
 
         @record.set_status(params[:required_fragments])
@@ -46,7 +47,7 @@ module SupplejackApi
 
       def flush
         FlushOldRecordsWorker.perform_async(params[:source_id], params[:job_id])
-        render nothing: true, status: 204
+        head :no_content
       end
 
       def delete
@@ -86,8 +87,14 @@ module SupplejackApi
             status: @record.status
           }.to_json
         else
-          render nothing: true, status: 204
+          head :no_content
         end
+      end
+
+      private
+
+      def record_params
+        params.require(:record).to_unsafe_h
       end
     end
   end

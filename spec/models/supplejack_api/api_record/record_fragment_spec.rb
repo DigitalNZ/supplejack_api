@@ -11,7 +11,7 @@ module SupplejackApi
   module ApiRecord
     describe RecordFragment do
 
-  		let!(:record) { FactoryGirl.build(:record, record_id: 1234) }
+  		let!(:record) { FactoryBot.build(:record, record_id: 1234) }
       let!(:fragment) { record.fragments.build(priority: 0) }
       let(:fragment_class) { RecordFragment }
 
@@ -126,7 +126,7 @@ module SupplejackApi
       end
 
       describe '#clear_attributes' do
-        let(:record) { FactoryGirl.create(:record) }
+        let(:record) { FactoryBot.create(:record) }
         let(:fragment) { record.fragments.create(nz_citizen: true) }
 
         it 'clears the existing nz_citizen' do

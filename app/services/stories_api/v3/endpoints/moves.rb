@@ -1,11 +1,12 @@
 # frozen_string_literal: true
+
 module StoriesApi
   module V3
     module Endpoints
       class Moves
         include Helpers
 
-        REQUIRED_PARAMS = [:story_id, :item_id, :position].freeze
+        REQUIRED_PARAMS = %i[story_id item_id position].freeze
         attr_reader :params, :position, :errors
 
         def initialize(params)
@@ -24,14 +25,14 @@ module StoriesApi
           # So just check that first
 
           story = current_user(params).user_sets.find_by_id(params[:story_id])
-          return create_error('StoryNotFound', id: params[:story_id]) unless story.present?
+          return create_error('StoryNotFound', id: params[:story_id]) if story.blank?
 
           set_items = story.set_items.to_a.sort_by(&:position)
           block_to_move_index = set_items.find_index { |x| x.id.to_s == params[:item_id] }
 
           return create_error('StoryItemNotFound',
                               item_id: params[:item_id],
-                              story_id: params[:story_id]) unless block_to_move_index.present?
+                              story_id: params[:story_id]) if block_to_move_index.blank?
 
           if position >= set_items.length
             moved_block = set_items.delete_at(block_to_move_index)

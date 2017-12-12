@@ -13,7 +13,7 @@ module SupplejackApi
       object.concept_type
     end
 
-    ConceptSchema.fields.each do |name, _definition|
+    ConceptSchema.fields.each_key do |name|
       attribute name do
         object.public_send(name)
       end

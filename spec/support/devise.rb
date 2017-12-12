@@ -6,5 +6,5 @@
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 RSpec.configure do |config|
-  config.include Devise::TestHelpers, type: :controller
+  config.include Devise::Test::ControllerHelpers, type: :controller
 end

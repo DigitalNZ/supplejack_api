@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -16,12 +17,12 @@ module StoriesApi
 
         def initialize(params)
           @params = params
-          @item_params = params[:item]&.deep_symbolize_keys
+
           @user = SupplejackApi::User.find_by_api_key(params[:user_key])
 
           if @user
             @story = @user.user_sets.find_by_id(params[:story_id])
-            @errors = create_error('StoryNotFound', id: params[:story_id]) unless @story.present?
+            @errors = create_error('StoryNotFound', id: params[:story_id]) if @story.blank?
           else
             @errors = create_error('UserNotFound', id: params[:user_key]) unless @user
           end
@@ -38,12 +39,11 @@ module StoriesApi
           return @errors if @errors
           return create_error('MandatoryParamMissing', param: :item) unless params[:item]
 
-          position = @item_params.delete(:position)
-
-          validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(params[:item])
+          validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(item_params)
           return create_error('SchemaValidationError', errors: validator.messages(full: true)) unless validator.success?
+          position = item_params.delete(:position)
 
-          story_item = story.set_items.build(@item_params)
+          story_item = story.set_items.build(item_params)
           story.cover_thumbnail = story_item.content[:image_url] unless story.cover_thumbnail
           story.save!
 
@@ -62,7 +62,22 @@ module StoriesApi
         private
 
         def text_item?
-          @item_params[:type] == 'text'
+          item_params[:type] == 'text'
+        end
+
+        def item_params
+          @item_params ||= params.require(:item).permit(:position,
+                                                        :type,
+                                                        :sub_type,
+                                                        :record_id,
+                                                        content: [:id,
+                                                                  :title,
+                                                                  :display_collection,
+                                                                  :value,
+                                                                  :image_url,
+                                                                  category: [],
+                                                                  tags: []],
+                                                        meta: %i[align_mode is_cover caption title size metadata]).to_h
         end
       end
     end

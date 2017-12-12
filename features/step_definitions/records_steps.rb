@@ -10,16 +10,16 @@ Given(/^these records:$/) do |table|
     hash["email"] = hash["email"].split(',') if hash["email"]
     hash["children"] = hash["children"].split(',') if hash["children"]
     hash["contact"] = hash["contact"].split(',') if hash["contact"]
-    record = FactoryGirl.create(:record, internal_identifier: "abc:#{rand(1000..10000)}", record_id: hash[:record_id])
-    fragment = FactoryGirl.build(:record_fragment, hash.except('record_id'))
+    record = FactoryBot.create(:record, internal_identifier: "abc:#{rand(1000..10000)}", record_id: hash[:record_id])
+    fragment = FactoryBot.build(:record_fragment, hash.except('record_id'))
     record.fragments << fragment
     record.save
   end
 end
 
 Given /^a record$/ do
-  @record = FactoryGirl.create(:record)
-  @record.fragments << FactoryGirl.build(:record_fragment)
+  @record = FactoryBot.create(:record)
+  @record.fragments << FactoryBot.build(:record_fragment)
   @record.save
 end
 

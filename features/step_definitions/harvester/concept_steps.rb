@@ -21,6 +21,6 @@ Then(/^the concept with the identifier "(.*?)" should have attributes:$/) do |id
 end
 
 Given /^a concept with the identifier "(.*?)"$/ do |identifier|
-  @concept = FactoryGirl.create(:concept_with_fragment, internal_identifier: identifier)
+  @concept = FactoryBot.create(:concept_with_fragment, internal_identifier: identifier)
 end
 

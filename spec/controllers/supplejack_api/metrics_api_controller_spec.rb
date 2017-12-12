@@ -24,7 +24,7 @@ module SupplejackApi
           create(:usage_metrics, record_field_value: 'dc1', date: Date.yesterday)
           create(:usage_metrics, date: Date.yesterday)
 
-          get :root, version: 'v3', facets: 'dc1', start_date: Date.yesterday, end_date: Date.yesterday
+          get :root, params: { version: 'v3', facets: 'dc1', start_date: Date.yesterday, end_date: Date.yesterday }
           json = JSON.parse(response.body)
 
           expect(json.first['record'].count).to eq(1)
@@ -34,13 +34,13 @@ module SupplejackApi
 
       context "failure requests" do
         it 'responds with a 400 status if the facets parameter is missing' do
-          get :root, version: 'v3'
+          get :root, params: { version: 'v3' }
 
           expect(response.status).to eq(400)
         end
 
         it 'responds with a 400 status if the number of facets requested is greater than 10' do
-          get :root, version: 'v3', facets: '1,2,3,4,5,6,7,8,9,10,11'
+          get :root, params: { version: 'v3', facets: '1,2,3,4,5,6,7,8,9,10,11' }
 
           expect(response.status).to eq(400)
         end
@@ -61,7 +61,7 @@ module SupplejackApi
       it 'responds with a list of all facets' do
         5.times{create(:faceted_metrics)}
 
-        get :facets, version: 'v3'
+        get :facets, params: { version: 'v3' }
         json = JSON.parse(response.body)
 
         expect(json.length).to eq(5)

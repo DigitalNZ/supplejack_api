@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 # The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
 # One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
@@ -28,19 +29,19 @@ module SupplejackApi
         index({ record_id: 1 }, unique: true)
 
         def self.build_model_fields
-          if RecordSchema.model_fields.present?
-            RecordSchema.model_fields.each do |name, index|
-              # Set the field
-              field name.to_sym, index.field_options if !!index.field_options
+          return if RecordSchema.model_fields.blank?
 
-              # Set the index
-              index_fields = !!index.index_fields ? index.index_fields : {}
-              index_options = !!index.index_options ? index.index_options : {}
-              index index_fields, index_options unless index_fields.empty?
+          RecordSchema.model_fields.each do |name, index|
+            # Set the field
+            field name.to_sym, index.field_options if !!index.field_options
 
-              # Set the validation
-              validates name.to_sym, index.validation if !!index.validation
-            end
+            # Set the index
+            index_fields = !!index.index_fields ? index.index_fields : {}
+            index_options = !!index.index_options ? index.index_options : {}
+            index index_fields, index_options unless index_fields.empty?
+
+            # Set the validation
+            validates name.to_sym, index.validation if !!index.validation
           end
         end
       end

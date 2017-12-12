@@ -94,16 +94,12 @@ module SupplejackApi
 
     describe "#mongod_up?" do
       it "returns true when mongod is up and running" do
-        allow(Record).to receive_message_chain(:collection, :database, :session).and_return(session)
-        expect(session).to receive(:command).with(ping: 1).and_return({"ok" => 1})
-
         expect(controller.send(:mongod_up?)).to be_truthy
       end
 
       context "mongod is down" do
         before(:each) do
-          allow(Record).to receive_message_chain(:collection, :database, :session).and_return(session)
-          expect(session).to receive(:command).with(ping: 1).and_return(nil)
+          allow(Record).to receive_message_chain(:collection, :database, :client, :command, :ok?).and_return(false)
         end
 
         it "returns false" do

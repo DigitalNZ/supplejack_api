@@ -21,6 +21,7 @@ module SupplejackApi
     TIMEOUT = 10.seconds
 
     def show
+      expires_now
       both_ok = Timeout.timeout(TIMEOUT) do
         solr_ok = solr_up?
         mongo_ok = mongod_up?

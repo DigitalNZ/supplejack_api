@@ -26,6 +26,14 @@ module SupplejackApi
         expect(response.status).to eq 200
       end
 
+      it 'returns the correct cache headers' do
+        allow(controller).to receive(:solr_up?).and_return(true)
+        allow(controller).to receive(:mongod_up?).and_return(true)
+        get :show
+
+        expect(response.headers['Cache-Control']).to eq 'no-cache'
+      end
+
       it "returns a '500' HTTP response if Solr is down" do
         allow(controller).to receive(:solr_up?).and_return(false)
         allow(controller).to receive(:mongod_up?).and_return(true)

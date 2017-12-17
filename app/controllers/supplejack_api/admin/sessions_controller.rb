@@ -10,7 +10,7 @@
 module SupplejackApi
   module Admin
     class SessionsController < Devise::SessionsController
-      skip_before_action :verify_authenticity_token
+      protect_from_forgery with: :exception, prepend: true
       skip_before_action :authenticate_user!, raise: false
       protect_from_forgery prepend: true, with: :exception
       layout 'supplejack_api/application'

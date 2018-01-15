@@ -456,7 +456,7 @@ module SupplejackApi
         it 'does not allow nested :and :or queries' do
           @search.options[:and] = {name: 'John', or: {address: 'Wellington', and: {nz_citizen: 'true', email: 'john@test.com'}}}
           @search.options[:facets] = 'name'
-          expect{@search.execute_solr_search}.to raise_exception('exclude_filters_from_facets == true does not allow nested (:and, :or)')
+          expect{@search.execute_solr_search}.to raise_exception('exclude_filters_from_facets does not allow nested (:and, :or)')
         end
       end
     end

@@ -66,6 +66,8 @@ module SupplejackApi::Concerns::Searchable
 
     # rubocop:disable Metrics/MethodLength
     # rubocop:disable Metrics/AbcSize
+    # rubocop:disable Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/PerceivedComplexity
     # FIXME: Make this method smaller, it's triple the max method length
     def search_builder
       search_model = self
@@ -144,7 +146,7 @@ module SupplejackApi::Concerns::Searchable
         if options[:exclude_filters_from_facets] == 'true'
           or_and_options = {}.merge(options[:and]).merge(options[:or])
           or_and_options.each do |key, value|
-            raise Exception, 'exclude_filters_from_facets == true does not allow nested (:and, :or)' if [:or, :and].include? key
+            raise Exception, 'exclude_filters_from_facets does not allow nested (:and, :or)' if %i[or and].include? key
             facet(key.to_sym, exclude: with(key.to_sym, value))
           end
         end

@@ -9,7 +9,7 @@ require 'spec_helper'
 
 module SupplejackApi
   describe RecordSearch do
-  	before(:each) do
+    before(:each) do
       @search = RecordSearch.new
       Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session)
       @session = Sunspot.session
@@ -414,8 +414,51 @@ module SupplejackApi
         @search.execute_solr_search
         expect(@session).to have_search_params(:without, :source_id, 'DNZ')
       end
+
+      it 'defaults to exclude_filters_from_facets == false' do
+        @search.execute_solr_search
+        expect(@search.options[:exclude_filters_from_facets]).to be_falsey
+      end
+
+      context 'exclude_filters_from_facets == true' do
+        before do
+          @search.options[:exclude_filters_from_facets] = 'true'
+        end
+
+        it 'exclude filters from ORed facets' do
+          @search.options[:or] = {name: ['John', 'James'], address: ['123', '321']}
+          @search.options[:facets] = 'name, address'
+          @search.execute_solr_search
+
+          expect(@session).to have_search_params(:facet) {
+            name_filter = with(:name, ['John', 'James'])
+            facet(:name, :exclude => name_filter)
+
+            address_filter = with(:address, ['123', '321'])
+            facet(:address, :exclude => address_filter)
+          }
+        end
+
+        it 'exclude filters from ANDed facets' do
+          @search.options[:and] = {name: ['John', 'James'], address: ['123', '321']}
+          @search.options[:facets] = 'name, address'
+          @search.execute_solr_search
+
+          expect(@session).to have_search_params(:facet) {
+            name_filter = with(:name, ['John', 'James'])
+            facet(:name, :exclude => name_filter)
+
+            address_filter = with(:address, ['123', '321'])
+            facet(:address, :exclude => address_filter)
+          }
+        end
+
+        it 'does not allow nested :and :or queries' do
+          @search.options[:and] = {name: 'John', or: {address: 'Wellington', and: {nz_citizen: 'true', email: 'john@test.com'}}}
+          @search.options[:facets] = 'name'
+          expect{@search.execute_solr_search}.to raise_exception('exclude_filters_from_facets == true does not allow nested (:and, :or)')
+        end
+      end
     end
-
   end
-
 end

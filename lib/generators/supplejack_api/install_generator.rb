@@ -90,9 +90,9 @@ module SupplejackApi
 
       def add_assets
         puts "\nAdding assets "
-        insert_into_file "app/assets/javascripts/application.js", "//= require highcharts/highcharts\n", :after => "jquery_ujs\n"
-        insert_into_file "app/assets/javascripts/application.js", "//= require highcharts/highcharts-more\n", :after => "jquery_ujs\n"
-        insert_into_file "app/assets/javascripts/application.js", "//= require highcharts/highstock\n", :after => "jquery_ujs\n"
+        insert_into_file "app/assets/javascripts/application.js", "//= require highcharts/highcharts\n", :after => "rails-ujs\n"
+        insert_into_file "app/assets/javascripts/application.js", "//= require highcharts/highcharts-more\n", :after => "rails-ujs\n"
+        insert_into_file "app/assets/javascripts/application.js", "//= require highcharts/highstock\n", :after => "rails-ujs\n"
         insert_into_file "app/assets/stylesheets/application.css", "\n *= require supplejack_api/application", :after => "require_self"
       end
 

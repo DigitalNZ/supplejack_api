@@ -45,6 +45,7 @@ module SupplejackApi
         copy_file 'config/initializers/simple_form_foundation.rb'
         copy_file 'config/initializers/state_machine.rb'
         copy_file 'config/initializers/sunspot.rb'
+        copy_file 'config/initializers/supplejack_api.rb'
         copy_file 'config/initializers/mongoid.rb'
         copy_file 'config/initializers/interaction_updaters.rb'
         copy_file 'config/initializers/force_eagerload.rb'
@@ -121,6 +122,10 @@ module SupplejackApi
 
           puts string.join("\n")
         end
+      end
+
+      def finished
+        puts 'supplejack_api generator install is complete'
       end
     end
   end

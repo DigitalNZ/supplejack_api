@@ -1,4 +1,4 @@
 SupplejackApi.setup do |config|
-  config.record_class = ::Record
-  config.preview_record_class = ::PreviewRecord
+  config.record_class = SupplejackApi::Record
+  config.preview_record_class = SupplejackApi::PreviewRecord
 end

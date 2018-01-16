@@ -45,6 +45,7 @@ module SupplejackApi
         copy_file 'config/initializers/simple_form_foundation.rb'
         copy_file 'config/initializers/state_machine.rb'
         copy_file 'config/initializers/sunspot.rb'
+        copy_file 'config/initializers/supplejack_api.rb'
         copy_file 'config/initializers/mongoid.rb'
         copy_file 'config/initializers/interaction_updaters.rb'
         copy_file 'config/initializers/force_eagerload.rb'
@@ -56,11 +57,6 @@ module SupplejackApi
 
         copy_file 'config/environments/production.rb'
         gsub_file('config/environments/production.rb', 'Dummy::Application', Rails.application.class.to_s)
-      end
-
-      def solr_config_files
-        puts "\nInstalling Solr config files into solr/"
-        directory 'solr'
       end
 
       def mount_engine
@@ -75,27 +71,27 @@ module SupplejackApi
         inject_into_file('Gemfile', after: /^gem.*supplejack_api.*/) do
           string = [""]
           string << "gem 'sunspot_rails', '~> 2.2.0'"
-          string << "gem 'active_model_serializers', git: 'https://github.com/boost/active_model_serializers.git'"
-          string << "gem 'mongoid_auto_increment"
+          string << "gem 'active_model_serializers', '~> 0.10.7'"
+          string << "gem 'mongoid_auto_increment'"
 
-          string << "gem 'whenever', '~> 0.9'"
+          string << "gem 'whenever', '~> 0.10.0'"
 
           string.join("\n")
         end
       end
 
       def create_schema
-        puts "\nCreating Schemas in app/supplejack_api/"
-
+        puts "\nCreating Default Record Schemas in app/supplejack_api/"
         empty_directory 'app/supplejack_api'
-        copy_file 'app/supplejack_api/record_schema.rb'
+        copy_file 'app/supplejack_api/record_schema.txt','app/supplejack_api/record_schema.rb'
         copy_file 'app/supplejack_api/concept_schema.rb'
       end
 
       def add_assets
-        insert_into_file "app/assets/javascripts/application.js", "//= require highcharts/highcharts\n", :after => "jquery_ujs\n"
-        insert_into_file "app/assets/javascripts/application.js", "//= require highcharts/highcharts-more\n", :after => "jquery_ujs\n"
-        insert_into_file "app/assets/javascripts/application.js", "//= require highcharts/highstock\n", :after => "jquery_ujs\n"
+        puts "\nAdding assets "
+        insert_into_file "app/assets/javascripts/application.js", "//= require highcharts/highcharts\n", :after => "rails-ujs\n"
+        insert_into_file "app/assets/javascripts/application.js", "//= require highcharts/highcharts-more\n", :after => "rails-ujs\n"
+        insert_into_file "app/assets/javascripts/application.js", "//= require highcharts/highstock\n", :after => "rails-ujs\n"
         insert_into_file "app/assets/stylesheets/application.css", "\n *= require supplejack_api/application", :after => "require_self"
       end
 
@@ -120,6 +116,10 @@ module SupplejackApi
 
           puts string.join("\n")
         end
+      end
+
+      def finished
+        puts 'supplejack_api generator install is complete'
       end
     end
   end

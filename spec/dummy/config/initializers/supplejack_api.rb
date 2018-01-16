@@ -1,3 +1,4 @@
 SupplejackApi.setup do |config|
-  # Config avaialble at engine.rb
+  config.record_class = SupplejackApi::Record
+  config.preview_record_class = SupplejackApi::PreviewRecord
 end

@@ -16,7 +16,7 @@ module SupplejackApi
     respond_to :json, :xml
 
     def index
-      @search = SupplejackApi::RecordSearch.new(params)
+      @search = SupplejackApi::RecordSearch.new(all_params)
       @search.request_url = request.original_url
       @search.scope = current_user
 
@@ -102,6 +102,10 @@ module SupplejackApi
       # params which would otherwise not be nested).  It's easiest to convert them all to an unsafe
       # hash and work with them that way.
       params[:search]&.to_unsafe_h
+    end
+
+    def all_params
+      params.to_unsafe_h
     end
   end
 end

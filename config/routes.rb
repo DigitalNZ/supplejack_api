@@ -78,7 +78,7 @@ SupplejackApi::Engine.routes.draw do
     end
     resources :concepts, only: [:create, :update]
     resources :fragments, only: [:destroy]
-    resources :users
+    resources :users, only: [:index, :update]
 
     # Partners
     resources :partners, except: [:destroy] do

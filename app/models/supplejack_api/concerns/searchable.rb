@@ -33,6 +33,7 @@ module SupplejackApi::Concerns::Searchable
         facets_page: 1,
         sort: nil,
         direction: 'desc',
+        exclude_filters_from_facets: false,
         fields: 'default',
         facet_query: {},
         debug: nil
@@ -65,6 +66,8 @@ module SupplejackApi::Concerns::Searchable
 
     # rubocop:disable Metrics/MethodLength
     # rubocop:disable Metrics/AbcSize
+    # rubocop:disable Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/PerceivedComplexity
     # FIXME: Make this method smaller, it's triple the max method length
     def search_builder
       search_model = self
@@ -140,10 +143,18 @@ module SupplejackApi::Concerns::Searchable
           without(:source_id, source.source_id)
         end
 
+        if options[:exclude_filters_from_facets] == 'true'
+          or_and_options = {}.merge(options[:and]).merge(options[:or])
+          or_and_options.each do |key, value|
+            raise Exception, 'exclude_filters_from_facets does not allow nested (:and, :or)' if %i[or and].include? key
+            facet(key.to_sym, exclude: with(key.to_sym, value))
+          end
+        end
+
         paginate page: page, per_page: per_page
       end
 
-      @search_builder.build(&build_conditions)
+      @search_builder.build(&build_conditions) unless options[:exclude_filters_from_facets] == 'true'
 
       @search_builder
     end

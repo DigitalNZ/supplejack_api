@@ -31,4 +31,19 @@ RSpec.describe SupplejackApi::Harvester::UsersController do
       expect(response.status).to eq 403
     end
   end
+
+  describe '#update' do
+    let(:user) { users.first }
+
+    it 'can update the max request limit' do
+      patch :update, params: { id: user, api_key: harvester_api_key, user: { max_requests: 10 } }
+      user.reload
+      expect(user.max_requests).to eq 10
+    end
+
+    it 'requires an API key' do
+      patch :update, params: { id: user, api_key: developer_api_key, user: { max_requests: 10 } }
+      expect(response.status).to eq 403
+    end
+  end
 end

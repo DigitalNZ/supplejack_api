@@ -9,11 +9,22 @@ module SupplejackApi
       before_action :authenticate_harvester!
 
       def index
-        @users = User.sortable(
+        users = User.sortable(
           order: params[:order] || :daily_requests_desc, page: params[:page]
         )
 
-        render json: @users, each_serializer: UserSerializer, root: 'users', adapter: :json
+        render json: users, each_serializer: UserSerializer, root: 'users', adapter: :json
+      end
+
+      def update
+        user = User.find(params[:id])
+        user.update_attributes!(user_params)
+      end
+
+      private
+
+      def user_params
+        params.require(:user).permit(:max_requests)
       end
     end
   end

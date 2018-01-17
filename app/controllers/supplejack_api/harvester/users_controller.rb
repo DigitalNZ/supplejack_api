@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# This controller is used by the Manager to retrieve the user statistics.
+# This controller is used by the Manager to retrieve information for the admin content.
 
 module SupplejackApi
   module Harvester

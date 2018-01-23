@@ -10,12 +10,12 @@ development:
     default:
       database: supplejack_api_development
       hosts:
-        <%= ENV['MONGOID_HOSTS'].gsub(/\s+/, "").split(',') %>
+        - 127.0.0.1:27017
 
     strong:
       database: supplejack_api_development
       hosts:
-        <%= ENV['MONGOID_HOSTS'].gsub(/\s+/, "").split(',') %>
+        - 127.0.0.1:27017
 
 test:
   clients:

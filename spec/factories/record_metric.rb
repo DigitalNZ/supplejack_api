@@ -8,13 +8,7 @@
 module SupplejackApi
   FactoryBot.define do
     factory :record_metric, class: SupplejackApi::RecordMetric do
-      date                Date.today
       record_id            1
-      page_views           1
-      user_set_views       1
-      added_to_user_sets   1
-      source_clickthroughs 1
-      appeared_in_searches 1
     end
   end
 end

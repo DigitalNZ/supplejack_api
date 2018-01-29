@@ -14,5 +14,6 @@ module SupplejackApi
     field :appeared_in_searches, type: Integer, default: 0
 
     validates :record_id, presence: true
+    validates :record_id, uniqueness: { scope: :date }
   end
 end

@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 RSpec.describe SupplejackApi::RecordMetric do
-  let(:record_metric) { create(:record_metric) }
-
   describe '#attributes' do
+    let(:record_metric) { create(:record_metric) }
+
     it 'has a date' do
       expect(record_metric.date).to eq Date.today
     end
@@ -34,8 +34,24 @@ RSpec.describe SupplejackApi::RecordMetric do
   end
 
   describe '#validations' do
-    it 'prevents you from creating a RecordMetric that has the same record_id and date' do
+    let(:invalid) { build(:record_metric, record_id: nil) }
 
+    let!(:record_metric) { create(:record_metric) }
+    let(:record_metric_two) { build(:record_metric) }
+    let(:record_metric_three) { build(:record_metric, date: 1.day.from_now) }
+
+    it 'requires a record_id' do
+      invalid.valid?
+      expect(invalid.errors[:record_id]).to include 'Record field can\'t be blank.'
+    end
+
+    it 'does not create a record metric when one allready exists for given id and date' do
+      record_metric_two.valid?
+      expect(record_metric_two.errors[:record_id]).to include 'is already taken'
+    end
+
+    it 'allows record metrics with the same record id on different days' do
+      expect(record_metric_three).to be_valid
     end
   end
 end

@@ -24,6 +24,10 @@ RSpec.describe SupplejackApi::RecordMetric do
       expect(record_metric.content_partner).to eq ['NDHA']
     end
 
+    it 'has user_story_views' do
+      expect(record_metric.user_story_views).to eq 0
+    end
+
     it 'has adeed_to_user_sets' do
       expect(record_metric.added_to_user_sets).to eq 0
     end
@@ -34,6 +38,10 @@ RSpec.describe SupplejackApi::RecordMetric do
 
     it 'has appeared_in_searches' do
       expect(record_metric.appeared_in_searches).to eq 0
+    end
+
+    it 'has added_to_user_stories' do
+      expect(record_metric.added_to_user_stories).to eq 0
     end
   end
 

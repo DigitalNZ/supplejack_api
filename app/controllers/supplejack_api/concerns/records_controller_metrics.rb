@@ -22,7 +22,7 @@ module SupplejackApi
         end
 
         def log_record_view
-          return unless log_request_for_metrics?
+          return unless @record && log_request_for_metrics?
 
           SupplejackApi::InteractionModels::Record.create_find(@record)
 

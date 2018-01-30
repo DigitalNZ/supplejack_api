@@ -32,10 +32,20 @@ controller do
     @record = SupplejackApi::Record.first
     head :ok
   end
+
+  def source
+    @record = SupplejackApi::Record.first
+    head :ok
+  end
 end
 
   before do
     create_list(:record_with_fragment, 3)
+    routes.draw do
+      get 'source' => "anonymous#source"
+      get 'index' => 'anonymous#index'
+      get 'show' => 'anonymous#show'
+    end
   end
 
   describe 'GET#index' do
@@ -76,6 +86,19 @@ end
     it 'does not create an interaction model when ignore_metrics :true' do
       get :show, params: { id: 1, ignore_metrics: true }
       expect(SupplejackApi::InteractionModels::Record.count).to eq 0
+    end
+
+    it 'does not create a page_views SupplejackApi::RecordMetric when ignore_metrics is not set' do
+      get :show, params: { id: 1, ignore_metrics: true }
+      expect(SupplejackApi::RecordMetric.count).to eq 0
+    end
+  end
+
+  describe 'GET#source' do
+    it 'creates a source_clickthrough SupplejackApi::RecordMetric' do
+      get :source
+      expect(SupplejackApi::RecordMetric.count).to eq 1
+      expect(SupplejackApi::RecordMetric.first.source_clickthroughs).to eq 1
     end
   end
 end

@@ -9,6 +9,7 @@ module SupplejackApi
       included do
         after_action :log_search, only: :index
         after_action :log_record_view, only: :show
+        after_action :log_source_clickthrough, only: :source
 
         def log_search
           return unless @search.valid? && log_request_for_metrics?
@@ -26,6 +27,14 @@ module SupplejackApi
           SupplejackApi::InteractionModels::Record.create_find(@record)
 
           SupplejackApi::RecordMetric.spawn(@record.record_id, :page_views)
+        end
+
+        def log_source_clickthrough
+          return unless @record
+
+          SupplejackApi::InteractionModels::SourceClickthrough.create(facet: @record.display_collection)
+
+          SupplejackApi::RecordMetric.spawn(@record.record_id, :source_clickthroughs)
         end
       end
     end

@@ -14,6 +14,10 @@ module SupplejackApi
           return unless @user_set && log_request_for_metrics?
 
           SupplejackApi::InteractionModels::Record.create_user_set(@user_set)
+
+          @user_set.set_items.each do |record|
+            SupplejackApi::RecordMetric.spawn(record.record_id, :user_set_views)
+          end
         end
 
         def create_set_interaction
@@ -22,6 +26,10 @@ module SupplejackApi
 
           record = SupplejackApi.config.record_class.custom_find(@user_set.set_items.first.record_id)
           SupplejackApi::InteractionModels::Set.create(interaction_type: :creation, facet: record.display_collection)
+
+          @user_set.set_items.each do |record|
+            SupplejackApi::RecordMetric.spawn(record.record_id, :added_to_user_sets)
+          end
         end
       end
     end

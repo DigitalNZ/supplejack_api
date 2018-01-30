@@ -11,6 +11,10 @@ class DummySearch < BasicObject
     @results
   end
 
+  def records
+    @results
+  end
+
   def valid?
     true
   end
@@ -31,29 +35,29 @@ controller do
 end
 
   before do
-    create(:record_with_fragment)
+    create_list(:record_with_fragment, 3)
   end
 
   describe 'GET#index' do
-    # TODO: Delete
-    context 'Deprecated implementation' do
-      it 'creates an interation model when ignore_metrics is not set' do
-        get :index
-        expect(SupplejackApi::InteractionModels::Record.first.request_type).to eq "search"
-      end
-
-      it 'does not create an interaction model when ignore_metrics :true' do
-        get :index, params: { ignore_metrics: true }
-        expect(SupplejackApi::InteractionModels::Record.count).to eq 0
-      end
+    it 'creates an interation model when ignore_metrics is not set' do
+      get :index
+      expect(SupplejackApi::InteractionModels::Record.first.request_type).to eq "search"
     end
 
-    context 'RecordMetric implementation' do
-      it 'creates an appeared_in_searches RecordMetric for each @record in a @search when ignore_metrics is not set' do
-        get :index
+    it 'does not create an interaction model when ignore_metrics :true' do
+      get :index, params: { ignore_metrics: true }
+      expect(SupplejackApi::InteractionModels::Record.count).to eq 0
+    end
 
+    it 'creates an appeared_in_searches SupplejackApi::RecordMetric for each @record in a @search when ignore_metrics is not set' do
+      get :index
+      expect(SupplejackApi::RecordMetric.count).to eq SupplejackApi::Record.count
+      expect(SupplejackApi::RecordMetric.all.map(&:appeared_in_searches)).to eq [1, 1, 1]
+    end
 
-      end
+    it 'does not create an appeared_in_searches SupplejackApi::RecordMetric when ignore_metrics is set' do
+      get :index, params: { ignore_metrics: true }
+      expect(SupplejackApi::RecordMetric.count).to eq 0
     end
   end
 
@@ -61,6 +65,12 @@ end
     it 'creates an interaction model when ignore_metrics is not set' do
       get :show, params: { id: 1 }
       expect(SupplejackApi::InteractionModels::Record.first.request_type).to eq "get"
+    end
+
+    it 'creates a page_views SupplejackApi::RecordMetric when ignore_metrics is not set' do
+      get :show, params: { id: 1 }
+      expect(SupplejackApi::RecordMetric.count).to eq 1
+      expect(SupplejackApi::RecordMetric.last.page_views).to eq 1
     end
 
     it 'does not create an interaction model when ignore_metrics :true' do

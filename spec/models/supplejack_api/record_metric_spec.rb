@@ -2,7 +2,7 @@ require 'spec_helper'
 
 RSpec.describe SupplejackApi::RecordMetric do
   describe '#attributes' do
-    let(:record_metric) { create(:record_metric) }
+    let(:record_metric) { create(:record_metric, content_partner: ['NDHA']) }
 
     it 'has a date' do
       expect(record_metric.date).to eq Date.today
@@ -18,6 +18,10 @@ RSpec.describe SupplejackApi::RecordMetric do
 
     it 'has user_set_views' do
       expect(record_metric.user_set_views).to eq 0
+    end
+
+    it 'has a content_partner' do
+      expect(record_metric.content_partner).to eq ['NDHA']
     end
 
     it 'has adeed_to_user_sets' do
@@ -56,18 +60,18 @@ RSpec.describe SupplejackApi::RecordMetric do
   end
 
   describe '::spawn' do
-    let!(:record_metric) { create(:record_metric, record_id: 1, page_views: 1) }
+    let!(:record_metric) { create(:record_metric, record_id: 1, page_views: 1, content_partner: ['NDHA']) }
 
     it 'creates a new RecordMetric when there is not one for the provided day and record_id' do
-      expect { SupplejackApi::RecordMetric.spawn(2, :appeared_in_searches) }.to change(SupplejackApi::RecordMetric, :count).by(1)
+      expect { SupplejackApi::RecordMetric.spawn(2, :appeared_in_searches, ['NDHA']) }.to change(SupplejackApi::RecordMetric, :count).by(1)
     end
 
     it 'does not create a RecordMetric when the provided day and record_id allready exist' do
-      expect { SupplejackApi::RecordMetric.spawn(record_metric.record_id, :appeared_in_searches) }.to change(SupplejackApi::RecordMetric, :count).by(0)
+      expect { SupplejackApi::RecordMetric.spawn(record_metric.record_id, :appeared_in_searches, ['NDHA']) }.to change(SupplejackApi::RecordMetric, :count).by(0)
     end
 
     it 'increments an existing Record Metric' do
-      SupplejackApi::RecordMetric.spawn(record_metric.record_id, :page_views)
+      SupplejackApi::RecordMetric.spawn(record_metric.record_id, :page_views, ['NDHA'])
       record_metric.reload
       expect(record_metric.page_views).to eq 2
     end

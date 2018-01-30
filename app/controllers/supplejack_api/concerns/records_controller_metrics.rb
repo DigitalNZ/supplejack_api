@@ -16,7 +16,7 @@ module SupplejackApi
           SupplejackApi::InteractionModels::Record.create_search(@search)
 
           @search.records.each do |record|
-            RecordMetric.find_or_create_by(record_id: record.record_id, date: Time.zone.today).increment(:appeared_in_searches)
+            SupplejackApi::RecordMetric.spawn(record.record_id, :appeared_in_searches)
           end
         end
 
@@ -24,6 +24,8 @@ module SupplejackApi
           return unless log_request_for_metrics?
 
           SupplejackApi::InteractionModels::Record.create_find(@record)
+
+          SupplejackApi::RecordMetric.spawn(@record.record_id, :page_views)
         end
       end
     end

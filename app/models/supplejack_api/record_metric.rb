@@ -18,10 +18,8 @@ module SupplejackApi
     validates :record_id, presence: true
     validates :record_id, uniqueness: { scope: :date }
 
-    class << self
-      def spawn(record_id, metric, date = Time.zone.today)
-        RecordMetric.find_or_create_by(record_id: record_id, date: date).inc("#{metric}": 1)
-      end
+    def self.spawn(record_id, metric, date = Time.zone.today)
+      RecordMetric.find_or_create_by(record_id: record_id, date: date).inc("#{metric}": 1)
     end
   end
 end

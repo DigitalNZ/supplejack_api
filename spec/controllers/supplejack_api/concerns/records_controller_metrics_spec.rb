@@ -35,14 +35,25 @@ end
   end
 
   describe 'GET#index' do
-    it 'creates an interation model when ignore_metrics is not set' do
-      get :index
-      expect(SupplejackApi::InteractionModels::Record.first.request_type).to eq "search"
+    # TODO: Delete
+    context 'Deprecated implementation' do
+      it 'creates an interation model when ignore_metrics is not set' do
+        get :index
+        expect(SupplejackApi::InteractionModels::Record.first.request_type).to eq "search"
+      end
+
+      it 'does not create an interaction model when ignore_metrics :true' do
+        get :index, params: { ignore_metrics: true }
+        expect(SupplejackApi::InteractionModels::Record.count).to eq 0
+      end
     end
 
-    it 'does not create an interaction model when ignore_metrics :true' do
-      get :index, params: { ignore_metrics: true }
-      expect(SupplejackApi::InteractionModels::Record.count).to eq 0
+    context 'RecordMetric implementation' do
+      it 'creates an appeared_in_searches RecordMetric for each @record in a @search when ignore_metrics is not set' do
+        get :index
+
+
+      end
     end
   end
 

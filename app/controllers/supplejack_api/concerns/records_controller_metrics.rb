@@ -14,6 +14,10 @@ module SupplejackApi
           return unless @search.valid? && log_request_for_metrics?
 
           SupplejackApi::InteractionModels::Record.create_search(@search)
+
+          @search.records.each do |record|
+            RecordMetric.find_or_create_by(record_id: record.record_id, date: Time.zone.today).increment(:appeared_in_searches)
+          end
         end
 
         def log_record_view

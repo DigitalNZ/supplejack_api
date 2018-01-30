@@ -54,4 +54,22 @@ RSpec.describe SupplejackApi::RecordMetric do
       expect(record_metric_three).to be_valid
     end
   end
+
+  describe '::spawn' do
+    let!(:record_metric) { create(:record_metric, record_id: 1, page_views: 1) }
+
+    it 'creates a new RecordMetric when there is not one for the provided day and record_id' do
+      expect { SupplejackApi::RecordMetric.spawn(2, :appeared_in_searches) }.to change(SupplejackApi::RecordMetric, :count).by(1)
+    end
+
+    it 'does not create a RecordMetric when the provided day and record_id allready exist' do
+      expect { SupplejackApi::RecordMetric.spawn(record_metric.record_id, :appeared_in_searches) }.to change(SupplejackApi::RecordMetric, :count).by(0)
+    end
+
+    it 'increments an existing Record Metric' do
+      SupplejackApi::RecordMetric.spawn(record_metric.record_id, :page_views)
+      record_metric.reload
+      expect(record_metric.page_views).to eq 2
+    end
+  end
 end

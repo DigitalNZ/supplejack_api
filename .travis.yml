@@ -6,6 +6,8 @@ bundler_args: --without production
 sudo: false
 before_script:
   - cp spec/dummy/config/mongoid.travis.yml spec/dummy/config/mongoid.yml
+  - echo 'Pacific/Auckland' | sudo tee /etc/timezone
+  - sudo dpkg-reconfigure --frontend noninteractive tzdata
 script:
   - bundle exec rspec
   - bundle exec rubocop

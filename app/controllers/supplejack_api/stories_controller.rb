@@ -3,7 +3,7 @@
 module SupplejackApi
   class StoriesController < ApplicationController
     include Concerns::Stories
-    include Concerns::StoriesMetrics
+    include Concerns::StoriesControllerMetrics
 
     before_action :authenticate_admin!, only: [:admin_index]
     before_action :user_key_check!, except: %i[admin_index show]

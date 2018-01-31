@@ -3,7 +3,7 @@
 module SupplejackApi
   class StoryItemsController < ApplicationController
     include Concerns::Stories
-    include Concerns::StoriesMetrics
+    include Concerns::StoryItemsControllerMetrics
 
     before_action :user_key_check!, except: %i[create update destroy]
 

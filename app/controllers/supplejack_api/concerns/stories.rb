@@ -14,13 +14,13 @@ module SupplejackApi
         def render_response(endpoint)
           api = StoriesApi::V3::Api.new(params.dup, endpoint, request.method.downcase.to_sym)
 
-          api_response = api.errors ? api.errors : api.call
+          @api_response = api.errors ? api.errors : api.call
 
-          handle_errors(api_response)
+          handle_errors(@api_response)
           return if performed?
 
           # don't double render if we've already rendered an exception
-          render json: api_response[:payload].to_json(include_root: false), status: api_response[:status]
+          render json: @api_response[:payload].to_json(include_root: false), status: @api_response[:status]
         end
 
         # Renders error response for the controller action

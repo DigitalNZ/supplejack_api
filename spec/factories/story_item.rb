@@ -6,6 +6,7 @@ FactoryBot.define do
     sub_type 'heading'
     content {{value: 'foo', image_url: ('a'..'z').to_a.shuffle.join}}
     meta {{size: 1}}
+    sequence(:record_id)
 
     factory :heading_item do
       type 'text'

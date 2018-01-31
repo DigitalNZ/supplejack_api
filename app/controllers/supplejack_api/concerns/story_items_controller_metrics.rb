@@ -14,7 +14,9 @@ module SupplejackApi
 
           record = @api_response[:payload]
 
-          SupplejackApi::RecordMetric.spawn(record[:record_id], :added_to_user_stories, record[:content][:content_partner])
+          SupplejackApi::RecordMetric.spawn(record[:record_id],
+                                            :added_to_user_stories,
+                                            record[:content][:content_partner])
         end
       end
     end

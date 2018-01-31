@@ -30,7 +30,7 @@ module SupplejackApi
         end
 
         def log_source_clickthrough
-          return unless @record
+          return unless @record && log_request_for_metrics?
 
           SupplejackApi::InteractionModels::SourceClickthrough.create(facet: @record.display_collection)
 

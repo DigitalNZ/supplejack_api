@@ -14,7 +14,7 @@ module SupplejackApi
 
           record = @api_response[:payload]
 
-          next if record[:record_id].blank?
+          return if record[:record_id].blank?
 
           SupplejackApi::RecordMetric.spawn(record[:record_id],
                                             :added_to_user_stories,

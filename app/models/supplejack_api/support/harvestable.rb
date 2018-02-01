@@ -84,8 +84,10 @@ module SupplejackApi
           where(
             :'fragments.source_id' => source_id,
             :'fragments.job_id'.ne => job_id,
-            :status.in => %w[active supressed]
-          ).update_all(status: 'deleted', updated_at: Time.now, '$set': { 'fragments.$.job_id' => job_id })
+            :status.in => %w[active supressed],
+            'fragments.priority': 0
+          ).update_all(status: 'deleted', updated_at: Time.now,
+                       '$set': { 'fragments.$.job_id' => job_id })
 
           cursor = deleted.where('fragments.source_id': source_id)
           total = cursor.count

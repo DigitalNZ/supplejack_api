@@ -1,14 +1,14 @@
 require 'spec_helper'
 
 describe ApplicationController, type: :controller do
-controller do
-  include SupplejackApi::Concerns::StoriesControllerMetrics
+  controller do
+    include SupplejackApi::Concerns::StoriesControllerMetrics
 
-  def show
-    @api_response = { payload:  ::StoriesApi::V3::Presenters::Story.new.call(SupplejackApi::UserSet.first) }
-    head :ok
+    def show
+      @api_response = { payload:  ::StoriesApi::V3::Presenters::Story.new.call(SupplejackApi::UserSet.first) }
+      head :ok
+    end
   end
-end
 
   before do
     create(:story)

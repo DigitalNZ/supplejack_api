@@ -1,43 +1,42 @@
 require 'spec_helper'
 
 describe ApplicationController, type: :controller do
+  class DummySearch < BasicObject
+    def initialize(results)
+      @results = results
+    end
 
-class DummySearch < BasicObject
-  def initialize(results)
-    @results = results
+    def results
+      @results
+    end
+
+    def records
+      @results
+    end
+
+    def valid?
+      true
+    end
   end
 
-  def results
-    @results
-  end
+  controller do
+    include SupplejackApi::Concerns::RecordsControllerMetrics
 
-  def records
-    @results
-  end
+    def index
+      @search = DummySearch.new(SupplejackApi::Record.all.to_a)
+      head :ok
+    end
 
-  def valid?
-    true
-  end
-end
+    def show
+      @record = SupplejackApi::Record.first
+      head :ok
+    end
 
-controller do
-  include SupplejackApi::Concerns::RecordsControllerMetrics
-
-  def index
-    @search = DummySearch.new(SupplejackApi::Record.all.to_a)
-    head :ok
+    def source
+      @record = SupplejackApi::Record.first
+      head :ok
+    end
   end
-
-  def show
-    @record = SupplejackApi::Record.first
-    head :ok
-  end
-
-  def source
-    @record = SupplejackApi::Record.first
-    head :ok
-  end
-end
 
   before do
     create_list(:record_with_fragment, 3)

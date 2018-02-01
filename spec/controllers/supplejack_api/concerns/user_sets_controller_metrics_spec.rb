@@ -1,19 +1,19 @@
 require 'spec_helper'
 
 describe ApplicationController, type: :controller do
-controller do
-  include SupplejackApi::Concerns::UserSetsControllerMetrics
+  controller do
+    include SupplejackApi::Concerns::UserSetsControllerMetrics
 
-  def show
-    @user_set = SupplejackApi::UserSet.first
-    head :ok
-  end
+    def show
+      @user_set = SupplejackApi::UserSet.first
+      head :ok
+    end
 
-  def create
-    @user_set = SupplejackApi::UserSet.first
-    head :ok
+    def create
+      @user_set = SupplejackApi::UserSet.first
+      head :ok
+    end
   end
-end
 
   before do
     create(:user_set_with_set_item)

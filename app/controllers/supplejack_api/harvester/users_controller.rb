@@ -10,10 +10,10 @@ module SupplejackApi
 
       def index
         users = User.sortable(
-          order: params[:order] || :daily_requests_desc, page: params[:page]
+          order: params[:order] || :daily_requests_desc, page: params[:page], per_page: 10
         )
 
-        response.headers['X-total'] = User.all.count
+        response.headers['X-total'] = User.all.count.to_s
 
         render json: users, each_serializer: UserSerializer, root: 'users', adapter: :json
       end

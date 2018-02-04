@@ -30,6 +30,11 @@ RSpec.describe SupplejackApi::Harvester::UsersController do
       get :index, format: :json, params: { api_key: developer_api_key }
       expect(response.status).to eq 403
     end
+
+    it 'sets the response header X-total correctly' do
+      get :index, format: :json, params: { api_key: harvester_api_key }
+      expect(response.headers['X-total']).to eq SupplejackApi::User.all.count
+    end
   end
 
   describe '#update' do
@@ -44,6 +49,22 @@ RSpec.describe SupplejackApi::Harvester::UsersController do
     it 'requires an API key' do
       patch :update, params: { id: user, api_key: developer_api_key, user: { max_requests: 10 } }
       expect(response.status).to eq 403
+    end
+  end
+
+  describe '#show' do
+    let(:user) { users.first }
+
+    before do
+      get :show, params: { id: user.id, api_key: harvester_api_key }
+    end
+
+    it 'renders the user as JSON' do
+      expect(JSON.parse(response.body)).to eq SupplejackApi::Harvester::UserSerializer.new(user).as_json.as_json
+    end
+
+    it 'responds with a successful status code' do
+      expect(response.status).to eq 200
     end
   end
 end

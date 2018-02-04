@@ -13,7 +13,15 @@ module SupplejackApi
           order: params[:order] || :daily_requests_desc, page: params[:page]
         )
 
+        response.headers['X-total'] = User.all.count
+
         render json: users, each_serializer: UserSerializer, root: 'users', adapter: :json
+      end
+
+      def show
+        user = User.find(params[:id])
+
+        render json: user, serializer: UserSerializer
       end
 
       def update

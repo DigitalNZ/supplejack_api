@@ -20,7 +20,6 @@ SupplejackApi::Engine.routes.draw do
   # Admin level authentication
   namespace :admin do
     devise_for :users, class_name: 'SupplejackApi::User'
-    resources :users, only: [:index, :show, :edit, :update]
     resources :site_activities, only: [:index]
   end
 

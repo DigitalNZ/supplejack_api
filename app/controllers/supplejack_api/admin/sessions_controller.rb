@@ -16,7 +16,7 @@ module SupplejackApi
       layout 'supplejack_api/application'
 
       def after_sign_in_path_for(resource)
-        stored_location_for(resource) || admin_users_path
+        stored_location_for(resource) || admin_site_activities_path
       end
 
       def after_sign_out_path_for(_resource_or_scope)

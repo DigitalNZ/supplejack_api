@@ -17,7 +17,7 @@ RSpec.describe SupplejackApi::Harvester::UsersController do
 
     it 'renders the @users as JSON' do
       get :index, params: { api_key: harvester_api_key }, format: :json
-      u = SupplejackApi::User.sortable(order: :daily_requests_desc)
+      u = SupplejackApi::User.all
       expect(JSON.parse(response.body)['users']).to eq u.map { |x| SupplejackApi::Harvester::UserSerializer.new(x).as_json.as_json }
     end
 
@@ -29,11 +29,6 @@ RSpec.describe SupplejackApi::Harvester::UsersController do
     it 'requires an API key with harvester privilages' do
       get :index, format: :json, params: { api_key: developer_api_key }
       expect(response.status).to eq 403
-    end
-
-    it 'sets the response header X-total correctly' do
-      get :index, format: :json, params: { api_key: harvester_api_key }
-      expect(response.headers['X-total']).to eq SupplejackApi::User.all.count.to_s
     end
   end
 

@@ -33,7 +33,7 @@ RSpec.describe SupplejackApi::Harvester::UsersController do
 
     it 'sets the response header X-total correctly' do
       get :index, format: :json, params: { api_key: harvester_api_key }
-      expect(response.headers['X-total']).to eq SupplejackApi::User.all.count
+      expect(response.headers['X-total']).to eq SupplejackApi::User.all.count.to_s
     end
   end
 

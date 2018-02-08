@@ -18,7 +18,6 @@ module SupplejackApi
       @user_set = FactoryBot.create(:user_set_with_set_item)
       @set_item = @user_set.set_items.first
       allow(controller.current_user.user_sets).to receive(:custom_find) { @user_set }
-      allow(RecordSchema).to receive(:roles) { { developer: double(:developer) } }
     }
 
     describe "POST 'create'" do
@@ -39,13 +38,14 @@ module SupplejackApi
       context 'Set Interactions' do
         before do
           @user = FactoryBot.create(:user, authentication_token: "abc123", role: 'admin')
+          @empty_set = FactoryBot.create(:user_set)
           allow(controller).to receive(:current_user) { @user }
         end
 
         it "creates a new Set Interaction model to log the interaction" do
-          rec = create(:record_with_fragment, display_collection: 'test')
 
-          post :create, params: { user_set_id: @user_set.id, record: {record_id: rec.record_id} }
+          rec = create(:record_with_fragment, display_collection: 'test')
+          post :create, params: { user_set_id: @empty_set.id, record: { record_id: rec.record_id} }, format: :json
 
           expect(InteractionModels::Set.first).to be_present
           expect(InteractionModels::Set.first.facet).to eq('test')

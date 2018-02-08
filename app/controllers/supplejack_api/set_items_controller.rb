@@ -9,7 +9,7 @@
 
 module SupplejackApi
   class SetItemsController < ApplicationController
-    include SupplejackApi::Concerns::SetItemsControllerMetrics
+    include SupplejackApi::Concerns::UserSetsControllerMetrics
 
     before_action :find_user_set
 
@@ -40,7 +40,7 @@ module SupplejackApi
       params.require(:record).permit(:record_id).to_h.merge(type: 'embed',
                                                             sub_type: 'record',
                                                             content: { record_id: record_id },
-                                                            meta: { align_mode: 0 })
+                                                            meta: { align_mode: 0 }, )
     end
   end
 end

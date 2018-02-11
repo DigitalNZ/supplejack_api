@@ -1,8 +1,8 @@
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government, 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
 # and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details. 
-# 
-# Supplejack was created by DigitalNZ at the National Library of NZ and 
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
 # the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 require File.expand_path('../boot', __FILE__)
@@ -65,7 +65,7 @@ module Dummy
     # Enable the asset pipeline
     config.assets.enabled = true
 
-    config.time_zone = "Wellington"
+    config.time_zone = "Auckland"
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
@@ -73,4 +73,3 @@ module Dummy
     config.i18n.enforce_available_locales = true
   end
 end
-

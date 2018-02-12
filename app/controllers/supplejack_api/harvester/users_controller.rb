@@ -9,11 +9,13 @@ module SupplejackApi
       before_action :authenticate_harvester!
 
       def index
-        users = User.sortable(
-          order: params[:order] || :daily_requests_desc, page: params[:page]
-        )
+        render json: User.all, each_serializer: UserSerializer, root: 'users', adapter: :json
+      end
 
-        render json: users, each_serializer: UserSerializer, root: 'users', adapter: :json
+      def show
+        user = User.find(params[:id])
+
+        render json: user, serializer: UserSerializer
       end
 
       def update

@@ -18,7 +18,6 @@ module SupplejackApi
         @record = klass.find(params[:record_id])
         @record.create_or_update_fragment(fragment_params)
         @record.set_status(params[:required_fragments])
-        @record.fragments.map(&:save!)
         @record.save!
 
         render json: { status: :success, record_id: @record.record_id }

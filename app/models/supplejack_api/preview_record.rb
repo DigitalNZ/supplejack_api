@@ -18,7 +18,7 @@ module SupplejackApi
     store_in collection: 'preview_records'
 
     embeds_many :fragments, cascade_callbacks: true, class_name: 'SupplejackApi::ApiRecord::RecordFragment'
-    embeds_one :merged_fragment, class_name: 'SupplejackApi::ApiRecord::RecordFragment'
+    embeds_one :merged_fragment, cascade_callbacks: true, class_name: 'SupplejackApi::ApiRecord::RecordFragment'
 
     auto_increment :record_id, session: 'strong', collection: 'preview_sequences'
 

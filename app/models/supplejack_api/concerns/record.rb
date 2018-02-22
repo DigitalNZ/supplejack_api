@@ -9,7 +9,7 @@ module SupplejackApi::Concerns::Record
 
     # Associations
     embeds_many :fragments, cascade_callbacks: true, class_name: 'SupplejackApi::ApiRecord::RecordFragment'
-    embeds_one :merged_fragment, class_name: 'SupplejackApi::ApiRecord::RecordFragment'
+    embeds_one :merged_fragment, cascade_callbacks: true, class_name: 'SupplejackApi::ApiRecord::RecordFragment'
     has_and_belongs_to_many :concepts, class_name: 'SupplejackApi::Concept'
 
     # From storable

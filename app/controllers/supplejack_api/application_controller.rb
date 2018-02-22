@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-
-
 module SupplejackApi
   class ApplicationController < ActionController::Base
     before_action :authenticate_user!

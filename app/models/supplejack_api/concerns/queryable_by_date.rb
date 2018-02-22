@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-
-
 module SupplejackApi
   module Concerns
     # Contains convenience methods for querying documents by their day field

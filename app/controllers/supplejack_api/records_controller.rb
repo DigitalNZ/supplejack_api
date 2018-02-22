@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-
-
 module SupplejackApi
   class RecordsController < ApplicationController
     include SupplejackApi::Concerns::RecordsControllerMetrics

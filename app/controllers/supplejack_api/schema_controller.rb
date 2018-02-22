@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-
-
 module SupplejackApi
   class SchemaController < ApplicationController
     skip_before_action :authenticate_user!, raise: false

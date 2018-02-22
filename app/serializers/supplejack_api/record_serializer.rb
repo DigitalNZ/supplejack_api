@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-
-
 module SupplejackApi
   class RecordSerializer < ActiveModel::Serializer
     attribute :id

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-
-
 # TODO: Remove custom_search stuff to slim the class?
 # rubocop:disable Metrics/ClassLength
 module SupplejackApi

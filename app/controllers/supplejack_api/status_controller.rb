@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-
-
 module SupplejackApi
   # rubocop:disable Metrics/LineLength
   # FIXME: make log lines smaller

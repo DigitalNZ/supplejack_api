@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-
-
 # This model is a temporary store to log every request to index, show action for a Record
 # This data is used by interaction udpaters to create UsageMetric entries and deleted after
 module SupplejackApi

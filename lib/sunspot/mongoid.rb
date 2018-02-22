@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-
-
 require 'sunspot'
 require 'mongoid'
 require 'sunspot/rails'

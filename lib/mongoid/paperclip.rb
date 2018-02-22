@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-
-
 #
 # Save this into your `lib/mongoid/paperclip.rb` file
 #

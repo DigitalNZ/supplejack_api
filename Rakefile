@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-
-
 #!/usr/bin/env rake
 begin
   require 'bundler/setup'

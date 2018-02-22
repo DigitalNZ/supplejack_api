@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-
-
 module SupplejackApi
   class SearchSerializer < ActiveModel::Serializer
     attribute :result_count do

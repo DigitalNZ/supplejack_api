@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-
-
 module SupplejackApi
   class PreviewRecord
     # These records are used for previewing in squirrel, expire after 60 seconds

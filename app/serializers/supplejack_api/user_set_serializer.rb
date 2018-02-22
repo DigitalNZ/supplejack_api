@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-
-
 module SupplejackApi
   class UserSetSerializer < ActiveModel::Serializer
     attributes :id, :name, :count, :priority, :featured, :approved

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-
-
 module SupplejackApi
   class ConceptSerializer < ActiveModel::Serializer
     has_many :source_authorities

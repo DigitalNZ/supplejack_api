@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-
-
 module StoriesApi
   module V3
     # This Module is exclusively written

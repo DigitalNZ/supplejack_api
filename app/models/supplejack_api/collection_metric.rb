@@ -2,7 +2,7 @@
 
 module SupplejackApi
   # app/models/supplejack_api/collection_summary_metric.rb
-  class CollectionSummaryMetric
+  class CollectionMetric
     include Mongoid::Document
 
     field :d, as: :date,                           type: Date,    default: Time.zone.today
@@ -20,9 +20,9 @@ module SupplejackApi
 
     def self.spawn
       return unless SupplejackApi.config.log_metrics == true
-      collections = SupplejackApi::RecordMetric.all.flat_map(&:content_partner).uniq
+      collections = SupplejackApi::RecordMetric.all.flat_map(&:display_collection).uniq
 
-      collections.map do |collection|
+      collections.each do |collection|
         create(collection: collection)
       end
     end

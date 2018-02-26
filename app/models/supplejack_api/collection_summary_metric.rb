@@ -6,7 +6,7 @@ module SupplejackApi
     include Mongoid::Document
 
     field :d, as: :date,                           type: Date,    default: Time.zone.today
-    field :f, as: :facet,                          type: String
+    field :dc, as: :display_collection,            type: String
     field :s, as: :searches,                       type: Integer, default: 0
     field :rpv, as: :record_page_views,            type: Integer, default: 0
     field :usetv, as: :user_set_views,             type: Integer, default: 0
@@ -15,7 +15,16 @@ module SupplejackApi
     field :ratus, as: :records_added_to_user_sets, type: Integer, default: 0
     field :tsc, as: :total_source_clickthroughs,   type: Integer, default: 0
 
-    validates :facet, presence: true
-    validates :facet, uniqueness: { scope: :date }
+    validates :display_collection, presence: true
+    validates :display_collection, uniqueness: { scope: :date }
+
+    def self.spawn
+      return unless SupplejackApi.config.log_metrics == true
+      collections = SupplejackApi::RecordMetric.all.flat_map(&:content_partner).uniq
+
+      collections.map do |collection|
+        create(collection: collection)
+      end
+    end
   end
 end

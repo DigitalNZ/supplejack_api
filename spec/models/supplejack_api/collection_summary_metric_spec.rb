@@ -9,7 +9,7 @@ RSpec.describe SupplejackApi::CollectionSummaryMetric do
     end
 
     it 'has a facet' do
-      expect(collection_summary_metric.facet).to eq 'TAPHUI'
+      expect(collection_summary_metric.display_collection).to eq 'TAPHUI'
     end
 
     it 'has a searches count' do
@@ -42,7 +42,7 @@ RSpec.describe SupplejackApi::CollectionSummaryMetric do
   end
 
   describe '#validation' do
-    let(:collection_summary_metric_two) { build(:collection_summary_metric, facet: nil) }
+    let(:collection_summary_metric_two) { build(:collection_summary_metric, display_collection: nil) }
     let(:collection_summary_metric_three) { build(:collection_summary_metric) }
 
     before do
@@ -51,12 +51,12 @@ RSpec.describe SupplejackApi::CollectionSummaryMetric do
     end
 
     it 'requires a facet' do
-      expect(collection_summary_metric_two.errors.messages[:facet]).to include "Facet field can't be blank."
+      expect(collection_summary_metric_two.errors.messages[:display_collection]).to include "Display collection field can't be blank."
     end
 
 
     it 'cannot have two of the same facets on one day' do
-      expect(collection_summary_metric_three.errors.messages[:facet]).to include 'is already taken'
+      expect(collection_summary_metric_three.errors.messages[:display_collection]).to include 'is already taken'
     end
   end
 end

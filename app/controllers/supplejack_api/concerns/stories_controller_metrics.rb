@@ -13,7 +13,7 @@ module SupplejackApi
           return unless @api_response[:payload] && log_request_for_metrics?
 
           @api_response[:payload][:contents].each do |record|
-            SupplejackApi::RecordMetric.spawn(record[:record_id], :user_story_views, record[:content][:content_partner])
+            SupplejackApi::RecordMetric.spawn(record[:record_id], :user_story_views, record[:content][:display_collection])
           end
         end
       end

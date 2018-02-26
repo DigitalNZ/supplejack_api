@@ -8,7 +8,7 @@
 module SupplejackApi
   FactoryBot.define do
     factory :collection_summary_metric, class: SupplejackApi::CollectionSummaryMetric do
-      facet 'TAPHUI'
+      display_collection 'TAPHUI'
     end
   end
 end

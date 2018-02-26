@@ -18,7 +18,7 @@ module SupplejackApi
 
           SupplejackApi::RecordMetric.spawn(record[:record_id],
                                             :added_to_user_stories,
-                                            record[:content][:content_partner])
+                                            record[:content][:display_collection])
         end
       end
     end

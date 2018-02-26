@@ -42,8 +42,21 @@ RSpec.describe SupplejackApi::CollectionSummaryMetric do
   end
 
   describe '#validation' do
+    let(:collection_summary_metric_two) { build(:collection_summary_metric, facet: nil) }
+    let(:collection_summary_metric_three) { build(:collection_summary_metric) }
+
+    before do
+      collection_summary_metric_two.valid?
+      collection_summary_metric_three.valid?
+    end
+
+    it 'requires a facet' do
+      expect(collection_summary_metric_two.errors.messages[:facet]).to include "Facet field can't be blank."
+    end
+
+
     it 'cannot have two of the same facets on one day' do
-      expect(build(:collection_summary_metric)).not_to be_valid
+      expect(collection_summary_metric_three.errors.messages[:facet]).to include 'is already taken'
     end
   end
 end

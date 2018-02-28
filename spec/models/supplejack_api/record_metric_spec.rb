@@ -2,7 +2,7 @@ require 'spec_helper'
 
 RSpec.describe SupplejackApi::RecordMetric do
   describe '#attributes' do
-    let(:record_metric) { create(:record_metric, display_collection: 'NDHA') }
+    let(:record_metric) { create(:record_metric, display_collection: 'NDHA', record_id: 1) }
 
     it 'has a date' do
       expect(record_metric.date).to eq Time.zone.today
@@ -49,7 +49,7 @@ RSpec.describe SupplejackApi::RecordMetric do
     let(:invalid) { build(:record_metric, record_id: nil) }
 
     let!(:record_metric) { create(:record_metric) }
-    let(:record_metric_two) { build(:record_metric) }
+    let(:record_metric_two) { build(:record_metric, record_id: record_metric.record_id) }
     let(:record_metric_three) { build(:record_metric, date: 1.day.from_now) }
 
     it 'requires a record_id' do

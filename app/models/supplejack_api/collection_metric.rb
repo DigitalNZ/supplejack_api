@@ -37,7 +37,7 @@ module SupplejackApi
         collections = SupplejackApi::RecordMetric.where(date: date).map(&:display_collection).uniq
 
         collections.each do |collection|
-          find_or_create_by(date: date, display_collection: collection).update_attributes(
+          find_or_create_by(date: date, display_collection: collection).update_attributes!(
             searches: record_metric(date, collection).sum(:appeared_in_searches),
             record_page_views: record_metric(date, collection).sum(:page_views),
             user_set_views: record_metric(date, collection).sum(:user_set_views),

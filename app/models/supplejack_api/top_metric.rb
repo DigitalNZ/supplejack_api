@@ -1,5 +1,13 @@
 # frozen_string_literal: true
 
+##
+# The purpose of this metric is to store the top 200 records for page_views,
+# user_set_views, user_story_views, added_to_user_sets, source_clickthroughs,
+# appeared_in_searches, added_to_user_sets for each day.
+#
+# The results are stored as a hash of record_id => metric count
+#
+
 module SupplejackApi
   # app/models/supplejack_api/top_metric.rb
   class TopMetric
@@ -33,7 +41,7 @@ module SupplejackApi
             hash[record.record_id] = record.send(metric)
           end
 
-          create(
+          create!(
             date: date,
             metric: metric,
             results: results
@@ -43,7 +51,7 @@ module SupplejackApi
     end
 
     def self.results(date, metric)
-      SupplejackApi::RecordMetric.where(date: date).limit(200).sort_by(&metric).reverse
+      SupplejackApi::RecordMetric.where(date: date).order_by(metric => 'desc').limit(200)
     end
   end
 end

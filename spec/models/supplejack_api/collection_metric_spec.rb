@@ -94,5 +94,21 @@ RSpec.describe SupplejackApi::CollectionMetric do
       expect(tomorrows_collection_metric.records_added_to_user_sets).to eq 70
       expect(tomorrows_collection_metric.records_added_to_user_stories).to eq 85
     end
+
+    it 'updates CollectionMetric models if they already exist' do
+      create_list(:record_metric, 5, page_views: 7, user_set_views: 8, display_collection: 'TAPUHI', user_story_views: 9, added_to_user_sets: 10, source_clickthroughs: 11, appeared_in_searches: 12, added_to_user_stories: 13)
+
+      SupplejackApi::CollectionMetric.spawn
+
+      more_collection_metric = SupplejackApi::CollectionMetric.find_by(date: Time.zone.today)
+
+      expect(more_collection_metric.searches).to eq 105
+      expect(more_collection_metric.record_page_views).to eq 55
+      expect(more_collection_metric.user_set_views).to eq 65
+      expect(more_collection_metric.user_story_views).to eq 75
+      expect(more_collection_metric.records_added_to_user_sets).to eq 85
+      expect(more_collection_metric.records_added_to_user_stories).to eq 115
+      expect(more_collection_metric.total_source_clickthroughs).to eq 95
+    end
   end
 end

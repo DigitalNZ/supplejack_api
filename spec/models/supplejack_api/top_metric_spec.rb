@@ -39,8 +39,7 @@ RSpec.describe SupplejackApi::TopMetric do
     end
 
     it 'orders the results from highest to lowest' do
-      binding.pry
-      expect(SupplejackApi::TopMetric.find_by(date: Time.zone.today, metric: 'page_views').results.values.first).to eq 1
+      expect(SupplejackApi::TopMetric.find_by(date: Time.zone.today, metric: 'appeared_in_searches').results.values.first).to eq 3
     end
 
     it 'spawns metrics across multiple days' do

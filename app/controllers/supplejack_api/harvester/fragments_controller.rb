@@ -19,6 +19,14 @@ module SupplejackApi
         @record.create_or_update_fragment(fragment_params)
         @record.set_status(params[:required_fragments])
         @record.fragments.map(&:save!)
+
+        @record.save!
+
+        # TODO: This is a fix for merged fragments dropping their relationship fields
+        # eg attachments. There is most likely a deeper problem with how merged_fragments
+        # are built, or how Mongo relationships cascade after they have been saved.
+        # DO NOT REMOVE unless you understand this issue and have fixed it.
+
         @record.save!
 
         render json: { status: :success, record_id: @record.record_id }

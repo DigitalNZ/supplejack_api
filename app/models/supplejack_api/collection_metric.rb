@@ -20,8 +20,13 @@ module SupplejackApi
     validates :display_collection, presence: true
     validates :display_collection, uniqueness: { scope: :date }
 
-    def total_views
-      searches + record_page_views + user_set_views + user_story_views
+    before_save do |collection|
+      self.total_views = (
+        collection.searches +
+        collection.record_page_views +
+        collection.user_set_views +
+        collection.user_story_views
+      )
     end
 
     def self.spawn

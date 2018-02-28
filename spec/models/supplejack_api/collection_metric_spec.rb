@@ -3,7 +3,7 @@
 RSpec.describe SupplejackApi::CollectionMetric do
 
   describe '#attributes' do
-    let!(:collection_metric) { create(:collection_metric) }
+    let!(:collection_metric) { create(:collection_metric, searches: 2, record_page_views: 10, user_set_views: 6, user_story_views: 11 ) }
 
     it 'has a date' do
       expect(collection_metric.date).to eq Time.zone.today
@@ -14,23 +14,23 @@ RSpec.describe SupplejackApi::CollectionMetric do
     end
 
     it 'has a searches count' do
-      expect(collection_metric.searches).to eq 0
+      expect(collection_metric.searches).to eq 2
     end
 
     it 'has a record_page_views count' do
-      expect(collection_metric.record_page_views).to eq 0
+      expect(collection_metric.record_page_views).to eq 10
     end
 
     it 'has a user_set_views count' do
-      expect(collection_metric.user_set_views).to eq 0
+      expect(collection_metric.user_set_views).to eq 6
     end
 
     it 'has a user_story_views count' do
-      expect(collection_metric.user_story_views).to eq 0
+      expect(collection_metric.user_story_views).to eq 11
     end
 
     it 'has a total_views count' do
-      expect(collection_metric.total_views).to eq 0
+      expect(collection_metric.total_views).to eq 29
     end
 
     it 'has a records_added_to_user_sets count' do
@@ -70,7 +70,6 @@ RSpec.describe SupplejackApi::CollectionMetric do
     before do
       SupplejackApi::CollectionMetric.spawn
     end
-
 
     it 'generates per day collection metrics' do
       todays_collection_metric = SupplejackApi::CollectionMetric.find_by(date: Time.zone.today)

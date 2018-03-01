@@ -185,13 +185,16 @@ module SupplejackApi
       end
 
       describe 'GET index' do
-        let(:record) { FactoryBot.create(:record_with_fragment) }
+        let!(:record) { FactoryBot.create_list(:record_with_fragment, 101) }
 
-        # record receives where, with arguments from params
-        # returns all records and their fragment data
         it 'returns array of records based on search params' do
           expect(Record).to receive(:where).with({'fragments.job_id': '54'})
           get :index, params: { search:  { 'fragments.job_id': '54' }, api_key: api_key }
+        end
+
+        it 'only returns 100 results' do
+          get :index, params: { search:  { 'fragments.job_id': '54' }, api_key: api_key }
+          expect(assigns(:records).count).to eq 100
         end
       end
     end

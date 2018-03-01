@@ -84,10 +84,24 @@ module SupplejackApi
         end
       end
 
+      def index
+        @records = SupplejackApi.config.record_class.where(search_params)
+
+        if @records.present?
+          render json: @records.to_json
+        else
+          head :no_content
+        end
+      end
+
       private
 
       def record_params
         params.require(:record).to_unsafe_h
+      end
+
+      def search_params
+        params.require(:search).to_unsafe_h
       end
     end
   end

@@ -60,6 +60,7 @@ module SupplejackApi
       thumbnail_url    'http://my-website-that-hosts-images/small-image.png'
       landing_url      'http://my-website'
       subject         []
+      job_id          '54'
     end
   end
 end

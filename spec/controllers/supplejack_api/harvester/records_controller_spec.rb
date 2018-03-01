@@ -196,6 +196,16 @@ module SupplejackApi
           get :index, params: { search:  { 'fragments.job_id': '54' }, api_key: api_key }
           expect(assigns(:records).count).to eq 100
         end
+
+        it 'responds with a json object of record ids and the fragments fragments' do
+          get :index, params: { search:  { 'fragments.job_id': '54' }, api_key: api_key }
+          records = JSON.parse(response.body)
+
+          records.each do |rec|
+            expect(rec).to have_key 'id'
+            expect(rec).to have_key 'fragments'
+          end
+        end
       end
     end
 

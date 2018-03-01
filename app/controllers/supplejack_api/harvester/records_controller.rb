@@ -88,7 +88,7 @@ module SupplejackApi
         @records = SupplejackApi.config.record_class.where(search_params).to_a.first(100)
 
         if @records.present?
-          render json: @records.to_json
+          render json: @records, each_serializer: RecordSerializer
         else
           head :no_content
         end

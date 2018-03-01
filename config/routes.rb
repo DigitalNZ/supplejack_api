@@ -62,7 +62,7 @@ SupplejackApi::Engine.routes.draw do
 
   # Harvester
   namespace :harvester do
-    resources :records, only: [:create, :update, :show] do
+    resources :records, only: [:create, :update, :show, :index] do
       # TODO: Add record parameter constraint for update and create
       collection do
         post :flush

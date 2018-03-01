@@ -1,5 +1,3 @@
-
-
 require "spec_helper"
 
 module SupplejackApi
@@ -183,6 +181,17 @@ module SupplejackApi
         it "updates the status of the record" do
           expect(record).to receive(:update_attribute).with(:status, 'supressed')
           put :update, params: { id: 123, record: { status: 'supressed' }, api_key: api_key}, format: :json
+        end
+      end
+
+      describe 'GET index' do
+        let(:record) { FactoryBot.create(:record_with_fragment) }
+
+        # record receives where, with arguments from params
+        # returns all records and their fragment data
+        it 'returns array of records based on search params' do
+          expect(Record).to receive(:where).with({'fragments.job_id': '54'})
+          get :index, params: { search:  { 'fragments.job_id': '54' }, api_key: api_key }
         end
       end
     end

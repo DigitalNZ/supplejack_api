@@ -85,7 +85,7 @@ module SupplejackApi
       end
 
       def index
-        @records = SupplejackApi.config.record_class.where(search_params)
+        @records = SupplejackApi.config.record_class.where(search_params).to_a.first(100)
 
         if @records.present?
           render json: @records.to_json

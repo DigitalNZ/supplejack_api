@@ -17,7 +17,7 @@ module SupplejackApi
           SupplejackApi::InteractionModels::Record.create_search(@search)
 
           @search.records.each do |record|
-            SupplejackApi::RecordMetric.spawn(record.record_id, :appeared_in_searches, record.content_partner)
+            SupplejackApi::RecordMetric.spawn(record.record_id, :appeared_in_searches, record.display_collection)
           end
         end
 
@@ -26,7 +26,7 @@ module SupplejackApi
 
           SupplejackApi::InteractionModels::Record.create_find(@record)
 
-          SupplejackApi::RecordMetric.spawn(@record.record_id, :page_views, @record.content_partner)
+          SupplejackApi::RecordMetric.spawn(@record.record_id, :page_views, @record.display_collection)
         end
 
         def log_source_clickthrough
@@ -34,7 +34,7 @@ module SupplejackApi
 
           SupplejackApi::InteractionModels::SourceClickthrough.create(facet: @record.display_collection)
 
-          SupplejackApi::RecordMetric.spawn(@record.record_id, :source_clickthroughs, @record.content_partner)
+          SupplejackApi::RecordMetric.spawn(@record.record_id, :source_clickthroughs, @record.display_collection)
         end
       end
     end

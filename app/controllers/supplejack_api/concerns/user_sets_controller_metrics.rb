@@ -24,7 +24,7 @@ module SupplejackApi
               next
             end
 
-            SupplejackApi::RecordMetric.spawn(record.record_id, :user_set_views, record.content_partner)
+            SupplejackApi::RecordMetric.spawn(record.record_id, :user_set_views, record.display_collection)
           end
         end
 
@@ -43,7 +43,7 @@ module SupplejackApi
           @user_set.set_items.each do |item|
             next if item.record_id.nil?
             record = SupplejackApi.config.record_class.custom_find(item.record_id)
-            SupplejackApi::RecordMetric.spawn(record.record_id, :added_to_user_sets, record.content_partner)
+            SupplejackApi::RecordMetric.spawn(record.record_id, :added_to_user_sets, record.display_collection)
           end
         end
       end

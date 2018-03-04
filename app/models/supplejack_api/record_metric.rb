@@ -9,7 +9,7 @@ module SupplejackApi
     field :record_id,             type: Integer
     field :page_views,            type: Integer, default: 0
     field :user_set_views,        type: Integer, default: 0
-    field :content_partner,       type: Array
+    field :display_collection,    type: String
     field :user_story_views,      type: Integer, default: 0
     field :added_to_user_sets,    type: Integer, default: 0
     field :source_clickthroughs,  type: Integer, default: 0
@@ -21,9 +21,9 @@ module SupplejackApi
 
     index({ date: 1, content_partner: 1, record_id: 1 }, background: true)
 
-    def self.spawn(record_id, metric, content_partner, date = Time.zone.today)
+    def self.spawn(record_id, metric, display_collection, date = Time.zone.today)
       return unless SupplejackApi.config.log_metrics == true
-      find_or_create_by(record_id: record_id, date: date, content_partner: content_partner).inc("#{metric}": 1)
+      find_or_create_by(record_id: record_id, date: date, display_collection: display_collection).inc("#{metric}": 1)
     end
   end
 end

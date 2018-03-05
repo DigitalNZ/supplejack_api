@@ -10,7 +10,7 @@ module SupplejackApi
         @records = SupplejackApi.config.preview_record_class.where(search_params).to_a.first(100)
 
         if @records.present?
-          render json: @records, each_serializer: SupplejackApi::Harvester::RecordSerializer
+          render json: @records, each_serializer: ::SupplejackApi::PreviewRecordSerializer, include: :fragments
         else
           head :no_content
         end

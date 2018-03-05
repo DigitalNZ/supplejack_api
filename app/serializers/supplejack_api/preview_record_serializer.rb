@@ -2,7 +2,7 @@
 
 module SupplejackApi
   class PreviewRecordSerializer < ActiveModel::Serializer
-    def attributes(*args)
+    def attributes(*_)
       object.attributes.symbolize_keys
     end
   end

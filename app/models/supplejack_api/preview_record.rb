@@ -12,7 +12,6 @@ module SupplejackApi
 
     embeds_many :fragments, cascade_callbacks: true, class_name: 'SupplejackApi::ApiRecord::RecordFragment'
     embeds_one :merged_fragment, cascade_callbacks: true, class_name: 'SupplejackApi::ApiRecord::RecordFragment'
-    has_and_belongs_to_many :concepts, class_name: 'SupplejackApi::Concept'
 
     auto_increment :record_id, session: 'strong', collection: 'preview_sequences'
 

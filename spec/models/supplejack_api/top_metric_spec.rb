@@ -45,5 +45,18 @@ RSpec.describe SupplejackApi::TopMetric do
     it 'spawns metrics across multiple days' do
       expect(SupplejackApi::TopMetric.find_by(date: Time.zone.yesterday, metric: 'page_views').results.keys.count).to eq 5
     end
+
+    it 'appends new top metrics that creep in after the initial run' do
+      SupplejackApi::RecordMetric.destroy_all
+
+      create(:record_metric, appeared_in_searches: 1, date: Time.zone.today, record_id: metric_three.record_id)
+      create(:record_metric, appeared_in_searches: 1, date: Time.zone.today)
+
+      SupplejackApi::TopMetric.spawn
+
+      expect(SupplejackApi::TopMetric.find_by(date: Time.zone.today, metric: 'appeared_in_searches').results.values.first).to eq 4
+      expect(SupplejackApi::TopMetric.find_by(date: Time.zone.today, metric: 'appeared_in_searches'))
+      expect(SupplejackApi::TopMetric.find_by(date: Time.zone.today, metric: 'appeared_in_searches').results.keys.count).to eq 200
+    end
   end
 end

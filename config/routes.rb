@@ -70,6 +70,9 @@ SupplejackApi::Engine.routes.draw do
       end
       resources :fragments, only: [:create]
     end
+
+    get 'preview_records', to: 'preview_records#index'
+
     resources :concepts, only: [:create, :update]
     resources :fragments, only: [:destroy]
     resources :users, only: [:index, :show, :update]

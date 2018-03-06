@@ -38,14 +38,22 @@ module SupplejackApi
       dates.each do |date|
         METRICS.each do |metric|
           results = results(date, metric).each_with_object({}) do |record, hash|
-            hash[record.record_id] = record.send(metric)
+            hash[record.record_id.to_s] = record.send(metric)
           end
 
-          create!(
+          metric = find_or_create_by(
             date: date,
-            metric: metric,
-            results: results
+            metric: metric
           )
+
+          if metric.results.blank?
+            metric.update_attributes(results: results)
+          else
+            merged_results = metric.results.merge(results) { |_key, a, b| a + b }
+            merged_results = merged_results.sort_by { |_k, v| -v }.first(200).to_h
+
+            metric.update_attributes(results: merged_results)
+          end
         end
       end
     end

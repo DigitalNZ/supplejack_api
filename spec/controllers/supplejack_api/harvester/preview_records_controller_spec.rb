@@ -22,7 +22,7 @@ module SupplejackApi
           get :index, params: { search:  { 'fragments.job_id': '54' }, api_key: api_key }
           records = JSON.parse(response.body)
           records.each do |rec|
-            expect(rec).to have_key '_id'
+            expect(rec).to have_key 'id'
             expect(rec).to have_key 'fragments'
           end
         end

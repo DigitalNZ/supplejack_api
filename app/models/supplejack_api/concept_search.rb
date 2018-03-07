@@ -4,7 +4,7 @@ module SupplejackApi
   class ConceptSearch < Search
     def initialize(options = {})
       @options = options.dup
-      @options.merge!(
+      @options.reverse_merge!(
         and: {},
         or: {},
         without: {},

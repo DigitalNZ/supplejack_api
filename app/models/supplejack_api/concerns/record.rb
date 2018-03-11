@@ -55,7 +55,7 @@ module SupplejackApi::Concerns::Record
       search = ::SupplejackApi::RecordSearch.new(options)
       search.scope = scope
 
-      return nil unless search.valid?
+      return nil if search.invalid? || search.hits.nil?
 
       # Find the index in the array for the current record
       record_index = search.hits.find_index { |i| i.primary_key == id.to_s }

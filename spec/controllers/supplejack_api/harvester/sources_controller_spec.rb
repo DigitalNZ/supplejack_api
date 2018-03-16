@@ -67,6 +67,23 @@ module SupplejackApi
           expect(response.body).to include Source.all.to_json
         end
 
+        context 'limit and order sources' do
+          before do
+            FactoryBot.create_list(:source, 11, status: 'active', status_updated_at: Faker::Date.between(2.days.ago, Date.today))
+            FactoryBot.create_list(:source, 5, status: 'suppressed')
+          end
+
+          it 'returns sources ordered and limitted by limit:' do
+            get :index, params: { source: { status: 'active' }, limit: 10, order_by: 'status_updated_at', api_key: api_key}
+            expect(JSON.parse(response.body).count).to be 10
+          end
+
+          it 'returns ordered sources' do
+            get :index, params: { source: { status: 'active' }, limit: 10, order_by: 'status_updated_at', api_key: api_key}
+            expect(response.body).to eq Source.where(status: 'active').order_by(status_updated_at: 'desc').limit(10).to_json
+          end
+        end
+
         context 'search' do
 
           let(:suppressed_source) { FactoryBot.build(:source)  }
@@ -81,14 +98,19 @@ module SupplejackApi
       describe 'PUT update' do
         let(:source) { FactoryBot.create(:source) }
 
-        it 'finds and update source' do
-          put :update, params: { id: source.id, source: {status: "suppressed"}, api_key: api_key}
+        it 'finds and update source with status, status_updated_at and status_updated_by' do
+          Timecop.freeze # check if Time.now was assigned to status_updated_at
+          put :update, params: { id: source.id, source: {status: 'suppressed', status_updated_by: 'A user name'}, api_key: api_key}
           expect(assigns(:source).status).to eq 'suppressed'
+          expect(assigns(:source).status_updated_by).to eq 'A user name'
+          expect(assigns(:source).status_updated_at).to eq Time.now
         end
 
         it 'returns the source' do
-          put :update, params: {id: source.id, source: {status: "suppressed"}, api_key: api_key}
-          expect(response.body).to include 'suppressed'
+          put :update, params: {id: source.id, source: {status: 'suppressed', status_updated_by: 'A user name'}, api_key: api_key}
+          expect(response.body).to include 'status'
+          expect(response.body).to include 'status_updated_at'
+          expect(response.body).to include 'status_updated_by'
         end
       end
 

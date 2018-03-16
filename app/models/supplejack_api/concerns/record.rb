@@ -48,6 +48,8 @@ module SupplejackApi::Concerns::Record
 
     # rubocop:disable Metrics/MethodLength
     # rubocop:disable Metrics/AbcSize
+    # rubocop:disable Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/PerceivedComplexity
     # FIXME: make me smaller!
     def find_next_and_previous_records(scope, options = {})
       return unless options.try(:any?)
@@ -55,7 +57,7 @@ module SupplejackApi::Concerns::Record
       search = ::SupplejackApi::RecordSearch.new(options)
       search.scope = scope
 
-      return nil unless search.valid?
+      return nil unless search.valid? && !search.hits.nil?
 
       # Find the index in the array for the current record
       record_index = search.hits.find_index { |i| i.primary_key == id.to_s }

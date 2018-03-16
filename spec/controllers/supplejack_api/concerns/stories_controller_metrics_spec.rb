@@ -19,6 +19,7 @@ describe ApplicationController, type: :controller do
       expect(SupplejackApi::RequestMetric.count).to eq 1
       expect(SupplejackApi::RequestMetric.first.records.map { |x| x[:record_id] }).to eq story.set_items.map(&:record_id)
       expect(SupplejackApi::RequestMetric.first.records.map { |x| x[:display_collection] }).to eq story.set_items.map { |x| x[:content][:display_collection] }
+      expect(SupplejackApi::RequestMetric.first.metric).to eq 'user_story_views'
     end
   end
 end

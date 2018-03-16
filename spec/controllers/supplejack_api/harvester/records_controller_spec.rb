@@ -1,5 +1,3 @@
-
-
 require "spec_helper"
 
 module SupplejackApi
@@ -183,6 +181,47 @@ module SupplejackApi
         it "updates the status of the record" do
           expect(record).to receive(:update_attribute).with(:status, 'supressed')
           put :update, params: { id: 123, record: { status: 'supressed' }, api_key: api_key}, format: :json
+        end
+      end
+
+      describe 'GET index' do
+        let!(:records) { FactoryBot.create_list(:record_with_fragment, 25) }
+        let(:where_params) { ActionController::Parameters.new('fragments.job_id': records.first.job_id).permit! }
+
+        it 'returns object with records based on search params' do
+          expect(Record).to receive(:where).with(where_params).and_call_original
+          get :index, params: { search: { 'fragments.job_id': records.first.job_id }, search_options: { page: 1 }, api_key: api_key }
+        end
+
+        it 'requires at least one of the allowed search params' do
+          get :index, params: { search: { 'fragments.hello': records.first.job_id }, search_options: { page: 1 }, api_key: api_key }
+          expect(response.status).to be 400
+        end
+
+        it 'returns records 20 per page' do
+          get :index, params: { search: { 'fragments.job_id': records.first.job_id }, search_options: { page: 1 }, api_key: api_key }
+          expect(JSON.parse(response.body)['supplejack_api/records'].count).to eq 20
+        end
+
+        it 'returns the first record in the first page' do
+          get :index, params: { search: { 'fragments.job_id': records.first.job_id }, search_options: { page: 1 }, api_key: api_key }
+          expect(JSON.parse(response.body)['supplejack_api/records'].map { |r| r['id'] }).to include records.first.id
+        end
+
+        it 'does not return the first record in the second page' do
+          get :index, params: { search: { 'fragments.job_id': records.first.job_id }, search_options: { page: 2 }, api_key: api_key }
+          expect(JSON.parse(response.body)['supplejack_api/records'].map { |r| r['id'] }).not_to include records.first.id
+        end
+
+        it 'responds with a json object of record ids and the fragments fragments' do
+          get :index, params: { search: { 'fragments.job_id': records.first.job_id }, search_options: { page: 1 }, api_key: api_key }
+          res = JSON.parse(response.body)
+
+          expect(res.keys).to include 'supplejack_api/records'
+          expect(res.keys).to include 'meta'
+
+          expect(res['meta']['page']).to be 1
+          expect(res['meta']['total_pages']).to be 2
         end
       end
     end

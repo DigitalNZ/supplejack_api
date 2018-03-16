@@ -13,7 +13,7 @@ describe ApplicationController, type: :controller do
   let!(:story) { create(:story) }
 
   describe 'GET#show' do
-    it 'creates a user_story_views SupplejackApi::RecordMetric' do
+    it 'creates a user_story_views SupplejackApi::RequestMetric' do
       get :show, params: { id: 1 }
 
       expect(SupplejackApi::RequestMetric.count).to eq 1

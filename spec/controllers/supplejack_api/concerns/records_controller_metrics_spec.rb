@@ -58,7 +58,7 @@ describe ApplicationController, type: :controller do
       expect(SupplejackApi::InteractionModels::Record.count).to eq 0
     end
 
-    it 'creates an appeared_in_searches SupplejackApi::RecordMetric for each @record in a @search when ignore_metrics is not set' do
+    it 'creates an appeared_in_searches SupplejackApi::RequestMetric for each @record in a @search when ignore_metrics is not set' do
       get :index
       expect(SupplejackApi::RequestMetric.count).to eq 1
       expect(SupplejackApi::RequestMetric.first.metric).to eq 'appeared_in_searches'
@@ -67,7 +67,7 @@ describe ApplicationController, type: :controller do
       expect(SupplejackApi::RequestMetric.first.records.map { |x| x['display_collection'] }).to eq SupplejackApi::Record.all.map(&:display_collection)
     end
 
-    it 'does not create an appeared_in_searches SupplejackApi::RecordMetric when ignore_metrics is set' do
+    it 'does not create an appeared_in_searches SupplejackApi::RequestMetric when ignore_metrics is set' do
       get :index, params: { ignore_metrics: true }
       expect(SupplejackApi::RequestMetric.count).to eq 0
     end
@@ -79,7 +79,7 @@ describe ApplicationController, type: :controller do
       expect(SupplejackApi::InteractionModels::Record.first.request_type).to eq "get"
     end
 
-    it 'creates a page_views SupplejackApi::RecordMetric when ignore_metrics is not set' do
+    it 'creates a page_views SupplejackApi::RequestMetric when ignore_metrics is not set' do
       get :show, params: { id: 1 }
       expect(SupplejackApi::RequestMetric.count).to eq 1
       expect(SupplejackApi::RequestMetric.first.records).to eq [{"record_id"=>1, "display_collection"=>"test"}]
@@ -91,14 +91,14 @@ describe ApplicationController, type: :controller do
       expect(SupplejackApi::InteractionModels::Record.count).to eq 0
     end
 
-    it 'does not create a page_views SupplejackApi::RecordMetric when ignore_metrics is not set' do
+    it 'does not create a page_views SupplejackApi::RequestMetric when ignore_metrics is not set' do
       get :show, params: { id: 1, ignore_metrics: true }
       expect(SupplejackApi::RequestMetric.count).to eq 0
     end
   end
 
   describe 'GET#source' do
-    it 'creates a source_clickthrough SupplejackApi::RecordMetric' do
+    it 'creates a source_clickthrough SupplejackApi::RequestMetric' do
       get :source
       expect(SupplejackApi::RequestMetric.count).to eq 1
       expect(SupplejackApi::RequestMetric.first.records).to eq [{"record_id"=>1, "display_collection"=>"test"}]

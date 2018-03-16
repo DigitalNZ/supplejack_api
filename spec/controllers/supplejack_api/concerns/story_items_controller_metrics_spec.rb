@@ -10,15 +10,16 @@ describe ApplicationController, type: :controller do
     end
   end
 
-  before do
-    create(:story)
-  end
+  let!(:story) { create(:story) }
 
   describe '#create' do
-    it 'creates a added_to_user_stories SupplejackApi::RecordMetric' do
+    it 'creates a added_to_user_stories SupplejackApi::RequestMetric' do
       post :create, params: { id: 1 }
-      expect(SupplejackApi::RecordMetric.count).to eq 1
-      expect(SupplejackApi::RecordMetric.first.added_to_user_stories).to eq 1
+      expect(SupplejackApi::RequestMetric.count).to eq 1
+
+      expect(SupplejackApi::RequestMetric.first.metric).to eq 'added_to_user_stories'
+      expect(SupplejackApi::RequestMetric.first.records.first.values).to include story.set_items.first.record_id
+      expect(SupplejackApi::RequestMetric.first.records.first.values).to include story.set_items.first.content[:display_collection]
     end
   end
 end

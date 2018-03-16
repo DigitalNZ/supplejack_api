@@ -1,5 +1,3 @@
-
-
 module SupplejackApi
   FactoryBot.define do
     factory :user_set, class: SupplejackApi::UserSet do
@@ -21,7 +19,7 @@ module SupplejackApi
 
     factory :set_item, class: SupplejackApi::SetItem do
       before(:create) do |set_item|
-        record = create(:record)
+        record = create(:record_with_fragment)
         set_item.record_id = record.record_id
       end
       sequence(:position)

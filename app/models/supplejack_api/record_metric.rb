@@ -21,9 +21,9 @@ module SupplejackApi
 
     index({ date: 1, content_partner: 1, record_id: 1 }, background: true)
 
-    def self.spawn(record_id, metric, display_collection, date = Time.zone.today)
+    def self.spawn(record_id, metrics, display_collection, date = Time.zone.today)
       return unless SupplejackApi.config.log_metrics == true
-      find_or_create_by(record_id: record_id, date: date, display_collection: display_collection).inc("#{metric}": 1)
+      find_or_create_by(record_id: record_id, date: date, display_collection: display_collection).inc(metrics)
     end
   end
 end

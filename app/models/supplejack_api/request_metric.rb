@@ -12,24 +12,12 @@ module SupplejackApi
     validates :records, presence: true
     validates :metric,  presence: true
 
-    EMPTY_RECORD_METRIC = {
-      'metrics' => {
-        'page_views' => 0,
-        'user_set_views' => 0,
-        'user_story_views' => 0,
-        'added_to_user_sets' => 0,
-        'source_clickthroughs' => 0,
-        'appeared_in_searches' => 0,
-        'added_to_user_stories' => 0
-      },
-      'display_collection' => 'none'
-    }.freeze
-
     def self.spawn(records, metric, date = Time.zone.today)
       return unless SupplejackApi.config.log_metrics == true
       create(records: records, metric: metric, date: date)
     end
 
+    # rubocop:disable Metrics/MethodLength
     def self.summarize
       return unless SupplejackApi.config.log_metrics == true
 
@@ -39,7 +27,18 @@ module SupplejackApi
         summary[date] = {}
 
         uniq_records.each do |record|
-          summary[date][record['record_id']] = EMPTY_RECORD_METRIC
+          summary[date][record['record_id']] = {
+            'metrics' => {
+              'page_views' => 0,
+              'user_set_views' => 0,
+              'user_story_views' => 0,
+              'added_to_user_sets' => 0,
+              'source_clickthroughs' => 0,
+              'appeared_in_searches' => 0,
+              'added_to_user_stories' => 0
+            },
+            'display_collection' => 'none'
+          }
         end
 
         # Group them by metric
@@ -65,5 +64,6 @@ module SupplejackApi
 
       all.destroy
     end
+    # rubocop:enable Metrics/MethodLength
   end
 end

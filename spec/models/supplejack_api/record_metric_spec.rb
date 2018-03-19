@@ -5,7 +5,7 @@ RSpec.describe SupplejackApi::RecordMetric do
     let(:record_metric) { create(:record_metric, display_collection: 'NDHA', record_id: 1) }
 
     it 'has a date' do
-      expect(record_metric.date).to eq Time.zone.today
+      expect(record_metric.date).to eq Time.zone.now.utc.to_date
     end
 
     it 'has a record_id' do
@@ -48,9 +48,9 @@ RSpec.describe SupplejackApi::RecordMetric do
   describe '#validations' do
     let(:invalid) { build(:record_metric, record_id: nil) }
 
-    let!(:record_metric) { create(:record_metric) }
-    let(:record_metric_two) { build(:record_metric, record_id: record_metric.record_id) }
-    let(:record_metric_three) { build(:record_metric, date: 1.day.from_now) }
+    let!(:record_metric)      { create(:record_metric) }
+    let(:record_metric_two)   { build(:record_metric, record_id: record_metric.record_id) }
+    let(:record_metric_three) { build(:record_metric, date: 1.day.from_now.utc) }
 
     it 'requires a record_id' do
       invalid.valid?

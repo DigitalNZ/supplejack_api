@@ -5,7 +5,7 @@ module SupplejackApi
   class RequestMetric
     include Mongoid::Document
 
-    field :date,    type: Date,   default: Time.zone.today
+    field :date,    type: Date,   default: Time.zone.now.utc
     field :records, type: Array,  default: []
     field :metric,  type: String
 

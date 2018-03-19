@@ -25,10 +25,9 @@ RSpec.describe SupplejackApi::RequestMetric do
 
   describe '#summarize' do
 
-    let!(:appeared_in_searches_yesterday) { create_list(:request_metric, 5, date: Time.zone.yesterday) }
-    let!(:user_set_views_yesterday) { create_list(:request_metric, 5, metric: 'user_set_views', date: Time.zone.yesterday) }
-    let!(:source_clickthroughs_yesterday) { create_list(:request_metric, 5, metric: 'source_clickthroughs', date: Time.zone.yesterday) }
-
+    let!(:appeared_in_searches_yesterday) { create_list(:request_metric, 5, date: 1.day.ago.utc) }
+    let!(:user_set_views_yesterday) { create_list(:request_metric, 5, metric: 'user_set_views', date: 1.day.ago.utc) }
+    let!(:source_clickthroughs_yesterday) { create_list(:request_metric, 5, metric: 'source_clickthroughs', date: 1.day.ago.utc) }
 
     let!(:appeared_in_searches_today) { create_list(:request_metric, 5) }
     let!(:user_set_views_today) { create_list(:request_metric, 5, metric: 'user_set_views') }
@@ -39,15 +38,15 @@ RSpec.describe SupplejackApi::RequestMetric do
 
       expect(SupplejackApi::RecordMetric.count).to eq 8
 
-      yesterday_summed_1001 = SupplejackApi::RecordMetric.find_by(record_id: 1001, date: Time.zone.today)
-      yesterday_summed_289 = SupplejackApi::RecordMetric.find_by(record_id: 289, date: Time.zone.today)
-      yesterday_summed_30 = SupplejackApi::RecordMetric.find_by(record_id: 30, date: Time.zone.today)
-      yesterday_summed_411 = SupplejackApi::RecordMetric.find_by(record_id: 411, date: Time.zone.today)
+      yesterday_summed_1001 = SupplejackApi::RecordMetric.find_by(record_id: 1001, date: 1.day.ago.utc)
+      yesterday_summed_289 = SupplejackApi::RecordMetric.find_by(record_id: 289, date: 1.day.ago.utc)
+      yesterday_summed_30 = SupplejackApi::RecordMetric.find_by(record_id: 30, date: 1.day.ago.utc)
+      yesterday_summed_411 = SupplejackApi::RecordMetric.find_by(record_id: 411, date: 1.day.ago.utc)
 
-      today_summed_1001 = SupplejackApi::RecordMetric.find_by(record_id: 1001, date: Time.zone.today)
-      today_summed_289 = SupplejackApi::RecordMetric.find_by(record_id: 289, date: Time.zone.today)
-      today_summed_30 = SupplejackApi::RecordMetric.find_by(record_id: 30, date: Time.zone.today)
-      today_summed_411 = SupplejackApi::RecordMetric.find_by(record_id: 411, date: Time.zone.today)
+      today_summed_1001 = SupplejackApi::RecordMetric.find_by(record_id: 1001, date: Time.now.utc)
+      today_summed_289 = SupplejackApi::RecordMetric.find_by(record_id: 289, date: Time.now.utc)
+      today_summed_30 = SupplejackApi::RecordMetric.find_by(record_id: 30, date: Time.now.utc)
+      today_summed_411 = SupplejackApi::RecordMetric.find_by(record_id: 411, date: Time.now.utc)
 
       expect(yesterday_summed_1001.appeared_in_searches).to eq 5
       expect(yesterday_summed_289.appeared_in_searches).to eq 10

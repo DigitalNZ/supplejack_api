@@ -5,7 +5,7 @@ module SupplejackApi
   class RecordMetric
     include Mongoid::Document
 
-    field :date,                  type: Date,    default: Time.zone.now.utc
+    field :date,                  type: Date,    default: Time.current.utc
     field :record_id,             type: Integer
     field :page_views,            type: Integer, default: 0
     field :user_set_views,        type: Integer, default: 0
@@ -21,7 +21,7 @@ module SupplejackApi
 
     index({ date: 1, content_partner: 1, record_id: 1 }, background: true)
 
-    def self.spawn(record_id, metrics, display_collection, date = Time.zone.now.utc)
+    def self.spawn(record_id, metrics, display_collection, date = Time.current.utc)
       return unless SupplejackApi.config.log_metrics == true
       find_or_create_by(record_id: record_id, date: date, display_collection: display_collection).inc(metrics)
     end

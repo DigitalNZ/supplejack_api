@@ -5,7 +5,7 @@ module SupplejackApi
   class CollectionMetric
     include Mongoid::Document
 
-    field :d, as: :date,                               type: Date,    default: Time.zone.now.utc
+    field :d, as: :date,                               type: Date,    default: Time.current.utc
     field :dc, as: :display_collection,                type: String
     field :s, as: :searches,                           type: Integer, default: 0
     field :rpv, as: :record_page_views,                type: Integer, default: 0

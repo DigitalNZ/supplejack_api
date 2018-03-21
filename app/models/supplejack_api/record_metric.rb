@@ -19,7 +19,7 @@ module SupplejackApi
     validates :record_id, presence: true
     validates :record_id, uniqueness: { scope: :date }
 
-    index({ date: 1, content_partner: 1, record_id: 1 }, background: true)
+    index({ date: 1, display_collection: 1, record_id: 1 }, background: true)
 
     def self.spawn(record_id, metrics, display_collection, date = Time.current.utc)
       return unless SupplejackApi.config.log_metrics == true
@@ -27,3 +27,11 @@ module SupplejackApi
     end
   end
 end
+
+
+
+# puts (Benchmark.measure do
+#   test.each do |id, details|
+#     SupplejackApi::RecordMetric.collection.update_one({ record_id: id, date: Time.now.utc.to_date, display_collection: details['display_collection']}, { '$inc' => details['metrics']}, { upsert: true })
+#   end
+# end)

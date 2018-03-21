@@ -19,7 +19,7 @@ module SupplejackApi
     validates :record_id, presence: true
     validates :record_id, uniqueness: { scope: :date }
 
-    index({ date: 1, display_collection: 1, record_id: 1 }, background: true)
+    index({ record_id: 1, display_collection: 1, date: 1 }, background: true)
 
     def self.spawn(record_id, metrics, display_collection, date = Time.current.utc)
       return unless SupplejackApi.config.log_metrics == true

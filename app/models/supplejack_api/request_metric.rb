@@ -21,7 +21,8 @@ module SupplejackApi
     def self.summarize
       return unless SupplejackApi.config.log_metrics == true
 
-      summarized_metrics = all.group_by(&:date).each_with_object({}) do |(date, metrics), summary|
+      records = all.to_a
+      summarized_metrics = records.group_by(&:date).each_with_object({}) do |(date, metrics), summary|
         summary[date] = Hash.new do |hash, key|
           hash[key] = {
             'metrics' => {
@@ -51,7 +52,7 @@ module SupplejackApi
         end
       end
 
-      all.destroy
+      records.map(&:destroy)
     end
     # rubocop:enable Metrics/MethodLength
   end

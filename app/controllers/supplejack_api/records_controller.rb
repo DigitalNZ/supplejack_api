@@ -6,7 +6,10 @@ module SupplejackApi
 
     skip_before_action :authenticate_user!, only: %i[source status], raise: false
     before_action :set_concept_param, only: :index
-    respond_to :json, :xml
+    respond_to :json, :xml, :rss
+
+    @@search_serializer_class = SearchSerializer
+    @@record_serializer_class = RecordSerializer
 
     def index
       @search = SupplejackApi::RecordSearch.new(all_params)
@@ -17,17 +20,18 @@ module SupplejackApi
         if @search.valid?
           respond_to do |format|
             format.json do
-              render json: @search, serializer: SearchSerializer, record_fields: available_fields,
+              render json: @search, serializer: @@search_serializer_class, record_fields: available_fields,
                      record_includes: available_fields, root: 'search', adapter: :json,
                      callback: params['jsonp']
             end
             format.xml do
-              options = { serializer: SearchSerializer, record_fields: available_fields, request_format: 'xml' }
+              options = { serializer: @@search_serializer_class, record_fields: available_fields, request_format: 'xml' }
               serializable_resource = ActiveModelSerializers::SerializableResource.new(@search, options)
 
               # The double as_json is required to render the inner json object as json as well as the exterior object
               render xml: serializable_resource.as_json.as_json.to_xml(root: 'search')
             end
+            format.rss { respond_with @search }
           end
         else
           render request.format.to_sym => { errors: @search.errors }, status: :bad_request
@@ -47,14 +51,15 @@ module SupplejackApi
       @record = SupplejackApi.config.record_class.custom_find(params[:id], current_user, search_params)
       respond_to do |format|
         format.json do
-          render json: @record, serializer: RecordSerializer, fields: available_fields, root: 'record',
+          render json: @record, serializer: @@record_serializer_class, fields: available_fields, root: 'record',
                  include: available_fields, adapter: :json, callback: params['jsonp']
         end
         format.xml do
-          options = { serializer: RecordSerializer, fields: available_fields }
+          options = { serializer: @@record_serializer_class, fields: available_fields, include: available_fields }
           serializable_resource = ActiveModelSerializers::SerializableResource.new(@record, options)
           render xml: serializable_resource.as_json.to_xml(root: 'record')
         end
+        format.rss { respond_with @record }
       end
     rescue Mongoid::Errors::DocumentNotFound
       render request.format.to_sym => { errors: "Record with ID #{params[:id]} was not found" }, status: :not_found
@@ -62,7 +67,7 @@ module SupplejackApi
 
     def multiple
       @records = SupplejackApi.config.record_class.find_multiple(params[:record_ids])
-      respond_with @records, each_serializer: RecordSerializer, root: 'records', adapter: :json
+      respond_with @records, each_serializer: @@record_serializer_class, root: 'records', adapter: :json
     end
 
     # This options are merged with the serializer options. Which will allow the serializer
@@ -70,7 +75,7 @@ module SupplejackApi
     #
     def default_serializer_options
       default_options = {}
-      @search ||= SupplejackApi::RecordSearch.new(params)
+      @search ||= SupplejackApi::RecordSearch.new(all_params)
       default_options[:fields] = @search.field_list if @search.field_list.present?
       default_options[:groups] = @search.group_list if @search.group_list.present?
       default_options

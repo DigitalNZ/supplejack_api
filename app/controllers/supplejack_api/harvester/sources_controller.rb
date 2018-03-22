@@ -19,6 +19,9 @@ module SupplejackApi
 
       def index
         @sources = params[:source].blank? ? Source.all : Source.where(source_params)
+        @sources = @sources.order_by(params[:order_by] => 'desc') if params[:order_by].present?
+        @sources = @sources.limit(params[:limit]) if params[:limit].present?
+
         render json: @sources
       end
 
@@ -29,6 +32,7 @@ module SupplejackApi
 
       def update
         @source = Source.find(params[:id])
+        source_params['status_updated_at'] = Time.zone.now.to_datetime if source_params['status']
         @source.update_attributes(source_params)
         render json: @source
       end
@@ -51,7 +55,7 @@ module SupplejackApi
 
       def source_params
         @source_params ||= begin
-          source_params = params.require(:source).permit(:name, :_id, :id, :source_id, :status).to_h
+          source_params = params.require(:source).permit(:name, :_id, :id, :source_id, :status, :status_updated_by).to_h
           partner_params = params.permit(:partner_id).to_h
           source_params.merge(partner_params)
         end

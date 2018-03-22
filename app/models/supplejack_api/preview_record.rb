@@ -18,7 +18,7 @@ module SupplejackApi
     build_model_fields
 
     def fragment_class
-      SupplejackApi::ApiRecord::RecordFragment
+      ::SupplejackApi::ApiRecord::RecordFragment
     end
   end
 end

@@ -84,10 +84,37 @@ module SupplejackApi
         end
       end
 
+      def index
+        body = "Request must have a search params with one or more of those fields \
+                ['record_id', 'fragments.source_id', 'fragments.job_id']"
+        return render status: 400, body: body if search_params.blank?
+
+        page = search_options_params[:page].to_i
+        @records = SupplejackApi.config.record_class.where(search_params).page(page).per(20)
+
+        if @records.present?
+          render json: @records,
+                 adapter: :json,
+                 each_serializer: ::SupplejackApi::RecordSerializer,
+                 include: [:fragments],
+                 meta: { page: page, total_pages: @records.total_pages }
+        else
+          head :no_content
+        end
+      end
+
       private
 
       def record_params
         params.require(:record).to_unsafe_h
+      end
+
+      def search_options_params
+        params.require(:search_options).permit(:page)
+      end
+
+      def search_params
+        params.require(:search).permit(['record_id', 'fragments.source_id', 'fragments.job_id'])
       end
     end
   end

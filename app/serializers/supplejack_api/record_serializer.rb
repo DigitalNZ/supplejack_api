@@ -7,6 +7,7 @@ module SupplejackApi
     attribute :next_record,     if: -> { object.next_record.present? }
     attribute :previous_page,   if: -> { object.previous_page.present? }
     attribute :previous_record, if: -> { object.previous_record.present? }
+    has_many :fragments
 
     RecordSchema.fields.each do |name, definition|
       if definition.search_value.present? && definition.store == false

@@ -12,10 +12,12 @@ module SupplejackApi
         def create_story_record_views
           return unless @api_response[:payload] && log_request_for_metrics?
 
-          @api_response[:payload][:contents].each do |record|
-            SupplejackApi::RecordMetric.spawn(record[:record_id], :user_story_views,
-                                              record[:content][:display_collection])
-          end
+          SupplejackApi::RequestMetric.spawn(
+            @api_response[:payload][:contents].map do |record|
+              { record_id: record[:record_id], display_collection: record[:content][:display_collection] }
+            end,
+            'user_story_views'
+          )
         end
       end
     end

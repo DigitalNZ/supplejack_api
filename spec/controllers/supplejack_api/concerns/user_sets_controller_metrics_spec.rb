@@ -21,10 +21,11 @@ describe ApplicationController, type: :controller do
         create(:user_set_with_set_item)
       end
 
-      it 'creates a user_set_views SupplejackApi::RecordMetric' do
+      it 'creates a user_set_views SupplejackApi::RequestMetric' do
         get :show, params: { id: 1 }
-        expect(SupplejackApi::RecordMetric.count).to eq 1
-        expect(SupplejackApi::RecordMetric.first.user_set_views).to eq 1
+        expect(SupplejackApi::RequestMetric.count).to eq 1
+        expect(SupplejackApi::RequestMetric.first.metric).to eq 'user_set_views'
+        expect(SupplejackApi::RequestMetric.first.records).to eq  [{"record_id"=>2, "display_collection"=>"test"}]
       end
     end
 
@@ -36,7 +37,7 @@ describe ApplicationController, type: :controller do
 
       it 'does not die when requesting a record that has status deleted' do
         get :show, params: { id: 1 }
-        expect(SupplejackApi::RecordMetric.count).to eq 0
+        expect(SupplejackApi::RequestMetric.count).to eq 0
       end
     end
   end
@@ -47,10 +48,11 @@ describe ApplicationController, type: :controller do
         create(:user_set_with_set_item)
       end
 
-      it 'creates a added_to_user_sets SupplejackApi::RecordMetric' do
+      it 'creates a added_to_user_sets SupplejackApi::RequestMetric' do
         post :create, params: { id: 1 }
-        expect(SupplejackApi::RecordMetric.count).to eq 1
-        expect(SupplejackApi::RecordMetric.first.added_to_user_sets).to eq 1
+        expect(SupplejackApi::RequestMetric.count).to eq 1
+        expect(SupplejackApi::RequestMetric.first.records).to eq [{"record_id"=>2, "display_collection"=>"test"}]
+        expect(SupplejackApi::RequestMetric.first.metric).to eq 'added_to_user_sets'
       end
     end
 
@@ -62,7 +64,7 @@ describe ApplicationController, type: :controller do
 
       it 'does not die when requesting a record that has status deleted' do
         post :create, params: { id: 1 }
-        expect(SupplejackApi::RecordMetric.count).to eq 0
+        expect(SupplejackApi::RequestMetric.count).to eq 0
       end
     end
   end

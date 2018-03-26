@@ -1,5 +1,3 @@
-
-
 module SupplejackApi
   FactoryBot.define do
     factory :record_metric, class: SupplejackApi::RecordMetric do

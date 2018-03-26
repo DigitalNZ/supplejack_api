@@ -5,7 +5,7 @@ RSpec.describe SupplejackApi::TopMetric do
 
   describe '#attributes' do
     it 'has a date' do
-      expect(top_metric.date).to eq Time.zone.today
+      expect(top_metric.date).to eq Time.zone.now.utc.to_date
     end
 
     it 'has a metric' do

@@ -23,7 +23,7 @@ module SupplejackApi
       added_to_user_stories
     ].freeze
 
-    field :d, as: :date,    type: Date, default: Time.zone.today
+    field :d, as: :date,    type: Date, default: Time.current.utc
     field :m, as: :metric,  type: String
     field :r, as: :results, type: Hash
 
@@ -47,12 +47,12 @@ module SupplejackApi
           )
 
           if metric.results.blank?
-            metric.update_attributes(results: results)
+            metric.update(results: results)
           else
             merged_results = metric.results.merge(results) { |_key, a, b| a + b }
             merged_results = merged_results.sort_by { |_k, v| -v }.first(200).to_h
 
-            metric.update_attributes(results: merged_results)
+            metric.update(results: merged_results)
           end
         end
       end

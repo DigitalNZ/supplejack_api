@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/ClassLength
 module SupplejackApi
   class Search
-
     def initialize(options = {})
       @options = options.dup
       @options.merge!(
@@ -160,7 +160,7 @@ module SupplejackApi
     end
 
     INTEGER_ATTRIBUTES ||= %i[page per_page facets_per_page facets_page record_type].freeze
-    alias_method :read_attribute_for_serialization, :send
+    alias read_attribute_for_serialization send
 
     attr_accessor :options, :request_url, :scope, :solr_request_params, :errors, :warnings
 
@@ -192,7 +192,6 @@ module SupplejackApi
     # rubocop:disable Metrics/MethodLength
     # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/CyclomaticComplexity
-    # rubocop:disable Metrics/PerceivedComplexity
     # FIXME: Make this method smaller, it's triple the max method length
     def search_builder
       search_model = self
@@ -245,12 +244,10 @@ module SupplejackApi
                     without(filter.to_sym, nil)
                   elsif filter =~ /-(.+)/
                     without(Regexp.last_match(1).to_sym, to_proper_value(filter, value))
+                  elsif value.is_a?(Array)
+                    with(filter.to_sym).all_of(value)
                   else
-                    if value.is_a?(Array)
-                      with(filter.to_sym).all_of(value)
-                    else
-                      with(filter.to_sym, to_proper_value(filter, value))
-                    end
+                    with(filter.to_sym, to_proper_value(filter, value))
                   end
                 end
               end
@@ -333,9 +330,9 @@ module SupplejackApi
       value = @options[:sort].to_sym
 
       begin
-        field = Sunspot::Setup.for(self.class.model_class).field(value)
+        Sunspot::Setup.for(self.class.model_class).field(value)
         return value
-      rescue Sunspot::UnrecognizedFieldError => e
+      rescue Sunspot::UnrecognizedFieldError
         return 'score'
       end
     end
@@ -367,7 +364,7 @@ module SupplejackApi
       Rails.logger.info e.message
       sunspot = {}
     ensure
-      return sunspot
+      sunspot
     end
 
     private
@@ -428,14 +425,13 @@ module SupplejackApi
           else
             raise Exception, 'Expected operator (:and, :or)'
           end
+        elsif values =~ /(.+)\*$/
+          with(key).starting_with(Regexp.last_match(1))
         else
-          if values =~ /(.+)\*$/
-            with(key).starting_with(Regexp.last_match(1))
-          else
-            with(key, to_proper_value(key, values))
-          end
+          with(key, to_proper_value(key, values))
         end
       end
     end
   end
 end
+# rubocop:enable Metrics/ClassLength

@@ -14,6 +14,9 @@ module SupplejackApi
 
   	describe '#facet_list' do
   		before {
+        # Record Search is used here rather than Search
+        # this method uses a RecordSearchSchema within `Search#schema_class`
+        # Essentially, without RecordSearch the test breaks
         @search = RecordSearch.new
         allow(@search).to receive(:model_class) { Record }
       }
@@ -31,6 +34,9 @@ module SupplejackApi
 
     describe '#field_list' do
     	before {
+        # Record Search is used here rather than Search
+        # this method uses a RecordSearchSchema within `Search#schema_class`
+        # Essentially, without RecordSearch the test breaks
         @search = RecordSearch.new
         allow(@search).to receive(:schema_class) { RecordSchema }
       }
@@ -48,6 +54,9 @@ module SupplejackApi
 
     describe '#group_list' do
     	before {
+        # Record Search is used here rather than Search
+        # this method uses a RecordSearchSchema within `Search#schema_class`
+        # Essentially, without RecordSearch the test breaks
         @search = RecordSearch.new
         allow(@search).to receive(:model_class) { Record }
       }

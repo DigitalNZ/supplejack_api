@@ -12,6 +12,12 @@ module SupplejackApi
       allow(Search).to receive(:role_collection_restrictions) { [] }
     }
 
+    describe '#initialize' do
+      it 'sets the options' do
+        expect(@search).to respond_to :options
+      end
+    end
+
   	describe '#facet_list' do
   		before {
         # Record Search is used here rather than Search

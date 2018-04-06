@@ -45,9 +45,10 @@ module SupplejackApi
     before_save :calculate_count
     before_save :strip_html_tags!
     before_save :update_record
+    before_destroy :delete_record
     after_save :reindex_items
     after_save :reindex_if_changed
-    before_destroy :delete_record
+    after_create :create_record
 
     def reindex_if_changed
       return if record_status != 'active'

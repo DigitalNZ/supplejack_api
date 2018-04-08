@@ -48,7 +48,26 @@ module SupplejackApi
     before_destroy :delete_record
     after_save :reindex_items
     after_save :reindex_if_changed
-    after_create :create_record
+    after_create :create_record_representation
+
+    # we originally had this method named `#create_method`
+    # however we had to change it to `#create_record_representation`
+    # as `#create_record` conflicts with a Mongoid method
+    # that dynamically assigns `#create_` methods with a trailing name
+    #
+    # In Mongoid lib/mongoid/relations/builders.rb
+    def create_record_representation
+      return unless record.nil?
+      self.record = SupplejackApi.config.record_class.new
+
+      record.status = record_status
+      record.internal_identifier = "digitalnz_user_set_#{id}"
+
+      primary_fragment = record.primary_fragment
+      primary_fragment.thumbnail_url = cover_thumbnail
+
+      record.save!
+    end
 
     def reindex_if_changed
       return if record_status != 'active'
@@ -187,19 +206,6 @@ module SupplejackApi
 
       self[:tags] = [] unless self[:tags]
       self.tags = self[:tags].map { |tag| strip_tags(tag) } # if tags.try(:any?)
-    end
-
-    def create_record
-      return unless record.nil?
-      self.record = SupplejackApi.config.record_class.new
-
-      record.status = record_status
-      record.internal_identifier = "digitalnz_user_set_#{id}"
-
-      primary_fragment = record.primary_fragment
-      primary_fragment.thumbnail_url = cover_thumbnail
-
-      record.save!
     end
 
     def update_record

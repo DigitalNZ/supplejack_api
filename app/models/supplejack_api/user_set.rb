@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/ClassLength
 module SupplejackApi
   class UserSet
     include Mongoid::Document
@@ -95,13 +96,17 @@ module SupplejackApi
 
     # Find a set based on the MongoDB ObjectID or the set url.
     #
+    # rubocop:disable Lint/UselessAssignment
     def self.custom_find(id)
-      user_set = if id.to_s.length == 24
+      mongo_object_id_char_length = 24
+
+      user_set = if id.to_s.length == mongo_object_id_char_length
                    find(id) rescue nil
                  else
                    where(url: id).first
                  end
     end
+    # rubocop:enable Lint/UselessAssignment
 
     def self.all_public_sets
       where(privacy: 'public', :name.ne => 'Favourites')
@@ -142,43 +147,51 @@ module SupplejackApi
     end
 
     def update_featured_set(new_attributes, user)
-      if new_attributes.key?(:featured)
-        featured_value = new_attributes.delete(:featured)
-        if user.try(:can_change_featured_sets?)
-          self.featured = featured_value
-          self.featured_at = Time.now if featured_changed?
-        end
-      end
+      return unless new_attributes.key?(:featured)
+
+      featured_value = new_attributes.delete(:featured)
+
+      return unless user.try(:can_change_featured_sets?)
+
+      self.featured = featured_value
+
+      # This cop is being disabled until can be sure
+      # whether or not we want to set `Time.zone.now`
+      # or keep `Time.now`
+      # rubocop:disable Rails/TimeZone
+      self.featured_at = Time.now if featured_changed?
+      # rubocop:enable Rails/TimeZone
     end
 
     def update_set_items(new_attributes)
-      if set_items = new_attributes.delete(:records)
-        if set_items.is_a? Array
-          begin
-            new_set_items = []
-            set_items.each do |set_item_hash|
-              set_item_hash.symbolize_keys!
-              # This ugly fix should be removed when digitalnz.org is decommissioned
-              params = set_item_hash.merge(record_id: set_item_hash[:record_id], type: 'embed',
-                                           sub_type: 'record', content: { record_id: set_item_hash[:record_id] },
-                                           meta: { align_mode: 0 })
+      set_items = new_attributes.delete(:records)
 
-              # set_item = self.set_items.find_or_initialize_by(params)
+      return unless set_items
+      return unless set_items.is_a? Array
 
-              unless set_item = self.set_items.find_by_record_id(params[:record_id])
-                set_item = self.set_items.new(params)
-              end
+      begin
+        new_set_items = []
+        set_items.each do |set_item_hash|
+          set_item_hash.symbolize_keys!
+          # This ugly fix should be removed when digitalnz.org is decommissioned
+          params = set_item_hash.merge(record_id: set_item_hash[:record_id], type: 'embed',
+                                       sub_type: 'record', content: { record_id: set_item_hash[:record_id] },
+                                       meta: { align_mode: 0 })
 
-              set_item.position = set_item_hash[:position]
+          # set_item = self.set_items.find_or_initialize_by(params)
 
-              new_set_items << set_item
-            end
-
-            self.set_items = new_set_items.map { |item| item if item.valid? }.compact
-          rescue StandardError => e
-            raise WrongRecordsFormat
+          unless (set_item = self.set_items.find_by_record_id(params[:record_id]))
+            set_item = self.set_items.new(params)
           end
+
+          set_item.position = set_item_hash[:position]
+
+          new_set_items << set_item
         end
+
+        self.set_items = new_set_items.map { |item| item if item.valid? }.compact
+      rescue StandardError
+        raise WrongRecordsFormat
       end
     end
 
@@ -205,7 +218,7 @@ module SupplejackApi
       self.subjects = self[:subjects].map { |subject| strip_tags(subject) }
 
       self[:tags] = [] unless self[:tags]
-      self.tags = self[:tags].map { |tag| strip_tags(tag) } # if tags.try(:any?)
+      self.tags = self[:tags].map { |tag| strip_tags(tag) }
     end
 
     def update_record
@@ -223,17 +236,17 @@ module SupplejackApi
     end
 
     def delete_record
-      if record
-        record.status = 'deleted'
-        record.save!
-      end
+      return unless record
+
+      record.status = 'deleted'
+      record.save!
     end
 
     def suppress_record
-      if record
-        record.status = 'suppressed'
-        record.save!
-      end
+      return unless record
+
+      record.status = 'suppressed'
+      record.save!
     end
 
     def record_ids
@@ -314,3 +327,4 @@ module SupplejackApi
     end
   end
 end
+# rubocop:enable Metrics/ClassLength

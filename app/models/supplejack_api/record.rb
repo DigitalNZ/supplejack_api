@@ -13,7 +13,10 @@ module SupplejackApi
     # Associations
     embeds_many :fragments, cascade_callbacks: true, class_name: 'SupplejackApi::ApiRecord::RecordFragment'
     embeds_one :merged_fragment, cascade_callbacks: true, class_name: 'SupplejackApi::ApiRecord::RecordFragment'
+
+    # rubocop:disable  Rails/HasAndBelongsToMany
     has_and_belongs_to_many :concepts, class_name: 'SupplejackApi::Concept'
+    # rubocop:enable  Rails/HasAndBelongsToMany
 
     # From storable
     store_in collection: 'records'
@@ -39,14 +42,17 @@ module SupplejackApi
     end
 
     def self.find_multiple(ids)
+      mongo_object_id_char_min_length = 10
+      integer_length = 10
+
       return [] unless ids.try(:any?)
-      string_ids = ids.find_all { |id| id.to_s.length > 10 }
-      integer_ids = ids.find_all { |id| id.to_s.length <= 10 }
+      string_ids = ids.find_all { |id| id.to_s.length > mongo_object_id_char_min_length }
+      integer_ids = ids.find_all { |id| id.to_s.length <= integer_length }
 
       records = []
       records += active.find(string_ids) if string_ids.present?
       records += active.where(:record_id.in => integer_ids)
-      records = records.sort_by { |r| ids.find_index(r.record_id) || 100 }
+      records.sort_by { |r| ids.find_index(r.record_id) || 100 }
     end
 
     # rubocop:disable Metrics/MethodLength
@@ -117,6 +123,5 @@ module SupplejackApi
     def remove_from_index
       Sunspot.remove(self) unless active?
     end
-
   end
 end

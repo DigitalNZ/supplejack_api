@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SupplejackApi
-  class StoriesController < ApplicationController
+  class StoriesController < SupplejackApplicationController
     include Concerns::Stories
     include Concerns::StoriesControllerMetrics
 

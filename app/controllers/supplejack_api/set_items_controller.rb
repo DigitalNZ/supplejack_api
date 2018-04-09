@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SupplejackApi
-  class SetItemsController < ApplicationController
+  class SetItemsController < SupplejackApplicationController
     include SupplejackApi::Concerns::UserSetsControllerMetrics
 
     before_action :find_user_set

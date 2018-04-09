@@ -1,7 +1,6 @@
 require 'spec_helper'
 
-module SupplejackApi
-  describe ApplicationHelper do
+  describe SupplejackApi::ApplicationHelper do
 
     def label(string)
       safe_join([string, content_tag(:span)])
@@ -14,4 +13,3 @@ module SupplejackApi
       end
     end
   end
-end

@@ -3,11 +3,11 @@
 require 'spec_helper'
 
 module SupplejackApi
-  describe ApplicationController, type: :controller do
+  describe SupplejackApplicationController, type: :controller do
     routes { SupplejackApi::Engine.routes }
 
     before(:each) do
-      @controller = ApplicationController.new
+      @controller = SupplejackApplicationController.new
       allow(@controller).to receive(:render) { nil }
       allow(RecordSchema).to receive(:roles) { { admin: double(:admin, admin: true) } }
     end

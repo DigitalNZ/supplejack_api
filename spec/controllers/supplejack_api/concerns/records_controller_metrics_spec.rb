@@ -23,17 +23,17 @@ describe ApplicationController, type: :controller do
     include SupplejackApi::Concerns::RecordsControllerMetrics
 
     def index
-      @search = DummySearch.new(SupplejackApi::Record.all.to_a)
+      @search = DummySearch.new(SupplejackApi.config.record_class.all.to_a)
       head :ok
     end
 
     def show
-      @record = SupplejackApi::Record.first
+      @record = SupplejackApi.config.record_class.first
       head :ok
     end
 
     def source
-      @record = SupplejackApi::Record.first
+      @record = SupplejackApi.config.record_class.first
       head :ok
     end
   end
@@ -62,9 +62,9 @@ describe ApplicationController, type: :controller do
       get :index
       expect(SupplejackApi::RequestMetric.count).to eq 1
       expect(SupplejackApi::RequestMetric.first.metric).to eq 'appeared_in_searches'
-      expect(SupplejackApi::RequestMetric.first.records.map { |x| x['record_id'] }).to eq SupplejackApi::Record.all.map(&:record_id)
+      expect(SupplejackApi::RequestMetric.first.records.map { |x| x['record_id'] }).to eq SupplejackApi.config.record_class.all.map(&:record_id)
 
-      expect(SupplejackApi::RequestMetric.first.records.map { |x| x['display_collection'] }).to eq SupplejackApi::Record.all.map(&:display_collection)
+      expect(SupplejackApi::RequestMetric.first.records.map { |x| x['display_collection'] }).to eq SupplejackApi.config.record_class.all.map(&:display_collection)
     end
 
     it 'does not create an appeared_in_searches SupplejackApi::RequestMetric when ignore_metrics is set' do

@@ -2,7 +2,7 @@
 
 module SupplejackApi
   FactoryBot.define do
-    factory :record, class: SupplejackApi::Record do
+    factory :record, class: SupplejackApi.config.record_class do
       transient do
         display_collection 'test'
         copyright ['0']

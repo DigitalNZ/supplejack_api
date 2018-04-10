@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SupplejackApi
-  class UserSetsController < ApplicationController
+  class UserSetsController < SupplejackApplicationController
     include Concerns::UserSetsControllerMetrics
 
     respond_to :json

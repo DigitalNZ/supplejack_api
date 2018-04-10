@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 module SupplejackApi
-  class ApplicationController < ActionController::Base
+  class SupplejackApplicationController < ::ApplicationController
+    helper SupplejackApi::ApplicationHelper
     before_action :authenticate_user!
 
     def authenticate_user!
@@ -25,9 +26,7 @@ module SupplejackApi
       format = :json
       format = request.format.to_sym if %i[xml json rss].include?(request.format.try(:to_sym))
 
-      if error_message
-        render format => { errors: error_message }, status: :forbidden
-      end
+      render(format => { errors: error_message }, status: :forbidden) if error_message
     end
 
     def current_user
@@ -66,9 +65,7 @@ module SupplejackApi
                     current_user.user_sets.custom_find(user_set_id)
                   end
 
-      unless @user_set
-        render json: { errors: "Set with id: #{params[:id]} was not found." }, status: :not_found
-      end
+      render(json: { errors: "Set with id: #{params[:id]} was not found." }, status: :not_found) unless @user_set
     end
   end
 end

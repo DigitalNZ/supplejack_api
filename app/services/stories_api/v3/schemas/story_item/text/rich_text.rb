@@ -7,7 +7,7 @@ module StoriesApi
         module Text
           RichText = Dry::Validation.Schema(Block) do
             required(:content).schema do
-              required(:value).filled(:str?)
+              required(:value)
             end
           end
         end

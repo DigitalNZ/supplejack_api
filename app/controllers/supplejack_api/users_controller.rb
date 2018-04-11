@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SupplejackApi
-  class UsersController < ApplicationController
+  class UsersController < SupplejackApplicationController
     respond_to :xml, :json
     before_action :authenticate_admin!
 

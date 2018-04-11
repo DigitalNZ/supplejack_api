@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SupplejackApi
-  class SchemaController < ApplicationController
+  class SchemaController < SupplejackApplicationController
     skip_before_action :authenticate_user!, raise: false
     respond_to :json, :xml
 

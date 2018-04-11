@@ -4,7 +4,7 @@
 
 module SupplejackApi
   module Stories
-    class FeaturedController < ApplicationController
+    class FeaturedController < SupplejackApplicationController
       include Concerns::Stories
 
       def index

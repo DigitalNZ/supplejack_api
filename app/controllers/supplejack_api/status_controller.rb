@@ -3,7 +3,7 @@
 module SupplejackApi
   # rubocop:disable Metrics/LineLength
   # FIXME: make log lines smaller
-  class StatusController < ApplicationController
+  class StatusController < SupplejackApplicationController
     skip_before_action :authenticate_user!, only: [:show], raise: false
     # skip_before_action :verify_limits!,     only: [:show] This devise method doesn't work with rails 5 upgrade.
     # We need find out how this works with the version of devise we are up to.

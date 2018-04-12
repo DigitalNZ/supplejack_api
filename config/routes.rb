@@ -1,21 +1,11 @@
-
-
 require 'sidekiq/web'
 Sidekiq::Web.set :session_secret, Rails.application.secrets[:secret_key_base]
 
 SupplejackApi::Engine.routes.draw do
   root to: 'records#index'
 
-  devise_for :users, class_name: 'SupplejackApi::User'
-
   namespace :stories do
     resources :moderations, only: [:index]
-  end
-
-  # Admin level authentication
-  namespace :admin do
-    devise_for :users, class_name: 'SupplejackApi::User'
-    resources :site_activities, only: [:index]
   end
 
   scope '(/:version)', version: /v3/, defaults: { version: nil, format: 'json' } do
@@ -76,6 +66,7 @@ SupplejackApi::Engine.routes.draw do
     resources :concepts, only: [:create, :update]
     resources :fragments, only: [:destroy]
     resources :users, only: [:index, :show, :update]
+    resources :activities, only: [:index]
 
     # Partners
     resources :partners, except: [:destroy] do

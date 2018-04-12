@@ -8,7 +8,7 @@ RSpec.describe SupplejackApi::Harvester::ActivitiesController do
   let(:harvester_api_key) { create(:user, role: 'harvester').api_key }
   let(:developer_api_key) { create(:user, role: 'developer').api_key }
 
-  let!(:site_activites) { create_list(:site_activity, 5) }
+  let!(:activites) { create_list(:activity, 5) }
 
   describe '#index' do
     context 'with an API key with harvester privelages' do

@@ -2,7 +2,7 @@
 
 module SupplejackApi
   FactoryBot.define do
-    factory :site_activity, class: Harvester::SiteActivity do
+    factory :activity, class: Harvester::SiteActivity do
       created_at 1.day.ago
       updated_at Date.today
       date       { Faker::Date.birthday(18, 65) }

@@ -8,7 +8,7 @@ module SupplejackApi
 
       def index
         render json: SupplejackApi::SiteActivity.order_by(date: :desc),
-               root: 'site_activities', each_serializer: SiteActivitySerializer, adapter: :json
+               root: 'site_activities', each_serializer: ActivitySerializer, adapter: :json
       end
     end
   end

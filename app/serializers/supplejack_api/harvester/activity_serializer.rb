@@ -2,7 +2,7 @@
 
 module SupplejackApi
   module Harvester
-    class SiteActivitySerializer < ActiveModel::Serializer
+    class ActivitySerializer < ActiveModel::Serializer
       attributes :created_at, :updated_at, :date,
                  :user_sets, :search, :records, :source_clicks, :total
     end

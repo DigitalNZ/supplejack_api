@@ -12,8 +12,17 @@ module SupplejackApi
       allow(Search).to receive(:role_collection_restrictions) { [] }
     }
 
+    describe '#initialize' do
+      it 'sets the options' do
+        expect(@search).to respond_to :options
+      end
+    end
+
   	describe '#facet_list' do
   		before {
+        # Record Search is used here rather than Search
+        # this method uses a RecordSearchSchema within `Search#schema_class`
+        # Essentially, without RecordSearch the test breaks
         @search = RecordSearch.new
         allow(@search).to receive(:model_class) { Record }
       }
@@ -31,6 +40,9 @@ module SupplejackApi
 
     describe '#field_list' do
     	before {
+        # Record Search is used here rather than Search
+        # this method uses a RecordSearchSchema within `Search#schema_class`
+        # Essentially, without RecordSearch the test breaks
         @search = RecordSearch.new
         allow(@search).to receive(:schema_class) { RecordSchema }
       }
@@ -48,6 +60,9 @@ module SupplejackApi
 
     describe '#group_list' do
     	before {
+        # Record Search is used here rather than Search
+        # this method uses a RecordSearchSchema within `Search#schema_class`
+        # Essentially, without RecordSearch the test breaks
         @search = RecordSearch.new
         allow(@search).to receive(:model_class) { Record }
       }
@@ -241,45 +256,6 @@ module SupplejackApi
 	      expect(@search.something_missing).to be_nil
 	    end
 	  end
-
-	  describe '#solr_error_message' do
-      before(:each) do
-        @error = double(:error, response: {status: 400, body: 'Solr error'})
-        allow(@error).to receive(:parse_solr_error_response) { 'Solr error' }
-      end
-
-      it 'returns a hash with the solr error title and description' do
-        expect(@search.solr_error_message(@error)).to eq({:title => '400 Bad Request', :body => 'Solr error'})
-      end
-    end
-
-    describe '#solr_search_object' do
-      it 'memoizes the solr search object' do
-        sunspot_mock = double(:solr).as_null_object
-        expect(@search).to receive(:execute_solr_search).once.and_return(sunspot_mock)
-        @search.solr_search_object
-        expect(@search.solr_search_object).to eq(sunspot_mock)
-      end
-
-      it 'sets the solr request parameters when debug=true' do
-        @search.options[:debug] = 'true'
-        allow(@search).to receive(:execute_solr_search) { double(:solr_request, query: double(:query, to_params: {param1: 1})) }
-        @search.solr_search_object
-        expect(@search.solr_request_params).to eq({:param1 => 1})
-      end
-
-      it "doesn't set the solr request parameters" do
-        allow(@search).to receive(:execute_solr_search) { double(:solr_request, query: double(:query, to_params: {param1: 1})) }
-        @search.solr_search_object
-        expect(@search.solr_request_params).to be_nil
-      end
-
-      it 'returns a empty hash when solr request fails' do
-        @search.options[:debug] = 'true'
-        allow(@search).to receive(:execute_solr_search) { {} }
-        expect(@search.solr_search_object).to eq({})
-      end
-    end
 
   end
 end

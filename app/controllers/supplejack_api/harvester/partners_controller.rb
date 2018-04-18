@@ -2,7 +2,7 @@
 
 module SupplejackApi
   module Harvester
-    class PartnersController < ApplicationController
+    class PartnersController < SupplejackApplicationController
       respond_to :json
       before_action :authenticate_harvester!
 

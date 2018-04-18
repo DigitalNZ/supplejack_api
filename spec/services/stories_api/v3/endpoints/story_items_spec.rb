@@ -201,21 +201,6 @@ module StoriesApi
                 @item.delete(:_id)
               end
 
-              it 'should return error when text heading block' do
-                item = @item
-                item[:content].delete(:value)
-
-                response = StoryItems.new(ActionController::Parameters.new(story_id: @story.id, user_key: @user.api_key,
-                                          item: item)).post
-
-                expect(response).to eq(
-                  status: 400,
-                  exception: {
-                    message: 'Mandatory Parameters Missing: value is missing in content'
-                  }
-                )
-              end
-
               it 'should return created text rich-text story item' do
                 response = StoryItems.new(ActionController::Parameters.new(story_id: @story.id, user_key: @user.api_key,
                                           item: @item)).post

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SupplejackApi
-  class MetricsApiController < ApplicationController
+  class MetricsApiController < SupplejackApplicationController
     skip_before_action :authenticate_user!, raise: false
 
     API_VERSIONS = {

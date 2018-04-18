@@ -2,7 +2,7 @@
 
 module SupplejackApi
   module Harvester
-    class SourcesController < ApplicationController
+    class SourcesController < SupplejackApplicationController
       respond_to :json
       before_action :authenticate_harvester!
 

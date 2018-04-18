@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 module SupplejackApi
-  class RecordsController < ApplicationController
+  class RecordsController < SupplejackApplicationController
     include SupplejackApi::Concerns::RecordsControllerMetrics
 
     skip_before_action :authenticate_user!, only: %i[source status], raise: false
     before_action :set_concept_param, only: :index
     respond_to :json, :xml, :rss
-
+    protect_from_forgery except: %i[index show]
     def index
       @search = SupplejackApi::RecordSearch.new(all_params)
       @search.request_url = request.original_url
@@ -21,7 +21,7 @@ module SupplejackApi
                    callback: params['jsonp']
           end
           format.xml do
-            options = { serializer: self.class.search_serializer_class,
+            options = { serializer: self.class.search_serializer_class, record_includes: available_fields,
                         record_fields: available_fields, request_format: 'xml' }
             serializable_resource = ActiveModelSerializers::SerializableResource.new(@search, options)
             # The double as_json is required to render the inner json object as json as well as the exterior object

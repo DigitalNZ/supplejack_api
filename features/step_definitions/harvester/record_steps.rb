@@ -5,7 +5,7 @@ When /^I post a request to (?:create|update) a record with the JSON:$/ do |json|
 end
 
 Then /^there should be a new record with the identifier "(.*?)"$/ do |identifier|
-  @record = SupplejackApi::Record.find_by(internal_identifier: identifier)
+  @record = SupplejackApi.config.record_class.find_by(internal_identifier: identifier)
 end
 
 Given /^a record with the identifier "(.*?)"$/ do |identifier|
@@ -17,7 +17,7 @@ When /^I post a request to flush records with a source_id of "(.*?)" and a job_i
 end
 
 Then /^the record with the identifier "(.*?)" should have status "(.*?)"$/ do |identifier, status|
-  @record = SupplejackApi::Record.where(internal_identifier: identifier).first
+  @record = SupplejackApi.config.record_class.where(internal_identifier: identifier).first
   @record.status.should eq status
 end
 

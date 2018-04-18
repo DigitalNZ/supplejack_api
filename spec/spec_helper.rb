@@ -47,7 +47,7 @@ RSpec.configure do |config|
   config.before(:each) do
     # We have added this as database cleaner appears to not be working for mongo
     Sunspot.session = Sunspot::Rails::StubSessionProxy.new(Sunspot.session)
-    SupplejackApi::Record.destroy_all
+    SupplejackApi.config.record_class.destroy_all
     SupplejackApi::Concept.destroy_all
     DatabaseCleaner.clean
     Timecop.return

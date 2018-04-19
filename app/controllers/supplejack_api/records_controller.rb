@@ -7,7 +7,6 @@ module SupplejackApi
     skip_before_action :authenticate_user!, only: %i[source status], raise: false
     before_action :set_concept_param, only: :index
     respond_to :json, :xml, :rss
-    protect_from_forgery except: %i[index show]
     def index
       @search = SupplejackApi::RecordSearch.new(all_params)
       @search.request_url = request.original_url

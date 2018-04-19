@@ -2,7 +2,6 @@
 
 module SupplejackApi
   class SupplejackApplicationController < ::ApplicationController
-    helper SupplejackApi::ApplicationHelper
     before_action :authenticate_user!
 
     def authenticate_user!

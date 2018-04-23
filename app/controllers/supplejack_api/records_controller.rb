@@ -3,6 +3,7 @@
 module SupplejackApi
   class RecordsController < SupplejackApplicationController
     include SupplejackApi::Concerns::RecordsControllerMetrics
+    include ActionView::Rendering
 
     skip_before_action :authenticate_user!, only: %i[source status], raise: false
     before_action :set_concept_param, only: :index

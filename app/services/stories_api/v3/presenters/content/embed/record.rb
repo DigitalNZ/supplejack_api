@@ -17,7 +17,8 @@ module StoriesApi
               content_partner: :content_partner,
               creator: :creator,
               rights: :rights,
-              contributing_partner: :contributing_partner
+              contributing_partner: :contributing_partner,
+              status: :status
             }.freeze
 
             def call(block)

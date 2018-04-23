@@ -3,10 +3,12 @@
 module SupplejackApi
   class RecordsController < SupplejackApplicationController
     include SupplejackApi::Concerns::RecordsControllerMetrics
+    include ActionController::RequestForgeryProtection
 
     # This module is used for RSS templates
     include ActionView::Rendering
 
+    protect_from_forgery except: %i[index show]
     skip_before_action :authenticate_user!, only: %i[source status], raise: false
     before_action :set_concept_param, only: :index
     respond_to :json, :xml, :rss

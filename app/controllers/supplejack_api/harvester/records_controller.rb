@@ -21,8 +21,8 @@ module SupplejackApi
         end
 
         @record.set_status(params[:required_fragments])
-        @record.fragments.map(&:save!)
         @record.save!
+        @record.fragments.map(&:save!)
         @record.unset_null_fields
 
         render json: { status: :success, record_id: @record.record_id }

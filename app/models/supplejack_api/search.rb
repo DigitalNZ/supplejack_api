@@ -153,8 +153,9 @@ module SupplejackApi
     end
 
     def solr_error_message(exception)
+      status_code_string = RSolr::Error::Http::STATUS_CODES[exception.response&.[](:status).to_i]
       {
-        title: "#{exception.response[:status]} #{RSolr::Error::Http::STATUS_CODES[exception.response[:status].to_i]}",
+        title: "#{exception.response&.[](:status)} #{status_code_string}",
         body: exception.send(:parse_solr_error_response, exception.response[:body])
       }
     end

@@ -56,7 +56,7 @@ module SupplejackApi
           allow(@sunspot_builder).to receive(:execute).and_raise(RSolr::Error::Http.new({}, {}))
           allow(@search).to receive(:solr_error_message) { 'Problem!' }
           @search.execute_solr_search
-          expect(@search.errors.first).to eq 'Problem!'
+          expect(@search.errors.first).to be_a RSolr::Error::Http
         end
 
         [Timeout::Error, Errno::ECONNREFUSED, Errno::ECONNRESET].each do |error_klass|

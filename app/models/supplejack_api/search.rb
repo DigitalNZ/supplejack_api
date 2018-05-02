@@ -152,13 +152,6 @@ module SupplejackApi
       execute_solr_search_and_handle_errors(search)
     end
 
-    def solr_error_message(exception)
-      {
-        title: "#{exception.response[:status]} #{RSolr::Error::Http::STATUS_CODES[exception.response[:status].to_i]}",
-        body: exception.send(:parse_solr_error_response, exception.response[:body])
-      }
-    end
-
     INTEGER_ATTRIBUTES ||= %i[page per_page facets_per_page facets_page record_type].freeze
     alias read_attribute_for_serialization send
 
@@ -356,8 +349,8 @@ module SupplejackApi
       self.errors ||= []
       sunspot = search.execute
     rescue RSolr::Error::Http => e
-      self.errors << solr_error_message(e)
-      Rails.logger.info e.message
+      self.errors << e
+      Rails.logger.info self.errors
       sunspot = {}
     rescue Timeout::Error, Errno::ECONNREFUSED, Errno::ECONNRESET => e
       self.errors << 'Solr is temporarily unavailable please try again in a few seconds.'

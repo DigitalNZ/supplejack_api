@@ -232,17 +232,6 @@ module SupplejackApi
       end
     end
 
-    describe '#solr_error_message' do
-      before {
-        @error = double(:error, response: {status: 400, body: 'Solr error'})
-        allow(@error).to receive(:parse_solr_error_response) { 'Solr error' }
-      }
-
-      it 'returns a hash with the solr error title and description' do
-        expect(@search.solr_error_message(@error)).to eq({title: '400 Bad Request', body: 'Solr error'})
-      end
-    end
-
     describe '#method_missing' do
 	    it 'delegates any missing method to the solr_search_object' do
 	      sso = double(:sso, something_missing: [], hits: [])

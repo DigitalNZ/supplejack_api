@@ -39,9 +39,8 @@ module SupplejackApi
 
       it 'renders a the solr error when the query is invalid' do
         allow(SearchSerializer).to receive(:new).and_raise(RSolr::Error::Http.new({}, {}))
-        allow(controller).to receive(:solr_error_message).and_return('Error')
         get :index, params: { api_key: 'apikey' }, format: 'json'
-        expect(response.body).to eq({errors: 'Error'}.to_json)
+        expect(response.body).to include 'RSolr::Error::Http'
       end
 
       it "renders a error when the requested field doesn't exist" do

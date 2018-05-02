@@ -20,7 +20,7 @@ module SupplejackApi
           render request.format.to_sym => { errors: @search.errors }, status: :bad_request
         end
       rescue RSolr::Error::Http => e
-        render request.format.to_sym => { errors: solr_error_message(e) }, status: :bad_request
+        render request.format.to_sym => { errors: e }, status: :bad_request
       rescue Sunspot::UnrecognizedFieldError => e
         render request.format.to_sym => { errors: e.to_s }, status: :bad_request
       end

@@ -35,7 +35,6 @@ module SupplejackApi
     end
 
     config.to_prepare do
-      SupplejackApplicationController.helper(ActionView::Helpers)
       Dir.glob(Rails.root + 'app/decorators/**/*_decorator*.rb').each do |c|
         require_dependency(c)
       end

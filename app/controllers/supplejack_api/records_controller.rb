@@ -3,11 +3,15 @@
 module SupplejackApi
   class RecordsController < SupplejackApplicationController
     include SupplejackApi::Concerns::RecordsControllerMetrics
+    include ActionController::RequestForgeryProtection
 
+    # This module is used for RSS templates
+    include ActionView::Rendering
+
+    protect_from_forgery except: %i[index show]
     skip_before_action :authenticate_user!, only: %i[source status], raise: false
     before_action :set_concept_param, only: :index
     respond_to :json, :xml, :rss
-    protect_from_forgery except: %i[index show]
     def index
       @search = SupplejackApi::RecordSearch.new(all_params)
       @search.request_url = request.original_url
@@ -109,6 +113,14 @@ module SupplejackApi
 
     def all_params
       params.to_unsafe_h
+    end
+
+    # this is a method override due to the ActionController::API module
+    # not being able to render templates
+    # further read up on the issue can be found here:
+    # https://github.com/rails/rails/issues/27211#issuecomment-264392054
+    def render_to_body(options)
+      _render_to_body_with_renderer(options) || super
     end
   end
 end

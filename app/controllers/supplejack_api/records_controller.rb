@@ -66,7 +66,7 @@ module SupplejackApi
       render request.format.to_sym => { errors: "Record with ID #{params[:id]} was not found" }, status: :not_found
     rescue NoMethodError => e
       # rubocop:disable Metrics/LineLength
-      Rails.logger.info "ERROR: The user #{current_user.username} with token #{current_user.authentication_token} has caused #{e} on path #{request.path}"
+      Rails.logger.info "ERROR: The user #{current_user.username} with token #{current_user.authentication_token} has caused #{e} on path #{request.path} with params #{request.params}"
       # rubocop:enable Metrics/LineLength
     end
 

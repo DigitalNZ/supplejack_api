@@ -5,6 +5,8 @@ module SupplejackApi
     include Support::Concept::Storable
     include Support::Concept::Searchable
 
+    index concept_id: 1
+
     def self.build_context(fields)
       context = {}
       namespaces = []

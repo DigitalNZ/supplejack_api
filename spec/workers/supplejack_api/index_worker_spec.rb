@@ -9,15 +9,15 @@ module SupplejackApi
       let(:record2) { FactoryBot.create(:record, record_id: 67890) }
 
       it "finds all records by id" do
-        expect(IndexWorker.new.find_all("Record", [record1.id, record2.id])).to eq [record1, record2]
+        expect(IndexWorker.new.find_all("SupplejackApi::Record", [record1.id, record2.id])).to eq [record1, record2]
       end
 
       it "returns records even when some where not found" do
-        expect(IndexWorker.new.find_all("Record", ["504d333aa9b6ad1860000056", record1.id])).to eq [record1]
+        expect(IndexWorker.new.find_all("SupplejackApi::Record", ["504d333aa9b6ad1860000056", record1.id])).to eq [record1]
       end
 
       it "handles individual records" do
-        expect(IndexWorker.new.find_all("Record", record1.id)).to eq [record1]
+        expect(IndexWorker.new.find_all("SupplejackApi::Record", record1.id)).to eq [record1]
       end
     end
 

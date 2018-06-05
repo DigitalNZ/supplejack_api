@@ -1,9 +1,14 @@
-
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
+# and is licensed under the GNU General Public License, version 3.
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
+# the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
   class IndexWorker
     include Sidekiq::Worker
-    sidekiq_options queue: 'critical'
+    sidekiq_options queue: 'critical', retry: 1
 
     def perform(sunspot_method, object = nil)
       sunspot_method = sunspot_method.to_sym
@@ -15,17 +20,17 @@ module SupplejackApi
       Sunspot.session = Sunspot::Rails.build_session
       case sunspot_method
       when :index
-        index(find_all(object[:class], object[:id]))
+        self.index(self.find_all(object[:class], object[:id]))
       when :remove
-        remove(self.find_all(object[:class], object[:id]))
+        self.remove(self.find_all(object[:class], object[:id]))
       when :remove_all
-        remove_all(object)
+        self.remove_all(object)
       when :commit_if_dirty
-        commit_if_dirty
+        self.commit_if_dirty
       when :commit_if_delete_dirty
-        commit_if_delete_dirty
+        self.commit_if_delete_dirty
       when :commit
-        commit
+        self.commit
       else
         raise "Error: undefined protocol for IndexWorker: #{sunspot_method} (#{objects})"
       end
@@ -69,7 +74,6 @@ module SupplejackApi
     end
 
     def find_all(klass, ids)
-      klass = "SupplejackApi::#{klass}" if klass.deconstantize.blank?
       object_ids = *ids
       klass.constantize.where(:id.in => object_ids)
     end

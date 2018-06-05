@@ -20,7 +20,7 @@ module Sunspot
 
     %i[index index! remove remove!].each do |method|
       define_method(method) do |*objects|
-        @buffer = SupplejackApi::IndexBuffer.new
+        @buffer = SupplejackApi::RecordRedisQueue.new
         method = method.to_s.delete('!').to_sym
 
         objects = objects.flatten.compact

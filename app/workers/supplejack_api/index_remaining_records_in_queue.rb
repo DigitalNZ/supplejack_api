@@ -7,7 +7,7 @@
 # Resque Scheduler is used to execute this task.
 
 module SupplejackApi
-  class ClearIndexBuffer
+  class IndexRemainingRecordsInQueue
     include Sidekiq::Worker
     sidekiq_options queue: 'default', retry: false
 
@@ -17,7 +17,7 @@ module SupplejackApi
 
       Sunspot.session = Sunspot::Rails.build_session
 
-      buffer = SupplejackApi::IndexBuffer.new
+      buffer = SupplejackApi::RecordRedisQueue.new
 
       records_to_index = buffer.records_to_index
       if records_to_index.any?

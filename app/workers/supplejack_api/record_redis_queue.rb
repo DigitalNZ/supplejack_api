@@ -1,17 +1,10 @@
 # frozen_string_literal: true
 
-# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
-# and is licensed under the GNU General Public License, version 3.
-# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
-#
-# Supplejack was created by DigitalNZ at the National Library of NZ and
-# the Department of Internal Affairs. http://digitalnz.org/supplejack
-
 # Handles the logic for storing and retreiving record_ids from Redis
 # which should be indexed or removed from Solr.
 
 module SupplejackApi
-  class IndexBuffer
+  class RecordRedisQueue
     # Pops record ids to be indexed/unindexed from redis list
     def pop_record_ids(method = :index, batch_size = 1000)
       result = OpenStruct.new(ids: [])
@@ -36,15 +29,15 @@ module SupplejackApi
 
     # Fetches records to be indexed
     def records_to_index
-      records ||= SupplejackApi.config.record_class.where(:id.in => self.pop_record_ids(:index)).to_a
-      records.keep_if {|r| r.should_index? }
+      records ||= SupplejackApi.config.record_class.where(:id.in => pop_record_ids(:index)).to_a
+      records.keep_if(&:should_index?)
       records
     end
 
     # Fetches records to be unindexed
     def records_to_remove
-      records ||= SupplejackApi.config.record_class.where(:id.in => self.pop_record_ids(:remove)).to_a
-      records.delete_if {|r| r.should_index?}
+      records ||= SupplejackApi.config.record_class.where(:id.in => pop_record_ids(:remove)).to_a
+      records.delete_if(&:should_index?)
       records
     end
 

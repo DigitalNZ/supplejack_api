@@ -12,26 +12,27 @@ module SupplejackApi
     include Sidekiq::Worker
     sidekiq_options queue: 'default'
 
-    def perform(source_id, date=nil)
+    def perform(source_id, date = nil)
       cursor = if date.present?
-                 SupplejackApi.config.record_class.where(:'fragments.source_id' => source_id, :updated_at.gt => Time.parse(date))
+                 SupplejackApi.config.record_class.where(:'fragments.source_id' => source_id,
+                                                         :updated_at.gt => Time.zone.parse(date))
                else
                  SupplejackApi.config.record_class.where('fragments.source_id': source_id)
                end
 
-      in_chunks(cursor.where(status: "active")) do |records|
+      in_chunks(cursor.where(status: 'active')) do |records|
         Sunspot.index(records)
       end
 
-      in_chunks(cursor.where(status: "deleted")) do |records|
+      in_chunks(cursor.where(status: 'deleted')) do |records|
         Sunspot.remove(records)
       end
     end
 
-    def in_chunks(cursor, &block)
+    def in_chunks(cursor)
       total = cursor.count
       start = 0
-      chunk_size = 10000
+      chunk_size = 10_000
       while start < total
         records = cursor.limit(chunk_size).skip(start)
         yield records

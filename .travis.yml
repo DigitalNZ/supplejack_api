@@ -11,7 +11,9 @@ before_script:
 script:
   - bundle exec rspec
   - bundle exec rubocop
-services: mongodb
+services:
+  - mongodb
+  - redis-server
 addons:
   codeclimate:
     repo_token:

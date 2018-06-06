@@ -2,8 +2,6 @@ require 'spec_helper'
 
 module SupplejackApi
   describe IndexRemainingRecordsInQueue do
-    let(:index_remaining_records_in_queue) { SupplejackApi::IndexRemainingRecordsInQueue.new }
-
     context 'when indexing array of SupplejackApi.config.record_class' do
       before do
         # set 10 records to be indexed
@@ -14,14 +12,14 @@ module SupplejackApi
 
       it 'retries record by record if error is raised' do
         expect(Sunspot).to receive(:index).with(SupplejackApi.config.record_class).exactly(10).times
-        index_remaining_records_in_queue.perform
+        subject.perform
       end
 
       it 'log error if single record fail after retrying' do
         allow(Sunspot).to receive(:index).with(SupplejackApi.config.record_class).and_raise(StandardError)
 
         expect(Rails.logger).to receive(:error).exactly(10).times
-        index_remaining_records_in_queue.perform
+        subject.perform
       end
     end
 
@@ -35,14 +33,14 @@ module SupplejackApi
 
       it 'retries record by record if error is raised' do
         expect(Sunspot).to receive(:remove).with(SupplejackApi.config.record_class).exactly(10).times
-        index_remaining_records_in_queue.perform
+        subject.perform
       end
 
       it 'log error if single record fail after retrying' do
         allow(Sunspot).to receive(:remove).with(SupplejackApi.config.record_class).and_raise(StandardError)
 
         expect(Rails.logger).to receive(:error).exactly(10).times
-        index_remaining_records_in_queue.perform
+        subject.perform
       end
     end
   end

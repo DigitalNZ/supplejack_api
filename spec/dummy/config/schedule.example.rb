@@ -6,17 +6,17 @@ set :environment, :development if Rails.env.development?
 set :output, {:error => 'log/whenever.stderr.log', :standard => 'log/whenever.stdout.log'}
 
 every '*/5 * * * *' do
-  runner 'supplejackapi::interactionmetricsworker.perform_async'
+  runner 'SupplejackApi::InteractionMetricsWorker.perform_async'
 end
 
 every '*/5 * * * *' do
-  runner 'supplejackapi::clearindexbuffer.perform_async'
+  runner 'SupplejackApi::IndexRemainingRecordsInQueue.perform_async'
 end
 
 every '57 23 * * *' do
-  runner 'supplejackapi::dailymetricsworker.perform_async'
+  runner 'SupplejackApi::DailyMetricsWorker.perform_async'
 end
 
 every '30 23 * * *' do
-  runner 'supplejackapi::storeuseractivityworker.perform_async'
+  runner 'SupplejackApi::StoreUserActivityWorker.perform_async'
 end

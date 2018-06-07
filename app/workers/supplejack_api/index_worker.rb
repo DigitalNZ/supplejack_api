@@ -1,9 +1,16 @@
+# frozen_string_literal: true
 
+# The majority of the Supplejack API code is Crown copyright (C) 2014, New Zealand Government,
+# and is licensed under the GNU General Public License, version 3.
+# One component is a third party component. See https://github.com/DigitalNZ/supplejack_api for details.
+#
+# Supplejack was created by DigitalNZ at the National Library of NZ and
+# the Department of Internal Affairs. http://digitalnz.org/supplejack
 
 module SupplejackApi
   class IndexWorker
     include Sidekiq::Worker
-    sidekiq_options queue: 'critical'
+    sidekiq_options queue: 'critical', retry: 1
 
     def perform(sunspot_method, object = nil)
       sunspot_method = sunspot_method.to_sym
@@ -17,7 +24,7 @@ module SupplejackApi
       when :index
         index(find_all(object[:class], object[:id]))
       when :remove
-        remove(self.find_all(object[:class], object[:id]))
+        remove(find_all(object[:class], object[:id]))
       when :remove_all
         remove_all(object)
       when :commit_if_dirty
@@ -50,14 +57,12 @@ module SupplejackApi
     end
 
     def commit
-      begin
-        # on production, use autocommit in solrconfig.xml
-        # or commitWithin whenever sunspot supports it
-        sleep(20) unless Rails.env.test? # Sleep 20 seconds to wait for other potential jobs being executed in parallel
-        Sunspot.commit
-      rescue RSolr::Error::Http => e
-        Rails.logger.error e.inspect
-      end
+      # on production, use autocommit in solrconfig.xml
+      # or commitWithin whenever sunspot supports it
+      sleep(20) unless Rails.env.test? # Sleep 20 seconds to wait for other potential jobs being executed in parallel
+      Sunspot.commit
+    rescue RSolr::Error::Http => e
+      Rails.logger.error e.inspect
     end
 
     def commit_if_dirty

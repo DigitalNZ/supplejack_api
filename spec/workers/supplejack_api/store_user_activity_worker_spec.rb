@@ -4,6 +4,7 @@ module SupplejackApi
   describe StoreUserActivityWorker do
     let!(:users) { create_list(:user, 10, daily_activity_stored: false) }
     before do
+      # Generating some daily metrics
       users.each do |user|
         user.daily_activity = {
           records: {
@@ -42,10 +43,12 @@ module SupplejackApi
       end
     end
 
-    it 'logs an error when failed to reset daily activities' do
+    it 'logs an error when failed to reset daily activities and raise error' do
       allow_any_instance_of(SupplejackApi::User).to receive(:save!).and_raise(StandardError)
-      expect(Rails.logger).to receive(:error).exactly(10).times
-      subject.perform
+      expect(Rails.logger).to receive(:error).exactly(2).times
+      expect {
+        subject.perform
+      }.to raise_error
     end
 
     it 'logs a warn when reset daily activity job is called on user more than once a day' do
@@ -56,10 +59,12 @@ module SupplejackApi
       subject.perform
     end
 
-    it 'logs as error when generate_activity raise an exception' do
+    it 'logs as error when generate_activity raise an exception and raise error' do
       allow(SupplejackApi::SiteActivity).to receive(:generate_activity).and_raise(StandardError)
       expect(Rails.logger).to receive(:error).exactly(1).times
-      subject.perform
+      expect {
+        subject.perform
+      }.to raise_error
     end
   end
 end

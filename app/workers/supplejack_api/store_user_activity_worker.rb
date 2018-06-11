@@ -3,7 +3,7 @@
 module SupplejackApi
   class StoreUserActivityWorker
     include Sidekiq::Worker
-    sidekiq_options queue: 'critical'
+    sidekiq_options queue: 'critical', retry: 3
 
     # rubocop:disable LineLength
     def perform
@@ -24,7 +24,7 @@ module SupplejackApi
           user.save!
         rescue StandardError => e
           Rails.logger.error "[StoreUserActivityWorker] Failed resetting activity for #{user.inspect} with #{e}"
-          next
+          raise
         end
       end
 
@@ -33,6 +33,7 @@ module SupplejackApi
       Rails.logger.info '[StoreUserActivityWorker] Completed SiteActivity'
     rescue StandardError => e
       Rails.logger.error "[StoreUserActivityWorker] Exception (#{e.inspect})"
+      raise
     end
     # rubocop:enable LineLength
   end

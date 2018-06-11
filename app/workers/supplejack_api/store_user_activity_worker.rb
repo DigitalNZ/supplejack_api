@@ -5,6 +5,7 @@ module SupplejackApi
     include Sidekiq::Worker
     sidekiq_options queue: 'critical'
 
+    # rubocop:disable LineLength
     def perform
       Rails.logger.info '[StoreUserActivityWorker] Starting Execution'
 
@@ -33,5 +34,6 @@ module SupplejackApi
     rescue StandardError => e
       Rails.logger.error "[StoreUserActivityWorker] Exception (#{e.inspect})"
     end
+    # rubocop:enable LineLength
   end
 end

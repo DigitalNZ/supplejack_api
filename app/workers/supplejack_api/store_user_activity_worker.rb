@@ -14,7 +14,7 @@ module SupplejackApi
       all_users.each do |user|
         begin
           if user.daily_activity_stored
-            Rails.logger.warn "[StoreUserActivityWorker] Skipping Reset - Daily activity already stored for #{user}"
+            Rails.logger.warn "[StoreUserActivityWorker] Skipping Reset - Daily activity already stored for #{user.inspect}"
             next
           end
           user.user_activities << UserActivity.build_from_user(user.daily_activity)
@@ -22,7 +22,7 @@ module SupplejackApi
           user.reset_daily_activity
           user.save!
         rescue StandardError => e
-          Rails.logger.error "[StoreUserActivityWorker] Failed resetting activity for #{user} with exception #{e}"
+          Rails.logger.error "[StoreUserActivityWorker] Failed resetting activity for #{user.inspect} with #{e}"
           next
         end
       end
@@ -31,7 +31,7 @@ module SupplejackApi
       SiteActivity.generate_activity
       Rails.logger.info '[StoreUserActivityWorker] Completed SiteActivity'
     rescue StandardError => e
-      Rails.logger.error "[StoreUserActivityWorker] Exception (#{e})"
+      Rails.logger.error "[StoreUserActivityWorker] Exception (#{e.inspect})"
     end
   end
 end

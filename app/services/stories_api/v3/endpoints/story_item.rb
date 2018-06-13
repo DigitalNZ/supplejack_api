@@ -101,7 +101,7 @@ module StoriesApi
                                                                   :image_url,
                                                                   category: [],
                                                                   tags: []],
-                                                        meta: %i[align_mode is_cover caption title size metadata]).to_h
+                                                        meta: %i[align_mode is_cover caption title size metadata category]).to_h
         end
       end
     end

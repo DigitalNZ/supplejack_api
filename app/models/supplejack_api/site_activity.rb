@@ -38,7 +38,7 @@ module SupplejackApi
       site_activity.source_clicks = SupplejackApi::SourceActivity.get_source_clicks || 0
       SupplejackApi::SourceActivity.reset
       site_activity.calculate_total
-      site_activity.save
+      site_activity.save!
       site_activity
     end
 

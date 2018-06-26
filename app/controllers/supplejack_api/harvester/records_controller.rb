@@ -120,13 +120,10 @@ module SupplejackApi
 
       def hints
         indexes = SupplejackApi.config.record_class.collection.indexes.as_json.map { |index| index['key'].keys }.flatten
-        hints_hash = {}
-        search_params.each do |search_key, _v|
+        search_params.keys.each_with_object({}) do |search_key, object|
           next unless indexes.include? search_key
-          hints_hash[search_key] = 1
+          object[search_key] = 1
         end
-
-        hints_hash
       end
     end
   end

@@ -90,7 +90,8 @@ module SupplejackApi
         return render status: 400, body: body if search_params.blank?
 
         page = search_options_params[:page].to_i
-        @records = SupplejackApi.config.record_class.where(search_params).page(page).per(20)
+
+        @records = SupplejackApi.config.record_class.where(search_params).page(page).per(20).hint(hints)
 
         if @records.present?
           render json: @records,
@@ -115,6 +116,14 @@ module SupplejackApi
 
       def search_params
         params.require(:search).permit(['record_id', 'fragments.source_id', 'fragments.job_id'])
+      end
+
+      def hints
+        indexes = SupplejackApi.config.record_class.collection.indexes.as_json.map { |index| index['key'].keys }.flatten
+        search_params.keys.each_with_object({}) do |search_key, object|
+          next unless indexes.include? search_key
+          object[search_key] = 1
+        end
       end
     end
   end

@@ -98,6 +98,7 @@ module SupplejackApi
                  adapter: :json,
                  each_serializer: ::SupplejackApi::RecordSerializer,
                  include: [:fragments],
+                 root: 'records',
                  meta: { page: page, total_pages: @records.total_pages }
         else
           head :no_content

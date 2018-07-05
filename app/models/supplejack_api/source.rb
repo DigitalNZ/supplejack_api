@@ -21,12 +21,20 @@ module SupplejackApi
     # Its not completely random. Its not effiient to run .sample on large collections.
     # Fetches 4 random records from first 100 and last 100
     def random_records(limit)
-      records = Record.where('fragments.source_id' => source_id, :status => 'active')
+      records = Record.where('fragments.source_id' => source_id, :status => 'active').hint(hints)
 
       first_hundred = records.sort('fragments.syndication_date' => 1).limit(100).to_a
       last_hundred = records.sort('fragments.syndication_date' => -1).limit(100).to_a
 
       (first_hundred | last_hundred).sample(limit)
+    end
+
+    def hints
+      return {} unless SupplejackApi.config.record_class.collection.indexes.as_json.any? do |i|
+        i['name'] == 'fragments.job_id_1_status_1'
+      end
+
+      { 'fragments.job_id' => 1, 'status' => 1 }
     end
   end
 end

@@ -5,10 +5,10 @@ require 'spec_helper'
 module SupplejackApi
   describe Source do
     let!(:source) { FactoryBot.create(:source, status: 'active') }
-  
+
     describe '#suppressed' do
       let!(:suppressed_source) { FactoryBot.create(:source, status: 'suppressed') }
-  
+
       it 'should return all the suppressed sources' do
         expect(Source.suppressed.to_a).to eq [suppressed_source]
       end
@@ -42,7 +42,24 @@ module SupplejackApi
         expect_any_instance_of(Array).to receive(:sample).with(4)
 
         source.random_records(4)
-      end      
+      end
+    end
+
+    describe '#hints' do
+      context 'has mongo indexes' do
+        it 'returns a hash of index hints ' do
+          indexes = [{'name'=>'fragments.job_id_1_status_1'}]
+          SupplejackApi.config.record_class.stub_chain(:collection, :indexes, :as_json).and_return indexes
+
+          expect(source.hints).to eq({ 'fragments.job_id' => 1, 'status' => 1 })
+        end
+      end
+
+      context 'has no mongo indexes' do
+        it 'returns an empty hash ' do
+          expect(source.hints).to eq({})
+        end
+      end
     end
   end
 end

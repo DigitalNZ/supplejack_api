@@ -82,10 +82,6 @@ module SupplejackApi
       primary_fragment.subject = subjects
 
       record.save!
-
-      Sunspot.session = Sunspot::Rails.build_session
-      record.index
-      Sunspot.commit
     end
 
     # Force-capitalize only the first word of the set name

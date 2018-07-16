@@ -31,7 +31,7 @@ module StoriesApi
 
           cover_item = story.set_items.detect { |set_item| set_item['meta']['is_cover'] == true }
 
-          result[:category] = cover_item['content']['category'].first if cover_item.present?
+          result[:category] = cover_item['content']['category']&.first if cover_item.present?
 
           if slim
             result[:record_ids] = story.set_items.sort_by(&:position).map do |item|

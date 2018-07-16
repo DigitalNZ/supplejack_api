@@ -29,7 +29,7 @@ module StoriesApi
           result[:number_of_items] = story.set_items.to_a.count { |item| item.type != 'text' }
           result[:creator] = story.user.name
 
-          cover_item = story.set_items.select { |set_item| set_item['meta']['is_cover'] == true }.first
+          cover_item = story.set_items.detect { |set_item| set_item['meta']['is_cover'] == true }
 
           result[:category] = cover_item['content']['category'].first if cover_item.present?
 

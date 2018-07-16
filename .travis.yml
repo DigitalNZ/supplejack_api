@@ -3,7 +3,7 @@ rvm:
 - 2.3.1
 cache: bundler
 bundler_args: --without production
-sudo: required
+sudo: false
 before_script:
   - cp spec/dummy/config/mongoid.travis.yml spec/dummy/config/mongoid.yml
   - echo 'Pacific/Auckland' | sudo tee /etc/timezone

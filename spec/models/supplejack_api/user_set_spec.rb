@@ -101,10 +101,6 @@ module SupplejackApi
       end
 
       describe '#reindex_if_changed' do
-        before do
-          allow(Sunspot).to receive(:commit).and_return("true")
-        end
-
         let(:record) { FactoryBot.create(:record_with_fragment) }
         let(:user_set) { FactoryBot.create(:user_set) }
         context 'an active user_set has a index-able field changed' do
@@ -112,7 +108,6 @@ module SupplejackApi
           before do
             allow(user_set).to receive(:record_status).and_return("active")
             allow(user_set).to receive(:record).and_return(record)
-            expect(record).to receive(:index)
           end
 
           it 'calls sunspot index if privacy field changed' do
@@ -170,17 +165,6 @@ module SupplejackApi
 
           it 'calls sunspot index if description field changed' do
             user_set.update_attribute(:description, 'A new description')
-          end
-        end
-
-        context 'an un-active user_set that is approved' do
-          before do
-            allow(user_set).to receive(:record).and_return(record)
-            expect(record).to receive(:index)
-          end
-
-          it 'calls sunspot index' do
-            user_set.update_attribute(:approved, true)
           end
         end
       end

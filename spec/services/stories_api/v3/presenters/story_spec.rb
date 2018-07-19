@@ -76,6 +76,31 @@ module StoriesApi
             expect(presented_json[:record_ids].map{|item| item[:record_id] }).to eq(record_id_sorted)
             expect(presented_json[:record_ids].map{|item| item[:story_item_id] }).to eq(story_item_id_sorted)
           end
+
+          it 'stories with non text items presents the category of the story that is ticket as cover_thumb: true' do
+            story.set_items.build(attributes_for(:embed_dnz_item,meta: {is_cover: true}, category: ['Audio']))
+            story.save!
+
+            expect(presented_json[:category]).to eq 'Audio'
+          end
+
+          it 'stories with items that have no cover thumb, but have non-text items, presents the category as the first non-text item category' do
+            story.set_items.build(attributes_for(:embed_dnz_item,meta: {is_cover: false}, category: ['Books']))
+            story.save!
+
+            expect(presented_json[:category]).to eq 'Books'
+          end
+
+          it 'stories with only text items presents the category of the story as "text"' do
+            expect(presented_json[:category]).to eq 'text'
+          end
+
+          it 'stories with no items presents the category of the story as "text"' do
+            story.set_items = []
+            story.save!
+
+            expect(presented_json[:category]).to eq 'text'
+          end
         end
       end
     end

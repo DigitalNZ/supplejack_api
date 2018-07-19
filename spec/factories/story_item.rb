@@ -4,7 +4,7 @@ FactoryBot.define do
     sequence(:position)
     type 'text'
     sub_type 'heading'
-    content {{value: 'foo', image_url: ('a'..'z').to_a.shuffle.join, display_collection: 'TAPHUI'}}
+    content {{value: 'foo', image_url: ('a'..'z').to_a.shuffle.join, display_collection: 'TAPHUI', category: ['Audio']}}
     meta {{size: 1}}
     record_id { SecureRandom.random_number(1000000) }
 

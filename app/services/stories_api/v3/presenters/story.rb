@@ -31,8 +31,12 @@ module StoriesApi
 
           cover_item = story.set_items.detect { |set_item| set_item['meta']['is_cover'] == true }
 
-          result[:category] = cover_item['content']['category']&.first if cover_item.present?
-
+          result[:category] = if cover_item.present?
+                                cover_item['content']['category']&.first
+                              else
+                                fake_cover_item = story.set_items.detect { |set_item| set_item.type != 'text' }
+                                fake_cover_item.present? ? fake_cover_item.content[:category].first : 'text'
+                              end
           if slim
             result[:record_ids] = story.set_items.sort_by(&:position).map do |item|
               { record_id: item.record_id, story_item_id: item._id.to_s }

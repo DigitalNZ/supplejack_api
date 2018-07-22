@@ -29,14 +29,12 @@ module StoriesApi
           result[:number_of_items] = story.set_items.to_a.count { |item| item.type != 'text' }
           result[:creator] = story.user.name
 
-          cover_item = story.set_items.detect { |set_item| set_item['meta']['is_cover'] == true }
+          cover_item = story.set_items.detect do |set_item|
+            set_item.meta[:is_cover] == true && set_item['type'] != 'text'
+          end
 
-          result[:category] = if cover_item.present?
-                                cover_item['content']['category']&.first
-                              else
-                                fake_cover_item = story.set_items.detect { |set_item| set_item.type != 'text' }
-                                fake_cover_item.present? ? fake_cover_item.content[:category].first : 'text'
-                              end
+          result[:category] = story_category(story, cover_item)
+
           if slim
             result[:record_ids] = story.set_items.sort_by(&:position).map do |item|
               { record_id: item.record_id, story_item_id: item._id.to_s }
@@ -48,6 +46,15 @@ module StoriesApi
           end
 
           result
+        end
+
+        def story_category(story, cover_item)
+          if cover_item.present?
+            cover_item.content[:category]&.first || 'Other'
+          else
+            fake_cover_item = story.set_items.detect { |set_item| set_item.type != 'text' }
+            fake_cover_item.present? ? fake_cover_item.content[:category]&.first || 'Other' : 'Other'
+          end
         end
 
         def self.to_proc

@@ -135,12 +135,11 @@ module StoriesApi
         end
 
         describe '#patch' do
-
           it 'updates given set item' do
             record = create(:record)
             item = create(:story_item, type: 'embed', sub_type: 'record', position: 1,
                           content: { id: record.record_id},
-                          meta: { size: 1, metadata: 'Some Meta' }).attributes.symbolize_keys
+                          meta: { size: 1, metadata: 'Some Meta', tags: ['s2s_exemplar'] }).attributes.symbolize_keys
             item.delete(:_id)
 
             response = StoryItem.new(ActionController::Parameters.new(id: @story.set_items.first.id.to_s,

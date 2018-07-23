@@ -352,10 +352,6 @@ module SupplejackApi
       self.errors << e
       Rails.logger.info self.errors
       sunspot = {}
-    rescue Timeout::Error, Errno::ECONNREFUSED, Errno::ECONNRESET => e
-      self.errors << 'Solr is temporarily unavailable please try again in a few seconds.'
-      Rails.logger.info e.message
-      sunspot = {}
     ensure
       sunspot
     end

@@ -56,15 +56,8 @@ module SupplejackApi
           allow(@sunspot_builder).to receive(:execute).and_raise(RSolr::Error::Http.new({}, {}))
           allow(@search).to receive(:solr_error_message) { 'Problem!' }
           @search.execute_solr_search
-          expect(@search.errors.first).to be_a RSolr::Error::Http
-        end
 
-        [Timeout::Error, Errno::ECONNREFUSED, Errno::ECONNRESET].each do |error_klass|
-          it 'adds a error message for a #{Timeout::Error} error' do
-            allow(@sunspot_builder).to receive(:execute).and_raise(error_klass)
-            expect(@search.execute_solr_search).to eq({})
-            expect(@search.errors.first).to eq 'Solr is temporarily unavailable please try again in a few seconds.'
-          end
+          expect(@search.errors.first).to be_a RSolr::Error::Http
         end
       end
 

@@ -19,6 +19,8 @@ module SupplejackApi
 
       it 'should initialize a new search instance' do
         allow_any_instance_of(RecordSearch).to receive(:valid?) { false }
+        allow_any_instance_of(RecordSearch).to receive(:errors) { [] }
+
         expect(RecordSearch).to receive(:new).with(hash_including(text: 'dogs')).and_return(@search)
         get :index, params: { api_key: 'apikey', text: "dogs" }, format: "json"
         expect(assigns(:search)).to eq(@search)
@@ -26,6 +28,8 @@ module SupplejackApi
 
       it 'should set the request url on search object' do
         allow_any_instance_of(RecordSearch).to receive(:valid?) { false }
+        allow_any_instance_of(RecordSearch).to receive(:errors) { [] }
+
         get :index, params: { api_key: 'apikey', text: '123'}, format: "json"
 
         expect(assigns[:search].request_url).to eq "http://test.host/records?api_key=apikey&text=123"
@@ -33,27 +37,38 @@ module SupplejackApi
 
       it 'should set the current_user on the search' do
         allow_any_instance_of(RecordSearch).to receive(:valid?) { false }
+        allow_any_instance_of(RecordSearch).to receive(:errors) { [] }
+
         expect(@search).to receive(:scope=).with(@user)
         get :index, params: { api_key: 'apikey' }, format: "json"
-      end
-
-      it 'renders a the solr error when the query is invalid' do
-        allow(SearchSerializer).to receive(:new).and_raise(RSolr::Error::Http.new({}, {}))
-        get :index, params: { api_key: 'apikey' }, format: 'json'
-        expect(response.body).to include 'RSolr::Error::Http'
-      end
-
-      it "renders a error when the requested field doesn't exist" do
-        allow(SearchSerializer).to receive(:new).and_raise(Sunspot::UnrecognizedFieldError.new('No field configured for Record with name "something"'))
-        get :index, params: { api_key: 'apikey', and: {:something => true} }, format: 'json'
-        expect(response.body).to eq({:errors => 'No field configured for Record with name "something"'}.to_json)
       end
 
       it 'should return an error if the search request is invalid' do
         allow(@search).to receive(:valid?) { false }
         allow(@search).to receive(:errors) { ['The page parameter can not exceed 100,000'] }
         get :index, params: { api_key: 'apikey', page: 100001 }, format: 'json'
+
         expect(response.body).to eq({errors: ['The page parameter can not exceed 100,000']}.to_json)
+        expect(response.code).to eq '400'
+      end
+
+      it 'should return timeout 408 error if error is solr unavailable' do
+        allow_any_instance_of(RecordSearch).to receive(:valid?).and_raise(Timeout::Error)
+
+
+        get :index, params: { api_key: 'apikey', text: "dogs" }, format: "json"
+
+        expect(response.body).to eq({errors: ['Request timed out']}.to_json)
+        expect(response.code).to eq '408'
+      end
+
+      it 'should return timeout 400 error if error error' do
+        allow_any_instance_of(RecordSearch).to receive(:valid?) { false }
+        allow_any_instance_of(RecordSearch).to receive(:errors) { [RSolr::Error::Http] }
+
+        get :index, params: { api_key: 'apikey', text: "dogs" }, format: "json"
+
+        expect(response.code).to eq '400'
       end
 
       context 'json' do

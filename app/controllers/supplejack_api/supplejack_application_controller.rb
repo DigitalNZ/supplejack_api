@@ -4,6 +4,19 @@ module SupplejackApi
   class SupplejackApplicationController < ::ApplicationController
     before_action :authenticate_user!
 
+    rescue_from Timeout::Error do |_exception|
+      render request.format.to_sym => { errors: ['Request timed out'] }, status: :request_timeout
+    end
+
+    rescue_from Errno::ECONNREFUSED, Errno::ECONNRESET do |_exception|
+      render request.format.to_sym => { errors: ['Solr is temporarily unavailable please try again in a few seconds'] },
+             status: :service_unavailable
+    end
+
+    rescue_from Mongoid::Errors::DocumentNotFound do |_exception|
+      render request.format.to_sym => { errors: "Record with ID #{params[:id]} was not found" }, status: :not_found
+    end
+
     def authenticate_user!
       error_message = nil
 
@@ -52,7 +65,7 @@ module SupplejackApi
     def user_key_check!
       render request.format.to_sym => {
         errors: 'Mandatory parameter user_key missing'
-      }, status: 400 unless params[:user_key]
+      }, status: :bad_request unless params[:user_key]
     end
 
     def find_user_set

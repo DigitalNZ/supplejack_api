@@ -12,6 +12,7 @@ module SupplejackApi
     skip_before_action :authenticate_user!, only: %i[source status], raise: false
     before_action :set_concept_param, only: :index
     respond_to :json, :xml, :rss
+
     def index
       @search = SupplejackApi::RecordSearch.new(all_params)
       @search.request_url = request.original_url
@@ -36,10 +37,6 @@ module SupplejackApi
       else
         render request.format.to_sym => { errors: @search.errors }, status: :bad_request
       end
-    rescue RSolr::Error::Http => e
-      render request.format.to_sym => { errors: e }, status: :bad_request
-    rescue Sunspot::UnrecognizedFieldError => e
-      render request.format.to_sym => { errors: e.to_s }, status: :bad_request
     end
 
     def status
@@ -62,8 +59,6 @@ module SupplejackApi
         end
         format.rss { respond_with @record }
       end
-    rescue Mongoid::Errors::DocumentNotFound
-      render request.format.to_sym => { errors: "Record with ID #{params[:id]} was not found" }, status: :not_found
     end
 
     def multiple

@@ -105,7 +105,7 @@ module SupplejackApi
     # rubocop:enable Lint/UselessAssignment
 
     def self.all_public_sets
-      where(privacy: 'public', :name.ne => 'Favourites').order_by(updated_at: :desc).limit(2000)
+      where(privacy: 'public', :name.ne => 'Favourites').order_by(updated_at: :desc)
     end
 
     def self.public_sets(options = {})

@@ -179,28 +179,28 @@ module SupplejackApi
         @search.options[:page] = 100_001
         @search.valid?
 
-        expect(@search.warnings).to include 'The page parameter can not exceed 100000'
+        expect(@search.errors).to include 'The page parameter can not exceed 100000'
       end
 
       it 'sets warning if per_page vale is greater than 100' do
         @search.options[:per_page] = 101
         @search.valid?
 
-        expect(@search.warnings).to include 'The per_page parameter can not exceed 100'
+        expect(@search.errors).to include 'The per_page parameter can not exceed 100'
       end
 
       it 'sets warning if facets_per_page vale is greater than 350' do
         @search.options[:facets_per_page] = 351
         @search.valid?
 
-        expect(@search.warnings).to include 'The facets_per_page parameter can not exceed 350'
+        expect(@search.errors).to include 'The facets_per_page parameter can not exceed 350'
       end
 
       it 'sets warning if facets_page vale is greater than 5000' do
         @search.options[:facets_page] = 5001
         @search.valid?
 
-        expect(@search.warnings).to include 'The facets_page parameter can not exceed 5000'
+        expect(@search.errors).to include 'The facets_page parameter can not exceed 5000'
       end
     end
 

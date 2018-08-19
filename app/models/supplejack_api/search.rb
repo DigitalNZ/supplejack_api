@@ -113,7 +113,7 @@ module SupplejackApi
       self.class.max_values.each_key do |attribute|
         max_value = self.class.max_values[attribute]
         if @options[attribute].to_i > max_value
-          self.warnings << "The #{attribute} parameter can not exceed #{max_value}"
+          self.errors << "The #{attribute} parameter can not exceed #{max_value}"
         end
       end
 

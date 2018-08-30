@@ -6,7 +6,6 @@ module SupplejackApi
     include Concerns::StoriesControllerMetrics
 
     before_action :authenticate_admin!, only: [:admin_index]
-    before_action :build_sunspot_session, only: %i[update destroy create]
     before_action :user_key_check!, except: %i[admin_index show]
 
     def index
@@ -37,15 +36,6 @@ module SupplejackApi
 
     def destroy
       render_response(:story)
-    end
-
-    private
-
-    # @Author: Theo
-    # @last modified Theo
-    # @param params that user provide for update a story
-    def build_sunspot_session
-      Sunspot.session = Sunspot::Rails.build_session unless Rails.env.test?
     end
   end
 end

@@ -81,6 +81,9 @@ module SupplejackApi
       primary_fragment.description = description
       primary_fragment.subject = subjects
 
+      Sunspot.session = Sunspot::Rails.build_session unless Rails.env.test?
+      record.index
+
       record.save!
     end
 

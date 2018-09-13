@@ -1,7 +1,7 @@
 module SupplejackApi
   FactoryBot.define do
     factory :user_set, class: SupplejackApi::UserSet do
-      association :record, factory: :record
+      association :record, factory: :record_with_fragment
       name            'Dogs and cats'
       description     'Ugly dogs and cats'
       user

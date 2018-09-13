@@ -103,7 +103,7 @@ module SupplejackApi
         context 'multiple fragments' do
           before(:each) do
             record.fragments << FactoryBot.build(:record_fragment, name: 'James Smith', email: ['jamessmith@example.com'], source_id: 'another_source')
-            record.save!
+            record.reload.save!
           end
 
           it 'unsets the priority field' do
@@ -163,7 +163,7 @@ module SupplejackApi
         context 'multiple fragments' do
           before(:each) do
             record.fragments << FactoryBot.build(:record_fragment, email: ['jamessmith@example.com'], source_id: 'another_source')
-            record.save!
+            record.reload.save!
           end
 
           it 'should return a single value field from merged_fragment' do

@@ -4,6 +4,8 @@ module SupplejackApi
   # app/models/supplejack_api/collection_summary_metric.rb
   class CollectionMetric
     include Mongoid::Document
+    include Mongoid::Timestamps
+    include SupplejackApi::Concerns::QueryableByDate
 
     field :d, as: :date,                               type: Date,    default: Time.current.utc
     field :dc, as: :display_collection,                type: String

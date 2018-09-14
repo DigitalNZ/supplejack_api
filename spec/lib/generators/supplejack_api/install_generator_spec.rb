@@ -13,6 +13,10 @@ module SupplejackApi
         run_generator
       end
 
+      after(:all) do
+        system "rm -rf #{destination_path}"
+      end
+
       describe '#config files' do
         let(:generated_application_yml) { File.read("#{destination_path}/config/application.yml") }
         let(:generated_schedule) { File.read("#{destination_path}/config/schedule.rb") }
@@ -34,6 +38,45 @@ module SupplejackApi
 
         it 'creates sunspot.yml' do
           assert_file("#{destination_path}/config/sunspot.yml")
+        end
+      end
+
+      describe '#initializers' do
+        it 'creates devise.rb' do
+          assert_file "#{destination_path}/config/initializers/devise.rb"
+        end
+        it 'creates kaminari_config.rb' do
+          assert_file "#{destination_path}/config/initializers/kaminari_config.rb"
+        end
+        it 'creates quiet_logger.rb' do
+          assert_file "#{destination_path}/config/initializers/quiet_logger.rb"
+        end
+        it 'creates sidekiq.rb' do
+          assert_file "#{destination_path}/config/initializers/sidekiq.rb"
+        end
+        it 'creates simple_form.rb' do
+          assert_file "#{destination_path}/config/initializers/simple_form.rb"
+        end
+        it 'creates simple_form_foundation.rb' do
+          assert_file "#{destination_path}/config/initializers/simple_form_foundation.rb"
+        end
+        it 'creates state_machine.rb' do
+          assert_file "#{destination_path}/config/initializers/state_machine.rb"
+        end
+        it 'creates sunspot.rb' do
+          assert_file "#{destination_path}/config/initializers/sunspot.rb"
+        end
+        it 'creates supplejack_api.rb' do
+          assert_file "#{destination_path}/config/initializers/supplejack_api.rb"
+        end
+        it 'creates mongoid.rb' do
+          assert_file "#{destination_path}/config/initializers/mongoid.rb"
+        end
+        it 'creates interaction_updaters.rb' do
+          assert_file "#{destination_path}/config/initializers/interaction_updaters.rb"
+        end
+        it 'creates force_eagerload.rb' do
+          assert_file "#{destination_path}/config/initializers/force_eagerload.rb"
         end
       end
     end

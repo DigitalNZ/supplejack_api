@@ -14,7 +14,7 @@ module SupplejackApi
       end
 
       after(:all) do
-        system "rm -rf #{destination_path}"
+        # system "rm -rf #{destination_path}"
       end
 
       describe '#config files' do
@@ -79,6 +79,14 @@ module SupplejackApi
           assert_file "#{destination_path}/config/initializers/force_eagerload.rb"
         end
       end
+
+      describe '#environment_files' do
+        it 'creates production.rb' do
+          assert_file("#{destination_path}/config/environments/production.rb")
+        end
+      end
+
+      
     end
   end
 end

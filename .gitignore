@@ -10,3 +10,4 @@ spec/dummy/.sass-cache
 spec/dummy/.ruby-version
 spec/dummy/solr/pids
 spec/dummy/solr/data
+spec/lib/generators/supplejack_api/tmp/

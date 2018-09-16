@@ -19,6 +19,6 @@ gem 'xml_spec', git: 'https://github.com/boost/xml_spec',  require: false
 
 group :test do
   gem 'faker'
-  gem 'json-schema'
   gem 'generator_spec'
+  gem 'json-schema'
 end

@@ -73,9 +73,8 @@ module SupplejackApi
 
       def create_schema
         puts "\nCreating Default Record Schemas in app/supplejack_api/"
-        directory 'app/supplejack_api'
+        empty_directory 'app/supplejack_api'
 
-        # empty_directory 'app/supplejack_api'
         copy_file 'app/supplejack_api/record_schema.txt','app/supplejack_api/record_schema.rb'
         copy_file 'app/supplejack_api/concept_schema.rb'
       end

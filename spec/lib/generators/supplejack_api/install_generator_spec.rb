@@ -18,7 +18,7 @@ module SupplejackApi
       end
 
       after(:all) do
-        # system "rm -rf #{destination_path}"
+        system "rm -rf #{destination_path}"
       end
 
       describe '#config files' do
@@ -97,21 +97,23 @@ module SupplejackApi
       end
 
       describe '#update_gemfile' do
+        let(:gemfile) { File.read("#{destination_path}/Gemfile") }
+
         it 'adds the required gems to the gemfile' do
-          expect(File.read("#{destination_path}/Gemfile")).to include "gem 'sunspot_rails', '~> 2.2.0'"
-          expect(File.read("#{destination_path}/Gemfile")).to include "gem 'active_model_serializers', '~> 0.10.7'"
-          expect(File.read("#{destination_path}/Gemfile")).to include "gem 'mongoid_auto_increment'"
-          expect(File.read("#{destination_path}/Gemfile")).to include "gem 'whenever', '~> 0.10.0'"
+          expect(gemfile).to include "gem 'sunspot_rails', '~> 2.2.0'"
+          expect(gemfile).to include "gem 'active_model_serializers', '~> 0.10.7'"
+          expect(gemfile).to include "gem 'mongoid_auto_increment'"
+          expect(gemfile).to include "gem 'whenever', '~> 0.10.0'"
         end
       end
 
       describe '#create_schema' do
         it 'creates the record_schema.rb' do
-          expect(File.read("#{destination_path}/app/supplejack_api/record_schema.rb")).to include File.read("#{generator_files_path}/app/supplejack_api/record_schema.txt")
+          assert_file "#{destination_path}/app/supplejack_api/record_schema.rb"
         end
 
         it 'creates the concepts_schema.rb' do
-          expect(File.read("#{destination_path}/app/supplejack_api/concept_schema.rb")).to include File.read("#{generator_files_path}/app/supplejack_api/concept_schema.rb")
+          assert_file "#{destination_path}/app/supplejack_api/concept_schema.rb"
         end
       end
     end

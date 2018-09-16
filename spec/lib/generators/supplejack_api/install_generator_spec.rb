@@ -109,6 +109,10 @@ module SupplejackApi
         it 'creates the record_schema.rb' do
           expect(File.read("#{destination_path}/app/supplejack_api/record_schema.rb")).to include File.read("#{generator_files_path}/app/supplejack_api/record_schema.txt")
         end
+
+        it 'creates the concepts_schema.rb' do
+          expect(File.read("#{destination_path}/app/supplejack_api/concept_schema.rb")).to include File.read("#{generator_files_path}/app/supplejack_api/concept_schema.rb")
+        end
       end
     end
   end

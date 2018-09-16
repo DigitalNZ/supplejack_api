@@ -9,7 +9,11 @@ module SupplejackApi
       destination(destination_path)
 
       before(:all) do
+        # Generate fake Gemfile, routes
         prepare_destination
+        system "mkdir -p #{destination_path}/config"
+        system "echo end >> #{destination_path}/config/routes.rb"
+        system "echo 'gem \'supplejack_api\'' >> #{destination_path}/Gemfile"
         run_generator
       end
 
@@ -86,7 +90,17 @@ module SupplejackApi
         end
       end
 
-      
+      describe '#mount_engine' do
+        it 'mounts the supplejac routes' do
+          expect(File.read("#{destination_path}/config/routes.rb")).to include 'mount SupplejackApi::Engine => \'/\', as: \'supplejack_api\''
+        end
+      end
+
+      describe '#create_schema' do
+        it 'creates the record_schema.rb' do
+          expect(File.read("#{destination_path}/app/supplejack_api/record_schema.rb")).to include File.read("#{generator_files_path}/app/supplejack_api/record_schema.txt")
+        end
+      end
     end
   end
 end

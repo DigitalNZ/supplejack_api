@@ -40,7 +40,6 @@ module SupplejackApi
         copy_file 'config/initializers/mongoid.rb'
         copy_file 'config/initializers/interaction_updaters.rb'
         copy_file 'config/initializers/force_eagerload.rb'
-        directory 'config/locales'
       end
 
       def mount_engine

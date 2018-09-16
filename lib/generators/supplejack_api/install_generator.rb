@@ -43,13 +43,6 @@ module SupplejackApi
         directory 'config/locales'
       end
 
-      def environment_files
-        puts "\nInstalling environment files into config/environments/"
-
-        copy_file 'config/environments/production.rb'
-        gsub_file('config/environments/production.rb', 'Dummy::Application', Rails.application.class.to_s)
-      end
-
       def mount_engine
         puts "\nMounting SupplejackApi::Engine at / in config/routes.rb"
 

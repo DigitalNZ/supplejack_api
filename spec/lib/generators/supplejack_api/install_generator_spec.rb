@@ -84,12 +84,6 @@ module SupplejackApi
         end
       end
 
-      describe '#environment_files' do
-        it 'creates production.rb' do
-          assert_file("#{destination_path}/config/environments/production.rb")
-        end
-      end
-
       describe '#mount_engine' do
         it 'mounts the supplejac routes' do
           expect(File.read("#{destination_path}/config/routes.rb")).to include 'mount SupplejackApi::Engine => \'/\', as: \'supplejack_api\''

@@ -96,6 +96,15 @@ module SupplejackApi
         end
       end
 
+      describe '#update_gemfile' do
+        it 'adds the required gems to the gemfile' do
+          expect(File.read("#{destination_path}/Gemfile")).to include "gem 'sunspot_rails', '~> 2.2.0'"
+          expect(File.read("#{destination_path}/Gemfile")).to include "gem 'active_model_serializers', '~> 0.10.7'"
+          expect(File.read("#{destination_path}/Gemfile")).to include "gem 'mongoid_auto_increment'"
+          expect(File.read("#{destination_path}/Gemfile")).to include "gem 'whenever', '~> 0.10.0'"
+        end
+      end
+
       describe '#create_schema' do
         it 'creates the record_schema.rb' do
           expect(File.read("#{destination_path}/app/supplejack_api/record_schema.rb")).to include File.read("#{generator_files_path}/app/supplejack_api/record_schema.txt")

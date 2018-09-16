@@ -7,7 +7,7 @@ module SupplejackApi
     end
 
     attribute :results do
-      options = { fields: instance_options[:record_fields] }
+      options = { fields: instance_options[:record_fields], include: instance_options[:record_includes] }
       ActiveModelSerializers::SerializableResource.new(object.results, options)
     end
 

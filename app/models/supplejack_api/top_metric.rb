@@ -63,7 +63,7 @@ module SupplejackApi
     def self.record_metrics_to_be_processed(date, metric)
       SupplejackApi::RecordMetric.where(
         date: date,
-        processed_by_top_metrics: nil
+        :processed_by_top_metrics.in => [nil, '', false]
       ).order_by(metric => 'desc').limit(200)
     end
   end

@@ -63,7 +63,7 @@ module SupplejackApi
       SupplejackApi::RecordMetric.where(
         date: date,
         display_collection: display_collection,
-        processed_by_collection_metrics: nil
+        :processed_by_collection_metrics.in => [nil, '', false]
       )
     end
   end

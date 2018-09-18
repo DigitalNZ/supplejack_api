@@ -11,9 +11,9 @@ module MetricsApi
 
         def to_json
           {
-            id: @m.record_field_value,
+            id: @m.display_collection,
             searches: @m.searches,
-            record_page_views: @m.gets,
+            record_page_views: @m.record_page_views,
             user_set_views: @m.user_set_views,
             total_views: @m.total_views,
             records_added_to_user_sets: @m.records_added_to_user_sets

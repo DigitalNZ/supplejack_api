@@ -96,19 +96,29 @@ RSpec.describe SupplejackApi::CollectionMetric do
     end
 
     it 'updates CollectionMetric models if they already exist' do
-      create_list(:record_metric, 5, page_views: 7, user_set_views: 8, display_collection: 'TAPUHI', user_story_views: 9, added_to_user_sets: 10, source_clickthroughs: 11, appeared_in_searches: 12, added_to_user_stories: 13)
+      create_list(:record_metric,
+                  5,
+                  page_views: 7,
+                  user_set_views: 8,
+                  display_collection: 'TAPUHI',
+                  user_story_views: 9,
+                  added_to_user_sets: 10,
+                  source_clickthroughs: 11,
+                  appeared_in_searches: 12,
+                  added_to_user_stories: 13
+                 )
 
       SupplejackApi::CollectionMetric.spawn
 
       more_collection_metric = SupplejackApi::CollectionMetric.find_by(date: Time.now.utc)
 
-      expect(more_collection_metric.searches).to eq 150
-      expect(more_collection_metric.record_page_views).to eq 75
-      expect(more_collection_metric.user_set_views).to eq 90
-      expect(more_collection_metric.user_story_views).to eq 105
-      expect(more_collection_metric.records_added_to_user_sets).to eq 120
-      expect(more_collection_metric.records_added_to_user_stories).to eq 165
-      expect(more_collection_metric.total_source_clickthroughs).to eq 135
+      expect(more_collection_metric.searches).to eq 105
+      expect(more_collection_metric.record_page_views).to eq 55
+      expect(more_collection_metric.user_set_views).to eq 65
+      expect(more_collection_metric.user_story_views).to eq 75
+      expect(more_collection_metric.records_added_to_user_sets).to eq 85
+      expect(more_collection_metric.records_added_to_user_stories).to eq 115
+      expect(more_collection_metric.total_source_clickthroughs).to eq 95
     end
 
     it 'does not delete old metrics when it is appending new data' do

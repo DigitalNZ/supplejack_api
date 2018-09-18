@@ -39,21 +39,32 @@ module SupplejackApi
         collections = SupplejackApi::RecordMetric.where(date: date).map(&:display_collection).uniq
 
         collections.each do |collection|
-          find_or_create_by(date: date, display_collection: collection).inc(
-            searches: record_metric(date, collection).sum(:appeared_in_searches),
-            record_page_views: record_metric(date, collection).sum(:page_views),
-            user_set_views: record_metric(date, collection).sum(:user_set_views),
-            user_story_views: record_metric(date, collection).sum(:user_story_views),
-            records_added_to_user_sets: record_metric(date, collection).sum(:added_to_user_sets),
-            records_added_to_user_stories: record_metric(date, collection).sum(:added_to_user_stories),
-            total_source_clickthroughs: record_metric(date, collection).sum(:source_clickthroughs)
-          ).save!
+          record_metrics = record_metrics_to_be_processed(date, collection)
+          collection_metrics = find_or_create_by(date: date, display_collection: collection).inc(
+            searches: record_metrics.sum(:appeared_in_searches),
+            record_page_views: record_metrics.sum(:page_views),
+            user_set_views: record_metrics.sum(:user_set_views),
+            user_story_views: record_metrics.sum(:user_story_views),
+            records_added_to_user_sets: record_metrics.sum(:added_to_user_sets),
+            records_added_to_user_stories: record_metrics.sum(:added_to_user_stories),
+            total_source_clickthroughs: record_metrics.sum(:source_clickthroughs)
+          )
+
+          if collection_metrics.save
+            record_metrics.update_all(processed_by_collection_metrics: true)
+          else
+            Rails.logger.error "Unable to summarize record metrics from collection: #{collection} date: #{date}"
+          end
         end
       end
     end
 
-    def self.record_metric(date, display_collection)
-      SupplejackApi::RecordMetric.where(date: date, display_collection: display_collection)
+    def self.record_metrics_to_be_processed(date, display_collection)
+      SupplejackApi::RecordMetric.where(
+        date: date,
+        display_collection: display_collection,
+        processed_by_collection_metrics: false
+      )
     end
   end
 end

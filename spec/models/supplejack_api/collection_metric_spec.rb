@@ -3,10 +3,10 @@
 RSpec.describe SupplejackApi::CollectionMetric do
 
   describe '#attributes' do
-    let!(:collection_metric) { create(:collection_metric, searches: 2, record_page_views: 10, user_set_views: 6, user_story_views: 11 ) }
+    let!(:collection_metric) { create(:collection_metric, searches: 2, record_page_views: 10, user_set_views: 6, user_story_views: 11, date: Time.zone.yesterday ) }
 
     it 'has a date' do
-      expect(collection_metric.date).to eq Time.zone.now.utc.to_date
+      expect(collection_metric.date).to eq Time.zone.yesterday
     end
 
     it 'has a facet' do
@@ -63,16 +63,16 @@ RSpec.describe SupplejackApi::CollectionMetric do
   end
 
   describe '#spawn' do
-    let!(:record_metrics_today) { create_list(:record_metric, 5, page_views: 4, user_set_views: 5, display_collection: 'TAPUHI', user_story_views: 6, added_to_user_sets: 7, source_clickthroughs: 8, appeared_in_searches: 9, added_to_user_stories: 10) }
+    let!(:record_metrics_yesterday) { create_list(:record_metric, 5, page_views: 4, user_set_views: 5, display_collection: 'TAPUHI', user_story_views: 6, added_to_user_sets: 7, source_clickthroughs: 8, appeared_in_searches: 9, added_to_user_stories: 10, date: Time.zone.yesterday) }
 
-    let!(:record_metrics_tomorrow) { create_list(:record_metric, 5, date: 1.day.from_now.utc, page_views: 11, display_collection: 'TAPUHI', user_set_views: 12, user_story_views: 13, added_to_user_sets: 14, source_clickthroughs: 15, appeared_in_searches: 16, added_to_user_stories: 17) }
+    let!(:record_metrics_tomorrow) { create_list(:record_metric, 5, date: Time.zone.tomorrow, page_views: 11, display_collection: 'TAPUHI', user_set_views: 12, user_story_views: 13, added_to_user_sets: 14, source_clickthroughs: 15, appeared_in_searches: 16, added_to_user_stories: 17) }
 
     before do
       SupplejackApi::CollectionMetric.spawn
     end
 
     it 'generates per day collection metrics' do
-      todays_collection_metric = SupplejackApi::CollectionMetric.find_by(date: Time.now.utc)
+      todays_collection_metric = SupplejackApi::CollectionMetric.find_by(date: Time.zone.yesterday)
 
       expect(todays_collection_metric.searches).to eq 45
       expect(todays_collection_metric.record_page_views).to eq 20
@@ -84,9 +84,9 @@ RSpec.describe SupplejackApi::CollectionMetric do
     end
 
     it 'generates all collection metrics' do
-      create_list(:record_metric, 5, page_views: 4, user_set_views: 5, display_collection: 'OTHER', user_story_views: 6, added_to_user_sets: 7, source_clickthroughs: 8, appeared_in_searches: 9, added_to_user_stories: 10)
+      create_list(:record_metric, 5, page_views: 4, user_set_views: 5, display_collection: 'OTHER', user_story_views: 6, added_to_user_sets: 7, source_clickthroughs: 8, appeared_in_searches: 9, added_to_user_stories: 10, date: Time.zone.yesterday)
       SupplejackApi::CollectionMetric.spawn
-      all_metrics = SupplejackApi::CollectionMetric.find_by(display_collection: 'all', date: Time.now.utc)
+      all_metrics = SupplejackApi::CollectionMetric.find_by(display_collection: 'all', date: Time.zone.yesterday)
 
       expect(all_metrics.searches).to eq 90
       expect(all_metrics.record_page_views).to eq 40
@@ -98,7 +98,7 @@ RSpec.describe SupplejackApi::CollectionMetric do
     end
 
     it 'only process record metrics that were created before current day' do
-      todays_record_metrics = SupplejackApi::RecordMetric.where(date: 1.day.from_now.utc)
+      todays_record_metrics = SupplejackApi::RecordMetric.where(date: Time.zone.now)
 
       todays_record_metrics.each do |record_metric|
         expect(record_metric.processed_by_collection_metrics).to be_falsey
@@ -115,12 +115,13 @@ RSpec.describe SupplejackApi::CollectionMetric do
                   added_to_user_sets: 10,
                   source_clickthroughs: 11,
                   appeared_in_searches: 12,
-                  added_to_user_stories: 13
+                  added_to_user_stories: 13,
+                  date: Time.zone.yesterday
                  )
 
       SupplejackApi::CollectionMetric.spawn
 
-      more_collection_metric = SupplejackApi::CollectionMetric.find_by(date: Time.now.utc)
+      more_collection_metric = SupplejackApi::CollectionMetric.find_by(date: Time.zone.yesterday)
 
       expect(more_collection_metric.searches).to eq 105
       expect(more_collection_metric.record_page_views).to eq 55
@@ -134,11 +135,11 @@ RSpec.describe SupplejackApi::CollectionMetric do
     it 'does not delete old metrics when it is appending new data' do
       SupplejackApi::RecordMetric.destroy_all
 
-      create_list(:record_metric, 5, page_views: 7, user_set_views: 8, display_collection: 'TAPUHI', user_story_views: 9, added_to_user_sets: 10, source_clickthroughs: 11, appeared_in_searches: 12, added_to_user_stories: 13)
+      create_list(:record_metric, 5, page_views: 7, user_set_views: 8, display_collection: 'TAPUHI', user_story_views: 9, added_to_user_sets: 10, source_clickthroughs: 11, appeared_in_searches: 12, added_to_user_stories: 13, date: Time.zone.yesterday)
 
       SupplejackApi::CollectionMetric.spawn
 
-      more_collection_metric = SupplejackApi::CollectionMetric.find_by(date: Time.now.utc)
+      more_collection_metric = SupplejackApi::CollectionMetric.find_by(date: Time.zone.yesterday)
 
       expect(more_collection_metric.searches).to eq 105
       expect(more_collection_metric.record_page_views).to eq 55

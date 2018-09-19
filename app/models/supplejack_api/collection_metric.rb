@@ -33,7 +33,7 @@ module SupplejackApi
 
     def self.spawn
       return unless SupplejackApi.config.log_metrics == true
-      dates = SupplejackApi::RecordMetric.where(:date.lte => Time.zone.now.beginning_of_day).map(&:date).uniq
+      dates = SupplejackApi::RecordMetric.where(:date.lt => Time.zone.now.beginning_of_day).map(&:date).uniq
       dates.each do |date|
         collections = SupplejackApi::RecordMetric.where(date: date).map(&:display_collection).uniq
 

@@ -83,16 +83,26 @@ RSpec.describe SupplejackApi::CollectionMetric do
       expect(todays_collection_metric.records_added_to_user_stories).to eq 50
     end
 
-    it 'generates all available SupplejackApi::CollectionMetric days' do
-      tomorrows_collection_metric = SupplejackApi::CollectionMetric.find_by(date: 1.day.from_now.utc)
+    it 'generates all collection metrics' do
+      create_list(:record_metric, 5, page_views: 4, user_set_views: 5, display_collection: 'OTHER', user_story_views: 6, added_to_user_sets: 7, source_clickthroughs: 8, appeared_in_searches: 9, added_to_user_stories: 10)
+      SupplejackApi::CollectionMetric.spawn
+      all_metrics = SupplejackApi::CollectionMetric.find_by(display_collection: 'all', date: Time.now.utc)
 
-      expect(tomorrows_collection_metric.searches).to eq 80
-      expect(tomorrows_collection_metric.record_page_views).to eq 55
-      expect(tomorrows_collection_metric.user_set_views).to eq 60
-      expect(tomorrows_collection_metric.user_story_views).to eq 65
-      expect(tomorrows_collection_metric.total_views).to eq 260
-      expect(tomorrows_collection_metric.records_added_to_user_sets).to eq 70
-      expect(tomorrows_collection_metric.records_added_to_user_stories).to eq 85
+      expect(all_metrics.searches).to eq 90
+      expect(all_metrics.record_page_views).to eq 40
+      expect(all_metrics.user_set_views).to eq 50
+      expect(all_metrics.user_story_views).to eq 60
+      expect(all_metrics.total_views).to eq 240
+      expect(all_metrics.records_added_to_user_sets).to eq 70
+      expect(all_metrics.records_added_to_user_stories).to eq 100
+    end
+
+    it 'only process record metrics that were created before current day' do
+      todays_record_metrics = SupplejackApi::RecordMetric.where(date: 1.day.from_now.utc)
+
+      todays_record_metrics.each do |record_metric|
+        expect(record_metric.processed_by_collection_metrics).to be_falsey
+      end
     end
 
     it 'updates CollectionMetric models if they already exist' do

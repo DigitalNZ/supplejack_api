@@ -33,8 +33,7 @@ module SupplejackApi
 
     def self.spawn
       return unless SupplejackApi.config.log_metrics == true
-      dates = SupplejackApi::RecordMetric.all.map(&:date).uniq
-
+      dates = SupplejackApi::RecordMetric.where(:date.lte => Time.zone.now.beginning_of_day).map(&:date).uniq
       dates.each do |date|
         collections = SupplejackApi::RecordMetric.where(date: date).map(&:display_collection).uniq
 
@@ -56,6 +55,7 @@ module SupplejackApi
             Rails.logger.error "Unable to summarize record metrics from collection: #{collection} date: #{date}"
           end
         end
+        regenerate_all_collection_metrics!(date)
       end
     end
 
@@ -65,6 +65,22 @@ module SupplejackApi
         display_collection: display_collection,
         :processed_by_collection_metrics.in => [nil, '', false]
       )
+    end
+
+    def self.regenerate_all_collection_metrics!(date)
+      delete_all(date: date, display_collection: 'all')
+      all_collections = new(date: date, display_collection: 'all')
+      where(date: date, :display_collection.nin => ['all']).find_all do |collection|
+        all_collections.inc(
+          searches: collection.searches,
+          record_page_views: collection.record_page_views,
+          user_set_views: collection.user_set_views,
+          user_story_views: collection.user_story_views,
+          records_added_to_user_sets: collection.records_added_to_user_sets,
+          records_added_to_user_stories: collection.records_added_to_user_stories,
+          total_source_clickthroughs: collection.total_source_clickthroughs
+        ).save!
+      end
     end
   end
 end

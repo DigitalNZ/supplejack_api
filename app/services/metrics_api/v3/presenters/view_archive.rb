@@ -16,7 +16,8 @@ module MetricsApi
             record_page_views: @m.record_page_views,
             user_set_views: @m.user_set_views,
             total_views: @m.total_views,
-            records_added_to_user_sets: @m.records_added_to_user_sets
+            records_added_to_user_sets: @m.records_added_to_user_sets,
+            total_source_clickthroughs: @m.total_source_clickthroughs
           }
         end
 

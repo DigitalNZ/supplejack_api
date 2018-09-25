@@ -12,11 +12,11 @@ module MetricsApi
               metric: 'view',
               models: {
                 Date.current => [
-                  create(:collection_metric, display_collection: 'dc1'),
-                  create(:collection_metric, display_collection: 'dc2')
+                  create(:usage_metrics),
+                  create(:usage_metrics)
                 ],
                 Date.yesterday => [
-                  create(:collection_metric, created_at: Date.yesterday.midday)
+                  create(:usage_metrics, created_at: Date.yesterday.midday)
                 ]
               }
             },

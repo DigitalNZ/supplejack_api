@@ -12,14 +12,14 @@ module MetricsApi
         METRICS_TO_MODEL = {
           'record' => SupplejackApi::FacetedMetrics,
           'view' => SupplejackApi::UsageMetrics,
-          'view_archive' => SupplejackApi::CollectionMetric
+          'view_new' => SupplejackApi::CollectionMetric
         }.freeze
         # Mapping of metrics to the field on it's respective model that contains
         # the value to filter against
         METRIC_TO_MODEL_KEY = {
           'record' => :name,
           'view' => :record_field_value,
-          'view_archive' => :display_collection
+          'view_new' => :display_collection
         }.freeze
         # Facet limit to return in response
         MAX_FACETS = 10

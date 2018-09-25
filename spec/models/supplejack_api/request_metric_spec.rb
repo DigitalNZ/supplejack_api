@@ -43,10 +43,10 @@ RSpec.describe SupplejackApi::RequestMetric do
       yesterday_summed_30 = SupplejackApi::RecordMetric.find_by(record_id: 30, date: 1.day.ago.utc)
       yesterday_summed_411 = SupplejackApi::RecordMetric.find_by(record_id: 411, date: 1.day.ago.utc)
 
-      today_summed_1001 = SupplejackApi::RecordMetric.find_by(record_id: 1001, date: Time.now.utc)
-      today_summed_289 = SupplejackApi::RecordMetric.find_by(record_id: 289, date: Time.now.utc)
-      today_summed_30 = SupplejackApi::RecordMetric.find_by(record_id: 30, date: Time.now.utc)
-      today_summed_411 = SupplejackApi::RecordMetric.find_by(record_id: 411, date: Time.now.utc)
+      today_summed_1001 = SupplejackApi::RecordMetric.find_by(record_id: 1001, date: Time.zone.now)
+      today_summed_289 = SupplejackApi::RecordMetric.find_by(record_id: 289, date: Time.zone.now)
+      today_summed_30 = SupplejackApi::RecordMetric.find_by(record_id: 30, date: Time.zone.now)
+      today_summed_411 = SupplejackApi::RecordMetric.find_by(record_id: 411, date: Time.zone.now)
 
       expect(yesterday_summed_1001.appeared_in_searches).to eq 5
       expect(yesterday_summed_289.appeared_in_searches).to eq 10

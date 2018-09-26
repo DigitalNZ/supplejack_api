@@ -123,16 +123,24 @@ RSpec.describe SupplejackApi::CollectionMetric do
 
       more_collection_metric = SupplejackApi::CollectionMetric.find_by(date: Time.zone.yesterday)
 
-      expect(more_collection_metric.searches).to eq 105
-      expect(more_collection_metric.record_page_views).to eq 55
-      expect(more_collection_metric.user_set_views).to eq 65
-      expect(more_collection_metric.user_story_views).to eq 75
-      expect(more_collection_metric.records_added_to_user_sets).to eq 85
-      expect(more_collection_metric.records_added_to_user_stories).to eq 115
-      expect(more_collection_metric.total_source_clickthroughs).to eq 95
+      expect(more_collection_metric.searches).to eq SupplejackApi::RecordMetric.where(date: Time.zone.yesterday).sum(:appeared_in_searches)
+      expect(more_collection_metric.record_page_views).to eq SupplejackApi::RecordMetric.where(date: Time.zone.yesterday).sum(:page_views)
+      expect(more_collection_metric.user_set_views).to eq SupplejackApi::RecordMetric.where(date: Time.zone.yesterday).sum(:user_set_views)
+      expect(more_collection_metric.user_story_views).to eq SupplejackApi::RecordMetric.where(date: Time.zone.yesterday).sum(:user_story_views)
+      expect(more_collection_metric.records_added_to_user_sets).to eq SupplejackApi::RecordMetric.where(date: Time.zone.yesterday).sum(:added_to_user_sets)
+      expect(more_collection_metric.records_added_to_user_stories).to eq SupplejackApi::RecordMetric.where(date: Time.zone.yesterday).sum(:added_to_user_stories)
+      expect(more_collection_metric.total_source_clickthroughs).to eq SupplejackApi::RecordMetric.where(date: Time.zone.yesterday).sum(:source_clickthroughs)
     end
 
     it 'does not delete old metrics when it is appending new data' do
+      current_appeared_in_searches = SupplejackApi::RecordMetric.where(date: Time.zone.yesterday).sum(:appeared_in_searches)
+      current_page_views = SupplejackApi::RecordMetric.where(date: Time.zone.yesterday).sum(:page_views)
+      current_user_set_views = SupplejackApi::RecordMetric.where(date: Time.zone.yesterday).sum(:user_set_views)
+      current_user_story_views = SupplejackApi::RecordMetric.where(date: Time.zone.yesterday).sum(:user_story_views)
+      current_added_to_user_sets = SupplejackApi::RecordMetric.where(date: Time.zone.yesterday).sum(:added_to_user_sets)
+      current_added_to_user_stories = SupplejackApi::RecordMetric.where(date: Time.zone.yesterday).sum(:added_to_user_stories)
+      current_source_clickthroughs = SupplejackApi::RecordMetric.where(date: Time.zone.yesterday).sum(:source_clickthroughs)
+
       SupplejackApi::RecordMetric.destroy_all
 
       create_list(:record_metric, 5, page_views: 7, user_set_views: 8, display_collection: 'TAPUHI', user_story_views: 9, added_to_user_sets: 10, source_clickthroughs: 11, appeared_in_searches: 12, added_to_user_stories: 13, date: Time.zone.yesterday)
@@ -141,13 +149,13 @@ RSpec.describe SupplejackApi::CollectionMetric do
 
       more_collection_metric = SupplejackApi::CollectionMetric.find_by(date: Time.zone.yesterday)
 
-      expect(more_collection_metric.searches).to eq 105
-      expect(more_collection_metric.record_page_views).to eq 55
-      expect(more_collection_metric.user_set_views).to eq 65
-      expect(more_collection_metric.user_story_views).to eq 75
-      expect(more_collection_metric.records_added_to_user_sets).to eq 85
-      expect(more_collection_metric.records_added_to_user_stories).to eq 115
-      expect(more_collection_metric.total_source_clickthroughs).to eq 95
+      expect(more_collection_metric.searches).to eq SupplejackApi::RecordMetric.where(date: Time.zone.yesterday).sum(:appeared_in_searches) + current_appeared_in_searches
+      expect(more_collection_metric.record_page_views).to eq SupplejackApi::RecordMetric.where(date: Time.zone.yesterday).sum(:page_views) + current_page_views
+      expect(more_collection_metric.user_set_views).to eq SupplejackApi::RecordMetric.where(date: Time.zone.yesterday).sum(:user_set_views) + current_user_set_views
+      expect(more_collection_metric.user_story_views).to eq SupplejackApi::RecordMetric.where(date: Time.zone.yesterday).sum(:user_story_views) + current_user_story_views
+      expect(more_collection_metric.records_added_to_user_sets).to eq SupplejackApi::RecordMetric.where(date: Time.zone.yesterday).sum(:added_to_user_sets) + current_added_to_user_sets
+      expect(more_collection_metric.records_added_to_user_stories).to eq SupplejackApi::RecordMetric.where(date: Time.zone.yesterday).sum(:added_to_user_stories) + current_added_to_user_stories
+      expect(more_collection_metric.total_source_clickthroughs).to eq SupplejackApi::RecordMetric.where(date: Time.zone.yesterday).sum(:source_clickthroughs) + current_source_clickthroughs
     end
   end
 end

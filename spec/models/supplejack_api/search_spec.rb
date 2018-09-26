@@ -1,5 +1,3 @@
-
-
 require 'spec_helper'
 
 module SupplejackApi
@@ -15,6 +13,33 @@ module SupplejackApi
     describe '#initialize' do
       it 'sets the options' do
         expect(@search).to respond_to :options
+      end
+
+      it 'reverse_merges default options without replacing requested options' do
+        expect(Search.new(fields: 'title').options[:fields]).to eq 'title'
+      end
+
+      it 'uses sensible defaults when no options are provided' do
+        default_options =
+        {
+          facets: '',
+          and: {},
+          or: {},
+          without: {},
+          page: 1,
+          per_page: 20,
+          record_type: 0,
+          facets_per_page: 10,
+          facets_page: 1,
+          sort: nil,
+          direction: 'desc',
+          exclude_filters_from_facets: false,
+          fields: 'default',
+          facet_query: {},
+          debug: nil
+        }
+
+        expect(Search.new.options).to eq default_options
       end
     end
 

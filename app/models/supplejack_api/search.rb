@@ -5,7 +5,7 @@ module SupplejackApi
   class Search
     def initialize(options = {})
       @options = options.dup
-      @options.merge!(
+      @options.reverse_merge!(
         facets: '',
         and: {},
         or: {},

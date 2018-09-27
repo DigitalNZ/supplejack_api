@@ -33,11 +33,12 @@ module SupplejackApi
 
     def self.spawn
       return unless SupplejackApi.config.log_metrics == true
-      dates = SupplejackApi::RecordMetric.all.map(&:date).uniq
+      dates = SupplejackApi::RecordMetric.where(:date.lt => Time.zone.now.beginning_of_day).map(&:date).uniq
 
       dates.each do |date|
         METRICS.each do |metric|
-          results = results(date, metric).each_with_object({}) do |record, hash|
+          record_metrics = record_metrics_to_be_processed(date, metric)
+          results = record_metrics.each_with_object({}) do |record, hash|
             hash[record.record_id.to_s] = record.send(metric)
           end
 
@@ -55,11 +56,15 @@ module SupplejackApi
             metric.update(results: merged_results)
           end
         end
+        SupplejackApi::RecordMetric.where(date: date).update_all(processed_by_top_metrics: true)
       end
     end
 
-    def self.results(date, metric)
-      SupplejackApi::RecordMetric.where(date: date).order_by(metric => 'desc').limit(200)
+    def self.record_metrics_to_be_processed(date, metric)
+      SupplejackApi::RecordMetric.where(
+        date: date,
+        :processed_by_top_metrics.in => [nil, '', false]
+      ).order_by(metric => 'desc').limit(200)
     end
   end
 end

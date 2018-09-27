@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :story, class: SupplejackApi::UserSet do
-    association :record, factory: :record
+    association :record, factory: :record_with_fragment
 
     transient do
       number_of_story_items 2

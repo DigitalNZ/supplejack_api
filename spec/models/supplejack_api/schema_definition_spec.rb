@@ -23,7 +23,7 @@ module SupplejackApi
         end
       end
       datetime :syndication_date,                         search_as: [:filter]
-      string :text, solr_name: :text
+      text :contents, solr_name: :contents
       string :display_date, date_format: '%y/%d/%m'
       string :dnz_type, default_value: 'Unknown'
 
@@ -136,10 +136,10 @@ module SupplejackApi
         expect(ExampleSchema.fields[:syndication_date].search_as).to eq [:filter]
       end
 
-      it 'describes text' do
-        expect(ExampleSchema.fields[:text].name).to eq :text
-        expect(ExampleSchema.fields[:text].type).to eq :string
-        expect(ExampleSchema.fields[:text].solr_name).to eq :text
+      it 'describes contents' do
+        expect(ExampleSchema.fields[:contents].name).to eq :contents
+        expect(ExampleSchema.fields[:contents].type).to eq :text
+        expect(ExampleSchema.fields[:contents].solr_name).to eq :contents
       end
 
       it 'describes lat_lng' do

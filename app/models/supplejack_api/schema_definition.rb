@@ -4,7 +4,7 @@ module SupplejackApi
   module SchemaDefinition
     extend ActiveSupport::Concern
 
-    SCHEMA_METHODS = %i[string integer datetime boolean latlon text]
+    SCHEMA_METHODS = %i[string integer datetime boolean latlon text].freeze
     ALLOWED_ATTRIBUTES = {
       field: %i[type search_value search_boost multi_value search_as store
                 solr_name namespace namespace_field default_value date_format],

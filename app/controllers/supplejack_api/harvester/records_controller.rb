@@ -22,7 +22,6 @@ module SupplejackApi
 
         @record.set_status(params[:required_fragments])
         @record.fragments.map(&:save!)
-
         @record.reload
         @record.save!
 
@@ -32,12 +31,9 @@ module SupplejackApi
       rescue StandardError => e
         Rails.logger.error "Fail to process record #{@record}: #{e.inspect}"
         render json: {
-          status: :failed,
-          exception_class: e.class.to_s,
-          message: e.message,
-          backtrace: e.backtrace,
-          raw_data: @record.attributes,
-          record_id: @record.try(:record_id)
+          status: :failed, exception_class: e.class.to_s,
+          message: e.message, backtrace: e.backtrace,
+          raw_data: @record.attributes, record_id: @record.try(:record_id)
         }
       end
 

@@ -42,12 +42,10 @@ Gem::Specification.new do |s|
   s.add_dependency 'rest-client'
   s.add_dependency 'sass-rails'
   s.add_dependency 'sidekiq'
-  s.add_dependency 'simple_form'
   s.add_dependency 'state_machine'
   s.add_dependency 'thin'
   s.add_dependency 'uglifier'
   s.add_dependency 'unicode_utils'
-  s.add_dependency 'zurb-foundation', '~> 4.3.2'
 
   # # Adding sunspot_solr so app has access to sunspot:solr rake tasks
   s.add_dependency 'activeresource'
@@ -57,8 +55,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'sunspot_solr'
 
   # ## Development dependancies
-  s.add_development_dependency 'capybara'
-  s.add_development_dependency 'cucumber-rails'
   s.add_development_dependency 'database_cleaner'
   s.add_development_dependency 'factory_bot_rails'
   s.add_development_dependency 'launchy'

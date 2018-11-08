@@ -32,8 +32,6 @@ module SupplejackApi
         copy_file 'config/initializers/kaminari_config.rb'
         copy_file 'config/initializers/quiet_logger.rb'
         copy_file 'config/initializers/sidekiq.rb'
-        copy_file 'config/initializers/simple_form.rb'
-        copy_file 'config/initializers/simple_form_foundation.rb'
         copy_file 'config/initializers/state_machine.rb'
         copy_file 'config/initializers/sunspot.rb'
         copy_file 'config/initializers/supplejack_api.rb'

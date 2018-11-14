@@ -5,7 +5,6 @@ require 'devise'
 require 'devise-token_authenticatable'
 require 'kaminari'
 require 'kaminari/mongoid'
-require 'simple_form'
 require 'state_machine'
 require 'sunspot'
 require 'active_model_serializers'
@@ -19,7 +18,6 @@ require 'lazy_high_charts'
 require 'sidekiq'
 require 'json/ld'
 require 'dry-validation'
-require 'zurb-foundation'
 
 module SupplejackApi
   class Engine < ::Rails::Engine

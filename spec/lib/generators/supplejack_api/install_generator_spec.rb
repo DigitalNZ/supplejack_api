@@ -58,12 +58,6 @@ module SupplejackApi
         it 'creates sidekiq.rb' do
           assert_file "#{destination_path}/config/initializers/sidekiq.rb"
         end
-        it 'creates simple_form.rb' do
-          assert_file "#{destination_path}/config/initializers/simple_form.rb"
-        end
-        it 'creates simple_form_foundation.rb' do
-          assert_file "#{destination_path}/config/initializers/simple_form_foundation.rb"
-        end
         it 'creates state_machine.rb' do
           assert_file "#{destination_path}/config/initializers/state_machine.rb"
         end

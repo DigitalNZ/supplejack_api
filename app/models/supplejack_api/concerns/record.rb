@@ -24,7 +24,6 @@ module SupplejackApi::Concerns::Record
     after_save :remove_from_index
     after_save :update_replace_this_landing_urls
 
-
     # Scopes
     scope :active,          -> { where(status: 'active') }
     scope :deleted,         -> { where(status: 'deleted') }

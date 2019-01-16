@@ -22,6 +22,7 @@ module SupplejackApi
                              display_collection: display_collection,
                              copyright: copyright,
                              category: category,
+                             landing_url: 'http://www.digitalnz.org/records/replace_this',
                              tag: tag)]
         end
         after(:build) do |record_with_fragment|

@@ -22,6 +22,8 @@ module SupplejackApi::Concerns::Record
     # Callbacks
     before_save :merge_fragments
     after_save :remove_from_index
+    after_save :update_replace_this_landing_urls
+
 
     # Scopes
     scope :active,          -> { where(status: 'active') }
@@ -113,6 +115,13 @@ module SupplejackApi::Concerns::Record
 
     def remove_from_index
       Sunspot.remove(self) unless active?
+    end
+  end
+
+  def update_replace_this_landing_urls
+    fragments.each do |fragment|
+      next if fragment.landing_url.blank?
+      fragment.set(landing_url: fragment.landing_url.gsub(/replace_this/, record_id.to_s))
     end
   end
 end

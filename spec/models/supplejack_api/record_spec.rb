@@ -289,5 +289,12 @@ module SupplejackApi
       end
     end
 
+    describe '#update_replace_this_landing_urls' do
+      let(:record) { create(:record_with_fragment) }
+
+      it 'replaces replace_this in landing urls of fragments with the record_id belonging to the parent record' do
+        expect(record.landing_url).to include record.record_id.to_s
+      end
+    end
   end
 end

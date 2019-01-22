@@ -81,6 +81,9 @@ module SupplejackApi
 
         top_collection_metric.update(results: merged_results)
       end
+
+      METRICS_LOGGER.info "Updated Top Collection Metric: #{top_collection_metric.inspect}"
+      top_collection_metric
     end
 
     def self.find_or_create_top_collection_metric(date, metric, display_collection)
@@ -103,6 +106,7 @@ module SupplejackApi
     end
 
     def self.stamp_record_metrics(date)
+      METRICS_LOGGER.info "Stamping Record Metrics for date: #{date}"
       SupplejackApi::RecordMetric.where(date: date).update_all(processed_by_top_collection_metrics: true)
     end
   end

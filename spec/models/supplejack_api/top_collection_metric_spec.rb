@@ -1,6 +1,22 @@
 require 'spec_helper'
 
 RSpec.describe SupplejackApi::TopCollectionMetric, type: :model do
+  let(:top_collection_metric) { create(:top_collection_metric, results: { 1 => 200, 2 => 150 }) }
+
+  describe '#attributes' do
+    it 'has a date' do
+      expect(top_collection_metric.date).to eq Time.zone.now.utc.to_date
+    end
+
+    it 'has a metric' do
+      expect(top_collection_metric.metric).to eq 'appeared_in_searches'
+    end
+
+    it 'has results' do
+      results = { 1 => 200, 2 => 150 }
+      expect(top_collection_metric.results).to eq results
+    end
+  end
 
   describe '::spawn' do
     let!(:metric_one)   { create(:record_metric, appeared_in_searches: 1, date: Time.zone.yesterday, display_collection: 'Gotta collect them all!') }
@@ -33,6 +49,12 @@ RSpec.describe SupplejackApi::TopCollectionMetric, type: :model do
         display_collections.each do |dc|
           expect(SupplejackApi::TopCollectionMetric.where(metric: metric, display_collection: dc)).to exist
         end
+      end
+    end
+
+    it 'stamps all processed RecordMetric records :processed_by_top_collection_metrics flag as true' do
+      SupplejackApi::RecordMetric.all.each do |record_metric|
+        expect(record_metric.processed_by_top_collection_metrics).to be true
       end
     end
 

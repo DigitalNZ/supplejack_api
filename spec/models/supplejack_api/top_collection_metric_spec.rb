@@ -35,6 +35,10 @@ RSpec.describe SupplejackApi::TopCollectionMetric, type: :model do
     end
 
     before do
+      # Stub Metrics logger
+      allow(Logger).to receive(:new).and_return(nil)
+      allow(SupplejackApi::TopCollectionMetric::METRICS_LOGGER).to receive(:info).and_return(nil)
+
       create(:record_metric, date: Time.zone.yesterday, appeared_in_searches: 1, display_collection: 'Laramie')
       create(:record_metric, date: Time.zone.yesterday, appeared_in_searches: 2, display_collection: 'Laramie')
       create(:record_metric, date: Time.zone.yesterday, appeared_in_searches: 3, display_collection: 'Laramie')

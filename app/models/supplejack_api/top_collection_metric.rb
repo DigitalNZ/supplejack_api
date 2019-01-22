@@ -5,6 +5,8 @@ module SupplejackApi
   class TopCollectionMetric
     include Mongoid::Document
 
+    METRICS_LOGGER = Logger.new('log/metrics.log') # run `$ touch log/metrics.log` to create metrics log file
+
     METRICS = %i[
       page_views
       user_set_views
@@ -26,15 +28,24 @@ module SupplejackApi
 
     def self.spawn
       return unless SupplejackApi.config.log_metrics == true
+      Mongoid.logger = METRICS_LOGGER
+
+      METRICS_LOGGER.info 'Collecting Collections.'
       query = { :date.lt => Time.zone.now.beginning_of_day, processed_by_top_collection_metrics: false }
       display_collections = SupplejackApi::RecordMetric.where(query)
                                                        .map(&:display_collection).uniq.compact
 
+      METRICS_LOGGER.info 'Collecting Dates.'
       dates = SupplejackApi::RecordMetric.where(:date.lt => Time.zone.now.beginning_of_day).map(&:date).uniq
 
       dates.each do |date|
+        METRICS_LOGGER.info "Current Date: #{date}"
+
         METRICS.each do |metric|
+          METRICS_LOGGER.info "Current Metric: #{metric}"
+
           display_collections.each do |dc|
+            METRICS_LOGGER.info "Processing collection: #{dc}"
             record_metrics = record_metrics_to_be_processed(date, metric, dc)
 
             results = record_metrics.each_with_object({}) do |record, hash|
@@ -47,6 +58,8 @@ module SupplejackApi
         end
         stamp_record_metrics(date)
       end
+
+      Mongoid.logger = Rails.logger
     end
 
     def self.update_top_collection_metric(top_collection_metric, results)

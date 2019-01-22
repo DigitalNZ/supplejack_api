@@ -39,21 +39,14 @@ RSpec.describe SupplejackApi::TopCollectionMetric, type: :model do
       allow(Logger).to receive(:new).and_return(nil)
       allow(SupplejackApi::TopCollectionMetric::METRICS_LOGGER).to receive(:info).and_return(nil)
 
+      described_class::METRICS.each do |metric|
+        create(:record_metric, date: Time.zone.yesterday, metric.to_sym => 1, display_collection: 'Laramie')
+      end
+
       create(:record_metric, date: Time.zone.yesterday, appeared_in_searches: 1, display_collection: 'Laramie')
       create(:record_metric, date: Time.zone.yesterday, appeared_in_searches: 2, display_collection: 'Laramie')
       create(:record_metric, date: Time.zone.yesterday, appeared_in_searches: 3, display_collection: 'Laramie')
       SupplejackApi::TopCollectionMetric.spawn
-    end
-
-    it 'creates TopCollectionMetrics for each metric AND collection' do
-      metrics = ['added_to_user_sets', 'added_to_user_stories', 'appeared_in_searches', 'page_views', 'source_clickthroughs', 'user_set_views', 'user_story_views']
-      display_collections = described_class.all.map(&:display_collection)
-
-      metrics.each do |metric|
-        display_collections.each do |dc|
-          expect(SupplejackApi::TopCollectionMetric.where(metric: metric, display_collection: dc)).to exist
-        end
-      end
     end
 
     it 'stamps all processed RecordMetric records :processed_by_top_collection_metrics flag as true' do
@@ -86,11 +79,17 @@ RSpec.describe SupplejackApi::TopCollectionMetric, type: :model do
       create(:record_metric, appeared_in_searches: 1, date: Time.zone.yesterday, record_id: metric_three.record_id, display_collection: 'Laramie')
       create(:record_metric, appeared_in_searches: 1, date: Time.zone.yesterday, display_collection: 'Laramie')
 
-      SupplejackApi::TopCollectionMetric.spawn
+      described_class.spawn
 
       expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.zone.yesterday, metric: 'appeared_in_searches', display_collection: 'Laramie').results.values.first).to eq 3
       expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.zone.yesterday, metric: 'appeared_in_searches', display_collection: 'Laramie'))
       expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.zone.yesterday, metric: 'appeared_in_searches', display_collection: 'Laramie').results.keys.count).to eq 200
+    end
+
+    it 'returns a collection of top collection metrics' do
+      described_class.spawn.each do |tcm|
+        expect(tcm.class).to eql described_class
+      end
     end
   end
 end

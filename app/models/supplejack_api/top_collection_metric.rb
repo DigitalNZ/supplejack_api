@@ -38,28 +38,38 @@ module SupplejackApi
       METRICS_LOGGER.info 'Collecting Dates.'
       dates = SupplejackApi::RecordMetric.where(:date.lt => Time.zone.now.beginning_of_day).map(&:date).uniq
 
+      metrics = []
+
       dates.each do |date|
         METRICS_LOGGER.info "Current Date: #{date}"
 
-        METRICS.each do |metric|
-          METRICS_LOGGER.info "Current Metric: #{metric}"
+        display_collections.each do |dc|
+          METRICS_LOGGER.info "Current Display Collection: #{dc}"
 
-          display_collections.each do |dc|
-            METRICS_LOGGER.info "Processing collection: #{dc}"
+          METRICS.each do |metric|
+            METRICS_LOGGER.info "Current Metric: #{metric}"
+
             record_metrics = record_metrics_to_be_processed(date, metric, dc)
 
             results = record_metrics.each_with_object({}) do |record, hash|
               hash[record.record_id.to_s] = record.send(metric)
             end
 
+            # If there are no results for a metric, date, and display collection
+            # Skip to the next metric
+            next if results.select { |_key, value| value > 0 }.empty?
+
             top_collection_metric = find_or_create_top_collection_metric(date, metric, dc)
             update_top_collection_metric(top_collection_metric, results)
+            metrics.push(top_collection_metric)
           end
         end
         stamp_record_metrics(date)
       end
 
       Mongoid.logger = Rails.logger
+
+      metrics
     end
 
     def self.update_top_collection_metric(top_collection_metric, results)
@@ -74,11 +84,14 @@ module SupplejackApi
     end
 
     def self.find_or_create_top_collection_metric(date, metric, display_collection)
-      find_or_create_by(
+      top_collection_metric = find_or_create_by(
         date: date,
         metric: metric,
         display_collection: display_collection
       )
+
+      METRICS_LOGGER.info "Top Collection Metric: #{top_collection_metric.inspect}"
+      top_collection_metric
     end
 
     def self.record_metrics_to_be_processed(date, metric, display_collection)

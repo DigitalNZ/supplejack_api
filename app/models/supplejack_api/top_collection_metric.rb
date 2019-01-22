@@ -28,15 +28,10 @@ module SupplejackApi
 
     def self.spawn
       return unless SupplejackApi.config.log_metrics == true
-      Mongoid.logger = METRICS_LOGGER
+      enable_metrics_logger
 
-      METRICS_LOGGER.info 'Collecting Collections.'
-      query = { :date.lt => Time.zone.now.beginning_of_day, processed_by_top_collection_metrics: false }
-      display_collections = SupplejackApi::RecordMetric.where(query)
-                                                       .map(&:display_collection).uniq.compact
-
-      METRICS_LOGGER.info 'Collecting Dates.'
-      dates = SupplejackApi::RecordMetric.where(:date.lt => Time.zone.now.beginning_of_day).map(&:date).uniq
+      display_collections = find_display_collections_to_process
+      dates = find_dates_to_process
 
       metrics = []
 
@@ -51,13 +46,11 @@ module SupplejackApi
 
             record_metrics = record_metrics_to_be_processed(date, metric, dc)
 
-            results = record_metrics.each_with_object({}) do |record, hash|
-              hash[record.record_id.to_s] = record.send(metric)
-            end
+            results = calculate_results(record_metrics, metric)
 
             # If there are no results for a metric, date, and display collection
             # Skip to the next metric
-            next if results.select { |_key, value| value > 0 }.empty?
+            next if results.select { |_key, value| value.positive? }.empty?
 
             top_collection_metric = find_or_create_top_collection_metric(date, metric, dc)
             update_top_collection_metric(top_collection_metric, results)
@@ -67,9 +60,31 @@ module SupplejackApi
         stamp_record_metrics(date)
       end
 
-      Mongoid.logger = Rails.logger
+      disable_metrics_logger
 
       metrics
+    end
+
+    def self.find_dates_to_process
+      METRICS_LOGGER.info 'Collecting Dates.'
+
+      query = { :date.lt => Time.zone.now.beginning_of_day }
+      SupplejackApi::RecordMetric.where(query)
+                                 .map(&:date).uniq
+    end
+
+    def self.find_display_collections_to_process
+      METRICS_LOGGER.info 'Collecting Collections.'
+
+      query = { :date.lt => Time.zone.now.beginning_of_day, processed_by_top_collection_metrics: false }
+      SupplejackApi::RecordMetric.where(query)
+                                 .map(&:display_collection).uniq.compact
+    end
+
+    def self.calculate_results(record_metrics, metric)
+      record_metrics.each_with_object({}) do |record, hash|
+        hash[record.record_id.to_s] = record.send(metric)
+      end
     end
 
     def self.update_top_collection_metric(top_collection_metric, results)
@@ -108,6 +123,14 @@ module SupplejackApi
     def self.stamp_record_metrics(date)
       METRICS_LOGGER.info "Stamping Record Metrics for date: #{date}"
       SupplejackApi::RecordMetric.where(date: date).update_all(processed_by_top_collection_metrics: true)
+    end
+
+    def self.enable_metrics_logger
+      Mongoid.logger = METRICS_LOGGER
+    end
+
+    def self.disable_metrics_logger
+      Mongoid.logger = Rails.logger
     end
   end
 end

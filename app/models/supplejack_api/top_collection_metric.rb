@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SupplejackApi
   # app/models/supplejack_api/top_collection_metric.rb
   class TopCollectionMetric
@@ -13,7 +15,6 @@ module SupplejackApi
       added_to_user_stories
     ].freeze
 
-
     field :d, as: :date,               type: Date, default: Time.current.utc
     field :m, as: :metric,             type: String
     field :r, as: :results,            type: Hash
@@ -21,12 +22,12 @@ module SupplejackApi
 
     validates :date, presence: true
     validates :metric, presence: true
-    validates :metric, uniqueness: { :scope => [:date, :display_collection] }
+    validates :metric, uniqueness: { scope: %i[date display_collection] }
 
     def self.spawn
       return unless SupplejackApi.config.log_metrics == true
-
-      display_collections = SupplejackApi::RecordMetric.where(:date.lt => Time.zone.now.beginning_of_day, processed_by_top_collection_metrics: false)
+      query = { :date.lt => Time.zone.now.beginning_of_day, processed_by_top_collection_metrics: false }
+      display_collections = SupplejackApi::RecordMetric.where(query)
                                                        .map(&:display_collection).uniq.compact
 
       dates = SupplejackApi::RecordMetric.where(:date.lt => Time.zone.now.beginning_of_day).map(&:date).uniq
@@ -40,24 +41,31 @@ module SupplejackApi
               hash[record.record_id.to_s] = record.send(metric)
             end
 
-            top_collection_metric = find_or_create_by(
-              date: date,
-              metric: metric,
-              display_collection: dc
-            )
-
-            if top_collection_metric.results.blank?
-              top_collection_metric.update(results: results)
-            else
-              merged_results = top_collection_metric.results.merge(results) { |_key, a, b| a + b }
-              merged_results = merged_results.sort_by { |_k, v| -v }.first(200).to_h
-
-              top_collection_metric.update(results: merged_results)
-            end
+            top_collection_metric = find_or_create_top_collection_metric(date, metric, dc)
+            update_top_collection_metric(top_collection_metric, results)
           end
         end
         stamp_record_metrics(date)
       end
+    end
+
+    def self.update_top_collection_metric(top_collection_metric, results)
+      if top_collection_metric.results.blank?
+        top_collection_metric.update(results: results)
+      else
+        merged_results = top_collection_metric.results.merge(results) { |_key, a, b| a + b }
+        merged_results = merged_results.sort_by { |_k, v| -v }.first(200).to_h
+
+        top_collection_metric.update(results: merged_results)
+      end
+    end
+
+    def self.find_or_create_top_collection_metric(date, metric, display_collection)
+      find_or_create_by(
+        date: date,
+        metric: metric,
+        display_collection: display_collection
+      )
     end
 
     def self.record_metrics_to_be_processed(date, metric, display_collection)

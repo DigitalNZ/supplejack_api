@@ -78,7 +78,7 @@ module SupplejackApi
 
       query = { :date.lt => Time.zone.now.beginning_of_day, processed_by_top_collection_metrics: false }
       SupplejackApi::RecordMetric.where(query)
-                                 .map(&:display_collection).uniq.compact
+                                 .map(&:display_collection).uniq
     end
 
     def self.calculate_results(record_metrics, metric)

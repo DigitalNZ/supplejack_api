@@ -120,7 +120,10 @@ module SupplejackApi::Concerns::Record
   def update_replace_this_landing_urls
     fragments.each do |fragment|
       next if fragment.landing_url.blank?
+
       fragment.set(landing_url: fragment.landing_url.gsub(/replace_this/, record_id.to_s))
     end
+
+    merge_fragments
   end
 end

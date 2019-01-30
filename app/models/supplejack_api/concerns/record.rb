@@ -105,6 +105,7 @@ module SupplejackApi::Concerns::Record
 
     def should_index?
       return should_index_flag unless should_index_flag.nil?
+
       active?
     end
 
@@ -125,5 +126,6 @@ module SupplejackApi::Concerns::Record
     end
 
     merge_fragments
+    save!
   end
 end

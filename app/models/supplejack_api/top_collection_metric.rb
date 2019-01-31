@@ -28,17 +28,15 @@ module SupplejackApi
 
     def self.spawn
       return unless SupplejackApi.config.log_metrics == true
+
       enable_metrics_logger
-
-      display_collections = find_display_collections_to_process
-      dates = find_dates_to_process
-
       metrics = []
 
+      METRICS_LOGGER.info dates.to_json
       dates.each do |date|
         METRICS_LOGGER.info "Current Date: #{date}"
 
-        display_collections.each do |dc|
+        display_collections(date).each do |dc|
           METRICS_LOGGER.info "Current Display Collection: #{dc}"
 
           METRICS.each do |metric|
@@ -47,6 +45,8 @@ module SupplejackApi
             record_metrics = record_metrics_to_be_processed(date, metric, dc)
 
             results = calculate_results(record_metrics, metric)
+
+            METRICS_LOGGER.info results.to_json
 
             # If there are no results for a metric, date, and display collection
             # Skip to the next metric
@@ -65,20 +65,20 @@ module SupplejackApi
       metrics
     end
 
-    def self.find_dates_to_process
+    def self.dates
       METRICS_LOGGER.info 'Collecting Dates.'
 
-      query = { :date.lt => Time.zone.now.beginning_of_day }
-      SupplejackApi::RecordMetric.where(query)
-                                 .map(&:date).uniq
+      # query = { :date.lt => Time.zone.now.beginning_of_day }
+      SupplejackApi::RecordMetric.all.map(&:date).uniq
     end
 
-    def self.find_display_collections_to_process
+    def self.display_collections(date)
       METRICS_LOGGER.info 'Collecting Collections.'
 
-      query = { :date.lt => Time.zone.now.beginning_of_day, processed_by_top_collection_metrics: false }
-      SupplejackApi::RecordMetric.where(query)
-                                 .map(&:display_collection).uniq
+      SupplejackApi::RecordMetric.where(
+        date: date,
+        :processed_by_top_collection_metrics.in => [nil, '', false]
+      ).map(&:display_collection).uniq
     end
 
     def self.calculate_results(record_metrics, metric)

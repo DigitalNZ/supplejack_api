@@ -26,19 +26,7 @@ RSpec.describe SupplejackApi::TopCollectionMetric, type: :model do
     let!(:metric_group) { create_list(:record_metric, 250, date: Time.zone.yesterday, page_views: 1, display_collection: 'Laramie') }
     let!(:yesterdays_metric_group) { create_list(:record_metric, 5, date: Time.zone.yesterday - 1.day, page_views: 2, display_collection: 'Laramie') }
 
-    context 'metrics logging is disabled' do
-      it 'returns nil' do
-        allow(SupplejackApi).to receive_message_chain(:config, :log_metrics).and_return(false)
-
-        expect(described_class.spawn).to eq nil
-      end
-    end
-
     before do
-      # Stub Metrics logger
-      allow(Logger).to receive(:new).and_return(nil)
-      allow(SupplejackApi::TopCollectionMetric::METRICS_LOGGER).to receive(:info).and_return(nil)
-
       described_class::METRICS.each do |metric|
         create(:record_metric, date: Time.zone.yesterday, metric.to_sym => 1, display_collection: 'Laramie')
       end

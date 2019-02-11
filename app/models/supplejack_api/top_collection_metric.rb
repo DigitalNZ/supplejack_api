@@ -5,8 +5,6 @@ module SupplejackApi
   class TopCollectionMetric
     include Mongoid::Document
 
-    METRICS_LOGGER = Logger.new('log/metrics.log') # run `$ touch log/metrics.log` to create metrics log file
-
     METRICS = %i[
       page_views
       user_set_views
@@ -29,24 +27,18 @@ module SupplejackApi
     def self.spawn
       return unless SupplejackApi.config.log_metrics == true
 
-      enable_metrics_logger
       metrics = []
 
-      METRICS_LOGGER.info dates.to_json
       dates.each do |date|
-        METRICS_LOGGER.info "Current Date: #{date}"
 
         display_collections(date).each do |dc|
-          METRICS_LOGGER.info "Current Display Collection: #{dc}"
 
           METRICS.each do |metric|
-            METRICS_LOGGER.info "Current Metric: #{metric}"
 
             record_metrics = record_metrics_to_be_processed(date, metric, dc)
 
             results = calculate_results(record_metrics, metric)
 
-            METRICS_LOGGER.info results.to_json
 
             # If there are no results for a metric, date, and display collection
             # Skip to the next metric
@@ -60,20 +52,16 @@ module SupplejackApi
         stamp_record_metrics(date)
       end
 
-      disable_metrics_logger
-
       metrics
     end
 
     def self.dates
-      METRICS_LOGGER.info 'Collecting Dates.'
 
       # query = { :date.lt => Time.zone.now.beginning_of_day }
       SupplejackApi::RecordMetric.all.map(&:date).uniq
     end
 
     def self.display_collections(date)
-      METRICS_LOGGER.info 'Collecting Collections.'
 
       SupplejackApi::RecordMetric.where(
         date: date,
@@ -97,7 +85,6 @@ module SupplejackApi
         top_collection_metric.update(results: merged_results)
       end
 
-      METRICS_LOGGER.info "Updated Top Collection Metric: #{top_collection_metric.inspect}"
       top_collection_metric
     end
 
@@ -108,7 +95,6 @@ module SupplejackApi
         display_collection: display_collection
       )
 
-      METRICS_LOGGER.info "Top Collection Metric: #{top_collection_metric.inspect}"
       top_collection_metric
     end
 
@@ -121,16 +107,7 @@ module SupplejackApi
     end
 
     def self.stamp_record_metrics(date)
-      METRICS_LOGGER.info "Stamping Record Metrics for date: #{date}"
       SupplejackApi::RecordMetric.where(date: date).update_all(processed_by_top_collection_metrics: true)
-    end
-
-    def self.enable_metrics_logger
-      Mongoid.logger = METRICS_LOGGER
-    end
-
-    def self.disable_metrics_logger
-      Mongoid.logger = Rails.logger
     end
   end
 end

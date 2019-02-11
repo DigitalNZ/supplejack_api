@@ -30,15 +30,11 @@ module SupplejackApi
       metrics = []
 
       dates.each do |date|
-
         display_collections(date).each do |dc|
-
           METRICS.each do |metric|
-
             record_metrics = record_metrics_to_be_processed(date, metric, dc)
 
             results = calculate_results(record_metrics, metric)
-
 
             # If there are no results for a metric, date, and display collection
             # Skip to the next metric
@@ -56,13 +52,11 @@ module SupplejackApi
     end
 
     def self.dates
-
       # query = { :date.lt => Time.zone.now.beginning_of_day }
       SupplejackApi::RecordMetric.all.map(&:date).uniq
     end
 
     def self.display_collections(date)
-
       SupplejackApi::RecordMetric.where(
         date: date,
         :processed_by_top_collection_metrics.in => [nil, '', false]

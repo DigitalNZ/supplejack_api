@@ -43,6 +43,10 @@ RSpec.describe SupplejackApi::RecordMetric do
     it 'has added_to_user_stories' do
       expect(record_metric.added_to_user_stories).to eq 0
     end
+
+    it 'has default false processed_by_top_collection_metrics flag' do
+      expect(record_metric.processed_by_top_collection_metrics).to be false
+    end
   end
 
   describe '#validations' do

@@ -128,5 +128,9 @@ module SupplejackApi::Concerns::Record
     SupplejackApi.config.record_class.without_callback(:save, :after, :update_replace_this_landing_urls) do
       save
     end
+  rescue ArgumentError => e
+    return if e.message == 'After save callback :update_replace_this_landing_urls has not been defined'
+    
+    raise e
   end
 end

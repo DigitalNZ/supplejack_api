@@ -125,7 +125,7 @@ module SupplejackApi::Concerns::Record
       fragment.set(landing_url: fragment.landing_url.gsub(/replace_this/, record_id.to_s))
     end
 
-    Record.without_callback(:save, :after, :update_replace_this_landing_urls) do
+    SupplejackApi.config.record_class.without_callback(:save, :after, :update_replace_this_landing_urls) do
       save
     end
   end

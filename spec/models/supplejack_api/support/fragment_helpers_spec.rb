@@ -9,7 +9,7 @@ module SupplejackApi
 
       describe '#before_save' do
         it 'should call merge_fragments' do
-          expect(record).to receive(:merge_fragments)
+          expect(record).to receive(:merge_fragments).twice
           record.save
         end
       end

@@ -52,7 +52,7 @@ module SupplejackApi
         end
 
         it "saves the record" do
-          expect(record).to receive(:save)
+          expect(record).to receive(:save).twice
           post :create, params: { record: {"internal_identifier" => "1234"}, api_key: api_key }
         end
 

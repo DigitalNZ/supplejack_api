@@ -18,12 +18,11 @@ module SupplejackApi
           @record.create_or_update_fragment(record_params)
         else
           @record.clear_attributes
-          @record.update_from_harvest!(record_params)
+          @record.update_from_harvest(record_params)
         end
 
         @record.set_status(params[:required_fragments])
         @record.fragments.map(&:save!)
-        @record.reload
         @record.save!
 
         @record.unset_null_fields

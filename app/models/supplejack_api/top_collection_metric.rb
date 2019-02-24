@@ -4,6 +4,8 @@ module SupplejackApi
   # app/models/supplejack_api/top_collection_metric.rb
   class TopCollectionMetric
     include Mongoid::Document
+    include Mongoid::Timestamps
+    include SupplejackApi::Concerns::QueryableByDate    
 
     METRICS = %i[
       page_views

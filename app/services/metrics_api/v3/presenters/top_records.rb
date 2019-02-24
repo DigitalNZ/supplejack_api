@@ -12,12 +12,12 @@ module MetricsApi
         def to_json
           {
             id: @m.display_collection,
-            page_views: @m.page_views,
-            user_set_views: @m.user_set_views,
-            user_story_views: @m.user_story_views,
-            source_clickthroughs: @m.source_clickthroughs,
-            appeared_in_searches: @m.appeared_in_searches,
-            added_to_user_stories: @m.added_to_user_stories
+            page_views: SupplejackApi::TopCollectionMetric.find_by(date: @m.date, metric: 'page_views', display_collection: @m.display_collection),
+            user_set_views: SupplejackApi::TopCollectionMetric.find_by(date: @m.date, metric: 'user_set_views', display_collection: @m.display_collection),
+            user_story_views: SupplejackApi::TopCollectionMetric.find_by(date: @m.date, metric: 'user_story_views', display_collection: @m.display_collection),
+            source_clickthroughs: SupplejackApi::TopCollectionMetric.find_by(date: @m.date, metric: 'source_clickthroughs', display_collection: @m.display_collection),
+            appeared_in_searches: SupplejackApi::TopCollectionMetric.find_by(date: @m.date, metric: 'appeared_in_searches', display_collection: @m.display_collection),
+            added_to_user_stories: SupplejackApi::TopCollectionMetric.find_by(date: @m.date, metric: 'added_to_user_stories', display_collection: @m.display_collection)
           }
         end
 

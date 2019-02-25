@@ -3,14 +3,33 @@
 development:
   clients:
     default:
-      database: supplejack_api_development
+      database: dnz_api_staging
       hosts:
-        - 127.0.0.1:27018
+        - localhost:27018
+      options:
+        user: dnz-system
+        password: monkey-ephemeral-nova
+        auth_source: admin
+        ssl: <%= ENV['MONGOID_SSL_ENABLED'] || false %>
+        ssl_cert: /var/api/config/mongo_certs/mongo.pem
+        ssl_key: /var/api/config/mongo_certs/mongo.pem
+        ssl_verify: <%= ENV['MONGOID_SSL_ENABLED'] || false %>
+        ssl_ca_cert: /var/api/config/mongo_certs/ca.crt
 
     strong:
-      database: supplejack_api_development
+      database: dnz_api_staging
       hosts:
-        - 127.0.0.1:27018
+        - localhost:27018
+      options:
+        user: dnz-system
+        password: monkey-ephemeral-nova
+        auth_source: admin
+        ssl: <%= ENV['MONGOID_SSL_ENABLED'] || false %>
+        ssl_cert: /var/api/config/mongo_certs/mongo.pem
+        ssl_key: /var/api/config/mongo_certs/mongo.pem
+        ssl_verify: <%= ENV['MONGOID_SSL_ENABLED'] || false %>
+        ssl_ca_cert: /var/api/config/mongo_certs/ca.crt
+
 
 test:
   clients:

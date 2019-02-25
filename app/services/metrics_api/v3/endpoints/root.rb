@@ -56,6 +56,7 @@ module MetricsApi
           filtered_models = metrics_models.map(&method(:filter_model_bundle))
           models_grouped_by_date = filtered_models.map(&method(:group_models_in_bundle_by_date))
 
+          binding.pry
           MetricsApi::V3::Presenters::ExtendedMetadata.new(models_grouped_by_date, start_date, end_date).to_json
         end
 
@@ -64,6 +65,7 @@ module MetricsApi
         def metric_to_model_bundle(metric)
           model = METRICS_TO_MODEL[metric]
 
+          binding.pry
           models_in_range = model.created_between(start_date, end_date).to_a
 
           { metric: metric, models: models_in_range.flatten }

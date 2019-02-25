@@ -20,7 +20,9 @@ module MetricsApi
             base = { date: date }
 
             todays_metrics = metrics.map do |metric|
+              binding.pry
               relevent_models = metric[:models].select { |key| key == date }.values.first
+              binding.pry
               presenter = (PRESENTERS_BASE + metric[:metric].camelize).constantize
 
               next { metric[:metric] => [] } if relevent_models.blank?

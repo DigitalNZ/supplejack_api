@@ -30,7 +30,11 @@ module MetricsApi
               { metric[:metric] => relevent_models.map(&presenter) }
             end
 
+            binding.pry
+
             todays_metrics.each { |x| base.merge!(x) }
+
+            binding.pry
 
             base
           end

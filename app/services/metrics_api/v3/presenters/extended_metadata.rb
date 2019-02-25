@@ -15,6 +15,7 @@ module MetricsApi
         end
 
         def to_json
+          binding.pry
           (start_date..end_date).map do |date|
             base = { date: date }
 

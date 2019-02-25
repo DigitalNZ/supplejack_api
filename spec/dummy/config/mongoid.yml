@@ -5,12 +5,12 @@ development:
     default:
       database: supplejack_api_development
       hosts:
-        - 127.0.0.1:27017
+        - 127.0.0.1:27018
 
     strong:
       database: supplejack_api_development
       hosts:
-        - 127.0.0.1:27017
+        - 127.0.0.1:27018
 
 test:
   clients:

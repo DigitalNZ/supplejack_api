@@ -10,11 +10,11 @@ development:
         user: dnz-system
         password: monkey-ephemeral-nova
         auth_source: admin
-        ssl: <%= ENV['MONGOID_SSL_ENABLED'] || false %>
-        ssl_cert: /var/api/config/mongo_certs/mongo.pem
-        ssl_key: /var/api/config/mongo_certs/mongo.pem
-        ssl_verify: <%= ENV['MONGOID_SSL_ENABLED'] || false %>
-        ssl_ca_cert: /var/api/config/mongo_certs/ca.crt
+        ssl: <%= ENV['MONGOID_SSL_ENABLED'] || true %>
+        ssl_cert: /Users/tim/Workspace/Dnz/dnz-kubernetes/helm/mongodb-replicaset/staging/certs/mongo.pem
+        ssl_key: /Users/tim/Workspace/Dnz/dnz-kubernetes/helm/mongodb-replicaset/staging/certs/mongo.pem
+        ssl_verify: <%= ENV['MONGOID_SSL_ENABLED'] || true %>
+        ssl_ca_cert: /Users/tim/Workspace/Dnz/dnz-kubernetes/helm/mongodb-replicaset/staging/certs/ca.crt
 
     strong:
       database: dnz_api_staging
@@ -24,12 +24,11 @@ development:
         user: dnz-system
         password: monkey-ephemeral-nova
         auth_source: admin
-        ssl: <%= ENV['MONGOID_SSL_ENABLED'] || false %>
-        ssl_cert: /var/api/config/mongo_certs/mongo.pem
-        ssl_key: /var/api/config/mongo_certs/mongo.pem
-        ssl_verify: <%= ENV['MONGOID_SSL_ENABLED'] || false %>
-        ssl_ca_cert: /var/api/config/mongo_certs/ca.crt
-
+        ssl: <%= ENV['MONGOID_SSL_ENABLED'] || true %>
+        ssl_cert: /Users/tim/Workspace/Dnz/dnz-kubernetes/helm/mongodb-replicaset/staging/certs/mongo.pem
+        ssl_key: /Users/tim/Workspace/Dnz/dnz-kubernetes/helm/mongodb-replicaset/staging/certs/mongo.pem
+        ssl_verify: <%= ENV['MONGOID_SSL_ENABLED'] || true %>
+        ssl_ca_cert: /Users/tim/Workspace/Dnz/dnz-kubernetes/helm/mongodb-replicaset/staging/certs/ca.crt
 
 test:
   clients:

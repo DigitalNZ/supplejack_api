@@ -72,17 +72,22 @@ module MetricsApi
         end
 
         def filter_model_bundle(model_bundle)
+          binding.pry
           metric = model_bundle[:metric]
           key = METRIC_TO_MODEL_KEY[metric]
 
+          binding.pry
           models_to_keep = model_bundle[:models].select do |model|
             facets.include? model.send(key)
           end
 
+          binding.pry
           { metric: metric, models: models_to_keep }
         end
 
         def group_models_in_bundle_by_date(model_bundle)
+          binding.pry
+
           metric = model_bundle[:metric]
           models = model_bundle[:models]
 

@@ -9,6 +9,7 @@ module MetricsApi
           @m = metric
         end
 
+        # rubocop:disable Metrics/LineLength
         def to_json
           {
             id: @m.display_collection,
@@ -20,6 +21,7 @@ module MetricsApi
             added_to_user_stories: SupplejackApi::TopCollectionMetric.find_by(date: @m.date.to_time.utc, metric: 'added_to_user_stories', display_collection: @m.display_collection)
           }
         end
+        # rubocop:enable Metrics/LineLength
 
         def self.to_proc
           ->(metric) { new(metric).to_json }

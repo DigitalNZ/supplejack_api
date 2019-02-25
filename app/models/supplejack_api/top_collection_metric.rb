@@ -5,7 +5,7 @@ module SupplejackApi
   class TopCollectionMetric
     include Mongoid::Document
     include Mongoid::Timestamps
-    include SupplejackApi::Concerns::QueryableByDate    
+    include SupplejackApi::Concerns::QueryableByDate
 
     METRICS = %i[
       page_views

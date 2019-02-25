@@ -3,32 +3,14 @@
 development:
   clients:
     default:
-      database: dnz_api_staging
+      database: supplejack_api_development
       hosts:
-        - localhost:27018
-      options:
-        user: dnz-system
-        password: monkey-ephemeral-nova
-        auth_source: admin
-        ssl: <%= ENV['MONGOID_SSL_ENABLED'] || true %>
-        ssl_cert: /Users/tim/Workspace/Dnz/dnz-kubernetes/helm/mongodb-replicaset/staging/certs/mongo.pem
-        ssl_key: /Users/tim/Workspace/Dnz/dnz-kubernetes/helm/mongodb-replicaset/staging/certs/mongo.pem
-        ssl_verify: <%= ENV['MONGOID_SSL_ENABLED'] || true %>
-        ssl_ca_cert: /Users/tim/Workspace/Dnz/dnz-kubernetes/helm/mongodb-replicaset/staging/certs/ca.crt
+        - 127.0.0.1:27018
 
     strong:
-      database: dnz_api_staging
+      database: supplejack_api_development
       hosts:
-        - localhost:27018
-      options:
-        user: dnz-system
-        password: monkey-ephemeral-nova
-        auth_source: admin
-        ssl: <%= ENV['MONGOID_SSL_ENABLED'] || true %>
-        ssl_cert: /Users/tim/Workspace/Dnz/dnz-kubernetes/helm/mongodb-replicaset/staging/certs/mongo.pem
-        ssl_key: /Users/tim/Workspace/Dnz/dnz-kubernetes/helm/mongodb-replicaset/staging/certs/mongo.pem
-        ssl_verify: <%= ENV['MONGOID_SSL_ENABLED'] || true %>
-        ssl_ca_cert: /Users/tim/Workspace/Dnz/dnz-kubernetes/helm/mongodb-replicaset/staging/certs/ca.crt
+        - 127.0.0.1:27018
 
 test:
   clients:

@@ -24,7 +24,7 @@ module MetricsApi
 
               next { metric[:metric] => [] } if relevant_models.blank?
 
-              if metric[:metric] == "top_records"
+              if metric[:metric] == 'top_records'
                 { metric[:metric] => relevant_models.map(&presenter).reduce({}, :merge) }
               else
                 { metric[:metric] => relevant_models.map(&presenter) }

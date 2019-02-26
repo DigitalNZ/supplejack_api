@@ -11,7 +11,8 @@ module MetricsApi
         end
 
         def to_json
-          { @m.metric: @m.results }
+          binding.pry
+          { @m.metric.to_s: @m.results }
         end
 
         def self.to_proc

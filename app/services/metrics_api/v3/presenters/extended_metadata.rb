@@ -24,12 +24,9 @@ module MetricsApi
 
               next { metric[:metric] => [] } if relevent_models.blank?
 
-              binding.pry
-
-              { metric[:metric] => relevent_models.map(&presenter) }
+              { metric[:metric] => relevent_models.map(&presenter).compact }
             end
 
-            binding.pry
             todays_metrics.each { |x| base.merge!(x) }
 
             base

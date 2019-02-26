@@ -56,7 +56,6 @@ module MetricsApi
           filtered_models = metrics_models.map(&method(:filter_model_bundle))
           models_grouped_by_date = filtered_models.map(&method(:group_models_in_bundle_by_date))
 
-          binding.pry
           MetricsApi::V3::Presenters::ExtendedMetadata.new(models_grouped_by_date, start_date, end_date).to_json
         end
 

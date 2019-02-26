@@ -6,7 +6,6 @@ module MetricsApi
       # Presents a +SupplejackApi::TopCollectionMetric+ ready to be returned via the API
       class TopRecords
         def initialize(metric)
-          binding.pry
           @m = metric
         end
 

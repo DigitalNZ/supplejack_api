@@ -24,7 +24,6 @@ module MetricsApi
 
               next { metric[:metric] => [] } if relevant_models.blank?
 
-              binding.pry
               if metric[:metric] == "top_records"
                 { metric[:metric] => relevant_models.map(&presenter).reduce({}, :merge) }
               else
@@ -32,7 +31,6 @@ module MetricsApi
               end
             end
 
-            binding.pry
             todays_metrics.each { |x| base.merge!(x) }
 
             base

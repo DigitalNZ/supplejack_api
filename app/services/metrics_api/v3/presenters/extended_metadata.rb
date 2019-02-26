@@ -24,6 +24,8 @@ module MetricsApi
 
               next { metric[:metric] => [] } if relevent_models.blank?
 
+              binding.pry
+
               { metric[:metric] => relevent_models.map(&presenter) }
             end
 

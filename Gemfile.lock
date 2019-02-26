@@ -339,7 +339,6 @@ GEM
       nokogiri (>= 1.6)
     rails-html-sanitizer (1.0.3)
       loofah (~> 2.0)
-    rails-pry (0.0.1)
     railties (5.1.4)
       actionpack (= 5.1.4)
       activesupport (= 5.1.4)
@@ -488,7 +487,6 @@ DEPENDENCIES
   pry-byebug
   pry-rails
   rails-controller-testing
-  rails-pry
   rb-fsevent
   rspec
   rspec-activemodel-mocks

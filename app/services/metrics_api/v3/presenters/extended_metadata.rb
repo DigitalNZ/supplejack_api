@@ -15,14 +15,11 @@ module MetricsApi
         end
 
         def to_json
-          binding.pry
           (start_date..end_date).map do |date|
             base = { date: date }
 
             todays_metrics = metrics.map do |metric|
-              binding.pry
               relevent_models = metric[:models].select { |key| key == date }.values.first
-              binding.pry
               presenter = (PRESENTERS_BASE + metric[:metric].camelize).constantize
 
               next { metric[:metric] => [] } if relevent_models.blank?
@@ -30,11 +27,7 @@ module MetricsApi
               { metric[:metric] => relevent_models.map(&presenter) }
             end
 
-            binding.pry
-
             todays_metrics.each { |x| base.merge!(x) }
-
-            binding.pry
 
             base
           end

@@ -9,7 +9,6 @@ module SupplejackApi
     }.freeze
 
     def root
-      binding.pry
       render_response(:root)
     end
 

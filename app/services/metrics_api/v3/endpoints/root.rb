@@ -65,29 +65,23 @@ module MetricsApi
         def metric_to_model_bundle(metric)
           model = METRICS_TO_MODEL[metric]
 
-          binding.pry
           models_in_range = model.created_between(start_date, end_date).to_a
 
           { metric: metric, models: models_in_range.flatten }
         end
 
         def filter_model_bundle(model_bundle)
-          binding.pry
           metric = model_bundle[:metric]
           key = METRIC_TO_MODEL_KEY[metric]
 
-          binding.pry
           models_to_keep = model_bundle[:models].select do |model|
             facets.include? model.send(key)
           end
 
-          binding.pry
           { metric: metric, models: models_to_keep }
         end
 
         def group_models_in_bundle_by_date(model_bundle)
-          binding.pry
-
           metric = model_bundle[:metric]
           models = model_bundle[:models]
 

@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'dimensions'
   s.add_dependency 'dry-struct'
   s.add_dependency 'dry-validation'
+  s.add_dependency 'elastic-apm'
   s.add_dependency 'figaro'
   s.add_dependency 'gabba'
   s.add_dependency 'jquery-rails'

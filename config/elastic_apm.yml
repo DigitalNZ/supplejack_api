@@ -1,0 +1,1 @@
+server_url: <%= "http://#{ENV['HOST_IP']}:8200" %>

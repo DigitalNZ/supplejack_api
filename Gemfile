@@ -15,6 +15,7 @@ gem 'rubocop', require: false
 gem 'yard', require: false, group: :development
 # # This is a gem created by fedegl to test the XML responses, its part of the Boost github organization account
 gem 'xml_spec', git: 'https://github.com/boost/xml_spec',  require: false
+gem 'elastic-apm'
 
 group :test do
   gem 'faker'

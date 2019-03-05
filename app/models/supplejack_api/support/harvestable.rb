@@ -87,8 +87,6 @@ module SupplejackApi
           start = 0
           chunk_size = 10_000
 
-          Sunspot.session = Sunspot::Rails.build_session unless Rails.env.test?
-
           while start < total
             records = cursor.limit(chunk_size).skip(start)
             Sunspot.remove(records)

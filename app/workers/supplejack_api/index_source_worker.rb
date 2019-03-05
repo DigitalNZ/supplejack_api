@@ -13,7 +13,7 @@ module SupplejackApi
     sidekiq_options queue: 'default'
 
     def perform(source_id, date = nil)
-      Rails.logger.info "Reindexing source: #{source_id}, date: #{date}"
+      Rails.logger.info "REINDEXING: #{source_id}, date: #{date}"
       cursor = if date.present?
                  SupplejackApi.config.record_class.where(:'fragments.source_id' => source_id,
                                                          :updated_at.gt => Time.zone.parse(date))
@@ -39,7 +39,7 @@ module SupplejackApi
       chunk_size = 500
       while start < total
         records = cursor.limit(chunk_size).skip(start)
-        Rails.logger.info "Reindexing source progress - #{start}/#{records.count} records."
+        Rails.logger.info "REINDEXING: #{start}/#{records.count} records."
         yield records
         start += chunk_size
       end

@@ -88,6 +88,9 @@ module SupplejackApi
           start = 0
           chunk_size = 500
 
+          # Use Redis queue to delete records
+          Sunspot.session = Sunspot::SidekiqSessionProxy.new(Sunspot.session) unless Rails.env.test?
+
           while start < total
             records = cursor.limit(chunk_size).skip(start)
             Rails.logger.info "Full and Flush - Removing #{start}/#{records.count} records."

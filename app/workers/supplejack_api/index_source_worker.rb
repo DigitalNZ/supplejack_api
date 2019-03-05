@@ -13,12 +13,16 @@ module SupplejackApi
     sidekiq_options queue: 'default'
 
     def perform(source_id, date = nil)
+      Rails.logger.info "Reindexing source: #{source_id}, date: #{date}"
       cursor = if date.present?
                  SupplejackApi.config.record_class.where(:'fragments.source_id' => source_id,
                                                          :updated_at.gt => Time.zone.parse(date))
                else
                  SupplejackApi.config.record_class.where('fragments.source_id': source_id)
                end
+
+      # Use Redis queue to delete records
+      Sunspot.session = Sunspot::SidekiqSessionProxy.new(Sunspot.session) unless Rails.env.test?
 
       in_chunks(cursor.where(status: 'active')) do |records|
         Sunspot.index(records)
@@ -32,9 +36,10 @@ module SupplejackApi
     def in_chunks(cursor)
       total = cursor.count
       start = 0
-      chunk_size = 10_000
+      chunk_size = 500
       while start < total
         records = cursor.limit(chunk_size).skip(start)
+        Rails.logger.info "Reindexing source progress - #{start}/#{records.count} records."
         yield records
         start += chunk_size
       end

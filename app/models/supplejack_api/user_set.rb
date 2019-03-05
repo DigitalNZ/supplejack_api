@@ -81,6 +81,7 @@ module SupplejackApi
       primary_fragment.description = description
       primary_fragment.subject = subjects
 
+      # FIXME: This class variable should not be set here
       Sunspot.session = Sunspot::Rails.build_session unless Rails.env.test?
       record.index
 

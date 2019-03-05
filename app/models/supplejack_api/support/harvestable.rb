@@ -90,7 +90,7 @@ module SupplejackApi
 
           while start < total
             records = cursor.limit(chunk_size).skip(start)
-            Rails.logger.info "Full and Flush - Removing #{records.count} records."
+            Rails.logger.info "Full and Flush - Removing #{start}/#{records.count} records."
             Sunspot.remove(records)
             start += chunk_size
           end

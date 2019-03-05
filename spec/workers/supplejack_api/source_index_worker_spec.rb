@@ -43,7 +43,7 @@ module SupplejackApi
       it "gets a chunk of records and yields to block" do
         mock_cursor = double(:cursor)
         mock_cursor_2 = double(:cursor)
-        expect(mock_cursor).to receive(:limit).with(10000) {mock_cursor_2}
+        expect(mock_cursor).to receive(:limit).with(500) {mock_cursor_2}
         expect(mock_cursor).to receive(:count) {2}
         expect(mock_cursor_2).to receive(:skip).with(0) { records }
 

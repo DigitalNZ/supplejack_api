@@ -85,7 +85,7 @@ module SupplejackApi
           cursor = deleted.where('fragments.source_id': source_id)
           total = cursor.count
           start = 0
-          chunk_size = 10_000
+          chunk_size = 500
 
           while start < total
             records = cursor.limit(chunk_size).skip(start)

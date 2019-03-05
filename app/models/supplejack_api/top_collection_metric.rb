@@ -67,7 +67,8 @@ module SupplejackApi
 
     def self.calculate_results(record_metrics, metric)
       record_metrics.each_with_object({}) do |record, hash|
-        hash[record.record_id.to_s] = record.send(metric)
+        record_metric_count = record.send(metric)
+        hash[record.record_id.to_s] = record_metric_count if record_metric_count.positive?
       end
     end
 

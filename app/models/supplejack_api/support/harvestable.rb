@@ -74,6 +74,7 @@ module SupplejackApi
         end
 
         def flush_old_records(source_id, job_id)
+          Rails.logger.info "Flushing old records... source_id: #{source_id} -- job_id: #{job_id}"
           where(
             :'fragments.source_id' => source_id,
             :'fragments.job_id'.ne => job_id,
@@ -89,6 +90,7 @@ module SupplejackApi
 
           while start < total
             records = cursor.limit(chunk_size).skip(start)
+            Rails.logger.info "Full and Flush - Removing #{record.count} records."
             Sunspot.remove(records)
             start += chunk_size
           end

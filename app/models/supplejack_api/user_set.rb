@@ -81,7 +81,8 @@ module SupplejackApi
       primary_fragment.description = description
       primary_fragment.subject = subjects
 
-      # FIXME: This class variable should not be set here
+      # FIXME: Overriding the session class variable to push records straight to solr.
+      # This will be removed in the future when we move to AWS
       Sunspot.session = Sunspot::Rails.build_session unless Rails.env.test?
       record.index
 

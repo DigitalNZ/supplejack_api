@@ -82,8 +82,8 @@ module SupplejackApi
 
       describe 'merge_fragments' do
         let(:record) { FactoryBot.build(:record_with_fragment) }
-        let(:primary) { record.fragments.where(priority: 0) }
-        let(:secondary) { record.fragments.where(priority: -1) }
+        let(:primary) { record.fragments.where(priority: 0).first }
+        let(:secondary) { record.fragments.where(priority: -1).first }
 
         it 'should delete any existing merged fragment' do
           record.merged_fragment = FactoryBot.build(:record_fragment)
@@ -100,7 +100,7 @@ module SupplejackApi
 
         context 'multiple fragments' do
           before(:each) do
-            record.fragments << FactoryBot.build(:record_fragment, name: 'James Smith', email: ['jamessmith@example.com'], source_id: 'another_source')
+            record.fragments << FactoryBot.build(:record_fragment, name: 'James Smith', email: ['jamessmith@example.com'], source_id: 'another_source', priority: -1)
             record.reload.save!
           end
 
@@ -119,13 +119,13 @@ module SupplejackApi
 
           context 'multi-value fields' do
             it 'should store the merged values of the field' do
-              expect(record.merged_fragment.email).to eq ['johndoe@example.com', 'jamessmith@example.com']
+              expect(record.merged_fragment.email).to eq ['jamessmith@example.com', 'johndoe@example.com']
             end
 
             it 'should not return duplicate values' do
               primary.email = ['johndoe@example.com', 'jamessmith@example.com']
               record.save
-              expect(record.merged_fragment.email).to eq ['johndoe@example.com', 'jamessmith@example.com']
+              expect(record.merged_fragment.email).to eq ['jamessmith@example.com', 'johndoe@example.com']
             end
 
             it 'should not return nil values' do

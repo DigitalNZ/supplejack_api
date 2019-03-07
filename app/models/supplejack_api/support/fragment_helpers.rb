@@ -40,25 +40,30 @@ module SupplejackApi
 
       def merge_fragments
         self.merged_fragment = nil
+        return if fragments.size == 1
 
-        return unless fragments.size > 1
-
-        self.merged_fragment = fragment_class.new
-
-        fragment_class.mutable_fields.each do |name, field_type|
+        new_fragment_attributes = fragment_class.mutable_fields.each_with_object({}) do |(field_name, field_type), attributes|
           if field_type == Array
-            values = Set.new
-            sorted_fragments.each do |s|
-              values += Array(s.public_send(name))
+            attributes[field_name] = []
+
+            sorted_fragments.each do |fragment|
+              next if fragment[field_name].nil?
+
+              attributes[field_name] += fragment[field_name]
             end
-            merged_fragment.public_send("#{name}=", values.to_a)
+
+            attributes[field_name].uniq!
           else
-            values = sorted_fragments.to_a.map { |s| s.public_send(name) }
-            merged_fragment.public_send("#{name}=", values.compact.first)
+            attributes[field_name] = sorted_fragments.to_a.map { |fragment| fragment[field_name] }.compact.first
           end
         end
 
-        merged_fragment.unset(:priority)
+        new_fragment_attributes.reject! { |_key, value| (value.nil? && value != priority) || value == [] }
+
+        # This is done after we have cleared the other nil values as otherwise it will fallback to a default value
+        new_fragment_attributes['priority'] = nil
+
+        self.merged_fragment = fragment_class.new(new_fragment_attributes)
       end
 
       # Fetch the attribute from the underlying

@@ -1,5 +1,3 @@
-
-
 require 'spec_helper'
 
 module SupplejackApi
@@ -119,66 +117,6 @@ module SupplejackApi
           expect(fragment.primary?).to be_falsey
         end
       end
-
-      describe '#clear_attributes' do
-        let(:record) { FactoryBot.create(:record) }
-        let(:fragment) { record.fragments.create(nz_citizen: true) }
-
-        it 'clears the existing nz_citizen' do
-          fragment.clear_attributes
-          expect(fragment.nz_citizen).to be_nil
-        end
-      end
-
-      describe '#update_from_harvest' do
-        it 'updates the name with the value' do
-          fragment.update_from_harvest({name: 'John Smith'})
-          expect(fragment.name).to eq 'John Smith'
-        end
-
-        it 'handles nil values' do
-          fragment.update_from_harvest(nil)
-        end
-
-        it 'ignores invalid fields' do
-          fragment.update_from_harvest({invalid_field: 'http://yahoo.com'})
-          expect(fragment['invalid_field']).to be_nil
-        end
-
-        it 'stores uniq values for each field' do
-          fragment.update_from_harvest({children: ['Jim', 'Bob', 'Jim']})
-          expect(fragment.children).to eq ['Jim', 'Bob']
-        end
-
-        it 'updates the updated_at even if the attributes didn\'t change' do
-          new_time = Time.now + 1.day
-          Timecop.freeze(new_time) do
-            fragment.update_from_harvest({})
-            expect(fragment.updated_at.to_i).to eq(new_time.to_i)
-          end
-        end
-
-        it 'uses the attribute setters for strings' do
-          allow(fragment).to receive('name=').with('John Smith')
-          fragment.update_from_harvest({:name => 'John Smith'})
-        end
-
-        it 'uses the attribute setters for Arrays' do
-          allow(fragment).to receive('children=').with(['Jim', 'Bob'])
-          fragment.update_from_harvest({:children => ['Jim', 'Bob']})
-        end
-
-        it 'stores the first element in the array for non array fields' do
-          fragment.update_from_harvest({name: ['John Smith', 'Jim Bob']})
-          expect(fragment.name).to eq 'John Smith'
-        end
-
-        it 'should set the source_id' do
-          fragment.update_from_harvest({source_id: ['census']})
-          expect(fragment.source_id).to eq 'census'
-        end
-      end
-
     end
   end
 end

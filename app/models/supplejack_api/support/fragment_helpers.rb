@@ -40,7 +40,7 @@ module SupplejackApi
 
       def merge_fragments
         self.merged_fragment = nil
-        return if fragments.size == 1
+        return if fragments.size <= 1
 
         new_fragment_attributes = fragment_class.mutable_fields.each_with_object({}) do |(field_name, field_type), attributes|
           if field_type == Array
@@ -58,7 +58,7 @@ module SupplejackApi
           end
         end
 
-        new_fragment_attributes.reject! { |_key, value| (value.nil? && value != priority) || value == [] }
+        new_fragment_attributes.reject! { |_key, value| value.nil? || value == [] }
 
         # This is done after we have cleared the other nil values as otherwise it will fallback to a default value
         new_fragment_attributes['priority'] = nil

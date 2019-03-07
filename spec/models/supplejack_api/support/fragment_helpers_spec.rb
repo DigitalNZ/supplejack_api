@@ -1,5 +1,3 @@
-
-
 require 'spec_helper'
 
 module SupplejackApi
@@ -84,8 +82,8 @@ module SupplejackApi
 
       describe 'merge_fragments' do
         let(:record) { FactoryBot.build(:record_with_fragment) }
-        let(:primary) { record.fragments.first }
-        let(:secondary) { record.fragments.last }
+        let(:primary) { record.fragments.where(priority: 0) }
+        let(:secondary) { record.fragments.where(priority: -1) }
 
         it 'should delete any existing merged fragment' do
           record.merged_fragment = FactoryBot.build(:record_fragment)

@@ -1,5 +1,3 @@
-
-
 require 'spec_helper'
 
 module SupplejackApi
@@ -61,17 +59,12 @@ module SupplejackApi
 
         expect(user_set.updated_at).to_not eq old_time
       end
-
-
-
     end
 
     it "delegates record fields to the :record object" do
-      set_item.record = FactoryBot.create(:record, record_id: 5)
-      set_item.record.fragments.create(name: "Ben", address: "Wellington")
-      set_item.record.save
+      set_item.record = FactoryBot.create(:record_with_fragment)
 
-      expect(set_item.name).to eq "Ben"
+      expect(set_item.name).to eq "John Doe"
       expect(set_item.address).to eq "Wellington"
     end
 

@@ -10,10 +10,10 @@
 module SupplejackApi
   class IndexSourceWorker
     include Sidekiq::Worker
-    sidekiq_options queue: 'default'
+    sidekiq_options queue: 'default', retry: false
 
     def perform(source_id, date = nil)
-      Rails.logger.info "REINDEXING: #{source_id}, date: #{date}"
+      Rails.logger.info "IndexSourceWorker - REINDEXING: #{source_id}, date: #{date}"
       cursor = if date.present?
                  SupplejackApi.config.record_class.where(:'fragments.source_id' => source_id,
                                                          :updated_at.gt => Time.zone.parse(date))
@@ -21,27 +21,33 @@ module SupplejackApi
                  SupplejackApi.config.record_class.where('fragments.source_id': source_id)
                end
 
-      # Use Redis queue to delete records
-      Sunspot.session = Sunspot::SidekiqSessionProxy.new(Sunspot.session) unless Rails.env.test?
+      index_records(cursor.where(status: 'active'))
+      remove_from_index_records(cursor.where(status: 'deleted'))
+    end
 
-      in_chunks(cursor.where(status: 'active')) do |records|
-        Sunspot.index(records)
-      end
+    def index_records(cursor)
+      start = 0
+      chunk_size = 500
+      total = cursor.count
 
-      in_chunks(cursor.where(status: 'deleted')) do |records|
-        Sunspot.remove(records)
+      while start < total
+        records = cursor.limit(chunk_size).skip(start)
+        BatchIndexRecords.new(records).call if records.any?
+        start += chunk_size
+        Rails.logger.info "IndexSourceWorker - REINDEXING: Indexing #{start}/#{records.count} records."
       end
     end
 
-    def in_chunks(cursor)
-      total = cursor.count
+    def remove_from_index_records(cursor)
       start = 0
       chunk_size = 500
+      total = cursor.count
+
       while start < total
         records = cursor.limit(chunk_size).skip(start)
-        Rails.logger.info "REINDEXING: #{start}/#{records.count} records."
-        yield records
+        BatchRemoveFromIndexRecords.new(records).call if records.any?
         start += chunk_size
+        Rails.logger.info "IndexSourceWorker - REINDEXING: Removing #{start}/#{records.count} records."
       end
     end
   end

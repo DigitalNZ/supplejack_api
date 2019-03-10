@@ -11,10 +11,36 @@ module SupplejackApi
   # app/workers/supplejack_api/flush_old_records_worker.rb
   class FlushOldRecordsWorker
     include Sidekiq::Worker
-    sidekiq_options queue: 'low'
+    sidekiq_options queue: 'default', retry: false
 
     def perform(source_id, job_id)
-      SupplejackApi.config.record_class.flush_old_records(source_id, job_id)
+      flush_records(source_id, job_id)
+
+      cursor = SupplejackApi.config.record_class.deleted.where('fragments.source_id': source_id)
+
+      start = 0
+      chunk_size = 500
+
+      total = cursor.count
+
+      while start < total
+        records = cursor.limit(chunk_size).skip(start)
+        BatchRemoveFromIndexRecords.new(records).call
+        start += chunk_size
+        Rails.logger.info "FlushOldRecordsWorker - FULL-AND-FLUSH: Removing #{start}/#{records.count} records."
+      end
+    end
+
+    # Delete all active and suppressed records from a source_id that hasn't been harvested by a specific job
+    def flush_records(source_id, job_id)
+      Rails.logger.info "FlushOldRecordsWorker - FULL-AND-FLUSH: source_id: #{source_id} -- job_id: #{job_id}"
+      SupplejackApi.config.record_class.where(
+        :'fragments.source_id' => source_id,
+        :'fragments.job_id'.ne => job_id,
+        :status.in => %w[active supressed],
+        'fragments.priority': 0
+      ).update_all(status: 'deleted', updated_at: Time.zone.now,
+                   '$set': { 'fragments.$.job_id' => job_id })
     end
   end
 end

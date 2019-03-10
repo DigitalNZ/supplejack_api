@@ -85,6 +85,7 @@ module SupplejackApi
       # This will be removed in the future when we move to AWS
       Sunspot.session = Sunspot::Rails.build_session unless Rails.env.test?
       record.index
+      Sunspot.session = Sunspot::SidekiqSessionProxy.new(Sunspot.session) unless Rails.env.test?
 
       record.save!
     end

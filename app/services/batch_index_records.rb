@@ -10,7 +10,7 @@ class BatchIndexRecords
   end
 
   def call
-    Rails.logger.info "INDEXING: #{records_to_index.count} records"
+    Rails.logger.info "BatchIndexRecords - INDEXING: #{records.count} records"
     begin
       Sunspot.index(records)
     rescue StandardError

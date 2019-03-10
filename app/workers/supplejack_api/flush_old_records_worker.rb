@@ -26,9 +26,10 @@ module SupplejackApi
       while start < total
         records = cursor.limit(chunk_size).skip(start)
         BatchRemoveFromIndexRecords.new(records).call
-        start += chunk_size
         Rails.logger.info "FlushOldRecordsWorker - FULL-AND-FLUSH: Removing #{start}/#{records.count} records."
+        start += chunk_size
       end
+      Rails.logger.info "FlushOldRecordsWorker - FULL-AND-FLUSH: Done  #{record.count}/#{records.count} records."
     end
 
     # Delete all active and suppressed records from a source_id that hasn't been harvested by a specific job

@@ -10,7 +10,7 @@ class BatchRemoveFromIndexRecords
   end
 
   def call
-    Rails.logger.info "BatchRemoveFromIndex - UN-INDEXING: #{records.count} records"
+    Rails.logger.info "BatchRemoveFromIndex - UN-INDEXING: #{records} records"
     begin
       Sunspot.remove(records)
     rescue StandardError

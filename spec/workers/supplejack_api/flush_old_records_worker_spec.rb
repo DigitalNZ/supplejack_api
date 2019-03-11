@@ -16,6 +16,15 @@ module SupplejackApi
       end
 
       it 'calls BatchRemoveFromIndexRecords service for all deleted records for a given source_id' do
+        FactoryBot.create_list(:record, 10, status: 'active', fragments:
+                               FactoryBot.build_list(:record_fragment, 1, priority: 0, job_id: '999', source_id: 'source')
+                              )
+
+        mongo_criteria = SupplejackApi::Record.deleted.where('fragments.source_id': 'source').limit(500).skip(0)
+
+        expect(BatchRemoveFromIndexRecords).to receive(:new).with(mongo_criteria).and_call_original
+
+        FlushOldRecordsWorker.new.perform('source', '123')
       end
     end
 

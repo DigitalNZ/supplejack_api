@@ -36,19 +36,5 @@ module SupplejackApi
         IndexSourceWorker.new.perform('source_id', date.to_s)
       end
     end
-
-    describe ".in_chunks" do
-      let(:records) { [double(:record), double(:record)] }
-
-      it "gets a chunk of records and yields to block" do
-        mock_cursor = double(:cursor)
-        mock_cursor_2 = double(:cursor)
-        expect(mock_cursor).to receive(:limit).with(500) {mock_cursor_2}
-        expect(mock_cursor).to receive(:count) {2}
-        expect(mock_cursor_2).to receive(:skip).with(0) { records }
-
-        expect{|b| IndexSourceWorker.new.in_chunks(mock_cursor, &b) }.to yield_with_args(records)
-      end
-    end
   end
 end

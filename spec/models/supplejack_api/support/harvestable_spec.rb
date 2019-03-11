@@ -136,54 +136,6 @@ module SupplejackApi
           Record.find_or_initialize_by_identifier({internal_identifier: ['1234']})
         end
       end
-
-      describe '.flush_old_records' do
-        before do
-          @record1 = FactoryBot.create(:record_with_fragment)
-          @record1.primary_fragment.job_id = '123'
-          @record1.save
-
-          @record2 = FactoryBot.create(:record_with_fragment)
-          @record2.primary_fragment.job_id = 'abc'
-          @record2.save
-        end
-
-        it 'sets status deleted on records with the source_id, but without the given job_id' do
-          Record.flush_old_records @record1.primary_fragment.source_id, '123'
-
-          expect(@record1.reload.status).to eq 'active'
-          expect(@record2.reload.status).to eq 'deleted'
-        end
-
-        it 'sets job_id on deleted records primary fragment with the job_id, so that users know which job deleted the record' do
-          @record2.fragments.create(priority: -4, job_id: 'abc', source_id: 'a-sauce-id')
-          @record2.fragments.create(priority: -4, job_id: 'abc', source_id: 'b-sauce-id')
-          Record.flush_old_records @record1.primary_fragment.source_id, '123'
-
-          @record1.reload
-          @record2.reload
-
-          expect(@record2.primary_fragment.job_id).to eq '123'
-          @record2.fragments.select { |f| f.priority != 0 }.each do |fragment|
-            expect(fragment.job_id).to eq 'abc'
-          end
-
-          expect(@record1.primary_fragment.job_id).to eq '123'
-        end
-
-        it 'only deletes record that don\'t have the job_id in any fragment' do
-          @record1.fragments.create(priority: -4, job_id: 'abc', source_id: 'a-fragment')
-          Record.flush_old_records @record1.primary_fragment.source_id, '123'
-
-          expect(@record1.reload.status).to eq 'active'
-          expect(@record2.reload.status).to eq 'deleted'
-        end
-
-        it 'indexs deleted records' do
-          expect(Sunspot).to receive(:remove)
-          Record.flush_old_records @record1.primary_fragment.source_id, '123'
-        end
-      end
     end
   end
 end

@@ -19,7 +19,7 @@ module SupplejackApi
       cursor = SupplejackApi.config.record_class.deleted.where('fragments.source_id': source_id)
 
       start = 0
-      chunk_size = SupplejackApi.config.record_batch_size_for_mongo_queries_and_solr_indexing
+      chunk_size = SupplejackApi.config.record_batch_size_for_mongo_queries_and_solr_indexing || 500
 
       total = cursor.count
 

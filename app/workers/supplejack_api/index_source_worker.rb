@@ -27,7 +27,7 @@ module SupplejackApi
 
     def index_records(cursor)
       start = 0
-      chunk_size = SupplejackApi.config.record_batch_size_for_mongo_queries_and_solr_indexing
+      chunk_size = SupplejackApi.config.record_batch_size_for_mongo_queries_and_solr_indexing || 500
       total = cursor.count
 
       while start < total
@@ -40,7 +40,7 @@ module SupplejackApi
 
     def remove_from_index_records(cursor)
       start = 0
-      chunk_size = 500
+      chunk_size = SupplejackApi.config.record_batch_size_for_mongo_queries_and_solr_indexing || 500
       total = cursor.count
 
       while start < total

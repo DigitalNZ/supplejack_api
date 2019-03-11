@@ -26,7 +26,7 @@ class BatchIndexRecords
         Rails.logger.info "BatchIndexRecords - INDEXING: #{record}"
         Sunspot.index record
       rescue StandardError => exception
-        Rails.logger.error "BatchIndexRecords - Failed to index record: #{record.inspect} with exception: #{exception.message}"
+        Rails.logger.error "BatchIndexRecords - Failed to index: #{record.inspect} - #{exception.message}"
       end
     end
   end

@@ -7,6 +7,12 @@ module SupplejackApi
 
     describe '#perform' do
       it 'calls flush_records' do
+        flush_old_records_worker = FlushOldRecordsWorker.new
+        allow(flush_old_records_worker).to receive(:perform).and_call_original
+
+        expect(flush_old_records_worker).to receive(:flush_records).with('source', '123')
+
+        flush_old_records_worker.perform('source', '123')
       end
 
       it 'calls BatchRemoveFromIndexRecords service for all deleted records for a given source_id' do

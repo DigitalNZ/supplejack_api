@@ -45,7 +45,7 @@ module SupplejackApi
 
       while start < total
         records = cursor.limit(chunk_size).skip(start)
-        BatchRemoveFromIndexRecords.new(records).call if records.any?
+        BatchRemoveRecordsFromIndex.new(records).call if records.any?
         start += chunk_size
         Rails.logger.info "IndexSourceWorker - REINDEXING: Removing #{start}/#{records.count} records."
       end

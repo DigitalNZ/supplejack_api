@@ -20,7 +20,7 @@ module SupplejackApi
       BatchIndexRecords.new(records_to_index).call if records_to_index.any?
 
       records_to_remove = buffer.records_to_remove
-      BatchRemoveFromIndexRecords.new(records_to_remove).call if records_to_remove.any?
+      BatchRemoveRecordsFromIndex.new(records_to_remove).call if records_to_remove.any?
     end
   end
 end

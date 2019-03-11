@@ -25,7 +25,7 @@ module SupplejackApi
         records.each { |r| r.update_attribute(:status, 'deleted') }
 
         expect(Record).to receive(:where).with(:'fragments.source_id' => 'source_id').and_call_original
-        expect(BatchRemoveFromIndexRecords).to receive(:new).with(records).and_call_original
+        expect(BatchRemoveRecordsFromIndex).to receive(:new).with(records).and_call_original
         IndexSourceWorker.new.perform('source_id')
       end
 

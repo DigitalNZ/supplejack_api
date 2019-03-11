@@ -25,7 +25,7 @@ module SupplejackApi
 
       while start < total
         records = cursor.limit(chunk_size).skip(start)
-        BatchRemoveFromIndexRecords.new(records).call
+        BatchRemoveRecordsFromIndex.new(records).call
         Rails.logger.info "FlushOldRecordsWorker - FULL-AND-FLUSH: Removing #{start}/#{records.count} records."
         start += chunk_size
       end

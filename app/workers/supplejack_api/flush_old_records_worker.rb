@@ -40,8 +40,7 @@ module SupplejackApi
         :'fragments.job_id'.ne => job_id,
         :status.in => %w[active supressed],
         'fragments.priority': 0
-      ).update_all(status: 'deleted', updated_at: Time.zone.now,
-                   '$set': { 'fragments.$.job_id' => job_id })
+      ).update_all(status: 'deleted', updated_at: Time.zone.now)
     end
   end
 end

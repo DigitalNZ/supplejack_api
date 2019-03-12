@@ -43,19 +43,6 @@ module SupplejackApi
         FlushOldRecordsWorker.new.flush_records(source_id, current_job_id)
         expect(SupplejackApi::Record.deleted.count).to eq 3
       end
-
-      it 'sets the job_id to be the current_job_id only for the records that had their status changed from active/supressed to deleted' do
-        FlushOldRecordsWorker.new.flush_records(source_id, current_job_id)
-
-        active_record.reload
-        expect(active_record.job_id).to eq current_job_id
-
-        supressed_record.reload
-        expect(supressed_record.job_id).to eq current_job_id
-
-        deleted_record.reload
-        expect(deleted_record.job_id).to eq old_job_id
-      end
     end
   end
 end

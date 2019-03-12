@@ -41,6 +41,7 @@ module SupplejackApi
   def self.setup(&block)
     config.record_class = Record
     config.preview_record_class = PreviewRecord
+    config.record_batch_size_for_mongo_queries_and_solr_indexing = 500
 
     @config ||= SupplejackApi::Engine::Configuration.new
     yield @config if block

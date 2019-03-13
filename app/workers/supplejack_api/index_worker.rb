@@ -18,7 +18,6 @@ module SupplejackApi
 
       Rails.logger.level = 1 unless Rails.env.development?
 
-      session = Sunspot.session
       Sunspot.session = Sunspot::Rails.build_session
       case sunspot_method
       when :index
@@ -36,7 +35,6 @@ module SupplejackApi
       else
         raise "Error: undefined protocol for IndexWorker: #{sunspot_method} (#{objects})"
       end
-      Sunspot.session = session
     end
 
     def index(object)

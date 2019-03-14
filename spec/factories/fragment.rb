@@ -6,9 +6,6 @@ module SupplejackApi
       priority              0
       title                 'A record'
       creator               ['John Kennedy']
-      dnz_type              'Unknown'
-      thumbnail {FactoryBot.build(:thumbnail)}
-      primary_collection    ['PRIMARY_COLLECTION']
     end
   end
 end

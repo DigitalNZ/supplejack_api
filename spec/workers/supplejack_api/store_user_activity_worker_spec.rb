@@ -48,7 +48,7 @@ module SupplejackApi
       expect(Rails.logger).to receive(:error).exactly(2).times
       expect {
         subject.perform
-      }.to raise_error
+      }.to raise_error(StandardError)
     end
 
     it 'logs a warn when reset daily activity job is called on user more than once a day' do
@@ -64,7 +64,7 @@ module SupplejackApi
       expect(Rails.logger).to receive(:error).exactly(1).times
       expect {
         subject.perform
-      }.to raise_error
+      }.to raise_error(StandardError)
     end
   end
 end

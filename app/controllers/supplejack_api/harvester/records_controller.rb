@@ -7,7 +7,7 @@ module SupplejackApi
       before_action :authenticate_harvester!
 
       def create
-        @record = ::UpdateRecordFromHarvest.new(record_params, params[:preview], nil, params[:required_fragments]).call
+        @record = UpdateRecordFromHarvest.new(record_params, params[:preview], nil, params[:required_fragments]).call
 
         render json: { status: :success, record_id: @record.record_id }
       rescue StandardError => e

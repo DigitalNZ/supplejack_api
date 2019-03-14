@@ -10,9 +10,10 @@
 module SupplejackApi
   class IndexSourceWorker
     include Sidekiq::Worker
-    sidekiq_options queue: 'default'
+    sidekiq_options queue: 'default', retry: false
 
     def perform(source_id, date = nil)
+      Rails.logger.info "IndexSourceWorker - REINDEXING: #{source_id}, date: #{date}"
       cursor = if date.present?
                  SupplejackApi.config.record_class.where(:'fragments.source_id' => source_id,
                                                          :updated_at.gt => Time.zone.parse(date))
@@ -20,23 +21,33 @@ module SupplejackApi
                  SupplejackApi.config.record_class.where('fragments.source_id': source_id)
                end
 
-      in_chunks(cursor.where(status: 'active')) do |records|
-        Sunspot.index(records)
-      end
+      index_records(cursor.where(status: 'active'))
+      remove_from_index_records(cursor.where(status: 'deleted'))
+    end
 
-      in_chunks(cursor.where(status: 'deleted')) do |records|
-        Sunspot.remove(records)
+    def index_records(cursor)
+      start = 0
+      chunk_size = SupplejackApi.config.record_batch_size_for_mongo_queries_and_solr_indexing || 500
+      total = cursor.count
+
+      while start < total
+        records = cursor.limit(chunk_size).skip(start)
+        BatchIndexRecords.new(records).call if records.any?
+        start += chunk_size
+        Rails.logger.info "IndexSourceWorker - REINDEXING: Indexing #{start}/#{records.count} records."
       end
     end
 
-    def in_chunks(cursor)
-      total = cursor.count
+    def remove_from_index_records(cursor)
       start = 0
-      chunk_size = 10_000
+      chunk_size = SupplejackApi.config.record_batch_size_for_mongo_queries_and_solr_indexing || 500
+      total = cursor.count
+
       while start < total
         records = cursor.limit(chunk_size).skip(start)
-        yield records
+        BatchRemoveRecordsFromIndex.new(records).call if records.any?
         start += chunk_size
+        Rails.logger.info "IndexSourceWorker - REINDEXING: Removing #{start}/#{records.count} records."
       end
     end
   end

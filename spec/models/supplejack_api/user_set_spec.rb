@@ -101,8 +101,8 @@ module SupplejackApi
       end
 
       describe '#reindex_if_changed' do
-        before do 
-          allow(Sunspot).to receive(:commit).and_return("true") 
+        before do
+          allow(Sunspot).to receive(:commit).and_return("true")
         end
 
         let(:record) { FactoryBot.create(:record_with_fragment) }
@@ -173,15 +173,15 @@ module SupplejackApi
           end
         end
 
-        context 'an un-active user_set that is approved' do 
-          before do 
-            allow(user_set).to receive(:record).and_return(record)  
-            expect(record).to receive(:index) 
+        context 'an un-active user_set that is approved' do
+          before do
+            allow(user_set).to receive(:record).and_return(record)
+            expect(record).to receive(:index)
           end
 
-           it 'calls sunspot index' do  
-            user_set.update_attribute(:approved, true)  
-          end 
+           it 'calls sunspot index' do
+            user_set.update_attribute(:approved, true)
+          end
         end
       end
     end
@@ -240,7 +240,6 @@ module SupplejackApi
       end
 
       it "finds a user set by its default Mongo ID" do
-        # binding.pryx
         expect(UserSet.custom_find(@user_set.id.to_s)).to eq @user_set
       end
 
@@ -507,7 +506,7 @@ module SupplejackApi
           let(:user_set) { FactoryBot.build(:user_set)}
           it "should default the status to supressed" do
             user_set.privacy = "private"
-            # binding.pry
+
             user_set.update_record
             expect(user_set.record.status).to eq "suppressed"
           end

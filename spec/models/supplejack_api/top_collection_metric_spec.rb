@@ -71,7 +71,7 @@ RSpec.describe SupplejackApi::TopCollectionMetric, type: :model do
 
       expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.zone.yesterday, metric: 'appeared_in_searches', display_collection: 'Laramie').results.values.first).to eq 3
       expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.zone.yesterday, metric: 'appeared_in_searches', display_collection: 'Laramie'))
-      expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.zone.yesterday, metric: 'appeared_in_searches', display_collection: 'Laramie').results.keys.count).to eq 200
+      expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.zone.yesterday, metric: 'appeared_in_searches', display_collection: 'Laramie').results.keys.count).to eq 6
     end
 
     it 'returns a collection of top collection metrics' do

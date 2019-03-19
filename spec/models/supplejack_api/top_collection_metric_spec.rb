@@ -79,5 +79,17 @@ RSpec.describe SupplejackApi::TopCollectionMetric, type: :model do
         expect(tcm.class).to eql described_class
       end
     end
+
+    it 'does not include records that have 0 of the requested metric in the results' do
+      expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.zone.yesterday, metric: 'appeared_in_searches', display_collection: 'Laramie').results.values.uniq).not_to include 0
+    end
+
+    it 'only includes records that have valid data' do
+      expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.zone.yesterday, metric: 'appeared_in_searches', display_collection: 'Laramie').results.count).to eq 4
+    end
+
+    it 'doesn\'t create top collection metrics when there are no results' do
+      expect( SupplejackApi::TopCollectionMetric.where(display_collection: 'Collecty McCollectyface').map(&:metric)).not_to include 'page_views'
+    end
   end
 end

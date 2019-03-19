@@ -98,6 +98,7 @@ module SupplejackApi
     def self.record_metrics_to_be_processed(date, metric, display_collection)
       SupplejackApi::RecordMetric.where(
         date: date,
+        metric.ne => 0,
         display_collection: display_collection,
         :processed_by_top_collection_metrics.in => [nil, '', false]
       ).order_by(metric => 'desc').limit(200)

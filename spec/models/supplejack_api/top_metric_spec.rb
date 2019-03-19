@@ -30,10 +30,6 @@ RSpec.describe SupplejackApi::TopMetric do
       SupplejackApi::TopMetric.spawn
     end
 
-    it 'creates TopMetrics for each metric' do
-      expect(SupplejackApi::TopMetric.all.map(&:metric).uniq.sort).to eq ['added_to_user_sets', 'added_to_user_stories', 'appeared_in_searches', 'page_views', 'source_clickthroughs', 'user_set_views', 'user_story_views']
-    end
-
     it 'only takes the top 200 records for each metric' do
       expect(SupplejackApi::TopMetric.find_by(date: Time.zone.yesterday, metric: 'page_views').results.keys.count).to eq 200
     end
@@ -56,7 +52,19 @@ RSpec.describe SupplejackApi::TopMetric do
 
       expect(SupplejackApi::TopMetric.find_by(date: Time.zone.yesterday, metric: 'appeared_in_searches').results.values.first).to eq 4
       expect(SupplejackApi::TopMetric.find_by(date: Time.zone.yesterday, metric: 'appeared_in_searches'))
-      expect(SupplejackApi::TopMetric.find_by(date: Time.zone.yesterday, metric: 'appeared_in_searches').results.keys.count).to eq 200
+      expect(SupplejackApi::TopMetric.find_by(date: Time.zone.yesterday, metric: 'appeared_in_searches').results.count).to eq 4
+    end
+
+    it 'does not add records that have a 0 count into the top results' do
+      expect(SupplejackApi::TopMetric.find_by(date: Time.zone.yesterday, metric: 'appeared_in_searches').results.values.uniq).not_to include 0
+    end
+
+    it 'only returns the record counts that have important data' do
+      expect(SupplejackApi::TopMetric.find_by(date: Time.zone.yesterday, metric: 'appeared_in_searches').results.count).to eq 3
+    end
+
+    it 'doesn\'t create records top metrics that have no results' do
+      expect(SupplejackApi::TopMetric.all.map(&:metric)).not_to include 'user_set_views'
     end
   end
 end

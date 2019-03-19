@@ -20,72 +20,34 @@ module SupplejackApi
 
         context "preview is false" do
           it "finds or initializes a record by identifier" do
-            expect(Record).to receive(:find_or_initialize_by_identifier).with("internal_identifier" => "1234") { record }
             post :create, params: { record: {internal_identifier: "1234"}, api_key: api_key }
-            expect(assigns(:record)).to eq record
+            expect(assigns(:record)).to be_a(SupplejackApi::Record)
           end
         end
 
         context "preview is true" do
           it "finds or initializes a preview record by identifier" do
-            expect(PreviewRecord).to receive(:find_or_initialize_by_identifier).with("internal_identifier" => "1234") { record }
             post :create, params: { record: {internal_identifier: "1234"}, preview: true, api_key: api_key }
-            expect(assigns(:record)).to eq record
-          end
-        end
-
-        context "record has a priority other then 0" do
-          it "creates or updates the fragment" do
-            rec = {
-              "internal_identifier" => "1234",
-              "title" => "Hi",
-              "priority" => "10"
-            }
-            expect(record).to receive(:create_or_update_fragment).with(rec)
-            post :create, params: { record: rec, api_key: api_key }
+            expect(assigns(:record)).to be_a(SupplejackApi::PreviewRecord)
           end
         end
 
         it "sets the status based on the required fragments" do
-          expect(record).to receive(:set_status).with(['ndha_rights'])
           post :create, params: { record: {"internal_identifier" => "1234"}, required_fragments: ['ndha_rights'], api_key: api_key }
+          expect(assigns(:record).status).to eq 'partial'
         end
 
         it "saves the record" do
-          expect(record).to receive(:save)
-          post :create, params: { record: {"internal_identifier" => "1234"}, api_key: api_key }
-        end
-
-        it "unsets null fields" do
-          expect(record).to receive(:unset_null_fields)
-          post :create, params: { record: {"internal_identifier" => "1234"}, api_key: api_key }
+          expect { post :create, params: { record: {"internal_identifier" => "1234"}, api_key: api_key } }.to change{ Record.count }.by (1)
         end
 
         it 'returns status success and record_id if no exception is raised' do
-          allow(Record).to receive(:find_or_initialize_by_identifier) { record }
-
           post :create, params: { record: { 'internal_identifier' => '1234' }, api_key: api_key }
 
           data = JSON.parse(response.body)
 
           expect(data['status']).to eq 'success'
-          expect(data['record_id']).to eq record.record_id
-        end
-
-        it 'returns status failed and backtrace metadata when an exception is raised' do
-          allow(Record).to receive(:find_or_initialize_by_identifier) { record }
-          allow(record).to receive(:save!).and_raise(StandardError.new('bang'))
-
-          post :create, params: { record: { 'internal_identifier' => '1234' }, api_key: api_key }
-
-          data = JSON.parse(response.body)
-
-          expect(data['status']).to eq 'failed'
-          expect(data['exception_class']).to eq 'StandardError'
-          expect(data['message']).to eq 'bang'
-          expect(data['raw_data']).not_to be_empty
-          expect(data['backtrace']).not_to be_empty
-          expect(data['record_id']).to eq record.record_id
+          expect(data['record_id']).to_not be(nil)
         end
       end
 

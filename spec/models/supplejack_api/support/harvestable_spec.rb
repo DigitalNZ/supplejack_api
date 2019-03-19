@@ -1,40 +1,9 @@
-
-
 require 'spec_helper'
 
 module SupplejackApi
   module Support
     describe Harvestable do
       let(:record) { FactoryBot.build(:record) }
-
-      describe '#create_or_update_fragment' do
-        before { record.save }
-
-        context 'existing fragment' do
-          before do
-            @fragment = record.fragments.create(source_id: 'nz_census', name: 'John Smith', age: 50)
-            record.create_or_update_fragment({'source_id' => 'nz_census', 'age' => 100})
-          end
-
-          it 'updates the fragment attributes' do
-            expect(@fragment.age).to eq 100
-          end
-
-          it 'nilifies the fields not updated in the fragment' do
-            expect(@fragment.name).to be_nil
-          end
-        end
-
-        context 'new fragment' do
-          it 'creates a new fragment' do
-            record.create_or_update_fragment({'source_id' => 'nz_census', 'name' => 'John Smith', 'priority' => [1]})
-            fragment = record.find_fragment('nz_census')
-            expect(fragment).to_not be_nil
-            expect(fragment.name).to eq 'John Smith'
-            expect(fragment.priority).to eq 1
-          end
-        end
-      end
 
       describe '#set_status' do
         before {
@@ -61,16 +30,6 @@ module SupplejackApi
           record.set_status(['nz_census', 'thumbnails'])
           expect(record.status).to eq 'active'
         end
-      end
-
-      describe '#clear_attributes' do
-        let(:record) { FactoryBot.create(:record, internal_identifier: "1234") }
-
-        it 'doesn\'t clear the _id attribute' do
-          record.clear_attributes
-          expect(record._id).to_not be_nil
-        end
-
       end
 
       describe '#unset_null_fields' do

@@ -11,16 +11,14 @@ module MetricsApi
         # Mapping of metric names to the model that represents that metric
         METRICS_TO_MODEL = {
           'record' => SupplejackApi::FacetedMetrics,
-          'view' => SupplejackApi::UsageMetrics,
-          'view_new' => SupplejackApi::CollectionMetric,
+          'view' => SupplejackApi::CollectionMetric,
           'top_records' => SupplejackApi::TopCollectionMetric
         }.freeze
         # Mapping of metrics to the field on it's respective model that contains
         # the value to filter against
         METRIC_TO_MODEL_KEY = {
           'record' => :name,
-          'view' => :record_field_value,
-          'view_new' => :display_collection,
+          'view' => :display_collection,
           'top_records' => :display_collection
         }.freeze
         # Facet limit to return in response

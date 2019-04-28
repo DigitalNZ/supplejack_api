@@ -7,33 +7,7 @@ module SupplejackApi
       before_action :authenticate_harvester!
 
       def create
-        klass = params[:preview] ? SupplejackApi.config.preview_record_class : SupplejackApi.config.record_class
-        @record = klass.find_or_initialize_by_identifier(record_params)
-
-        # In the long run this condition shouldn't be here.
-        # It's because the data_handler interfaces are using update_from_harvest,
-        # and clear_attributes that I can't factor it back in.
-
-        if params[:record][:priority] && params[:record][:priority].to_i.nonzero?
-          @record.create_or_update_fragment(record_params)
-        else
-          @record.clear_attributes
-          @record.update_from_harvest(record_params)
-        end
-
-        @record.set_status(params[:required_fragments])
-        @record.fragments.map(&:save!)
-
-        @record.save!
-
-        # TODO: This is a fix for merged fragments dropping their relationship fields
-        # eg attachments. There is most likely a deeper problem with how merged_fragments
-        # are built, or how Mongo relationships cascade after they have been saved.
-        # DO NOT REMOVE unless you understand this issue and have fixed it.
-
-        @record.save!
-
-        @record.unset_null_fields
+        @record = UpdateRecordFromHarvest.new(record_params, params[:preview], nil, params[:required_fragments]).call
 
         render json: { status: :success, record_id: @record.record_id }
       rescue StandardError => e

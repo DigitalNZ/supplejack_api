@@ -32,10 +32,10 @@ module SupplejackApi
 
         context 'source already exists' do
           it 'updates the source' do
-            source = partner.sources.create(FactoryBot.attributes_for(:source, name: "source_1"))
-            post :create, params: { partner_id: partner, source: {_id: source.id, name: 'source2'}, api_key: api_key}
+            source = partner.sources.create(FactoryBot.attributes_for(:source, source_id: "source_1"))
+            post :create, params: { partner_id: partner, source: {_id: source.id, source_id: 'source2'}, api_key: api_key}
             source.reload
-            expect(source.name).to eq 'source2'
+            expect(source.source_id).to eq 'source2'
           end
         end
       end

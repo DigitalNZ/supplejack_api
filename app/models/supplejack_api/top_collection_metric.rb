@@ -4,6 +4,8 @@ module SupplejackApi
   # app/models/supplejack_api/top_collection_metric.rb
   class TopCollectionMetric
     include Mongoid::Document
+    include Mongoid::Timestamps
+    include SupplejackApi::Concerns::QueryableByDate
 
     METRICS = %i[
       page_views
@@ -65,7 +67,8 @@ module SupplejackApi
 
     def self.calculate_results(record_metrics, metric)
       record_metrics.each_with_object({}) do |record, hash|
-        hash[record.record_id.to_s] = record.send(metric)
+        record_metric_count = record.send(metric)
+        hash[record.record_id.to_s] = record_metric_count if record_metric_count.positive?
       end
     end
 
@@ -95,6 +98,7 @@ module SupplejackApi
     def self.record_metrics_to_be_processed(date, metric, display_collection)
       SupplejackApi::RecordMetric.where(
         date: date,
+        metric.ne => 0,
         display_collection: display_collection,
         :processed_by_top_collection_metrics.in => [nil, '', false]
       ).order_by(metric => 'desc').limit(200)

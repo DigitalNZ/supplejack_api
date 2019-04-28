@@ -11,15 +11,12 @@ module MetricsApi
 
         def to_json
           {
-            id: @m.display_collection,
+            id: @m.record_field_value,
             searches: @m.searches,
-            record_page_views: @m.record_page_views,
+            record_page_views: @m.gets,
             user_set_views: @m.user_set_views,
             total_views: @m.total_views,
-            records_added_to_user_sets: @m.records_added_to_user_sets,
-            total_source_clickthroughs: @m.total_source_clickthroughs,
-            user_story_views: @m.user_story_views,
-            records_added_to_user_stories: @m.records_added_to_user_stories
+            records_added_to_user_sets: @m.records_added_to_user_sets
           }
         end
 

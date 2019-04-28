@@ -19,12 +19,16 @@ module MetricsApi
             base = { date: date }
 
             todays_metrics = metrics.map do |metric|
-              relavent_models = metric[:models].select { |key| key == date }.values.first
+              relevant_models = metric[:models].select { |key| key == date }.values.first
               presenter = (PRESENTERS_BASE + metric[:metric].camelize).constantize
 
-              next { metric[:metric] => [] } if relavent_models.blank?
+              next { metric[:metric] => [] } if relevant_models.blank?
 
-              { metric[:metric] => relavent_models.map(&presenter) }
+              if metric[:metric] == 'top_records'
+                { metric[:metric] => relevant_models.map(&presenter).reduce({}, :merge) }
+              else
+                { metric[:metric] => relevant_models.map(&presenter) }
+              end
             end
 
             todays_metrics.each { |x| base.merge!(x) }

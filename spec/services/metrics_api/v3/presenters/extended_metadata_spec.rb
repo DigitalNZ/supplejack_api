@@ -12,11 +12,11 @@ module MetricsApi
               metric: 'view',
               models: {
                 Date.current => [
-                  create(:usage_metrics),
-                  create(:usage_metrics)
+                  create(:collection_metric, dc: 'test1'),
+                  create(:collection_metric, dc: 'test2')
                 ],
                 Date.yesterday => [
-                  create(:usage_metrics, created_at: Date.yesterday.midday)
+                  create(:collection_metric, created_at: Date.yesterday.midday)
                 ]
               }
             },
@@ -28,6 +28,17 @@ module MetricsApi
                 ],
                 Date.yesterday => [
                   create(:faceted_metrics, date: Date.yesterday)
+                ]
+              }
+            },
+            {
+              metric: 'top_records',
+              models: {
+                Date.current => [
+                  create(:top_collection_metric, results: { 123 => 456, 345 => 678}, date: Time.zone.today),
+                ],
+                Date.yesterday => [
+                  create(:top_collection_metric, results: { 910 => 123, 456 => 789}, date: Time.zone.yesterday)
                 ]
               }
             }
@@ -42,6 +53,7 @@ module MetricsApi
           expect(json.last[:date]).to eq(Date.current)
           expect(json.first['record'].length).to eq(1)
           expect(json.first['view'].length).to eq(1)
+          expect(json.first['top_records'].length).to eq(1)
         end
       end
     end

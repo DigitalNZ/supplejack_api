@@ -33,6 +33,7 @@ module SupplejackApi
 
     def self.spawn
       return unless SupplejackApi.config.log_metrics == true
+
       dates = SupplejackApi::RecordMetric.where(:date.lt => Time.zone.now.beginning_of_day).map(&:date).uniq
 
       dates.each do |date|
@@ -41,6 +42,8 @@ module SupplejackApi
           results = record_metrics.each_with_object({}) do |record, hash|
             hash[record.record_id.to_s] = record.send(metric)
           end
+
+          next if results.empty?
 
           metric = find_or_create_by(
             date: date,
@@ -63,6 +66,7 @@ module SupplejackApi
     def self.record_metrics_to_be_processed(date, metric)
       SupplejackApi::RecordMetric.where(
         date: date,
+        metric.ne => 0,
         :processed_by_top_metrics.in => [nil, '', false]
       ).order_by(metric => 'desc').limit(200)
     end

@@ -98,7 +98,6 @@ module SupplejackApi
 
     # Find a set based on the MongoDB ObjectID or the set url.
     #
-    # rubocop:disable Lint/UselessAssignment
     def self.custom_find(id)
       mongo_object_id_char_length = 24
 
@@ -114,21 +113,21 @@ module SupplejackApi
       where(privacy: 'public', :name.ne => 'Favourites').order(updated_at: :desc)
     end
 
-    def self.search(page=1, per_page=10, attr_order=:updated_at, direction=:desc, search_term=nil)
+    def self.search(page = 1, per_page = 10, attr_order = :updated_at, direction = :desc, search_term = nil)
       where(
         privacy: 'public',
         :name.ne => 'Favourites',
         '$or' => [{ name: /#{search_term}/ }, { user_id: search_term }, { story_id: search_term }]
-      ).
-      paginate(page, per_page).
-      order({ attr_order => direction })
+      )
+        .paginate(page, per_page)
+        .order(attr_order => direction)
     end
 
     def self.paginate(page, per_page)
       page = page < 1 ? 0 : page
       per_page = per_page > 100 ? 100 : per_page
-      limit(per_page).
-      skip(per_page * (page - 1))
+      limit(per_page)
+        .skip(per_page * (page - 1))
     end
 
     def self.public_sets(options = {})

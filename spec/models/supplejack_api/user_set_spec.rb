@@ -220,7 +220,7 @@ module SupplejackApi
     describe "#name" do
       let(:user_set) { FactoryBot.build(:user_set, user_id: User.new.id, url: "1234abc")}
 
-      it "utitlizes the name" do
+      it "titlizes the name" do
         user_set.name = "set name"
         expect(user_set.name).to eq "Set name"
       end

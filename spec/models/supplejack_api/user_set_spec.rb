@@ -315,21 +315,21 @@ module SupplejackApi
       end
 
       it 'returns the good 4 sets with "Name" search term' do
-        sets = UserSet.search(1, 10, :updated_at, :desc, 'Name')
-        expect(sets.length).to eq(5)
-        expect(sets).to eq([user_set1, user_set3, user_set2, user_set4, uset_set5])
+        sets = UserSet.search(1, 10, :updated_at, :desc, 'Name').to_a
+        expect(sets.length).to eq(4)
+        expect(sets).to eq([user_set1, user_set3, user_set2, user_set4])
       end
 
       it 'returns 3 sets if per_page=3' do
-        sets = UserSet.search(1, 3, :updated_at, :desc)
+        sets = UserSet.search(1, 3, :updated_at, :desc).to_a
         expect(sets.length).to eq(3)
         expect(sets).to eq([user_set1, user_set3, user_set2])
       end
 
       it 'returns 2 sets if page=2 and per_page=3' do
-        sets = UserSet.search(2, 3, :updated_at, :desc)
+        sets = UserSet.search(2, 3, :updated_at, :desc).to_a
         expect(sets.length).to eq(2)
-        expect(sets.length).to eq([user_set4, user_set5])
+        expect(sets).to eq([user_set4, user_set5])
       end
     end
 

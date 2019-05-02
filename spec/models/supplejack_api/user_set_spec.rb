@@ -220,7 +220,7 @@ module SupplejackApi
     describe "#name" do
       let(:user_set) { FactoryBot.build(:user_set, user_id: User.new.id, url: "1234abc")}
 
-      it "titlizes the name" do
+      it "utitlizes the name" do
         user_set.name = "set name"
         expect(user_set.name).to eq "Set name"
       end
@@ -292,6 +292,44 @@ module SupplejackApi
         allow(proxy).to receive_message_chain(:desc, :page)
         expect(proxy).to receive(:desc).with(:created_at)
         UserSet.public_sets
+      end
+    end
+
+    describe '#search' do
+      let!(:user_set1) { FactoryBot.create(:user_set, name: 'Name 1', updated_at: Date.parse('2019-1-1')) }
+      let!(:user_set2) { FactoryBot.create(:user_set, name: 'Name 2', updated_at: Date.parse('2011-1-1')) }
+      let!(:user_set3) { FactoryBot.create(:user_set, name: 'Name 4', updated_at: Date.parse('2012-1-1')) }
+      let!(:user_set4) { FactoryBot.create(:user_set, name: 'Name 3', updated_at: Date.parse('2010-1-1')) }
+      let!(:user_set5) { FactoryBot.create(:user_set, name: 'abcdef', updated_at: Date.parse('2009-1-1')) }
+
+      it 'calls where, paginate and order' do
+        expect(UserSet).to receive(:where).and_call_original
+        expect_any_instance_of(Mongoid::Criteria).to receive(:limit).with(10).and_call_original
+        expect_any_instance_of(Mongoid::Criteria).to receive(:skip).with(0).and_call_original
+        expect_any_instance_of(Mongoid::Criteria).to receive(:order).with({ updated_at: :desc }).and_call_original
+        UserSet.search
+      end
+
+      it 'returns a Mongoid::Criteria' do
+        expect(UserSet.search).to be_a(Mongoid::Criteria)
+      end
+
+      it 'returns the good 4 sets with "Name" search term' do
+        sets = UserSet.search(1, 10, :updated_at, :desc, 'Name')
+        expect(sets.length).to eq(5)
+        expect(sets).to eq([user_set1, user_set3, user_set2, user_set4, uset_set5])
+      end
+
+      it 'returns 3 sets if per_page=3' do
+        sets = UserSet.search(1, 3, :updated_at, :desc)
+        expect(sets.length).to eq(3)
+        expect(sets).to eq([user_set1, user_set3, user_set2])
+      end
+
+      it 'returns 2 sets if page=2 and per_page=3' do
+        sets = UserSet.search(2, 3, :updated_at, :desc)
+        expect(sets.length).to eq(2)
+        expect(sets.length).to eq([user_set4, user_set5])
       end
     end
 

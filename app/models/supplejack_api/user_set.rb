@@ -113,19 +113,25 @@ module SupplejackApi
       where(privacy: 'public', :name.ne => 'Favourites').order(updated_at: :desc)
     end
 
-    def self.search(page = 1, per_page = 10, attr_order = :updated_at, direction = :desc, search_term = nil)
+    def self.public_search(options = {})
+      options.reverse_merge!(page: 1, per_page: 10, order_by: :updated_at,
+                             direction: :asc, search: nil)
       where(
         privacy: 'public',
         :name.ne => 'Favourites',
-        '$or' => [{ name: /#{search_term}/ }, { user_id: search_term }, { story_id: search_term }]
+        '$or' => [
+          { name: /#{options[:search]}/ },
+          { user_id: options[:search] },
+          { story_id: options[:search] }
+        ]
       )
-        .paginate(page, per_page)
-        .order(attr_order => direction)
+        .paginate(options[:page], options[:per_page])
+        .order(options[:order_by] => options[:direction])
     end
 
     def self.paginate(page, per_page)
-      page = page < 1 ? 0 : page
-      per_page = per_page > 100 ? 100 : per_page
+      page = page.to_i < 1 ? 0 : page.to_i
+      per_page = per_page.to_i > 100 ? 100 : per_page.to_i
       limit(per_page)
         .skip(per_page * (page - 1))
     end

@@ -28,7 +28,7 @@ module SupplejackApi
           end
 
           it 'finds all public sets' do
-            expect(UserSet).to receive(:search) { [] }
+            expect(UserSet).to receive(:public_search) { [] }
             get :index, format: 'json'
           end
 
@@ -57,22 +57,19 @@ module SupplejackApi
           it 'orders by updated_at asc by default' do
             get :index, format: 'json'
             sets = JSON.parse(response.body)['sets']
-            sorted = sets.sort { |s1, s2| s1['updated_at'] <=> s2['updated_at'] }
-            expect(sets).to eq(sorted)
+            expect(sets).to eq(sets.sort { |s1, s2| s1['updated_at'] <=> s2['updated_at'] })
           end
 
           it 'orders by name asc with the parameter order_by=name' do
             get :index, params: { order_by: :name }, format: 'json'
             sets = JSON.parse(response.body)['sets']
-            sorted = sets.sort_by { |user_set| user_set['name'] }
-            expect(sets).to eq(sorted)
+            expect(sets).to eq(sets.sort_by { |user_set| user_set['name'] })
           end
 
           it 'orders by name desc by with the parameters order_by=name&direction=desc' do
             get :index, params: { order_by: :name, direction: :desc }, format: 'json'
             sets = JSON.parse(response.body)['sets']
-            sorted = sets.sort { |s1, s2| s2['name'] <=> s1['name'] }
-            expect(sets).to eq(sorted)
+            expect(sets).to eq(sets.sort { |s1, s2| s2['name'] <=> s1['name'] })
           end
 
           it 'renders the good 3 sets with parameter per_page=3' do

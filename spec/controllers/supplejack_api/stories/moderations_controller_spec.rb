@@ -29,6 +29,7 @@ module SupplejackApi
 
           it 'finds all public sets' do
             expect(UserSet).to receive(:public_search) { [] }
+
             get :index, format: 'json'
           end
 
@@ -49,6 +50,7 @@ module SupplejackApi
           it 'has total, page, per_page, in its response body' do
             get :index, format: 'json'
             json = JSON.parse(response.body)
+
             expect(json).to have_key('per_page')
             expect(json).to have_key('page')
             expect(json).to have_key('total')
@@ -57,49 +59,53 @@ module SupplejackApi
           it 'orders by updated_at asc by default' do
             get :index, format: 'json'
             sets = JSON.parse(response.body)['sets']
+
             expect(sets).to eq(sets.sort { |s1, s2| s1['updated_at'] <=> s2['updated_at'] })
           end
 
           it 'orders by name asc with the parameter order_by=name' do
             get :index, params: { order_by: :name }, format: 'json'
             sets = JSON.parse(response.body)['sets']
+
             expect(sets).to eq(sets.sort_by { |user_set| user_set['name'] })
           end
 
           it 'orders by name desc by with the parameters order_by=name&direction=desc' do
             get :index, params: { order_by: :name, direction: :desc }, format: 'json'
             sets = JSON.parse(response.body)['sets']
+
             expect(sets).to eq(sets.sort { |s1, s2| s2['name'] <=> s1['name'] })
           end
 
           it 'renders the good 3 sets with parameter per_page=3' do
             get :index, params: { per_page: 3 }, format: 'json'
             json = JSON.parse(response.body)
+
             expect(json['sets'].length).to eq(3)
           end
 
           it 'renders the good 3 sets with parameter page=2&per_page=3' do
             get :index, params: { page: 2, per_page: 3 }, format: 'json'
             sets = JSON.parse(response.body)['sets']
+
             expect(sets.length).to eq(1)
-            user_set1_json = JSON.parse(StoriesModerationSerializer.new(user_set1).to_json)
-            expect(sets[0]).to eq(user_set1_json)
+            expect(sets[0]).to eq(JSON.parse(StoriesModerationSerializer.new(user_set1).to_json))
           end
 
           it 'renders the good set with parameter search=Name 2' do
             get :index, params: { search: 'Name 2' }, format: 'json'
             sets = JSON.parse(response.body)['sets']
+
             expect(sets.length).to eq(1)
-            user_set2_json = JSON.parse(StoriesModerationSerializer.new(user_set2).to_json)
-            expect(sets[0]).to eq(user_set2_json)
+            expect(sets[0]).to eq(JSON.parse(StoriesModerationSerializer.new(user_set2).to_json))
           end
 
           it 'renders the good 3 sets with parameter search=user_id' do
             get :index, params: { search: user_set3.user_id.to_s }, format: 'json'
             sets = JSON.parse(response.body)['sets']
+
             expect(sets.length).to eq(1)
-            user_set3_json = JSON.parse(StoriesModerationSerializer.new(user_set3).to_json)
-            expect(sets[0]).to eq(user_set3_json)
+            expect(sets[0]).to eq(JSON.parse(StoriesModerationSerializer.new(user_set3).to_json))
           end
         end
       end

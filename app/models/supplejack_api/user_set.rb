@@ -293,7 +293,7 @@ module SupplejackApi
     end
 
     def tag_list=(tags_string)
-      tags_string = tags_string.to_s.gsub(/[^\w\p{Word} ,-]/, '')
+      tags_string = tags_string.to_s.gsub(/[^\w ,-]/, '')
       self.subjects = tags_string.to_s.split(',').map(&:strip).reject(&:blank?)
     end
 

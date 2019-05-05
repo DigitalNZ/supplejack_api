@@ -307,6 +307,7 @@ module SupplejackApi
         expect_any_instance_of(Mongoid::Criteria).to receive(:limit).with(10).and_call_original
         expect_any_instance_of(Mongoid::Criteria).to receive(:skip).with(0).and_call_original
         expect_any_instance_of(Mongoid::Criteria).to receive(:order).with({ updated_at: :asc }).and_call_original
+
         UserSet.public_search
       end
 
@@ -316,18 +317,21 @@ module SupplejackApi
 
       it 'returns the good 4 sets with "Name" search term' do
         sets = UserSet.public_search(page: 1, per_page: 10, orderby: :updated_at, direction: :desc, search: 'Name').to_a
+
         expect(sets.length).to eq(4)
         expect(sets).to eq([user_set1, user_set3, user_set2, user_set4])
       end
 
       it 'returns 3 sets if per_page=3' do
         sets = UserSet.public_search(page: 1, per_page: 3, order_by: :updated_at, direction: :desc).to_a
+
         expect(sets.length).to eq(3)
         expect(sets).to eq([user_set1, user_set3, user_set2])
       end
 
       it 'returns 2 sets if page=2 and per_page=3' do
         sets = UserSet.public_search(page: 2, per_page: 3, order_by: :updated_at, direction: :desc).to_a
+
         expect(sets.length).to eq(2)
         expect(sets).to eq([user_set4, user_set5])
       end

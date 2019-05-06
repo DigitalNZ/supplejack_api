@@ -1,5 +1,3 @@
-
-
 require 'spec_helper'
 
 module SupplejackApi
@@ -15,34 +13,18 @@ module SupplejackApi
     end
 
     describe '#random_records' do
-      let(:mongo_query_where) { Mongoid::Criteria.new(Record) }
-      let(:mongo_query_sort) { Mongoid::Criteria.new(Record) }
-
-      before do
-        allow(Record).to receive(:where) { mongo_query_where }
-        allow(mongo_query_where).to receive(:sort) { mongo_query_sort }
-      end
-
       it 'should fetch records with source id of the instance' do
-        expect(Record).to receive(:where).with({ "fragments.source_id" => "1234",
-                                                 :status => "active"})
-
-        source.random_records(4)
-      end
-
-      it 'should sort the records and limit it to 100' do
-        expect(mongo_query_where).to receive(:sort).with({"fragments.syndication_date" => -1})
-        expect(mongo_query_where).to receive(:sort).with({"fragments.syndication_date" => 1})
-        expect(mongo_query_sort).to receive(:limit).with(100).twice
-
-        source.random_records(4)
+        records = source.random_records(4)
+        records.each do |record|
+          expect(record.source_id).to_eq '1234'
+        end
       end
 
       it 'should fetch random 4 records from the result' do
         expect_any_instance_of(Array).to receive(:sample).with(4)
 
         source.random_records(4)
-      end      
+      end
     end
   end
 end

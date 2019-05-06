@@ -10,9 +10,10 @@ module SupplejackApi
         user_sets = UserSet.public_search(index_params)
         render json: {
           sets: user_sets.map { |user_set| StoriesModerationSerializer.new(user_set) },
+          total_filtered: user_sets.count,
           total: UserSet.public_sets_count,
-          page: index_params[:page],
-          per_page: index_params[:per_page]
+          page: index_params[:page]&.to_i || 1,
+          per_page: index_params[:per_page]&.to_i || 10
         }
       end
 

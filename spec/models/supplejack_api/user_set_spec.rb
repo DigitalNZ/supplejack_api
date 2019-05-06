@@ -304,9 +304,10 @@ module SupplejackApi
 
       it 'calls where, paginate and order' do
         expect(UserSet).to receive(:where).and_call_original
-        expect_any_instance_of(Mongoid::Criteria).to receive(:limit).with(10).and_call_original
-        expect_any_instance_of(Mongoid::Criteria).to receive(:skip).with(0).and_call_original
         expect_any_instance_of(Mongoid::Criteria).to receive(:order).with({ updated_at: :asc }).and_call_original
+        expect_any_instance_of(Mongoid::Criteria).to receive(:page).with(1).and_call_original
+        # After calling page, Kaminari assigns dynamically the `per` method.
+        expect_any_instance_of(Kaminari::PageScopeMethods).to receive(:per).with(10)
 
         UserSet.public_search
       end

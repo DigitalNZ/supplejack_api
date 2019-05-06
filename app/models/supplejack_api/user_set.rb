@@ -125,15 +125,9 @@ module SupplejackApi
           { story_id: options[:search] }
         ]
       )
-        .paginate(options[:page], options[:per_page])
         .order(options[:order_by] => options[:direction])
-    end
-
-    def self.paginate(page, per_page)
-      page = page.to_i < 1 ? 0 : page.to_i
-      per_page = per_page.to_i > 100 ? 100 : per_page.to_i
-      limit(per_page)
-        .skip(per_page * (page - 1))
+        .page(options[:page])
+        .per(options[:per_page])
     end
 
     def self.public_sets(options = {})

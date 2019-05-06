@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'devise-token_authenticatable', '<= 1.0.0'
   s.add_dependency 'dimensions'
   s.add_dependency 'dry-struct'
-  s.add_dependency 'dry-validation'
+  s.add_dependency 'dry-validation', '0.13.0'
   s.add_dependency 'figaro'
   s.add_dependency 'gabba'
   s.add_dependency 'jquery-rails'

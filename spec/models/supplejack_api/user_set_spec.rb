@@ -296,7 +296,7 @@ module SupplejackApi
     end
 
     describe '#public_search' do
-      let!(:user_set1) { create(:user_set, name: 'Name 1', updated_at: Date.parse('2019-1-1')) }
+      let!(:user_set1) { create(:user_set_with_set_item, name: 'Name 1', updated_at: Date.parse('2019-1-1')) }
       let!(:user_set2) { create(:user_set, name: 'Name 2', updated_at: Date.parse('2011-1-1')) }
       let!(:user_set3) { create(:user_set, name: 'Name 4', updated_at: Date.parse('2012-1-1')) }
       let!(:user_set4) { create(:user_set, name: 'Name 3', updated_at: Date.parse('2010-1-1')) }
@@ -321,6 +321,20 @@ module SupplejackApi
 
         expect(sets.length).to eq(4)
         expect(sets).to eq([user_set1, user_set3, user_set2, user_set4])
+      end
+
+      it 'returns the good set with "story_id" search term' do
+        sets = UserSet.public_search(page: 1, per_page: 10, orderby: :updated_at, direction: :desc, search: user_set1.id.to_s).to_a
+
+        expect(sets.length).to eq(1)
+        expect(sets).to eq([user_set1])
+      end
+
+      it 'returns the good set with "user_id" search term' do
+        sets = UserSet.public_search(page: 1, per_page: 10, orderby: :updated_at, direction: :desc, search: user_set1.user_id.to_s).to_a
+
+        expect(sets.length).to eq(1)
+        expect(sets).to eq([user_set1])
       end
 
       it 'returns 3 sets if per_page=3' do

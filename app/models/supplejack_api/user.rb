@@ -50,6 +50,8 @@ module SupplejackApi
 
     alias api_key authentication_token
 
+    validates :authentication_token, uniqueness: true
+
     before_save :ensure_authentication_token
 
     has_many :user_sets, dependent: :destroy, autosave: true, class_name: 'SupplejackApi::UserSet' do

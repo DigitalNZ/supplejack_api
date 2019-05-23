@@ -122,7 +122,7 @@ module SupplejackApi
         '$or' => [
           { name: /#{options[:search]}/ },
           { user_id: options[:search] },
-          { story_id: options[:search] }
+          { id: options[:search] }
         ]
       )
         .order(options[:order_by] => options[:direction])

@@ -32,7 +32,7 @@ module SupplejackApi
 
       context 'Set Interactions' do
         before do
-          @user = FactoryBot.create(:user, authentication_token: "abc123", role: 'admin')
+          @user = FactoryBot.create(:user, authentication_token: "abc1234", role: 'admin')
           @empty_set = FactoryBot.create(:user_set)
           allow(controller).to receive(:current_user) { @user }
         end

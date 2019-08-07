@@ -120,7 +120,7 @@ module SupplejackApi
         privacy: 'public',
         :name.ne => 'Favourites',
         '$or' => [
-          { name: /#{options[:search]}/ },
+          { name: /#{options[:search]}/i },
           { user_id: options[:search] },
           { id: options[:search] }
         ]

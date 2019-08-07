@@ -323,6 +323,13 @@ module SupplejackApi
         expect(sets).to eq([user_set1, user_set3, user_set2, user_set4])
       end
 
+      it 'is case insensitive' do
+        sets = UserSet.public_search(page: 1, per_page: 10, orderby: :updated_at, direction: :desc, search: 'name').to_a
+
+        expect(sets.length).to eq(4)
+        expect(sets).to eq([user_set1, user_set3, user_set2, user_set4])
+      end
+
       it 'returns the good set with "story_id" search term' do
         sets = UserSet.public_search(page: 1, per_page: 10, orderby: :updated_at, direction: :desc, search: user_set1.id.to_s).to_a
 

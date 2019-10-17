@@ -26,7 +26,7 @@ module SupplejackApi
         log_message = "#{klass_name} with #{klass_id}:#{send(klass_id)},"
         log_message += " internal_identifier:#{internal_identifier} failed validation."
         log_message += "  Fragment source_ids must be unique, source_ids: #{source_ids}"
-        ValidationLogger.logger.error(log_message)
+        Rails.logger.error log_message
       end
 
       def primary_fragment(attributes = {})

@@ -1,6 +1,8 @@
-inherit_from: .rubocop_todo.yml
+require: [rubocop-rails]
+
 Rails:
   Enabled: true
+
 AllCops:
   Exclude:
     - 'vendor/**/*'
@@ -12,32 +14,36 @@ AllCops:
     - 'lib/generators/**/*'
   DisplayStyleGuide: true
   DisplayCopNames: true
-  TargetRubyVersion: 2.3
+
 Style/MultilineIfModifier:
-  Enabled: false  
+  Enabled: false
+
 Rails/DynamicFindBy:
   Enabled: false
+
 Style/ExtraSpacing:
   Enabled: false
+
 Metrics/BlockLength:
   Enabled: false
+
 Metrics/LineLength:
   Max: 120
+
 Metrics/MethodLength:
   Max: 25
-Rails/SkipsModelValidations:
-  Enabled: false  
 
-Style/IndentHash:
-  EnforcedStyle: consistent
-Style/IndentArray:
-  EnforcedStyle: consistent
+Rails/SkipsModelValidations:
+  Enabled: false
+
 Style/RegexpLiteral:
   EnforcedStyle: slashes
+
 # Currently broken due to a bug when autocorrecting
 # https://github.com/bbatsov/rubocop/issues/3510
 Style/SafeNavigation:
   Enabled: false
+
 Style/RescueModifier:
   Description: 'Avoid using rescue in its modifier form.'
   StyleGuide: 'https://github.com/bbatsov/ruby-style-guide#no-rescue-modifiers'

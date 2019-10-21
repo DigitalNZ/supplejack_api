@@ -8,6 +8,14 @@ FactoryBot.define do
     meta {{size: 1}}
     record_id { SecureRandom.random_number(1000000) }
 
+    trait :script_value do
+      content { { value: '<script>alert("test");<script>' } }
+    end
+
+    trait :inline_style_value do
+      content { { value: '<p style="display: none;">my paragraph</p>' } }
+    end
+
     factory :heading_item do
       type 'text'
       sub_type 'heading'

@@ -59,6 +59,7 @@ module SupplejackApi
     # In Mongoid lib/mongoid/relations/builders.rb
     def create_record_representation
       return unless record.nil?
+
       self.record = SupplejackApi.config.record_class.new
 
       record.status = record_status
@@ -107,7 +108,6 @@ module SupplejackApi
         where(url: id).first
       end
     end
-    # rubocop:enable Lint/UselessAssignment
 
     def self.all_public_sets
       where(privacy: 'public', :name.ne => 'Favourites').order(updated_at: :desc)

@@ -7,7 +7,7 @@ module SupplejackApi
 
     store_in collection: 'source_activities'
 
-    field :source_clicks,	type: Integer, default: 0
+    field :source_clicks,  type: Integer, default: 0
 
     private_class_method :new
 

@@ -31,4 +31,4 @@ module SupplejackApi
   end
 end
 
-Mongoid::Criteria.send(:include, SupplejackApi::Sortable::Criteria)
+Mongoid::Criteria.include SupplejackApi::Sortable::Criteria

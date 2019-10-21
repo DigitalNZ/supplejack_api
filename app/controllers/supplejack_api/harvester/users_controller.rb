@@ -20,7 +20,7 @@ module SupplejackApi
 
       def update
         user = User.find(params[:id])
-        user.update_attributes!(user_params)
+        user.update!(user_params)
       end
 
       private

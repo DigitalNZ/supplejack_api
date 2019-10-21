@@ -74,11 +74,11 @@ module SupplejackApi
 
     def name
       name = self[:name]
-      name.present? ? name : username
+      name.presence || username
     end
 
     def updated_today?
-      updated_at > Time.now.beginning_of_day
+      updated_at > Time.zone.now.beginning_of_day
     end
 
     def check_daily_requests
@@ -151,7 +151,7 @@ module SupplejackApi
 
     def calculate_last_30_days_requests
       count = 0
-      user_activities.gt(created_at: Time.now - 30.days).each { |activity| count += activity.total.to_i }
+      user_activities.gt(created_at: Time.zone.now - 30.days).each { |activity| count += activity.total.to_i }
       self.monthly_requests = count
     end
 
@@ -192,6 +192,7 @@ module SupplejackApi
              end
 
       raise Mongoid::Errors::DocumentNotFound.new(self, id, id) unless user
+
       user
     end
 

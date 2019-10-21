@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Utils
-  extend self
+  module_function
 
   def load_yaml(file_name)
     path = Rails.root.join('config', file_name)
@@ -51,12 +51,12 @@ module Utils
       nil
     elsif value.is_a?(Integer)
       number = value.to_s[0..9]
-      Time.at(number.to_i)
+      Time.zone.at(number.to_i)
     elsif value.is_a?(String) && value.match(/^\d{13}$/)
       number = value[0..9]
-      Time.at(number.to_i)
+      Time.zone.at(number.to_i)
     else
-      Time.parse(value) rescue nil
+      Time.zone.parse(value) rescue nil
     end
   end
 
@@ -70,6 +70,7 @@ module Utils
   # @return [String] the string with capital first letter
   def capitalize_first_word(string)
     return '' if string.blank?
+
     string_dup = string.dup
     string_dup[0] = string_dup.to_s[0].upcase
     string_dup

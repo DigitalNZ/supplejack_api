@@ -27,11 +27,13 @@ module SupplejackApi
       # Build fields
       schema_class.fields.each do |name, field|
         next if field.store == false
+
         type = field.multi_value.presence ? Array : MONGOID_TYPE_NAMES[field.type]
         self.field name, type: type
       end
 
       return if schema_class.mongo_indexes.blank?
+
       # Build indexes
       schema_class.mongo_indexes.each_value do |index|
         index_options = !!index.index_options ? index.index_options : {}

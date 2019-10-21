@@ -31,7 +31,7 @@ module SupplejackApi
 
       def primary_fragment(attributes = {})
         primary = fragments.where(priority: 0).first
-        primary ? primary : fragments.build(attributes.merge(priority: 0))
+        primary || fragments.build(attributes.merge(priority: 0))
       end
 
       def primary_fragment!(attributes = {})
@@ -72,7 +72,6 @@ module SupplejackApi
       # merged_fragment or only fragment.
       # Means that record.{attribute} (ie. record.name) works for convenience
       # and abstracts away the fact that fragments exist
-      # rubocop:disable Style/MethodMissing
       def method_missing(symbol, *_args)
         type = fragment_class.mutable_fields[symbol.to_s]
 
@@ -83,7 +82,6 @@ module SupplejackApi
         end
         type == Array ? Array(value) : value
       end
-      # rubocop:enable Style/MethodMissing
 
       def sorted_fragments
         fragments.sort_by { |s| s.priority || Integer::INT32_MAX }

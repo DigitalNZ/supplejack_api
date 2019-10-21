@@ -37,6 +37,7 @@ module SupplejackApi::Concerns::Record
 
     def self.find_multiple(ids)
       return [] unless ids.try(:any?)
+
       string_ids = ids.find_all { |id| id.to_s.length > 10 }
       integer_ids = ids.find_all { |id| id.to_s.length <= 10 }
 
@@ -104,6 +105,7 @@ module SupplejackApi::Concerns::Record
 
     def should_index?
       return should_index_flag unless should_index_flag.nil?
+
       active?
     end
 

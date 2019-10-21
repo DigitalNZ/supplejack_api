@@ -8,7 +8,7 @@ module MetricsApi
           @dm = daily_metric
         end
 
-        def to_json
+        def to_json(*_args)
           {
             day: @dm.date,
             total_public_sets: @dm.total_public_sets

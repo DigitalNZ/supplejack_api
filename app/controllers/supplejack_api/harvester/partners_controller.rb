@@ -9,7 +9,7 @@ module SupplejackApi
       def create
         if partner_params[:_id].present?
           @partner = Partner.find_or_initialize_by(_id: partner_params[:_id])
-          @partner.update_attributes(partner_params)
+          @partner.update(partner_params)
         else
           @partner = Partner.create(partner_params)
         end
@@ -28,7 +28,7 @@ module SupplejackApi
 
       def update
         @partner = Partner.find(params[:id])
-        @partner.update_attributes(partner_params)
+        @partner.update(partner_params)
         render json: @partner
       end
 

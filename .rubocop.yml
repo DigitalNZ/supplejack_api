@@ -1,3 +1,5 @@
+inherit_from: .rubocop_todo.yml
+
 require: [rubocop-rails]
 
 Rails:
@@ -21,8 +23,12 @@ Style/MultilineIfModifier:
 Rails/DynamicFindBy:
   Enabled: false
 
-Style/ExtraSpacing:
+Layout/ExtraSpacing:
   Enabled: false
+
+Layout/LeadingCommentSpace:
+  Exclude:
+    - Rakefile
 
 Metrics/BlockLength:
   Enabled: false

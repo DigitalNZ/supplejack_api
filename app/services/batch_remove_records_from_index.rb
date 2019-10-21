@@ -22,12 +22,10 @@ class BatchRemoveRecordsFromIndex
   def retry_remove_records(records)
     Rails.logger.info 'BatchRemoveRecordsFromIndex - REMOVE INDEX ERROR - retrying individual records'
     records.each do |record|
-      begin
-        Rails.logger.info "BatchRemoveRecordsFromIndex - REMOVE INDEX: #{record}"
-        Sunspot.remove record
-      rescue StandardError => exception
-        Rails.logger.error "BatchRemoveRecordsFromIndex - Failed to remove: #{record.inspect} - #{exception.message}"
-      end
+      Rails.logger.info "BatchRemoveRecordsFromIndex - REMOVE INDEX: #{record}"
+      Sunspot.remove record
+    rescue StandardError => e
+      Rails.logger.error "BatchRemoveRecordsFromIndex - Failed to remove: #{record.inspect} - #{e.message}"
     end
   end
 end

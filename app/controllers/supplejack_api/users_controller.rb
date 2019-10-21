@@ -25,7 +25,7 @@ module SupplejackApi
 
     def update
       @user = User.custom_find(params[:id])
-      @user.update_attributes(user_params)
+      @user.update(user_params)
       render json: @user, root: 'user', adapter: :json
     end
 

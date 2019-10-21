@@ -29,6 +29,7 @@ module SupplejackApi
 
     ConceptSchema.fields.each do |name, field|
       next if field.store == false
+
       type = field.multi_value.presence ? Array : MONGOID_TYPE_NAMES[field.type]
       field name, type: type
     end

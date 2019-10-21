@@ -14,6 +14,7 @@ module SupplejackApi
 
     def self.spawn(records, metric, date = Time.zone.now.beginning_of_day)
       return unless SupplejackApi.config.log_metrics == true
+
       create(records: records, metric: metric, date: date)
     end
 

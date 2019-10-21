@@ -21,9 +21,7 @@ module StoriesApi
 
           if story.privacy == 'private'
             return create_error('PrivateStoryNotAuthorised', id: params[:id]) unless user
-            unless story.user == user || user.admin?
-              return create_error('PrivateStoryNotAuthorised', id: params[:id])
-            end
+            return create_error('PrivateStoryNotAuthorised', id: params[:id]) unless story.user == user || user.admin?
           end
 
           create_response(status: 200, payload: ::StoriesApi::V3::Presenters::Story.new.call(story))

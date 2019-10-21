@@ -40,7 +40,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'rails', '5.1.4'
   s.add_dependency 'responders'
   s.add_dependency 'rest-client'
-  s.add_dependency 'sanitize'
   s.add_dependency 'sass-rails'
   s.add_dependency 'sidekiq'
   s.add_dependency 'state_machine'

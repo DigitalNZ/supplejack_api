@@ -45,6 +45,7 @@ module SupplejackApi
 
     def field_list
       return @field_list if @field_list
+
       valid_fields = self.class.schema_class.fields.keys.dup
 
       @field_list = options[:fields].split(',').map { |f| f.strip.tr(':', '_').to_sym }
@@ -60,6 +61,7 @@ module SupplejackApi
     #
     def group_list
       return @group_list if @group_list
+
       @group_list = options[:fields].split(',').map { |f| f.strip.to_sym }
       @group_list.keep_if { |f| self.class.model_class.valid_groups.include?(f) }
       @group_list
@@ -75,6 +77,7 @@ module SupplejackApi
       end
 
       return nil if query_field_list.try(:empty?)
+
       query_field_list
     end
 
@@ -112,9 +115,7 @@ module SupplejackApi
       self.warnings ||= []
       self.class.max_values.each_key do |attribute|
         max_value = self.class.max_values[attribute]
-        if @options[attribute].to_i > max_value
-          self.errors << "The #{attribute} parameter can not exceed #{max_value}"
-        end
+        self.errors << "The #{attribute} parameter can not exceed #{max_value}" if @options[attribute].to_i > max_value
       end
 
       # This error comes from search_builder method.
@@ -131,6 +132,7 @@ module SupplejackApi
 
     def solr_search_object
       return @solr_search_object if @solr_search_object
+
       @solr_search_object = execute_solr_search
 
       if options[:debug] == 'true' && @solr_search_object.respond_to?(:query)
@@ -174,9 +176,7 @@ module SupplejackApi
 
       if scope
         role = scope.role.try(:to_sym)
-        if schema_class.roles[role].record_restrictions
-          restrictions = schema_class.roles[role].record_restrictions
-        end
+        restrictions = schema_class.roles[role].record_restrictions if schema_class.roles[role].record_restrictions
       end
 
       restrictions
@@ -262,6 +262,7 @@ module SupplejackApi
           or_and_options = {}.merge(options[:and]).merge(options[:or])
           or_and_options.each do |key, value|
             raise Exception, 'exclude_filters_from_facets does not allow nested (:and, :or)' if %i[or and].include? key
+
             facet(key.to_sym, exclude: with(key.to_sym, value))
           end
         end
@@ -338,12 +339,11 @@ module SupplejackApi
       end
     end
 
-    # rubocop:disable Style/MethodMissing
     def method_missing(symbol, *args)
       return nil unless solr_search_object.respond_to?(:hits)
+
       solr_search_object.send(symbol, *args)
     end
-    # rubocop:enable Style/MethodMissing
 
     def execute_solr_search_and_handle_errors(search)
       self.errors ||= []

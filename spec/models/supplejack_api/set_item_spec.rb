@@ -113,6 +113,18 @@ module SupplejackApi
       end
     end
 
+    describe '#content' do
+      let(:set_item_script) { build(:story_item, :script_value) }
+      let(:set_item_inline) { build(:story_item, :inline_style_value) }
+
+      it 'removes script tags' do
+        expect(set_item_script.content[:value]).to eq 'alert("test");&lt;script&gt;'
+      end
+
+      it 'removes inline styles' do
+        expect(set_item_inline.content[:value]).to eq '<p>my paragraph</p>'
+      end
+    end
 
     describe 'hash fields' do
       it 'symbolizes the keys on the hash fields when created' do

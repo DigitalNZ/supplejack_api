@@ -9,7 +9,7 @@ module MetricsApi
           @m = metric
         end
 
-        def to_json
+        def to_json(*_args)
           { @m.metric => @m.results }
         end
 

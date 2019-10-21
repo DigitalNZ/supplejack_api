@@ -10,7 +10,7 @@ module SupplejackApi
       else
         render request.format.to_sym => {
           errors: 'Mandatory parameter user_key missing'
-        }, status: 400
+        }, status: :bad_request
       end
     end
   end

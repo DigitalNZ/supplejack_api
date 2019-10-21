@@ -42,7 +42,9 @@ module SupplejackApi
     def solr_up?
       resource = RestClient.get ENV['SOLR_PING'], open_timeout: 5
       success = Hash.from_xml(resource)['response']['str'] == 'OK'
-      Support::StatusLogger.logger.error("Solr ping command not successful. Ping output: #{Hash.from_xml(resource)['response']}") unless success
+      unless success
+        Support::StatusLogger.logger.error("Solr ping command not successful. Ping output: #{Hash.from_xml(resource)['response']}")
+      end
       success
     rescue StandardError => e
       Support::StatusLogger.logger.error("Exception when attempting to ping Solr. Exception is #{e}.\nBacktrace #{e.backtrace[0..2].join("\n")}")
@@ -52,7 +54,9 @@ module SupplejackApi
     def mongod_up?
       session = SupplejackApi.config.record_class.collection.database.client
       success = session.command(ping: 1).ok?
-      Support::StatusLogger.logger.error("MongoDB ping command not successful. Ping output: #{session.command(ping: 1)}") unless success
+      unless success
+        Support::StatusLogger.logger.error("MongoDB ping command not successful. Ping output: #{session.command(ping: 1)}")
+      end
       success
     rescue StandardError => e
       Support::StatusLogger.logger.error("Exception when attempting to ping MongoDB. Exception is #{e}.\nBacktrace #{e.backtrace[0..2].join("\n")}")

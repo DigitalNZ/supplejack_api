@@ -26,11 +26,12 @@ module SupplejackApi
 
     def self.spawn(record_id, metrics, display_collection, date = Time.zone.now.beginning_of_day)
       return unless SupplejackApi.config.log_metrics == true
-      collection.update_one({
-        record_id: record_id,
-        date: date.to_date,
-        display_collection: display_collection
-      }, { '$inc' => metrics }, upsert: true)
+
+      collection.update_one(
+        { record_id: record_id, date: date.to_date, display_collection: display_collection },
+        { '$inc' => metrics },
+        upsert: true
+      )
     end
   end
 end

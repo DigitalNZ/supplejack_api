@@ -9,7 +9,7 @@ module SupplejackApi
       def create
         if source_params[:_id].present?
           @source = Source.find_or_initialize_by(_id: source_params[:_id])
-          @source.update_attributes(source_params)
+          @source.update(source_params)
         else
           @source = Source.create(source_params)
         end
@@ -33,7 +33,7 @@ module SupplejackApi
       def update
         @source = Source.find(params[:id])
         source_params['status_updated_at'] = Time.zone.now.to_datetime if source_params['status']
-        @source.update_attributes(source_params)
+        @source.update(source_params)
         render json: @source
       end
 

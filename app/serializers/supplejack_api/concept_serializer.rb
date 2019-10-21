@@ -29,6 +29,7 @@ module SupplejackApi
 
     ConceptSchema.model_fields.each do |name, definition|
       next if definition.search_value.blank? && definition.store == false
+
       if definition.search_value.present? && definition.store == false
         attribute name do
           definition.search_value.call(object)

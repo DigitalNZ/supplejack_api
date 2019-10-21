@@ -14,7 +14,7 @@ module SupplejackApi
         def render_response(endpoint)
           api = StoriesApi::V3::Api.new(params.dup, endpoint, request.method.downcase.to_sym)
 
-          @api_response = api.errors ? api.errors : api.call
+          @api_response = api.errors || api.call
 
           handle_errors(@api_response)
           return if performed?

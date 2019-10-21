@@ -188,7 +188,7 @@ module SupplejackApi
 
         it 'adds mongo index hints to the query' do
           indexes = [{"v"=>1, "key"=>{"fragments.source_id"=>1}, "name"=>"fragments.source_id_1", "ns"=>"dnz_api_development.records"}]
-          SupplejackApi.config.record_class.stub_chain(:collection, :indexes, :as_json).and_return indexes
+          expect(SupplejackApi.config.record_class).to receive_message_chain(:collection, :indexes, :as_json).and_return indexes
           expect_any_instance_of(Mongoid::Criteria).to receive(:hint).with({"fragments.source_id"=>1})
 
           get :index, params: { search: { 'fragments.source_id': records.first.source_id }, search_options: { page: 1 }, api_key: api_key }

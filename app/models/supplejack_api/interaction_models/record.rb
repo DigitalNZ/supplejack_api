@@ -26,6 +26,7 @@ module SupplejackApi
       # Creates an entry for a record view
       def self.create_find(object)
         return if object.nil?
+
         result = object.send(@field)
         result = [result] unless result.is_a? Array
         create(request_type: 'get', log_values: result) unless result.empty?
@@ -41,6 +42,7 @@ module SupplejackApi
         unless object.set_items.empty?
           object.set_items.each do |item|
             next if item.record.nil?
+
             record = SupplejackApi.config.record_class.custom_find(item.record_id)
             if record
               result = record.send(@field)

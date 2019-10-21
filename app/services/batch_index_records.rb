@@ -22,12 +22,10 @@ class BatchIndexRecords
   def retry_index_records(records)
     Rails.logger.info 'BatchIndexRecords - INDEXING batch has raised an exception - retrying individual records'
     records.each do |record|
-      begin
-        Rails.logger.info "BatchIndexRecords - INDEXING: #{record}"
-        Sunspot.index record
-      rescue StandardError => exception
-        Rails.logger.error "BatchIndexRecords - Failed to index: #{record.inspect} - #{exception.message}"
-      end
+      Rails.logger.info "BatchIndexRecords - INDEXING: #{record}"
+      Sunspot.index record
+    rescue StandardError => e
+      Rails.logger.error "BatchIndexRecords - Failed to index: #{record.inspect} - #{e.message}"
     end
   end
 end

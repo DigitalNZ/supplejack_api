@@ -1,23 +1,31 @@
 language: ruby
-rvm:
-- 2.3.1
+
 cache: bundler
+
 bundler_args: --without production
-sudo: false
+
+before_install:
+  - gem update --system
+  - gem install bundler --version $(tail -n 1 Gemfile.lock)
+
 before_script:
   - cp spec/dummy/config/mongoid.travis.yml spec/dummy/config/mongoid.yml
   - echo 'Pacific/Auckland' | sudo tee /etc/timezone
   - sudo dpkg-reconfigure --frontend noninteractive tzdata
+
 script:
   - bundle exec rspec
   - bundle exec rubocop
+
 services:
   - mongodb
   - redis-server
+
 addons:
   codeclimate:
     repo_token:
       secure: "BPE0Z8pERKEUtfnQrAHHFZe0vSRcmc5z+1M6vou9DGnln0k/A8g/WDMuejFJyutGrh+6RXAUwpreIYmmnnorRNrCJjjTZtS09n2tfhj58JiZEWFhzf5d3Gv0VbiflISJk+Ech5HDQgS7m96H0TFJzemurLkGbfjkJOuLLHOJanc="
+
 notifications:
   slack:
     secure: Sp50H+dzfLIDCzWx06X3fzaqQIMLQ05ujV3O+am3tD3njTNJc1LuYSkc9WycVqiUQStDOraN8Rwu0tZkui3MSGRvTJsQaORuq6wwcR0kT5QXBZNmmeV/aCaMJaI/T1U4ucC7At5ZT2xFv3Cp943lOEjVTqr4eUZ29jJWirD2NwQ=

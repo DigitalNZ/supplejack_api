@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-$LOAD_PATH.push File.expand_path('../lib', __FILE__)
+$LOAD_PATH.push File.expand_path('lib', __dir__)
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.files = Dir['{app,config,db,lib}/**/*'] + ['Rakefile', 'README.md']
   s.test_files = Dir['spec/**/*']
 
-  s.add_dependency 'active_model_serializers'
+  s.add_dependency 'active_model_serializers', '0.10.9'
   s.add_dependency 'activemodel-serializers-xml'
   s.add_dependency 'coffee-rails'
   s.add_dependency 'compass-rails'
@@ -75,10 +75,4 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'sunspot_matchers'
   s.add_development_dependency 'sunspot_test'
   s.add_development_dependency 'timecop'
-
-  if RUBY_VERSION =~ /1.9/
-    Encoding.default_external = Encoding::UTF_8
-    Encoding.default_internal = Encoding::UTF_8
-  end
-
 end

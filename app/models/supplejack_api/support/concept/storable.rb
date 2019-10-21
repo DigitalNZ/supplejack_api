@@ -24,6 +24,7 @@ module SupplejackApi
 
           ConceptSchema.model_fields.each do |name, option|
             next if option.store == false
+
             field name.to_sym, option.field_options if !!option.field_options
 
             # TODO: Set the Mongo index

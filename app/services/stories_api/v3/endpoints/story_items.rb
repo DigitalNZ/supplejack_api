@@ -23,6 +23,7 @@ module StoriesApi
 
         def get
           return @errors if @errors
+
           presented_story_items = @story.set_items.map { |i| StoriesApi::V3::Presenters::StoryItem.new.call(i, @story) }
 
           create_response(status: 200, payload: presented_story_items)
@@ -34,6 +35,7 @@ module StoriesApi
 
           validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(item_params)
           return create_error('SchemaValidationError', errors: validator.messages(full: true)) unless validator.success?
+
           position = item_params.delete(:position)
 
           story_item = story.set_items.build(item_params)

@@ -15,9 +15,7 @@ class UrlValidator < ActiveModel::EachValidator
       valid = validate_url(value)
     end
 
-    unless valid
-      record.errors[attribute] << (options[:message] || 'is not an url')
-    end
+    record.errors[attribute] << (options[:message] || 'is not an url') unless valid
   end
 
   def validate_url(value)

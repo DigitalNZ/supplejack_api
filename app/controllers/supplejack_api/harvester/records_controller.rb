@@ -68,7 +68,7 @@ module SupplejackApi
       def index
         body = "Request must have a search params with one or more of those fields \
                 ['record_id', 'fragments.source_id', 'fragments.job_id']"
-        return render status: 400, body: body if search_params.blank?
+        return render status: :bad_request, body: body if search_params.blank?
 
         page = search_options_params[:page].to_i
 
@@ -105,6 +105,7 @@ module SupplejackApi
         search_params.keys.each_with_object({}) do |search_key, object|
           next if search_key == 'record_id'
           next unless indexes.include? search_key
+
           object[search_key] = 1
         end
       end

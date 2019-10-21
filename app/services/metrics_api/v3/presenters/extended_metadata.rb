@@ -14,7 +14,7 @@ module MetricsApi
           @end_date = end_date
         end
 
-        def to_json
+        def to_json(*_args)
           (start_date..end_date).map do |date|
             base = { date: date }
 

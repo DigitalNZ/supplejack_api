@@ -33,7 +33,16 @@ module SupplejackApi
     end
 
     def content
-      self[:content].deep_symbolize_keys if self[:content]
+      return unless self[:content]
+
+      if self[:content][:value]
+        self[:content][:value] = Rails::Html::SafeListSanitizer.new.sanitize(
+          self[:content][:value],
+          tags: %w[p strong em u ul li ol a h1 h2 h3]
+        )
+      end
+
+      self[:content].deep_symbolize_keys
     end
 
     def not_adding_set_to_itself

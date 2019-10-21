@@ -17,6 +17,7 @@ module StoriesApi
 
         def get
           return @errors if @errors
+
           create_response(status: 200, payload: ::StoriesApi::V3::Presenters::StoryItem.new.call(item, @story))
         end
 
@@ -46,6 +47,7 @@ module StoriesApi
 
         def delete
           return @errors if @errors
+
           item.delete
 
           if story.cover_thumbnail == item.content[:image_url]
@@ -71,6 +73,7 @@ module StoriesApi
         # @last_modified Eddie
         def find_story
           return unless @user
+
           story = @user.user_sets.find_by_id(params[:story_id])
           @errors = create_error('StoryNotFound', id: params[:story_id]) unless story
           story
@@ -82,6 +85,7 @@ module StoriesApi
         # @last_modified Eddie
         def find_item
           return unless @story
+
           item = @story.set_items.find_by_id(params[:id])
           @errors = create_error('StoryItemNotFound', item_id: params[:id], story_id: params[:story_id]) unless item
           item

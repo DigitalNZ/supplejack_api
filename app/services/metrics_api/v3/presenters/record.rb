@@ -8,7 +8,7 @@ module MetricsApi
           @m = faceted_metrics
         end
 
-        def to_json
+        def to_json(*_args)
           {
             id: @m.name,
             total_active_records: @m.total_active_records,

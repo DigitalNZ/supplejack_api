@@ -21,7 +21,7 @@ module SupplejackApi
         puts "\nGenerating secret token"
 
         inject_into_file('config/application.yml', before: /^\sdevelopment:/) do
-          "  SECRET_TOKEN: '#{Digest::SHA1.hexdigest([Time.now, rand].join)}'\n"
+          "  SECRET_TOKEN: '#{Digest::SHA1.hexdigest([Time.zone.now, rand].join)}'\n"
         end
       end
 

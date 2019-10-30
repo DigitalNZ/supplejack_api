@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 RSpec.describe SupplejackApi::TopMetric do
-  let(:top_metric) { create(:top_metric, results: { 1 => 200, 2 => 150 }, date: Time.zone.now.utc.to_date) }
+  let(:top_metric) { create(:top_metric, results: { 1 => 200, 2 => 150 }, date: Time.zone.now.to_date) }
 
   describe '#attributes' do
     it 'has a date' do
-      expect(top_metric.date).to eq Time.zone.now.utc.to_date
+      expect(top_metric.date).to eq Time.zone.now.to_date
     end
 
     it 'has a metric' do

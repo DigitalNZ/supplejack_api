@@ -116,8 +116,8 @@ module SupplejackApi
       end
 
       it 'returns the records in the same order as requested' do
-        r1 = FactoryBot.create(:record, created_at: Time.now-10.days)
-        r2 = FactoryBot.create(:record, created_at: Time.now)
+        r1 = FactoryBot.create(:record, created_at: Time.zone.now-10.days)
+        r2 = FactoryBot.create(:record, created_at: Time.zone.now)
         records = Record.find_multiple([r2.record_id, r1.record_id]).to_a
         expect(records.first).to eq r2
       end

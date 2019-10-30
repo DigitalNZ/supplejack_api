@@ -99,11 +99,11 @@ module SupplejackApi
         let(:source) { FactoryBot.create(:source) }
 
         it 'finds and update source with status, status_updated_at and status_updated_by' do
-          Timecop.freeze # check if Time.now was assigned to status_updated_at
+          Timecop.freeze # check if Time.zone.now was assigned to status_updated_at
           put :update, params: { id: source.id, source: {status: 'suppressed', status_updated_by: 'A user name'}, api_key: api_key}
           expect(assigns(:source).status).to eq 'suppressed'
           expect(assigns(:source).status_updated_by).to eq 'A user name'
-          expect(assigns(:source).status_updated_at).to eq Time.now
+          expect(assigns(:source).status_updated_at).to eq Time.zone.now
         end
 
         it 'returns the source' do
@@ -118,7 +118,7 @@ module SupplejackApi
         let(:source) { create(:source) }
 
         it "enqueues the job with the source_id and date if given" do
-          date = Time.now
+          date = Time.zone.now
           expect(IndexSourceWorker).to receive(:perform_async).with(source.source_id, date.to_s)
           get :reindex, params: { id: source.id, date: date, api_key: api_key}
         end
@@ -168,7 +168,7 @@ module SupplejackApi
 
       describe 'GET "reindex"' do
         it 'returns forbidden' do
-          get :reindex, params: { id: 1, date: Time.now, api_key: api_key}
+          get :reindex, params: { id: 1, date: Time.zone.now, api_key: api_key}
           expect(response).to be_forbidden
         end
       end

@@ -5,7 +5,7 @@ RSpec.describe SupplejackApi::TopCollectionMetric, type: :model do
 
   describe '#attributes' do
     it 'has a date' do
-      expect(top_collection_metric.date).to eq Time.zone.now.utc.to_date
+      expect(top_collection_metric.date).to eq Time.zone.now.to_date
     end
 
     it 'has a metric' do

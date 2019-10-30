@@ -53,7 +53,7 @@ module SupplejackApi
       children        ['Sally Doe', 'James Doe']
       contact         nil
       age             30
-      birth_date      DateTime.now
+      birth_date      Time.zone.now
       nz_citizen      true
       display_collection 'test'
       large_thumbnail_url    'http://my-website-that-hosts-images/image.png'

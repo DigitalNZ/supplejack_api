@@ -17,7 +17,7 @@ module SupplejackApi
       added_to_user_stories
     ].freeze
 
-    field :d, as: :date,               type: Date, default: Time.current.utc
+    field :d, as: :date,               type: Date, default: Time.zone.now
     field :m, as: :metric,             type: String
     field :r, as: :results,            type: Hash
     field :c, as: :display_collection, type: String

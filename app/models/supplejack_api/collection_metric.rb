@@ -7,7 +7,7 @@ module SupplejackApi
     include Mongoid::Timestamps
     include SupplejackApi::Concerns::QueryableByDate
 
-    field :d, as: :date,                               type: Date,    default: Time.current.utc
+    field :d, as: :date,                               type: Date,    default: Time.zone.now
     field :dc, as: :display_collection,                type: String
     field :s, as: :searches,                           type: Integer, default: 0
     field :rpv, as: :record_page_views,                type: Integer, default: 0

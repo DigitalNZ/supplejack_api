@@ -54,7 +54,7 @@ RSpec.describe SupplejackApi::RecordMetric do
 
     let!(:record_metric)      { create(:record_metric) }
     let(:record_metric_two)   { build(:record_metric, record_id: record_metric.record_id) }
-    let(:record_metric_three) { build(:record_metric, date: 1.day.from_now.utc) }
+    let(:record_metric_three) { build(:record_metric, date: 1.day.from_now) }
 
     it 'requires a record_id' do
       invalid.valid?

@@ -173,12 +173,7 @@ module SupplejackApi
 
       self.featured = featured_value
 
-      # This cop is being disabled until can be sure
-      # whether or not we want to set `Time.zone.now`
-      # or keep `Time.now`
-      # rubocop:disable Rails/TimeZone
-      self.featured_at = Time.now if featured_changed?
-      # rubocop:enable Rails/TimeZone
+      self.featured_at = Time.zone.now if featured_changed?
     end
 
     def update_set_items(new_attributes)

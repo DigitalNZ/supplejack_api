@@ -104,7 +104,7 @@ module SupplejackApi
 
     def update_tracked_fields(request)
       old_current = current_sign_in_at
-      new_current = Time.now.utc
+      new_current = Time.zone.now
       self.last_sign_in_at     = old_current || new_current
       self.current_sign_in_at  = new_current
 

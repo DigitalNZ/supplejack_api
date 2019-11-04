@@ -16,7 +16,7 @@ module SupplejackApi
       Rails.logger.info "IndexSourceWorker - REINDEXING: #{source_id}, date: #{date}"
       cursor = if date.present?
                  SupplejackApi.config.record_class.where(:'fragments.source_id' => source_id,
-                                                         :updated_at.gt => Time.zone.parse(date))
+                                                         :updated_at.gt => Time.parse(date).utc)
                else
                  SupplejackApi.config.record_class.where('fragments.source_id': source_id)
                end

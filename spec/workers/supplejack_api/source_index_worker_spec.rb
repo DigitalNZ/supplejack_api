@@ -30,9 +30,9 @@ module SupplejackApi
       end
 
       it 'finds records updated more recently than the date given' do
-        date = Time.zone.now
+        date = Time.now.utc
         allow(Time).to receive(:parse) { date }
-        expect(Record).to receive(:where).with(:'fragments.source_id' => 'source_id', :updated_at.gt => Time.zone.parse(date.to_s))
+        expect(Record).to receive(:where).with(:'fragments.source_id' => 'source_id', :updated_at.gt => Time.parse(date.to_s).utc)
         IndexSourceWorker.new.perform('source_id', date.to_s)
       end
     end

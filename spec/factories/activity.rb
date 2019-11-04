@@ -3,7 +3,7 @@
 module SupplejackApi
   FactoryBot.define do
     factory :activity, class: SiteActivity do
-      created_at 1.day.ago
+      created_at 1.day.ago.utc
       updated_at Date.today
       date       { Faker::Date.birthday(18, 65) }
       user_sets 1264

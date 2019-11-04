@@ -5,7 +5,7 @@ module SupplejackApi
   class RecordMetric
     include Mongoid::Document
 
-    field :date,                                type: Date,    default: Time.zone.now.beginning_of_day
+    field :date,                                type: Date,    default: Time.now.utc.beginning_of_day
     field :record_id,                           type: Integer
     field :page_views,                          type: Integer, default: 0
     field :user_set_views,                      type: Integer, default: 0
@@ -24,7 +24,7 @@ module SupplejackApi
 
     index({ record_id: 1, display_collection: 1, date: 1 }, background: true)
 
-    def self.spawn(record_id, metrics, display_collection, date = Time.zone.now.beginning_of_day)
+    def self.spawn(record_id, metrics, display_collection, date = Time.now.utc.beginning_of_day)
       return unless SupplejackApi.config.log_metrics == true
 
       collection.update_one(

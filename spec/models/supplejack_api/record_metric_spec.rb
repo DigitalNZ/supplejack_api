@@ -5,7 +5,7 @@ RSpec.describe SupplejackApi::RecordMetric do
     let(:record_metric) { create(:record_metric, display_collection: 'NDHA', record_id: 1) }
 
     it 'has a date' do
-      expect(record_metric.date).to eq Time.zone.today
+      expect(record_metric.date).to eq Time.now.utc.to_date
     end
 
     it 'has a record_id' do

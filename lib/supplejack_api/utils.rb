@@ -51,12 +51,12 @@ module Utils
       nil
     elsif value.is_a?(Integer)
       number = value.to_s[0..9]
-      Time.zone.at(number.to_i)
+      Time.zone.at(number.to_i).utc
     elsif value.is_a?(String) && value.match(/^\d{13}$/)
       number = value[0..9]
-      Time.zone.at(number.to_i)
+      Time.zone.at(number.to_i).utc
     else
-      Time.zone.parse(value) rescue nil
+      Time.parse(value).utc rescue nil
     end
   end
 

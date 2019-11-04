@@ -19,7 +19,7 @@ module SupplejackApi
 
     IMPLICIT_FIELDS = %w[_type _id created_at updated_at].freeze
 
-    def self.generate_activity(time = Time.zone.now)
+    def self.generate_activity(time = Time.now.utc)
       site_activity_date = time.to_date
       user_activities = SupplejackApi::UserActivity.gt(created_at: time - 12.hours).lte(created_at: time)
 

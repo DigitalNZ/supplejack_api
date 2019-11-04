@@ -63,7 +63,7 @@ using the Ruby logger class from inside your controllers. Example:
     def destroy
       @weblog = Weblog.find(params[:id])
       @weblog.destroy
-      logger.info("#{Time.zone.now} Destroyed Weblog ID ##{@weblog.id}!")
+      logger.info("#{Time.now.utc} Destroyed Weblog ID ##{@weblog.id}!")
     end
   end
 

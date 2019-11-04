@@ -18,8 +18,6 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'active_model_serializers', '0.10.9'
   s.add_dependency 'activemodel-serializers-xml'
-  s.add_dependency 'coffee-rails'
-  s.add_dependency 'compass-rails'
   s.add_dependency 'dalli'
   s.add_dependency 'devise'
   s.add_dependency 'devise-token_authenticatable', '>= 1.0.0'
@@ -28,7 +26,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'dry-validation', '0.13.0'
   s.add_dependency 'figaro'
   s.add_dependency 'gabba'
-  s.add_dependency 'jquery-rails'
   s.add_dependency 'kaminari'
   s.add_dependency 'kaminari-mongoid'
   s.add_dependency 'lazy_high_charts'
@@ -40,11 +37,9 @@ Gem::Specification.new do |s|
   s.add_dependency 'rails', '5.1.4'
   s.add_dependency 'responders'
   s.add_dependency 'rest-client'
-  s.add_dependency 'sass-rails'
   s.add_dependency 'sidekiq'
   s.add_dependency 'state_machine'
   s.add_dependency 'thin'
-  s.add_dependency 'uglifier'
   s.add_dependency 'unicode_utils'
 
   # # Adding sunspot_solr so app has access to sunspot:solr rake tasks

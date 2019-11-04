@@ -17,7 +17,7 @@ module SupplejackApi
       added_to_user_stories
     ].freeze
 
-    field :d, as: :date,               type: Date, default: Time.zone.now
+    field :d, as: :date,               type: Date, default: Time.now.utc
     field :m, as: :metric,             type: String
     field :r, as: :results,            type: Hash
     field :c, as: :display_collection, type: String
@@ -54,7 +54,7 @@ module SupplejackApi
     end
 
     def self.dates
-      # query = { :date.lt => Time.zone.now.beginning_of_day }
+      # query = { :date.lt => Time.now.utc.beginning_of_day }
       SupplejackApi::RecordMetric.all.map(&:date).uniq
     end
 

@@ -12,7 +12,7 @@ module SupplejackApi
 
       # rubocop:disable Metrics/LineLength
       if number_of_ids.positive?
-        Rails.logger.info "INDEXING[#{Time.zone.now.strftime('%d/%m/%y %H:%M:%S')}]: #{number_of_ids} ids in #{method} buffer"
+        Rails.logger.info "INDEXING[#{Time.now.utc.strftime('%d/%m/%y %H:%M:%S')}]: #{number_of_ids} ids in #{method} buffer"
       end
       # rubocop:enable Metrics/LineLength
 

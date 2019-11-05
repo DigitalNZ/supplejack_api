@@ -5,14 +5,14 @@ module SupplejackApi
   class RequestMetric
     include Mongoid::Document
 
-    field :date,    type: Date,   default: Time.zone.now.beginning_of_day
+    field :date,    type: Date,   default: Time.now.utc.beginning_of_day
     field :records, type: Array,  default: []
     field :metric,  type: String
 
     validates :records, presence: true
     validates :metric,  presence: true
 
-    def self.spawn(records, metric, date = Time.zone.now.beginning_of_day)
+    def self.spawn(records, metric, date = Time.now.utc.beginning_of_day)
       return unless SupplejackApi.config.log_metrics == true
 
       create(records: records, metric: metric, date: date)

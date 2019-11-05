@@ -22,8 +22,8 @@ module MetricsApi
 
             create(:faceted_metrics, name: 'dc1')
             create(:faceted_metrics, name: 'dc2')
-            create(:collection_metric, display_collection: 'dc1', created_at: Date.current.midday, date: Time.zone.today)
-            create(:collection_metric, display_collection: 'dc2', created_at: Date.current.midday, date: Time.zone.today)
+            create(:collection_metric, display_collection: 'dc1', created_at: Date.current.midday, date: Time.now.utc.to_date)
+            create(:collection_metric, display_collection: 'dc2', created_at: Date.current.midday, date: Time.now.utc.to_date)
           end
 
           describe '#call' do

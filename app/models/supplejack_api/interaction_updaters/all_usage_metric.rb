@@ -17,7 +17,7 @@ module SupplejackApi
       def process(*)
         usage_metrics = SupplejackApi::UsageMetrics
                         .where(:record_field_value.ne => 'all')
-                        .created_on(Time.zone.today)
+                        .created_on(Time.now.utc.to_date)
         fields_to_update = SupplejackApi::UsageMetrics
                            .fields
                            .keys
@@ -30,10 +30,10 @@ module SupplejackApi
         end
         all_metric = SupplejackApi::UsageMetrics.find_or_create_by(
           record_field_value: 'all',
-          date: Time.zone.today
+          date: Time.now.utc.to_date
         ) do |m|
           m.record_field_value = 'all'
-          m.date = Time.zone.today
+          m.date = Time.now.utc.to_date
         end
 
         all_metric.update(summed_usage_metrics_fields)

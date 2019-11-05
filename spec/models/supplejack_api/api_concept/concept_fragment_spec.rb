@@ -150,7 +150,7 @@ module SupplejackApi
       #   end
 
       #   it 'updates the updated_at even if the attributes didn\'t change' do
-      #     new_time = Time.zone.now + 1.day
+      #     new_time = Time.now.utc + 1.day
       #     Timecop.freeze(new_time) do
       #       fragment.update_from_harvest({})
       #       expect(fragment.updated_at.to_i).to eq(new_time.to_i)

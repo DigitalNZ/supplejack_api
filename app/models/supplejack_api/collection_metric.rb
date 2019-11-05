@@ -7,7 +7,7 @@ module SupplejackApi
     include Mongoid::Timestamps
     include SupplejackApi::Concerns::QueryableByDate
 
-    field :d, as: :date,                               type: Date,    default: Time.zone.now
+    field :d, as: :date,                               type: Date,    default: Time.now.utc
     field :dc, as: :display_collection,                type: String
     field :s, as: :searches,                           type: Integer, default: 0
     field :rpv, as: :record_page_views,                type: Integer, default: 0
@@ -34,7 +34,7 @@ module SupplejackApi
     def self.spawn
       return unless SupplejackApi.config.log_metrics == true
 
-      dates = SupplejackApi::RecordMetric.where(:date.lt => Time.zone.now.beginning_of_day).map(&:date).uniq
+      dates = SupplejackApi::RecordMetric.where(:date.lt => Time.now.utc.beginning_of_day).map(&:date).uniq
       dates.each do |date|
         collections = SupplejackApi::RecordMetric.where(date: date).map(&:display_collection).uniq
 

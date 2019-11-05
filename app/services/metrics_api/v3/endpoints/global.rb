@@ -11,8 +11,8 @@ module MetricsApi
 
         # All endpoints take in a params hash, this endpoint has no params however
         def initialize(params)
-          @start_date = parse_date_param(params[:start_date]) || Time.zone.yesterday
-          @end_date = parse_date_param(params[:end_date]) || Time.zone.today
+          @start_date = parse_date_param(params[:start_date]) || Time.now.utc.yesterday
+          @end_date = parse_date_param(params[:end_date]) || Time.now.utc.to_date
         end
 
         # TODO: Better way of collecting display_collection names

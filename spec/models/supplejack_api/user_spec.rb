@@ -66,25 +66,25 @@ module SupplejackApi
 
     describe '#updated_today?' do
       it 'should return true if the user was last updated today' do
-        user.updated_at = Time.zone.now.beginning_of_day + 10.seconds
+        user.updated_at = Time.now.utc.beginning_of_day + 10.seconds
         expect(user.updated_today?).to be_truthy
       end
 
       it 'should return false when the user was last updated yesterday' do
-        user.updated_at = Time.zone.now - 1.day
+        user.updated_at = Time.now.utc - 1.day
         expect(user.updated_today?).to be_falsey
       end
     end
 
     describe '#check_daily_requests' do
       it "should reset daily requests if it wasn't updated today" do
-        user.attributes = { updated_at: Time.zone.now-1.day, daily_requests: 100 }
+        user.attributes = { updated_at: Time.now.utc-1.day, daily_requests: 100 }
         user.check_daily_requests
         expect(user.daily_requests).to eq 1
       end
 
       it 'should increment daily requests if it was updated today' do
-        user.attributes = { updated_at: Time.zone.now, daily_requests: 100 }
+        user.attributes = { updated_at: Time.now.utc, daily_requests: 100 }
         user.check_daily_requests
         expect(user.daily_requests).to eq 101
       end
@@ -98,26 +98,26 @@ module SupplejackApi
 
         it 'should send an email if the user is at 90% daily requests' do
           expect(@email).to receive(:deliver_now)
-          user.attributes = {daily_requests: 89, updated_at: Time.zone.now, max_requests: 100}
+          user.attributes = {daily_requests: 89, updated_at: Time.now.utc, max_requests: 100}
           expect(SupplejackApi::RequestLimitMailer).to receive(:at90percent).with(user) {@email}
           user.check_daily_requests
         end
 
         it 'should not send an email if the user has past 90%' do
-          user.attributes = {daily_requests: 90, updated_at: Time.zone.now, max_requests: 100}
+          user.attributes = {daily_requests: 90, updated_at: Time.now.utc, max_requests: 100}
           expect(SupplejackApi::RequestLimitMailer).to_not receive(:at90percent).with(user) {@email}
           user.check_daily_requests
         end
 
         it 'should send an email if the user has reached 100%' do
           expect(@email).to receive(:deliver_now)
-          user.attributes = {daily_requests: 99, updated_at: Time.zone.now, max_requests: 100}
+          user.attributes = {daily_requests: 99, updated_at: Time.now.utc, max_requests: 100}
           expect(SupplejackApi::RequestLimitMailer).to receive(:at100percent).with(user) {@email}
           user.check_daily_requests
         end
 
         it 'should not send an email when the user has past 100%' do
-          user.attributes = {daily_requests: 100, updated_at: Time.zone.now, max_requests: 100}
+          user.attributes = {daily_requests: 100, updated_at: Time.now.utc, max_requests: 100}
           expect(SupplejackApi::RequestLimitMailer).to_not receive(:at100percent).with(user) {@email}
           user.check_daily_requests
         end
@@ -126,13 +126,13 @@ module SupplejackApi
 
     describe '#increment_daily_requests' do
       it 'should increment daily_requests by 1' do
-        user.attributes = { updated_at: Time.zone.now, daily_requests: 100 }
+        user.attributes = { updated_at: Time.now.utc, daily_requests: 100 }
         user.increment_daily_requests
         expect(user.daily_requests).to eq 101
       end
 
       it 'increments daily requests when is nil' do
-        user.attributes = { updated_at: Time.zone.now, daily_requests: nil }
+        user.attributes = { updated_at: Time.now.utc, daily_requests: nil }
         user.increment_daily_requests
         expect(user.daily_requests).to eq 1
       end
@@ -223,7 +223,7 @@ module SupplejackApi
     describe '#over_limit?' do
       context 'user was updated today' do
         before(:each) do
-          user.updated_at = Time.zone.now
+          user.updated_at = Time.now.utc
         end
 
         it 'should return true when daily requests is greater than max requests' do
@@ -239,7 +239,7 @@ module SupplejackApi
 
       context "user wasn't updated today" do
         it 'should always return false' do
-          user.attributes = {updated_at: Time.zone.now-1.day, daily_requests: 100, max_requests: 99}
+          user.attributes = {updated_at: Time.now.utc-1.day, daily_requests: 100, max_requests: 99}
           expect(user.over_limit?).to be_falsey
         end
       end
@@ -247,15 +247,15 @@ module SupplejackApi
 
     describe '#calculate_last_30_days_requests' do
       let!(:user) { FactoryBot.create(:user) }
-      let!(:user_activity) { FactoryBot.create(:user_activity, user_id: user.id, total: 5, created_at: Time.zone.now) }
+      let!(:user_activity) { FactoryBot.create(:user_activity, user_id: user.id, total: 5, created_at: Time.now.utc) }
 
       it 'adds up the totals of the last 30 days' do
-        FactoryBot.create(:user_activity, user_id: user.id, total: 2, created_at: Time.zone.now - 5.days)
+        FactoryBot.create(:user_activity, user_id: user.id, total: 2, created_at: Time.now.utc - 5.days)
         expect(user.calculate_last_30_days_requests).to eq 7
       end
 
       it 'ignores requests older than 30 days' do
-        FactoryBot.create(:user_activity, user_id: user.id, total: 2, created_at: Time.zone.now - 31.days)
+        FactoryBot.create(:user_activity, user_id: user.id, total: 2, created_at: Time.now.utc - 31.days)
         expect(user.calculate_last_30_days_requests).to eq 5
       end
 
@@ -269,8 +269,8 @@ module SupplejackApi
       let!(:user) { FactoryBot.create(:user) }
 
       before do
-        FactoryBot.create(:user_activity, user_id: user.id, total: 5, created_at: Time.zone.now - 1.day)
-        FactoryBot.create(:user_activity, user_id: user.id, total: 2, created_at: Time.zone.now)
+        FactoryBot.create(:user_activity, user_id: user.id, total: 5, created_at: Time.now.utc - 1.day)
+        FactoryBot.create(:user_activity, user_id: user.id, total: 2, created_at: Time.now.utc)
       end
 
       it 'returns an array with the total requests per day' do
@@ -278,7 +278,7 @@ module SupplejackApi
       end
 
       it "returns 0 for days when there isn't any activity" do
-        FactoryBot.create(:user_activity, user_id: user.id, total: 1, created_at: Time.zone.now - 3.day)
+        FactoryBot.create(:user_activity, user_id: user.id, total: 1, created_at: Time.now.utc - 3.day)
         expect(user.requests_per_day(4)).to eq [1, 0, 5, 2]
       end
     end

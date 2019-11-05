@@ -35,10 +35,10 @@ module MetricsApi
               metric: 'top_records',
               models: {
                 Date.current => [
-                  create(:top_collection_metric, results: { 123 => 456, 345 => 678}, date: Time.zone.today),
+                  create(:top_collection_metric, results: { 123 => 456, 345 => 678}, date: Time.now.utc.to_date),
                 ],
                 Date.yesterday => [
-                  create(:top_collection_metric, results: { 910 => 123, 456 => 789}, date: Time.zone.yesterday)
+                  create(:top_collection_metric, results: { 910 => 123, 456 => 789}, date: Time.now.utc.yesterday)
                 ]
               }
             }

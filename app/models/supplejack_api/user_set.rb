@@ -173,7 +173,7 @@ module SupplejackApi
 
       self.featured = featured_value
 
-      self.featured_at = Time.zone.now if featured_changed?
+      self.featured_at = Time.now.utc if featured_changed?
     end
 
     def update_set_items(new_attributes)

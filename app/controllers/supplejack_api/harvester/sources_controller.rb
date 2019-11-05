@@ -32,7 +32,7 @@ module SupplejackApi
 
       def update
         @source = Source.find(params[:id])
-        source_params['status_updated_at'] = Time.zone.now.to_datetime if source_params['status']
+        source_params['status_updated_at'] = Time.now.utc.to_datetime if source_params['status']
         @source.update(source_params)
         render json: @source
       end

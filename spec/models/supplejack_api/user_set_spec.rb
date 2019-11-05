@@ -362,7 +362,7 @@ module SupplejackApi
     describe "#featured_sets" do
       before :each do
         @record = FactoryBot.create(:record, status: "active")
-        @set1 = FactoryBot.create(:user_set, privacy: "public", featured: true, featured_at: Time.zone.now - 4.hours)
+        @set1 = FactoryBot.create(:user_set, privacy: "public", featured: true, featured_at: Time.now.utc - 4.hours)
         @set1.set_items.create(record_id: @record.record_id)
         @set2 = FactoryBot.create(:user_set, privacy: "hidden", featured: true)
         @set2.set_items.create(record_id: @record.record_id)
@@ -375,7 +375,7 @@ module SupplejackApi
       end
 
       it "orders the sets based on when they were added" do
-        @set4 = FactoryBot.create(:user_set, privacy: "public", featured: true, featured_at: Time.zone.now)
+        @set4 = FactoryBot.create(:user_set, privacy: "public", featured: true, featured_at: Time.now.utc)
         @set4.set_items.create(record_id: @record.record_id)
         expect(UserSet.featured_sets.first).to eq @set4
       end
@@ -449,18 +449,18 @@ module SupplejackApi
       it "should update the featured_at when the featured attribute is updated" do
         admin_user = FactoryBot.create(:user, role: "admin")
         user_set = FactoryBot.create(:user_set, user_id: admin_user.id)
-        Timecop.freeze(Time.zone.now) do
+        Timecop.freeze(Time.now.utc) do
           user_set.update_attributes_and_embedded({featured: true}, admin_user)
           user_set.reload
-          expect(user_set.featured_at.to_i).to eq Time.zone.now.to_i
+          expect(user_set.featured_at.to_i).to eq Time.now.utc.to_i
         end
       end
 
       it "should not update the featured_at if the featured hasn't changed" do
         admin_user = FactoryBot.create(:user, role: "admin")
-        time = Time.zone.now-1.day
+        time = Time.now.utc-1.day
         user_set = FactoryBot.create(:user_set, user_id: admin_user.id, featured: true, featured_at: time)
-        Timecop.freeze(Time.zone.now) do
+        Timecop.freeze(Time.now.utc) do
           user_set.update_attributes_and_embedded({featured: true}, admin_user)
           user_set.reload
           expect(user_set.featured_at.to_i).to eq time.to_i
@@ -469,7 +469,7 @@ module SupplejackApi
 
       it "removes the set from the featured" do
         admin_user = FactoryBot.create(:user, role: "admin")
-        time = Time.zone.now-1.day
+        time = Time.now.utc-1.day
         user_set = FactoryBot.create(:user_set, user_id: admin_user.id, featured: true, featured_at: time)
         user_set.update_attributes_and_embedded({featured: false}, admin_user)
         user_set.reload

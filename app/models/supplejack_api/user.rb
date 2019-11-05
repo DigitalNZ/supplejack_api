@@ -78,7 +78,7 @@ module SupplejackApi
     end
 
     def updated_today?
-      updated_at > Time.zone.now.beginning_of_day
+      updated_at > Time.now.utc.beginning_of_day
     end
 
     def check_daily_requests
@@ -104,7 +104,7 @@ module SupplejackApi
 
     def update_tracked_fields(request)
       old_current = current_sign_in_at
-      new_current = Time.zone.now
+      new_current = Time.now.utc
       self.last_sign_in_at     = old_current || new_current
       self.current_sign_in_at  = new_current
 
@@ -151,12 +151,12 @@ module SupplejackApi
 
     def calculate_last_30_days_requests
       count = 0
-      user_activities.gt(created_at: Time.zone.now - 30.days).each { |activity| count += activity.total.to_i }
+      user_activities.gt(created_at: Time.now.utc - 30.days).each { |activity| count += activity.total.to_i }
       self.monthly_requests = count
     end
 
     def requests_per_day(days = 30)
-      today = Time.zone.now.to_date
+      today = Time.now.utc.to_date
       user_activities = self.user_activities.gt(created_at: today - days.days).asc(:created_at).to_a
 
       requests = []

@@ -8,10 +8,10 @@ module MetricsApi
 
         describe "#call" do
           it "returns an array of hashes representing the DailyMetrics for the supplied date range" do
-            create(:daily_metrics, date: Date.today, total_public_sets: 10)
+            create(:daily_metrics, date: Time.now.utc.to_date, total_public_sets: 10)
 
             expect(global.call).to eq([{
-              day: Date.today,
+              day: Time.now.utc.to_date,
               total_public_sets: 10
             }])
           end

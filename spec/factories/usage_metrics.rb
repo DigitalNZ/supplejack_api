@@ -8,7 +8,7 @@ module SupplejackApi
 			user_set_views             1
 			total_views                1
       records_added_to_user_sets 1
-      date                       Date.current
+      date                       Time.now.utc.to_date
     end
   end
 end

@@ -13,7 +13,7 @@ module SupplejackApi
 
       it 'takes an array of Record interactions and creates a UsageMetrics model' do
         updater.process(@request_logs)
-        metric = SupplejackApi::UsageMetrics.first 
+        metric = SupplejackApi::UsageMetrics.first
 
         expect(metric).to be_present
         expect(metric.record_field_value).to eq('test')
@@ -23,13 +23,13 @@ module SupplejackApi
       end
 
       it 'updates an existing UsageMetrics model if one exists' do
-        create(:usage_metrics, 
-          record_field_value: 'test', 
-          searches: 1, 
-          gets: 1, 
-          user_set_views: 1, 
-          total_views: 3, 
-          date: Date.current
+        create(:usage_metrics,
+          record_field_value: 'test',
+          searches: 1,
+          gets: 1,
+          user_set_views: 1,
+          total_views: 3,
+          date: Time.now.utc.to_date
         )
         updater.process(@request_logs)
         metric = SupplejackApi::UsageMetrics.first

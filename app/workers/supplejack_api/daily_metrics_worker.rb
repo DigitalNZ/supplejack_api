@@ -47,7 +47,7 @@ module SupplejackApi
 
       {
         name: facet,
-        date: Date.current,
+        date: Time.now.utc.to_date,
         total_active_records: s.total,
         total_new_records: 0
       }.merge(facet_metadata)
@@ -55,7 +55,7 @@ module SupplejackApi
 
     def update_total_new_records(facets)
       facets = facets.dup
-      records = SupplejackApi.config.record_class.active.created_on(Date.current)
+      records = SupplejackApi.config.record_class.active.created_on(Time.now.utc.to_date)
       counts_grouped_by_primary_key = records.group_by(&primary_key.to_sym).map { |k, v| [k, v.length] }
 
       counts_grouped_by_primary_key.each do |primary_key, count|
@@ -76,7 +76,7 @@ module SupplejackApi
 
       active_records = SupplejackApi.config.record_class.active
       total_records = active_records.count
-      total_new_records = active_records.created_on(Date.current).count
+      total_new_records = active_records.created_on(Time.now.utc.to_date).count
       total_copyright_counts = facets.map { |x| x[:copyright_counts] }.reduce({}, &merge_block)
       total_category_counts = facets.map { |x| x[:category_counts] }.reduce({}, &merge_block)
 
@@ -96,7 +96,7 @@ module SupplejackApi
       public_user_sets_count = SupplejackApi::UserSet.publicly_viewable.excluding_favorites.count
 
       DailyMetrics.create(
-        date: Date.current,
+        date: Time.now.utc.to_date,
         total_public_sets: public_user_sets_count
       )
     end

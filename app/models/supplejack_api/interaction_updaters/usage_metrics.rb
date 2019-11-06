@@ -31,10 +31,10 @@ module SupplejackApi
 
       def process_facet(facet, search_counts, get_counts, user_set_counts)
         usage_metric_entry = SupplejackApi::UsageMetrics.find_or_create_by(
-          date: Date.current,
+          date: Time.now.utc.to_date,
           record_field_value: facet
         ) do |metric|
-          metric.date = Date.current
+          metric.date = Time.now.utc.to_date
           metric.record_field_value = facet
         end
 

@@ -30,10 +30,10 @@ module SupplejackApi
       end
 
       it 'does not process UsageMetrics created in the past' do
-        create(:usage_metrics, date: Date.yesterday)
+        create(:usage_metrics, date: Time.now.utc.yesterday.to_date)
 
         updater.process
-        
+
         expect(all_usage_metric.searches).to eq(2)
       end
     end

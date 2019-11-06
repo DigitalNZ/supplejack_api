@@ -16,10 +16,10 @@ module SupplejackApi
 
         unique_facets.each do |facet|
           metric = SupplejackApi::UsageMetrics.find_or_create_by(
-            date: Date.current,
+            date: Time.now.utc.to_date,
             record_field_value: facet
           ) do |um|
-            um.date = Date.current
+            um.date = Time.now.utc.to_date
             um.record_field_value = facet
           end
 

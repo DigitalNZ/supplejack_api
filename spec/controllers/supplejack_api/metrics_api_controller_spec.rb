@@ -6,9 +6,9 @@ module SupplejackApi
 
     def build_models
       5.times do |n|
-        create(:daily_item_metric, date: Date.current - n.days)
-        create(:faceted_metrics, date: Date.current - n.days)
-        create(:collection_metric, created_at: Date.current - n.days)
+        create(:daily_item_metric, date: Time.now.utc.to_date - n.days)
+        create(:faceted_metrics, date: Time.now.utc.to_date - n.days)
+        create(:collection_metric, created_at: Time.now.utc.to_date - n.days)
       end
     end
 
@@ -19,12 +19,12 @@ module SupplejackApi
         end
 
         it 'retrieves a range of extended metrics, filtered against the facet parameter' do
-          create(:faceted_metrics, name: 'dc1', date: Date.yesterday)
-          create(:faceted_metrics, name: 'dc2', date: Date.yesterday)
-          create(:collection_metric, display_collection: 'dc1', date: Date.yesterday)
-          create(:collection_metric, date: Date.yesterday)
+          create(:faceted_metrics, name: 'dc1', date: Time.now.utc.yesterday.to_date)
+          create(:faceted_metrics, name: 'dc2', date: Time.now.utc.yesterday.to_date)
+          create(:collection_metric, display_collection: 'dc1', date: Time.now.utc.yesterday.to_date)
+          create(:collection_metric, date: Time.now.utc.yesterday.to_date)
 
-          get :root, params: { version: 'v3', facets: 'dc1', start_date: Date.yesterday, end_date: Date.yesterday }
+          get :root, params: { version: 'v3', facets: 'dc1', start_date: Time.now.utc.yesterday.to_date, end_date: Time.now.utc.yesterday.to_date }
           json = JSON.parse(response.body)
 
           expect(json.first['record'].count).to eq(1)

@@ -16,9 +16,9 @@ module SupplejackApi
     describe "#call" do
       def build_records
         10.times do
-          create(:record_with_fragment, display_collection: 'pc1', copyright: ['0'],      category: ['0'], created_at: Date.current.midday)
-          create(:record_with_fragment, display_collection: 'pc2', copyright: ['1'],      category: ['1'], created_at: Date.current.midday)
-          create(:record_with_fragment, display_collection: 'pc1', copyright: ['0', '1'], category: ['0', '1'], created_at: Date.yesterday.midday)
+          create(:record_with_fragment, display_collection: 'pc1', copyright: ['0'],      category: ['0'], created_at: Time.now.utc.to_date.midday)
+          create(:record_with_fragment, display_collection: 'pc2', copyright: ['1'],      category: ['1'], created_at: Time.now.utc.to_date.midday)
+          create(:record_with_fragment, display_collection: 'pc1', copyright: ['0', '1'], category: ['0', '1'], created_at: Time.now.utc.yesterday.to_date.midday)
         end
 
         Sunspot.commit
@@ -33,7 +33,7 @@ module SupplejackApi
       it "handles records with missing categories/copyrights" do
         10.times do |n|
           c = n % 2 == 0 ? nil : ['0']
-          create(:record_with_fragment, created_at: Date.current.midday, copyright: c)
+          create(:record_with_fragment, created_at: Time.now.utc.to_date.midday, copyright: c)
         end
         Sunspot.commit
 
@@ -48,7 +48,7 @@ module SupplejackApi
         Sunspot.commit
 
         DailyMetricsWorker.new.call
-        expect(FacetedMetrics.created_on(Date.current).first.copyright_counts.first.first).to eq("1.0")
+        expect(FacetedMetrics.created_on(Time.now.utc.to_date).first.copyright_counts.first.first).to eq("1.0")
       end
 
       it "correctly paginates the facet list when there are more than 150 facets" do
@@ -93,7 +93,7 @@ module SupplejackApi
 
         it "creates an All facet that contains the summed metrics of for all the individual facets" do
           all_metric = SupplejackApi::FacetedMetrics.where(name: 'all').first
-          
+
           expect(all_metric.total_active_records).to eq(30)
           expect(all_metric.total_new_records).to eq(20)
           expect(all_metric.copyright_counts['0']).to eq(20)
@@ -113,7 +113,7 @@ module SupplejackApi
         end
 
         it 'sets the date field to the current day' do
-          expect(metric.date).to eq(Date.current)
+          expect(metric.date).to eq(Time.now.utc.to_date)
         end
 
         context "set metrics" do

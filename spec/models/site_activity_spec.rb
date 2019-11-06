@@ -9,8 +9,8 @@ module SupplejackApi
 
     context 'validations' do
       it 'should be invalid when there is a existing site_activity with the same date' do
-        SupplejackApi::SiteActivity.create(date: Date.today)
-        expect(SupplejackApi::SiteActivity.new(date: Date.today)).to_not be_valid
+        SupplejackApi::SiteActivity.create(date: Time.now.utc.to_date)
+        expect(SupplejackApi::SiteActivity.new(date: Time.now.utc.to_date)).to_not be_valid
       end
     end
 

@@ -26,12 +26,12 @@ module SupplejackApi
     validates :metric, presence: true
     validates :metric, uniqueness: { scope: %i[date display_collection] }
 
-    def self.spawn
+    def self.spawn(date_range = (Time.zone.at(0)..Time.now.utc.beginning_of_day))
       return unless SupplejackApi.config.log_metrics == true
 
       metrics = []
 
-      dates.each do |date|
+      SupplejackApi::RecordMetric.where(date: date_range).map(&:date).uniq.each do |date|
         display_collections(date).each do |dc|
           METRICS.each do |metric|
             record_metrics = record_metrics_to_be_processed(date, metric, dc)
@@ -51,11 +51,6 @@ module SupplejackApi
       end
 
       metrics
-    end
-
-    def self.dates
-      # query = { :date.lt => Time.now.utc.beginning_of_day }
-      SupplejackApi::RecordMetric.all.map(&:date).uniq
     end
 
     def self.display_collections(date)

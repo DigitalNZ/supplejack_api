@@ -219,7 +219,7 @@ RSpec.describe SupplejackApi::CollectionMetric do
       end
     end
 
-    context 'with date_range, it creates collection metrics for the days within the range' do
+    context 'with date_range, it only creates collection metrics for the given date range' do
       let(:today_and_tomorrow) { Time.now.utc.beginning_of_day..Time.now.utc.tomorrow.end_of_day }
       before do
         SupplejackApi::CollectionMetric.spawn(today_and_tomorrow)

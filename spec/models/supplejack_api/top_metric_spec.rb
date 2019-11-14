@@ -69,7 +69,7 @@ RSpec.describe SupplejackApi::TopMetric do
       end
     end
 
-    context 'with date_range, it creates top metrics for the days within the range' do
+    context 'with date_range, it only creates top metrics for the given date range' do
       let!(:metric_one)   { create(:record_metric, appeared_in_searches: 1, date: Time.now.utc.tomorrow) }
       let!(:metric_two)   { create(:record_metric, appeared_in_searches: 2, date: Time.now.utc.tomorrow) }
       let!(:metric_three) { create(:record_metric, appeared_in_searches: 3, date: Time.now.utc.tomorrow) }

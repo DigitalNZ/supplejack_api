@@ -31,7 +31,10 @@ module SupplejackApi
 
       metrics = []
 
-      SupplejackApi::RecordMetric.where(date: date_range).map(&:date).uniq.each do |date|
+      dates = SupplejackApi::RecordMetric.limit(100_000).where(date: date_range).map(&:date).uniq
+      Rails.logger.info("TOP COLLCETION METRIC: processing dates: #{dates}")
+
+      dates.each do |date|
         display_collections(date).each do |dc|
           METRICS.each do |metric|
             record_metrics = record_metrics_to_be_processed(date, metric, dc)
@@ -47,6 +50,7 @@ module SupplejackApi
             metrics.push(top_collection_metric)
           end
         end
+        Rails.logger.info("TOP COLLCETION METRIC: Stampping all records on #{date}")
         stamp_record_metrics(date)
       end
 
@@ -54,6 +58,7 @@ module SupplejackApi
     end
 
     def self.display_collections(date)
+      Rails.logger.info("TOP COLLCETION METRIC: Finding all display collections on #{date}")
       SupplejackApi::RecordMetric.where(
         date: date,
         :processed_by_top_collection_metrics.in => [nil, '', false]
@@ -91,6 +96,9 @@ module SupplejackApi
     end
 
     def self.record_metrics_to_be_processed(date, metric, display_collection)
+      # rubocop:disable Metrics/LineLength
+      Rails.logger.info("TOP COLLCETION METRIC: Gathering top 200 records to be processed #{date}, #{metric}, #{display_collection}")
+      # rubocop:enable Metrics/LineLength
       SupplejackApi::RecordMetric.where(
         date: date,
         metric.ne => 0,

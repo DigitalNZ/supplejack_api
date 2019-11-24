@@ -42,20 +42,27 @@ module SupplejackApi
         collections.each do |collection|
           Rails.logger.info("COLLECTION METRICS: Processing collection: #{collection}")
           record_metrics = record_metrics_to_be_processed(date, collection)
-          collection_metrics = find_or_create_by(date: date, display_collection: collection).inc(
-            searches: record_metrics.sum(:appeared_in_searches),
-            record_page_views: record_metrics.sum(:page_views),
-            user_set_views: record_metrics.sum(:user_set_views),
-            user_story_views: record_metrics.sum(:user_story_views),
-            records_added_to_user_sets: record_metrics.sum(:added_to_user_sets),
-            records_added_to_user_stories: record_metrics.sum(:added_to_user_stories),
-            total_source_clickthroughs: record_metrics.sum(:source_clickthroughs)
-          )
+          require 'benchmark'
+          include Benchmark         # we need the CAPTION and FORMAT constants
 
-          if collection_metrics.save
-            record_metrics.update_all(processed_by_collection_metrics: true)
-          else
-            Rails.logger.error "Unable to summarize record metrics from collection: #{collection} date: #{date}"
+          Benchmark.benchmark(CAPTION, 7, FORMAT, '>total:', '>avg:') do |x|
+            x.report("find or create by #{date} - #{collection} and increment: ") do
+              collection_metrics = find_or_create_by(date: date, display_collection: collection).inc(
+                searches: record_metrics.sum(:appeared_in_searches),
+                record_page_views: record_metrics.sum(:page_views),
+                user_set_views: record_metrics.sum(:user_set_views),
+                user_story_views: record_metrics.sum(:user_story_views),
+                records_added_to_user_sets: record_metrics.sum(:added_to_user_sets),
+                records_added_to_user_stories: record_metrics.sum(:added_to_user_stories),
+                total_source_clickthroughs: record_metrics.sum(:source_clickthroughs)
+              )
+
+              if collection_metrics.save
+                record_metrics.update_all(processed_by_collection_metrics: true)
+              else
+                Rails.logger.error "Unable to summarize record metrics from collection: #{collection} date: #{date}"
+              end
+            end
           end
         end
         regenerate_all_collection_metrics!(date)

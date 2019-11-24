@@ -34,7 +34,7 @@ module SupplejackApi
     def self.spawn(date_range = (Time.zone.at(0).utc..Time.now.utc.beginning_of_day))
       return unless SupplejackApi.config.log_metrics == true
 
-      dates = SupplejackApi::RecordMetric.limit(100_000).where(date: date_range).map(&:date).uniq
+      dates = SupplejackApi::RecordMetric.where(date: date_range).map(&:date).uniq
       Rails.logger.info("TOP METRIC: processing dates: #{dates}")
 
       dates.each do |date|

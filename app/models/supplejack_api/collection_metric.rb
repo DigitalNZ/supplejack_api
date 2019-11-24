@@ -34,35 +34,28 @@ module SupplejackApi
     def self.spawn(date_range = (Time.at(0).utc..Time.now.utc.beginning_of_day))
       return unless SupplejackApi.config.log_metrics == true
 
-      dates = SupplejackApi::RecordMetric.limit(100_000).where(date: date_range).map(&:date).uniq
+      dates = SupplejackApi::RecordMetric.where(date: date_range).map(&:date).uniq
       dates.each do |date|
         Rails.logger.info("COLLECTION METRICS: Processing date: #{date}")
-        collections = SupplejackApi::RecordMetric.limit(100_000).where(date: date).map(&:display_collection).uniq
+        collections = SupplejackApi::RecordMetric.where(date: date).map(&:display_collection).uniq
 
         collections.each do |collection|
           Rails.logger.info("COLLECTION METRICS: Processing collection: #{collection}")
           record_metrics = record_metrics_to_be_processed(date, collection)
-          require 'benchmark'
-          include Benchmark         # we need the CAPTION and FORMAT constants
+          collection_metrics = find_or_create_by(date: date, display_collection: collection).inc(
+            searches: record_metrics.sum(:appeared_in_searches),
+            record_page_views: record_metrics.sum(:page_views),
+            user_set_views: record_metrics.sum(:user_set_views),
+            user_story_views: record_metrics.sum(:user_story_views),
+            records_added_to_user_sets: record_metrics.sum(:added_to_user_sets),
+            records_added_to_user_stories: record_metrics.sum(:added_to_user_stories),
+            total_source_clickthroughs: record_metrics.sum(:source_clickthroughs)
+          )
 
-          Benchmark.benchmark(CAPTION, 7, FORMAT, '>total:', '>avg:') do |x|
-            x.report("find or create by #{date} - #{collection} and increment: ") do
-              collection_metrics = find_or_create_by(date: date, display_collection: collection).inc(
-                searches: record_metrics.sum(:appeared_in_searches),
-                record_page_views: record_metrics.sum(:page_views),
-                user_set_views: record_metrics.sum(:user_set_views),
-                user_story_views: record_metrics.sum(:user_story_views),
-                records_added_to_user_sets: record_metrics.sum(:added_to_user_sets),
-                records_added_to_user_stories: record_metrics.sum(:added_to_user_stories),
-                total_source_clickthroughs: record_metrics.sum(:source_clickthroughs)
-              )
-
-              if collection_metrics.save
-                record_metrics.update_all(processed_by_collection_metrics: true)
-              else
-                Rails.logger.error "Unable to summarize record metrics from collection: #{collection} date: #{date}"
-              end
-            end
+          if collection_metrics.save
+            record_metrics.update_all(processed_by_collection_metrics: true)
+          else
+            Rails.logger.error "Unable to summarize record metrics from collection: #{collection} date: #{date}"
           end
         end
         regenerate_all_collection_metrics!(date)
@@ -71,7 +64,7 @@ module SupplejackApi
 
     def self.record_metrics_to_be_processed(date, display_collection)
       Rails.logger.info("COLLECTION METRICS: Gathering records to be processed: #{date} #{display_collection}")
-      SupplejackApi::RecordMetric.limit(100_000).where(
+      SupplejackApi::RecordMetric.where(
         date: date,
         display_collection: display_collection,
         :processed_by_collection_metrics.in => [nil, '', false]

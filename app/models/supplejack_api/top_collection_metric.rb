@@ -31,7 +31,7 @@ module SupplejackApi
 
       metrics = []
 
-      dates = SupplejackApi::RecordMetric.limit(100_000).where(date: date_range).map(&:date).uniq
+      dates = SupplejackApi::RecordMetric.where(date: date_range).map(&:date).uniq
       Rails.logger.info("TOP COLLCETION METRIC: processing dates: #{dates}")
 
       dates.each do |date|

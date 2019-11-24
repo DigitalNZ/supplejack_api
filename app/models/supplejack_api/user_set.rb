@@ -36,8 +36,8 @@ module SupplejackApi
     scope :excluding_favorites, -> { where(:name.ne => 'Favorites') }
     scope :publicly_viewable,              -> { where(privacy: 'public') }
 
-    index 'set_items.record_id' => 1
-    index featured: 1
+    index({ 'set_items.record_id' => 1 }, background: true)
+    index({ featured: 1 }, background: true)
 
     validates :name, presence: true
     validates :privacy, inclusion: { in: %w[public hidden private] }

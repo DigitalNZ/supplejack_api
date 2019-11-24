@@ -16,10 +16,10 @@ module SupplejackApi
         field :status,                      type: String
         field :record_type,                 type: Integer,      default: 0
 
-        index status: 1
-        index({ internal_identifier: 1 }, unique: true, drop_dups: true)
-        index record_type: 1
-        index({ record_id: 1 }, unique: true)
+        index({ status: 1 }, background: true)
+        index({ internal_identifier: 1 }, unique: true, drop_dups: true, background: true)
+        index({ record_type: 1 }, background: true)
+        index({ record_id: 1 }, unique: true, background: true)
 
         def self.build_model_fields
           return if RecordSchema.model_fields.blank?

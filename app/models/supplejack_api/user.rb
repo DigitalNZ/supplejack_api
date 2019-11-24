@@ -23,7 +23,7 @@ module SupplejackApi
     field :name,                type: String
     field :username,            type: String
 
-    index authentication_token: 1
+    index({ authentication_token: 1 }, background: true)
 
     # Trackable
     field :sign_in_count,      type: Integer
@@ -42,7 +42,7 @@ module SupplejackApi
 
     field :daily_activity,        type: Hash
     field :daily_activity_stored, type: Boolean, default: true
-    index daily_activity_stored: 1
+    index({ daily_activity_stored: 1 }, background: true)
 
     has_many :user_activities, class_name: 'SupplejackApi::UserActivity', dependent: :destroy
 

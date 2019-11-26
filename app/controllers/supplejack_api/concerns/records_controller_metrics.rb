@@ -14,8 +14,6 @@ module SupplejackApi
         def log_search
           return unless @search.valid? && log_request_for_metrics?
 
-          SupplejackApi::InteractionModels::Record.create_search(@search)
-
           SupplejackApi::RequestMetric.spawn(
             @search.records.map do |record|
               { record_id: record.record_id, display_collection: record.display_collection }
@@ -27,8 +25,6 @@ module SupplejackApi
         def log_record_view
           return unless @record && log_request_for_metrics?
 
-          SupplejackApi::InteractionModels::Record.create_find(@record)
-
           SupplejackApi::RequestMetric.spawn(
             [
               { record_id: @record.record_id, display_collection: @record.display_collection }
@@ -39,8 +35,6 @@ module SupplejackApi
 
         def log_source_clickthrough
           return unless @record && log_request_for_metrics?
-
-          SupplejackApi::InteractionModels::SourceClickthrough.create(facet: @record.display_collection)
 
           SupplejackApi::RequestMetric.spawn(
             [

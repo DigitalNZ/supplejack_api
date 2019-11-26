@@ -13,8 +13,6 @@ module SupplejackApi
         def create_set_record_view
           return unless @user_set && log_request_for_metrics?
 
-          SupplejackApi::InteractionModels::Record.create_user_set(@user_set)
-
           records = @user_set.set_items.each_with_object([]) do |item, array|
             next if item.record_id.nil?
 
@@ -39,8 +37,6 @@ module SupplejackApi
           rescue Mongoid::Errors::DocumentNotFound
             return
           end
-
-          SupplejackApi::InteractionModels::Set.create(interaction_type: :creation, facet: record.display_collection)
 
           records = @user_set.set_items.each_with_object([]) do |item, array|
             next if item.record_id.nil?

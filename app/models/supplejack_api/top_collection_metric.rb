@@ -26,13 +26,13 @@ module SupplejackApi
     validates :metric, presence: true
     validates :metric, uniqueness: { scope: %i[date display_collection] }
 
-    def self.spawn(date_range = (Time.zone.at(0).utc..Time.now.utc.beginning_of_day))
+    def self.spawn(date_range = (Time.zone.at(0).utc..Time.now.yesterday.utc.beginning_of_day))
       return unless SupplejackApi.config.log_metrics == true
 
       metrics = []
 
       dates = SupplejackApi::RecordMetric.where(date: date_range).map(&:date).uniq
-      Rails.logger.info("TOP COLLCETION METRIC: processing dates: #{dates}")
+      Rails.logger.info("TOP COLLECTION METRIC: processing dates: #{dates}")
 
       dates.each do |date|
         display_collections(date).each do |dc|
@@ -50,7 +50,7 @@ module SupplejackApi
             metrics.push(top_collection_metric)
           end
         end
-        Rails.logger.info("TOP COLLCETION METRIC: Stampping all records on #{date}")
+        Rails.logger.info("TOP COLLECTION METRIC: Stampping all records on #{date}")
         stamp_record_metrics(date)
       end
 
@@ -58,7 +58,7 @@ module SupplejackApi
     end
 
     def self.display_collections(date)
-      Rails.logger.info("TOP COLLCETION METRIC: Finding all display collections on #{date}")
+      Rails.logger.info("TOP COLLECTION METRIC: Finding all display collections on #{date}")
       SupplejackApi::RecordMetric.where(
         date: date,
         :processed_by_top_collection_metrics.in => [nil, '', false]
@@ -97,7 +97,7 @@ module SupplejackApi
 
     def self.record_metrics_to_be_processed(date, metric, display_collection)
       # rubocop:disable Metrics/LineLength
-      Rails.logger.info("TOP COLLCETION METRIC: Gathering top 200 records to be processed #{date}, #{metric}, #{display_collection}")
+      Rails.logger.info("TOP COLLECTION METRIC: Gathering top 200 records to be processed #{date}, #{metric}, #{display_collection}")
       # rubocop:enable Metrics/LineLength
       SupplejackApi::RecordMetric.where(
         date: date,

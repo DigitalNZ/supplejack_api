@@ -44,7 +44,7 @@ module SupplejackApi
       background: true
     )
 
-    def self.spawn(record_id, metrics, display_collection, date = Time.now.utc.beginning_of_day)
+    def self.spawn(record_id, metrics, display_collection, date = Time.now.yesterday.utc.beginning_of_day)
       return unless SupplejackApi.config.log_metrics == true
 
       collection.update_one(

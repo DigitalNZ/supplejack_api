@@ -96,9 +96,8 @@ module SupplejackApi
     end
 
     def self.record_metrics_to_be_processed(date, metric, display_collection)
-      # rubocop:disable Metrics/LineLength
-      Rails.logger.info("TOP COLLECTION METRIC: Gathering top 200 records to be processed #{date}, #{metric}, #{display_collection}")
-      # rubocop:enable Metrics/LineLength
+      Rails.logger.info("TOP COLLECTION METRIC: Gathering top 200 records to be
+                        processed #{date}, #{metric}, #{display_collection}")
       SupplejackApi::RecordMetric.where(
         date: date,
         metric.ne => 0,

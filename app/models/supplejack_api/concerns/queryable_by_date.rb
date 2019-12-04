@@ -8,7 +8,7 @@ module SupplejackApi
       extend ActiveSupport::Concern
 
       included do
-        index date: 1
+        index({ date: 1 }, background: true)
       end
 
       module ClassMethods

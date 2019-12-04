@@ -24,7 +24,27 @@ module SupplejackApi
 
     index({ record_id: 1, display_collection: 1, date: 1 }, background: true)
 
-    def self.spawn(record_id, metrics, display_collection, date = Time.now.utc.beginning_of_day)
+    index({ display_collection: 1, date: 1, processed_by_collection_metrics: 1 }, background: true)
+    index({ display_collection: 1, date: 1, processed_by_top_metrics: 1 }, background: true)
+    index({ display_collection: 1, date: 1, processed_by_top_collection_metrics: 1 }, background: true)
+
+    index({ display_collection: 1, date: 1 }, background: true)
+
+    index({ date: 1 }, background: true)
+
+    index({ processed_by_collection_metrics: 1 }, background: true)
+    index({ processed_by_top_metrics: 1 }, background: true)
+    index({ processed_by_top_collection_metrics: 1 }, background: true)
+    index(
+      {
+        processed_by_collection_metrics: 1,
+        processed_by_top_metrics: 1,
+        processed_by_top_collection_metrics: 1
+      },
+      background: true
+    )
+
+    def self.spawn(record_id, metrics, display_collection, date = Time.now.yesterday.utc.beginning_of_day)
       return unless SupplejackApi.config.log_metrics == true
 
       collection.update_one(

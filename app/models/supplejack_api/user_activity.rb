@@ -15,7 +15,7 @@ module SupplejackApi
     field :custom_searches, type: Hash
     field :total,           type: Integer
 
-    index created_at: 1
+    index({ created_at: 1 }, background: true)
 
     def self.build_from_user(daily_activity)
       user_activity = new

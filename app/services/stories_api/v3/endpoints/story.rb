@@ -39,7 +39,7 @@ module StoriesApi
 
           merge_patch = PerformMergePatch.new(::StoriesApi::V3::Schemas::Story, ::StoriesApi::V3::Presenters::Story.new)
 
-          valid = merge_patch.call(story, params[:story])
+          valid = merge_patch.call(story, story_params)
           return create_error('SchemaValidationError', errors:  merge_patch.validation_errors) unless valid
 
           story.save
@@ -63,6 +63,12 @@ module StoriesApi
           %i[approved featured].each do |field|
             @params[:story].delete(field) if @params[:story].present?
           end
+        end
+
+        def story_params
+          return params[:story] if params.class == Hash
+
+          params.require(:story).permit(*::StoriesApi::V3::Schemas::Story.rules.keys)
         end
       end
     end

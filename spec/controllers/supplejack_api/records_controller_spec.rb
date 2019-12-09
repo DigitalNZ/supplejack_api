@@ -77,7 +77,7 @@ module SupplejackApi
         end
 
         it 'has a succesful response code' do
-          expect(response).to have_http_status(:success)
+          expect(response).to be_successful
         end
 
         it 'sets the correct Content-Type' do
@@ -91,7 +91,7 @@ module SupplejackApi
         end
 
         it 'has a succesful response code' do
-          expect(response).to have_http_status(:success)
+          expect(response).to be_successful
         end
 
         it 'sets the correct Content-Type' do
@@ -105,7 +105,7 @@ module SupplejackApi
         end
 
         it 'has a succesful response code' do
-          expect(response).to have_http_status(:success)
+          expect(response).to be_successful
         end
 
         it 'sets the correct Content-Type' do
@@ -147,7 +147,7 @@ module SupplejackApi
         end
 
         it 'has a succesful response code' do
-          expect(response).to have_http_status(:success)
+          expect(response).to be_successful
         end
 
         it 'sets the correct Content-Type' do
@@ -161,7 +161,7 @@ module SupplejackApi
         end
 
         it 'has a succesful response code' do
-          expect(response).to have_http_status(:success)
+          expect(response).to be_successful
         end
 
         it 'sets the correct Content-Type' do
@@ -175,7 +175,7 @@ module SupplejackApi
         end
 
         it 'has a succesful response code' do
-          expect(response).to have_http_status(:success)
+          expect(response).to be_successful
         end
 
         it 'sets the correct type Content-Type' do

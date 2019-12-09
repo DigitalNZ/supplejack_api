@@ -19,7 +19,7 @@ module SupplejackApi
             post :create, params: { partner: FactoryBot.attributes_for(:partner), api_key: api_key}
           end.to change { Partner.count }.by 1
 
-          expect(response).to be_success
+          expect(response).to be_successful
         end
 
         it 'returns the partner' do

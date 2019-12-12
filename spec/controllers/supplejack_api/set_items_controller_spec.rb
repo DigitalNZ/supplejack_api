@@ -29,23 +29,6 @@ module SupplejackApi
         expect(@user_set).to receive(:save).and_return(true)
         post :create, params: { user_set_id: @user_set.id, record: { record_id: record.record_id } }, format: :json
       end
-
-      context 'Set Interactions' do
-        before do
-          @user = FactoryBot.create(:user, authentication_token: "abc1234", role: 'admin')
-          @empty_set = FactoryBot.create(:user_set)
-          allow(controller).to receive(:current_user) { @user }
-        end
-
-        it "creates a new Set Interaction model to log the interaction" do
-
-          rec = create(:record_with_fragment, display_collection: 'test')
-          post :create, params: { user_set_id: @empty_set.id, record: { record_id: rec.record_id} }, format: :json
-
-          expect(InteractionModels::Set.first).to be_present
-          expect(InteractionModels::Set.first.facet).to eq('test')
-        end
-      end
     end
 
     describe "DELETE 'destroy'" do

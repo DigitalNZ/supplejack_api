@@ -70,9 +70,6 @@ module SupplejackApi
         it 'creates mongoid.rb' do
           assert_file "#{destination_path}/config/initializers/mongoid.rb"
         end
-        it 'creates interaction_updaters.rb' do
-          assert_file "#{destination_path}/config/initializers/interaction_updaters.rb"
-        end
         it 'creates force_eagerload.rb' do
           assert_file "#{destination_path}/config/initializers/force_eagerload.rb"
         end

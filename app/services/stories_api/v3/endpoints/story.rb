@@ -68,7 +68,9 @@ module StoriesApi
         def story_params
           return params[:story] if params.class == Hash
 
-          params.require(:story).permit(*::StoriesApi::V3::Schemas::Story.rules.keys)
+          # Permitting all params instead of using *::StoriesApi::V3::Schemas::Story.rules.keys
+          # because attributes that are Arrays won't be set correctly (eg. :subjects, instead of subjects: [])
+          params.require(:story).permit!
         end
       end
     end

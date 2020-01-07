@@ -227,19 +227,6 @@ module StoriesApi
             )
           end
 
-          context 'patch fails to validate' do
-            let(:patch) { super().update(description: 123, tags: '') }
-
-            it 'returns 400 with validation errors' do
-              expect(response).to eq(
-                status: 400,
-                exception: {
-                  message: 'Bad Request: description must be a string tags must be an array'
-                }
-              )
-            end
-          end
-
           context 'successful request' do
             it 'returns a 200 status code' do
               expect(response[:status]).to eq(200)

@@ -107,7 +107,7 @@ module StoriesApi
           end
         end
 
-        describe '#patch' do
+        describe '#patch with a hash' do
           before do
             allow(Sunspot).to receive(:commit).and_return("true")
             allow(Sunspot).to receive(:index).and_return("true")
@@ -115,6 +115,99 @@ module StoriesApi
 
           let(:story) { create(:story, user: @user) }
           let!(:response) { Story.new(id: story.id, story: patch, user_key: @user.authentication_token).patch }
+          let(:patch) do
+            {
+              description: 'foobar',
+              tags: ['tags', 'go', 'here'],
+              subjects: ['subjects', 'go', 'here']
+            }
+          end
+
+          it 'returns 404 if the Story is not found' do
+            response = Story.new(id: 'foobar', user_key: @user.authentication_token).patch
+
+            expect(response).to eq(
+              status: 404,
+              exception: {
+                message: 'Story with provided Id foobar not found'
+              }
+            )
+          end
+
+          context 'patch fails to validate' do
+            let(:patch) { super().update(description: 123, tags: '') }
+
+            it 'returns 400 with validation errors' do
+              expect(response).to eq(
+                status: 400,
+                exception: {
+                  message: 'Bad Request: description must be a string tags must be an array'
+                }
+              )
+            end
+          end
+
+          context 'successful request' do
+            it 'returns a 200 status code' do
+              expect(response[:status]).to eq(200)
+            end
+
+            it 'returns a valid Story shape' do
+              expect(::StoriesApi::V3::Schemas::Story.call(response[:payload]).success?).to eq(true)
+            end
+
+            it 'returns the updated Story' do
+              expect(response[:payload][:description]).to eq(patch[:description])
+            end
+
+            it 'updates the Story in the database with the new fields' do
+              updated_story = SupplejackApi::UserSet.custom_find(story.id)
+
+              expect(updated_story.description).to eq(patch[:description])
+              expect(updated_story.subjects).to eq(patch[:subjects])
+              expect(updated_story.tags).to eq(patch[:tags])
+            end
+
+            it 'cannot be updated by a non admin user' do
+              updated_story = SupplejackApi::UserSet.custom_find(story.id)
+
+              expect(updated_story.approved).to be false
+              expect(updated_story.featured).to be false
+            end
+          end
+
+          context 'admin fields' do
+            let(:user) { create(:admin_user) }
+
+            let(:patch) do
+              {
+                description: 'foobar',
+                tags: ['tags', 'go', 'here'],
+                subjects: ['subjects', 'go', 'here'],
+                approved: true,
+                featured: true,
+              }
+            end
+            let(:response) { Story.new(id: story.id, story: patch, user_key: user.authentication_token).patch }
+
+            it 'can be updated by and admin user' do
+              updated_story = SupplejackApi::UserSet.custom_find(story.id)
+
+              expect(updated_story.approved).to be true
+              expect(updated_story.featured).to be true
+            end
+
+          end
+        end
+
+        describe '#patch with a strong params' do
+          before do
+            allow(Sunspot).to receive(:commit).and_return("true")
+            allow(Sunspot).to receive(:index).and_return("true")
+          end
+
+          let(:story) { create(:story, user: @user) }
+          let!(:response) { Story.new(ActionController::Parameters.new(id: story.id, story: patch, user_key: @user.authentication_token)).patch }
           let(:patch) do
             {
               description: 'foobar',

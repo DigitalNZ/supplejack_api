@@ -13,9 +13,46 @@ before_script:
   - echo 'Pacific/Auckland' | sudo tee /etc/timezone
   - sudo dpkg-reconfigure --frontend noninteractive tzdata
 
-script:
-  - bundle exec rspec
-  - bundle exec rubocop
+jobs:
+  include:
+
+    - stage: test
+      name: 'Rubocop'
+      script:
+        - bundle exec rubocop
+
+    - stage: test
+      name: 'Rspec'
+      script:
+        - bundle exec rspec
+
+    - stage: test
+      name: 'bundle audit'
+      script:
+        - gem install bundler-audit
+        - bundle audit update
+        - bundle audit check
+
+    - stage: test
+      name: 'brakeman check'
+      script:
+        - gem install brakeman
+        - brakeman --run-all-checks
+
+  allow_failures:
+
+    - stage: test
+      name: 'bundle audit'
+      script:
+        - gem install bundler-audit
+        - bundle audit update
+        - bundle audit check
+
+    - stage: test
+      name: 'brakeman check'
+      script:
+        - gem install brakeman
+        - brakeman --run-all-checks
 
 services:
   - mongodb

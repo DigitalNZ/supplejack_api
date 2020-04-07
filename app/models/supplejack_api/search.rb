@@ -20,7 +20,7 @@ module SupplejackApi
         exclude_filters_from_facets: false,
         fields: 'default',
         facet_query: {},
-        debug: nil
+        debug: nil,
       )
     end
 
@@ -216,6 +216,7 @@ module SupplejackApi
             params['q.alt'] = options[:solr_query]
             params[:defType] = 'dismax'
           end
+          params['q.op'] = 'AND'
         end
 
         # Facet Queries

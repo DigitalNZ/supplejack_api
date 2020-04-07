@@ -20,7 +20,7 @@ module SupplejackApi
         exclude_filters_from_facets: false,
         fields: 'default',
         facet_query: {},
-        debug: nil,
+        debug: nil
       )
     end
 

@@ -216,6 +216,7 @@ module SupplejackApi
             params['q.alt'] = options[:solr_query]
             params[:defType] = 'dismax'
           end
+          params['q.op'] = 'AND'
         end
 
         # Facet Queries

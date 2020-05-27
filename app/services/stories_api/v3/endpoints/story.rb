@@ -52,7 +52,7 @@ module StoriesApi
 
           return create_error('StoryNotFound', id: params[:id]) if story.blank?
 
-          story.delete
+          story.destroy
 
           create_response(status: 204)
         end

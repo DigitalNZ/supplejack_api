@@ -39,21 +39,6 @@ jobs:
         - gem install brakeman
         - brakeman --run-all-checks
 
-  allow_failures:
-
-    - stage: test
-      name: 'bundle audit'
-      script:
-        - gem install bundler-audit
-        - bundle audit update
-        - bundle audit check
-
-    - stage: test
-      name: 'brakeman check'
-      script:
-        - gem install brakeman
-        - brakeman --run-all-checks
-
 services:
   - mongodb
   - redis-server

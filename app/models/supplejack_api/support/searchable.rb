@@ -37,7 +37,9 @@ module SupplejackApi
           options ||= {}
           class_scope = unscoped
           class_scope = class_scope.active unless options.delete(:status) == :all
-          column = "#{name.demodulize.downcase}_id"
+
+          # .to_sym prevents Brakeman complaining about possible SQL injection
+          column = "#{name.demodulize.downcase}_id".to_sym
 
           if id.to_s =~ /^\d+$/
             data = class_scope.where(column => id.to_i).first

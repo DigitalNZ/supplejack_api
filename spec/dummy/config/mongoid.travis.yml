@@ -5,19 +5,19 @@ development:
     default:
       database: supplejack_api_development
       hosts:
-        <%= ENV['MONGOID_HOSTS'].gsub(/\s+/, "").split(',') %>
+        <%= ENV['MONGO_HOSTS'].gsub(/\s+/, "").split(',') %>
 
     strong:
       database: supplejack_api_development
       hosts:
-        <%= ENV['MONGOID_HOSTS'].gsub(/\s+/, "").split(',') %>
+        <%= ENV['MONGO_HOSTS'].gsub(/\s+/, "").split(',') %>
 
 test:
   clients:
     default:
       database: supplejack_api_test
       hosts:
-        <%= ENV['MONGOID_HOSTS'].gsub(/\s+/, "").split(',') %>
+        <%= ENV['MONGO_HOSTS'].gsub(/\s+/, "").split(',') %>
       options:
         read:
           mode: :nearest
@@ -25,7 +25,7 @@ test:
     strong:
       database: supplejack_api_test
       hosts:
-        <%= ENV['MONGOID_HOSTS'].gsub(/\s+/, "").split(',') %>
+        <%= ENV['MONGO_HOSTS'].gsub(/\s+/, "").split(',') %>
       options:
         read:
           mode: :nearest

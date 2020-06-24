@@ -290,7 +290,7 @@ GEM
       pry (>= 0.10.4)
     public_suffix (3.0.1)
     raabro (1.1.6)
-    rack (2.2.2)
+    rack (2.2.3)
     rack-protection (2.0.7)
       rack
     rack-test (1.1.0)

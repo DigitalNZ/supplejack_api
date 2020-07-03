@@ -7,6 +7,7 @@ module SupplejackApi
       @options = options.dup
       @options.reverse_merge!(
         facets: '',
+        facet_pivots: '',
         and: {},
         or: {},
         without: {},
@@ -41,6 +42,14 @@ module SupplejackApi
       @facet_list = options[:facets].split(',').map { |f| f.strip.to_sym }
       @facet_list.keep_if { |f| self.class.model_class.valid_facets.include?(f) }
       @facet_list
+    end
+
+    def facet_pivots_list
+      return @facet_pivots_list if @facet_pivots_list
+
+      @facet_pivots_list = options[:facet_pivots].split(',').map { |f| f.strip.to_sym }
+      @facet_pivots_list.keep_if { |f| self.class.model_class.valid_facets.include?(f) }
+      @facet_pivots_list
     end
 
     def field_list
@@ -195,6 +204,13 @@ module SupplejackApi
         search_model.facet_list.each do |facet_name|
           facet(facet_name, limit: facets_per_page, offset: facets_offset)
         end
+
+        # search_model.facet_pivot_list.each do |facet_name|
+        #   # TODO implement facet_pivot
+        #   facet(facet_name, limit: facets_per_page, offset: facets_offset)
+        # end
+
+        binding.pry
 
         spellcheck collate: true, only_more_popular: true if options[:suggest]
 

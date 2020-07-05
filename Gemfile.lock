@@ -34,7 +34,6 @@ PATH
       mongoid_auto_increment
       paperclip
       progressbar
-      pry
       rails (~> 5.1)
       responders
       rest-client
@@ -444,7 +443,6 @@ DEPENDENCIES
   json-schema
   json_spec
   launchy
-  pry
   pry-byebug
   pry-rails
   rails-controller-testing

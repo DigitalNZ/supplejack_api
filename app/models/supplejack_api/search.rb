@@ -160,6 +160,7 @@ module SupplejackApi
         keywords text, fields: query_fields
       end
 
+      binding.pry
       execute_solr_search_and_handle_errors(search)
     end
 
@@ -219,11 +220,6 @@ module SupplejackApi
           with(:lat_lng).in_bounding_box([coords[2], coords[1]], [coords[0], coords[3]])
         end
 
-        # search_model.facet_pivot_list.each do |facet_name|
-        #   facet(facet_name, limit: facets_per_page, offset: facets_offset)
-        # end
-
-        # TODO implement facet_pivot
         adjust_solr_params do |params|
           if options[:solr_query].present?
             params[:q] ||= ''

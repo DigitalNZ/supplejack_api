@@ -56,6 +56,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'factory_bot_rails'
   s.add_development_dependency 'json_spec'
   s.add_development_dependency 'launchy'
+  s.add_development_dependency 'pry'
   s.add_development_dependency 'pry-byebug'
   s.add_development_dependency 'pry-rails'
   s.add_development_dependency 'rails-controller-testing'

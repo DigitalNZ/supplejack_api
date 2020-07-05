@@ -230,10 +230,14 @@ module SupplejackApi
             params['q.alt'] = options[:solr_query]
             params[:defType] = 'dismax'
           end
-          if options[:pivot].present? || true
-            binding.pry
+          if options[:facet_pivots].present?
 
-            params['facet.pivot'] = options[:pivot] || 'content_partner_sm,collection_title_sm'
+            pivots = options[:facet_pivots]
+            pivots = pivots.split(',').map do |field|
+               "#{field}_sm"
+            end.join(',')
+
+            params[:"facet.pivot"] = pivots
           end
           params['q.op'] = 'AND'
         end

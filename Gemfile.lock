@@ -34,6 +34,7 @@ PATH
       mongoid_auto_increment
       paperclip
       progressbar
+      pry
       rails (~> 5.1)
       responders
       rest-client

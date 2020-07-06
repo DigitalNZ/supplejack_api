@@ -22,7 +22,7 @@ module SupplejackApi
       end
     end
 
-    attribute :facet_pivots do
+    attribute :facet_pivots, if: -> { object.facet_response['facet_pivot'].present? } do
       if xml?
         xml_facet_pivots
       else
@@ -61,9 +61,9 @@ module SupplejackApi
     # This is because the structure of XML Facets and JSON facets are different.
 
     def xml_facet_pivots
-      object.facet_pivot.each_with_object([]) do |facet_pivot, facet_pivots|
-        values = facet_pivot.rows.map do |row|
-          { field: row.field, value : row.value, count: row.count }
+      object.facet_response['facet_pivot'].each_with_object([]) do |facet_pivot, facet_pivots|
+        values = facet_pivot.map do |row|
+          { field: row.field, value: row.value, count: row.count }
         end
 
         facet_pivots << { name: facet_pivot.name.to_s, values: values }
@@ -71,13 +71,18 @@ module SupplejackApi
     end
 
     def json_facet_pivots
-      object.facet_pivot.each_with_object({}) do |facet_pivot, facet_pivots|
-        rows = facet_pivot.rows.each_with_object({}) do |row, hash|
-          hash[row.value] = row.count
+      facet_pivots = {}
+
+      response = object.facet_response['facet_pivot']
+      response.keys.each do |key|
+        rows = response[key].each_with_object({}) do |row, hash|
+          hash[row['value']] = row['count']
         end
 
-        facet_pivots[facet_pivot.name] = rows
+        facet_pivots[key] = rows
       end
+
+      facet_pivots
     end
   end
 end

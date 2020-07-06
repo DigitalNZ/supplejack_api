@@ -44,14 +44,6 @@ module SupplejackApi
       @facet_list
     end
 
-    def facet_pivots_list
-      return @facet_pivots_list if @facet_pivots_list
-
-      @facet_pivots_list = options[:facet_pivots].split(',').map { |f| f.strip.to_sym }
-      @facet_pivots_list.keep_if { |f| self.class.model_class.valid_facets.include?(f) }
-      @facet_pivots_list
-    end
-
     def field_list
       return @field_list if @field_list
 
@@ -160,7 +152,6 @@ module SupplejackApi
         keywords text, fields: query_fields
       end
 
-      binding.pry
       execute_solr_search_and_handle_errors(search)
     end
 
@@ -230,10 +221,11 @@ module SupplejackApi
 
             pivots = options[:facet_pivots]
             pivots = pivots.split(',').map do |field|
-               "#{field}_sm"
+              "#{field}_sm"
             end.join(',')
 
-            params[:"facet.pivot"] = pivots
+            params['facet.pivot'] = pivots
+            params['facet'] = 'on'
           end
           params['q.op'] = 'AND'
         end

@@ -61,13 +61,20 @@ module SupplejackApi
     # This is because the structure of XML Facets and JSON facets are different.
 
     def xml_facet_pivots
-      object.facet_response['facet_pivot'].each_with_object([]) do |facet_pivot, facet_pivots|
-        values = facet_pivot.map do |row|
-          { field: row.field, value: row.value, count: row.count }
-        end
+      facet_pivots = []
 
-        facet_pivots << { name: facet_pivot.name.to_s, values: values }
+      response = object.facet_response['facet_pivot']
+      response.each_with_object({}) do |facet, facets|
+        response.keys.map do |key|
+          values = response[key].each do |row|
+            { name: row['value'], count: row['count'] }
+          end
+
+          facet_pivots << { name: key, values: values }
+        end
       end
+
+      facet_pivots
     end
 
     def json_facet_pivots

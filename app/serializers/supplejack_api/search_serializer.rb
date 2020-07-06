@@ -22,6 +22,14 @@ module SupplejackApi
       end
     end
 
+    attribute :facet_pivots do
+      if xml?
+        xml_facet_pivots
+      else
+        json_facet_pivots
+      end
+    end
+
     def xml?
       instance_options[:request_format] == 'xml'
     end
@@ -47,6 +55,28 @@ module SupplejackApi
         end
 
         facets[facet.name] = rows
+      end
+    end
+
+    # This is because the structure of XML Facets and JSON facets are different.
+
+    def xml_facet_pivots
+      object.facet_pivot.each_with_object([]) do |facet_pivot, facet_pivots|
+        values = facet_pivot.rows.map do |row|
+          { field: row.field, value : row.value, count: row.count }
+        end
+
+        facet_pivots << { name: facet_pivot.name.to_s, values: values }
+      end
+    end
+
+    def json_facet_pivots
+      object.facet_pivot.each_with_object({}) do |facet_pivot, facet_pivots|
+        rows = facet_pivot.rows.each_with_object({}) do |row, hash|
+          hash[row.value] = row.count
+        end
+
+        facet_pivots[facet_pivot.name] = rows
       end
     end
   end

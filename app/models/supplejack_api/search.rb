@@ -44,6 +44,15 @@ module SupplejackApi
       @facet_list
     end
 
+    def facet_pivot_list
+      return @facet_pivot_list if @facet_pivot_list
+
+
+      @facet_pivot_list = options[:facet_pivots].split(',').map do |field|
+                           "#{field}_sm"
+                         end.join(',')
+    end
+
     def field_list
       return @field_list if @field_list
 
@@ -218,13 +227,7 @@ module SupplejackApi
             params[:defType] = 'dismax'
           end
           if options[:facet_pivots].present?
-
-            pivots = options[:facet_pivots]
-            pivots = pivots.split(',').map do |field|
-              "#{field}_sm"
-            end.join(',')
-
-            params['facet.pivot'] = pivots
+            params['facet.pivot'] = facet_pivot_list
             params['facet'] = 'on'
           end
           params['q.op'] = 'AND'

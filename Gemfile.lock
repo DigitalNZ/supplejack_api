@@ -443,7 +443,6 @@ DEPENDENCIES
   json-schema
   json_spec
   launchy
-  pry
   pry-byebug
   pry-rails
   rails-controller-testing

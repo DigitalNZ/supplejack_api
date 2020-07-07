@@ -9,8 +9,6 @@ gemspec
 
 gem 'sunspot', github: 'sunspot/sunspot', tag: 'v2.4.0'
 
-gem 'pry'
-
 group :test do
   gem 'codeclimate-test-reporter', require: false
   gem 'faker'

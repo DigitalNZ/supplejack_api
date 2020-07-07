@@ -47,10 +47,12 @@ module SupplejackApi
     def facet_pivot_list
       return @facet_pivot_list if @facet_pivot_list
 
-
-      @facet_pivot_list = options[:facet_pivots].split(',').map do |field|
-                           "#{field}_sm"
-                         end.join(',')
+      @facet_pivot_list =
+        options[:facet_pivots].split(',').map do |field|
+          Sunspot.search(SupplejackApi::Record) do
+            json_facet(field.to_sym)
+          end.facets.first.instance_eval('@field').indexed_name
+        end.join(',')
     end
 
     def field_list

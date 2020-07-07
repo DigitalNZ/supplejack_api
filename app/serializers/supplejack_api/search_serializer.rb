@@ -82,8 +82,15 @@ module SupplejackApi
 
       response = object.facet_response['facet_pivot']
       response.keys.each do |key|
-        rows = response[key].each_with_object({}) do |row, hash|
-          hash[row['value']] = row['count']
+        rows = []
+        response[key].each do |row|
+          hash = {}
+          hash['field'] = row['field']
+          hash['value'] = row['value']
+          hash['count'] = row['count']
+          hash['pivot'] = row['pivot'] if row['pivot'].present?
+
+          rows.push(hash)
         end
 
         facet_pivots[key] = rows

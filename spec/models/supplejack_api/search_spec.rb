@@ -63,6 +63,23 @@ module SupplejackApi
       end
     end
 
+    describe '#facet_pivot_list' do
+  		before {
+        @search = RecordSearch.new
+        allow(@search).to receive(:model_class) { Record }
+      }
+
+      it 'should return a array of facets' do
+        @search.options[:facet_pivots] = 'category,description'
+        expect(@search.facet_pivot_list).to eq 'category_sm,description_s'
+      end
+
+      it 'should discard any fields not configured as facets' do
+        @search.options[:facet_pivots] = 'postcode,description'
+        expect(@search.facet_pivot_list).to eq 'description_s'
+      end
+    end
+
     describe '#field_list' do
     	before {
         # Record Search is used here rather than Search

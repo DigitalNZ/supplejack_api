@@ -32,6 +32,10 @@ module SupplejackApi
       expect(serialized_search).to have_key :facets
     end
 
+    it "doesn't render the facet_pivots by default" do
+      expect(serialized_search).to_not have_key :facet_pivots
+    end
+
     it 'returns facets formatted for JSON when the request_format is JSON' do
       expect(serialized_search[:facets]).to be_a(Hash)
     end

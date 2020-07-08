@@ -22,7 +22,7 @@ module SupplejackApi
       end
     end
 
-    attribute :facet_pivots, if: -> { object.facet_response.present? && object.facet_response['facet_pivot'].present? } do
+    attribute :facet_pivots, if: -> { object.try(:facet_response) && object.facet_response['facet_pivot'].present? } do
       if xml?
         xml_facet_pivots
       else

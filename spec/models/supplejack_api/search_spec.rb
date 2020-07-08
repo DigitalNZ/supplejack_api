@@ -23,6 +23,7 @@ module SupplejackApi
         default_options =
         {
           facets: '',
+          facet_pivots: '',
           and: {},
           or: {},
           without: {},

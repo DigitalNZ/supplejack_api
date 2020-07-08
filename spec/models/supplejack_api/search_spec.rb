@@ -70,6 +70,16 @@ module SupplejackApi
         allow(@search).to receive(:model_class) { Record }
       }
 
+      it 'should return an empty string when nil is provided' do
+        @search.options[:facet_pivots] = ''
+        expect(@search.facet_pivot_list).to eq nil
+      end
+
+      it 'should return an empty string when an empty string is provided' do
+        @search.options[:facet_pivots] = ''
+        expect(@search.facet_pivot_list).to eq ''
+      end
+
       it 'should return a array of facets' do
         @search.options[:facet_pivots] = 'category,description'
         expect(@search.facet_pivot_list).to eq 'category_sm,description_s'

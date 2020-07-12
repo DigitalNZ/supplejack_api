@@ -22,6 +22,7 @@ module SupplejackApi::Concerns::Record
     # Callbacks
     before_save :merge_fragments
     after_save :remove_from_index
+    after_save :replace_stories_cover
 
     # Scopes
     scope :active,          -> { where(status: 'active') }
@@ -115,6 +116,32 @@ module SupplejackApi::Concerns::Record
 
     def remove_from_index
       Sunspot.remove(self) unless active?
+    end
+
+    def replace_stories_cover
+      return if active?
+
+      SupplejackApi::UserSet
+        .where(
+          'set_items.record_id': self.record_id,
+          :cover_thumbnail.in => [self.large_thumbnail_url, self.thumbnail_url].compact)
+        .each do |user_set|
+          active_set_item_records = SupplejackApi.config.record_class
+            .active
+            .where(:record_id.in => user_set.set_items.map(&:record_id))
+          active_record_map = Hash[active_set_item_records.map{|r| [r.record_id, r] }]
+
+          user_set.set_items.order([:position]).each do |set_item|
+            record = active_record_map[set_item.record_id]
+            if record
+              user_set.update!(cover_thumbnail: record.large_thumbnail_url)
+
+              break # Prevent updating multiple times
+            end
+          end
+
+          # Not need to update set_item meta as done by StoriesApi::V3::Presenters::StoryItem
+      end
     end
   end
 end

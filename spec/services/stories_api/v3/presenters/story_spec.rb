@@ -46,6 +46,45 @@ module StoriesApi
 
             expect(positions).to eq(positions.sort)
           end
+
+          context "deleted cover image record" do
+            let(:set_item_1) { story.set_items.first }
+            let(:set_item_1_thumb) { 'https://deleted.example.com' }
+            let(:set_item_2) { story.set_items.last }
+            let(:set_item_2_thumb) { 'https://valid.example.com' }
+            let(:story) do
+              create(
+                :story,
+                cover_thumbnail: set_item_1_thumb,
+                set_items: [
+                  create(:embed_dnz_item, title: 'last', position: 1, image_url: set_item_1_thumb),
+                  create(:embed_dnz_item, title: 'first', position: 2)
+                ]
+              )
+            end
+
+            before(:each) do
+              set_item_1.record.fragments << build(:fragment, large_thumbnail_url: set_item_1_thumb)
+              set_item_2.record.fragments << build(:fragment, large_thumbnail_url: set_item_2_thumb)
+
+              set_item_1.record.reload.save! # Without this, source_ids validation fails ...
+              set_item_2.record.reload.save!
+            end
+
+            it "presents the meta is_cover on the non-deleted set item" do
+              expect(presented_json[:contents][0][:meta][:is_cover]).to eq true
+              expect(presented_json[:contents][1][:meta][:is_cover]).to eq false
+              expect(presented_json[:cover_thumbnail]).to eq set_item_1_thumb
+
+              set_item_1.record.update!(status: :deleted)
+              presented_json = subject.call(story.reload)
+
+              expect(presented_json[:contents][0][:meta][:is_cover]).to eq false
+              expect(presented_json[:contents][1][:meta][:is_cover]).to eq true
+              expect(presented_json[:cover_thumbnail]).to eq set_item_2_thumb
+            end
+          end
+
         end
 
         context "with slim paramter equals true" do

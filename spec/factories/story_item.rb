@@ -6,7 +6,7 @@ FactoryBot.define do
     sub_type 'heading'
     content {{value: 'foo', image_url: ('a'..'z').to_a.shuffle.join, display_collection: 'TAPHUI', category: ['Audio']}}
     meta {{size: 1}}
-    record_id { SecureRandom.random_number(1000000) }
+    record_id { record&.record_id.present? ? record.record_id : SecureRandom.random_number(1000000) }
 
     trait :script_value do
       content { { value: '<script>alert("test");<script>' } }

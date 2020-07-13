@@ -64,7 +64,7 @@ module SupplejackApi
       facet_pivots = []
 
       response = object.facet_response['facet_pivot']
-      response.each_with_object({}) do |facet, facets|
+      response.each_with_object({}) do |_facet, _facets|
         response.keys.map do |key|
           values = response[key].each do |row|
             { name: row['value'], count: row['count'] }

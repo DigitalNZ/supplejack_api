@@ -23,6 +23,7 @@ module SupplejackApi
         default_options =
         {
           facets: '',
+          facet_pivots: '',
           and: {},
           or: {},
           without: {},
@@ -60,6 +61,28 @@ module SupplejackApi
       it 'should discard any fields not configured as facets' do
         @search.options[:facets] = 'name, address, other_facet'
         expect(@search.facet_list).to eq [:name, :address]
+      end
+    end
+
+    describe '#facet_pivot_list' do
+      before {
+        @search = RecordSearch.new
+        allow(@search).to receive(:model_class) { Record }
+      }
+
+      it 'should return an empty string when an empty string is provided' do
+        @search.options[:facet_pivots] = ''
+        expect(@search.facet_pivot_list).to eq ''
+      end
+
+      it 'should return a array of facets' do
+        @search.options[:facet_pivots] = 'category,description'
+        expect(@search.facet_pivot_list).to eq 'category_sm,description_s'
+      end
+
+      it 'should discard any fields not configured as facets' do
+        @search.options[:facet_pivots] = 'postcode,description'
+        expect(@search.facet_pivot_list).to eq 'description_s'
       end
     end
 

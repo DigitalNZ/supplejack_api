@@ -7,6 +7,7 @@ module SupplejackApi
       @options = options.dup
       @options.reverse_merge!(
         facets: '',
+        facet_pivots: '',
         and: {},
         or: {},
         without: {},
@@ -41,6 +42,21 @@ module SupplejackApi
       @facet_list = options[:facets].split(',').map { |f| f.strip.to_sym }
       @facet_list.keep_if { |f| self.class.model_class.valid_facets.include?(f) }
       @facet_list
+    end
+
+    def facet_pivot_list
+      return @facet_pivot_list if @facet_pivot_list
+
+      @facet_pivot_list =
+        options[:facet_pivots].split(',').map do |field|
+          field_facet = Sunspot.search(SupplejackApi::Record) do
+            json_facet(field.to_sym)
+          end.facets.first
+
+          field_facet.instance_eval('@field', __FILE__, __LINE__).indexed_name
+        rescue Sunspot::UnrecognizedFieldError
+          nil
+        end.compact.join(',')
     end
 
     def field_list
@@ -185,6 +201,7 @@ module SupplejackApi
     # rubocop:disable Metrics/MethodLength
     # rubocop:disable Metrics/AbcSize
     # rubocop:disable Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/PerceivedComplexity
     # FIXME: Make this method smaller, it's triple the max method length
     def search_builder
       search_model = self
@@ -215,6 +232,10 @@ module SupplejackApi
             params[:q] ||= ''
             params['q.alt'] = options[:solr_query]
             params[:defType] = 'dismax'
+          end
+          if options[:facet_pivots].present?
+            params['facet.pivot'] = facet_pivot_list
+            params['facet'] = 'on'
           end
           params['q.op'] = 'AND'
         end
@@ -277,6 +298,8 @@ module SupplejackApi
     end
     # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/CyclomaticComplexity
+    # rubocop:enable Metrics/PerceivedComplexity
 
     # Returns the facets part of the search results converted to a hash
     #

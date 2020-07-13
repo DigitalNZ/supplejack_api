@@ -22,6 +22,14 @@ module SupplejackApi
       end
     end
 
+    attribute :facet_pivots, if: -> { facet_pivots? } do
+      if xml?
+        xml_facet_pivots
+      else
+        json_facet_pivots
+      end
+    end
+
     def xml?
       instance_options[:request_format] == 'xml'
     end
@@ -48,6 +56,53 @@ module SupplejackApi
 
         facets[facet.name] = rows
       end
+    end
+
+    # This is because the structure of XML Facets and JSON facets are different.
+
+    def facet_pivots?
+      # TODO: fix, this is due to Sunspot::Rails::StubSessionProxy::Search not supporting facet_response
+      return false if object.try(:facet_response).blank? && Rails.env.test?
+
+      return false if object&.facet_response.blank?
+
+      object.facet_response['facet_pivot'].present?
+    end
+
+    def xml_facet_pivots
+      facet_pivots = []
+
+      response = object.facet_response['facet_pivot']
+      response.each_with_object({}) do |_facet, _facets|
+        response.keys.map do |key|
+          values = response[key].map { |row| { name: row['value'], count: row['count'] } }
+          facet_pivots << { name: key, values: values }
+        end
+      end
+
+      facet_pivots
+    end
+
+    def json_facet_pivots
+      facet_pivots = {}
+
+      response = object.facet_response['facet_pivot']
+      response.keys.each do |key|
+        rows = []
+        response[key].each do |row|
+          hash = {}
+          hash['field'] = row['field']
+          hash['value'] = row['value']
+          hash['count'] = row['count']
+          hash['pivot'] = row['pivot'] if row['pivot'].present?
+
+          rows.push(hash)
+        end
+
+        facet_pivots[key] = rows
+      end
+
+      facet_pivots
     end
   end
 end

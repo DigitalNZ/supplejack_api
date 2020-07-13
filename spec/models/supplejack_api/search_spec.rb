@@ -65,15 +65,10 @@ module SupplejackApi
     end
 
     describe '#facet_pivot_list' do
-  		before {
+      before {
         @search = RecordSearch.new
         allow(@search).to receive(:model_class) { Record }
       }
-
-      it 'should return an empty string when nil is provided' do
-        @search.options[:facet_pivots] = ''
-        expect(@search.facet_pivot_list).to eq nil
-      end
 
       it 'should return an empty string when an empty string is provided' do
         @search.options[:facet_pivots] = ''

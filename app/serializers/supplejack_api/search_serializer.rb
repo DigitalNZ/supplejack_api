@@ -22,7 +22,7 @@ module SupplejackApi
       end
     end
 
-    attribute :facet_pivots, if: -> { object&.facet_response.present? && object.facet_response['facet_pivot'].present? } do
+    attribute :facet_pivots, if: -> { facet_pivots? } do
       if xml?
         xml_facet_pivots
       else
@@ -59,6 +59,15 @@ module SupplejackApi
     end
 
     # This is because the structure of XML Facets and JSON facets are different.
+
+    def facet_pivots?
+      # TODO: fix, this is due to Sunspot::Rails::StubSessionProxy::Search not supporting facet_response
+      return false if object.try(:facet_response).blank? && Rails.env.test?
+
+      return false if object&.facet_response.blank?
+
+      object.facet_response['facet_pivot'].present?
+    end
 
     def xml_facet_pivots
       facet_pivots = []

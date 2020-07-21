@@ -121,26 +121,26 @@ module SupplejackApi::Concerns::Record
     def replace_stories_cover
       return if active?
 
-      SupplejackApi::UserSet
-        .where(
-          'set_items.record_id': self.record_id,
-          :cover_thumbnail.in => [self.large_thumbnail_url, self.thumbnail_url].compact)
-        .each do |user_set|
-          active_set_item_records = SupplejackApi.config.record_class
-            .active
-            .where(:record_id.in => user_set.set_items.map(&:record_id))
-          active_record_map = Hash[active_set_item_records.map{|r| [r.record_id, r] }]
+      SupplejackApi::UserSet.where(
+        'set_items.record_id': record_id,
+        :cover_thumbnail.in => [large_thumbnail_url, thumbnail_url].compact
+      ).each do |user_set| # rubocop:disable Rails/FindEach. Mongoid::Criteria handles batching internally (not via find_each)
+        active_set_item_records =
+          SupplejackApi
+          .config
+          .record_class
+          .active
+          .where(:record_id.in => user_set.set_items.map(&:record_id))
+        active_record_map = Hash[active_set_item_records.map { |r| [r.record_id, r] }]
 
-          user_set.set_items.order([:position]).each do |set_item|
-            record = active_record_map[set_item.record_id]
-            if record
-              user_set.update!(cover_thumbnail: record.large_thumbnail_url)
+        user_set.set_items.order([:position]).each do |set_item|
+          record = active_record_map[set_item.record_id]
 
-              break # Prevent updating multiple times
-            end
-          end
+          next if record.nil?
 
-          # Not need to update set_item meta as done by StoriesApi::V3::Presenters::StoryItem
+          user_set.update!(cover_thumbnail: record.large_thumbnail_url)
+          break # Prevent updating multiple times
+        end
       end
     end
   end

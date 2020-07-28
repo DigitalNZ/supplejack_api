@@ -289,5 +289,46 @@ module SupplejackApi
       end
     end
 
+    describe '#replace_stories_cover' do
+      let(:set_item_1) { story.set_items.first }
+      let(:set_item_1_thumb) { 'https://deleted.example.com' }
+      let(:set_item_2) { story.set_items.last }
+      let(:set_item_2_thumb) { 'https://valid.example.com' }
+      let(:story) do
+        create(
+          :story,
+          cover_thumbnail: set_item_1_thumb,
+          set_items: [
+            create(:embed_dnz_item, title: 'last',  position: 1, image_url: set_item_1_thumb),
+            create(:embed_dnz_item, title: 'first', position: 2, image_url: set_item_2_thumb)
+          ]
+        )
+      end
+
+      before(:each) do
+        set_item_1.record.fragments << build(:fragment, large_thumbnail_url: set_item_1_thumb)
+        set_item_2.record.fragments << build(:fragment, large_thumbnail_url: set_item_2_thumb)
+
+        set_item_1.record.reload.save! # Without this, source_ids validation fails ...
+        set_item_2.record.reload.save!
+      end
+
+      it 're-sets the cover_image of any stories if the Record is the cover image' do
+        expect(story.cover_thumbnail).to eq set_item_1_thumb
+
+        set_item_1.record.update!(status: :deleted) # Triggers #replace_stories_cover
+
+        expect(story.reload.cover_thumbnail).to eq set_item_2_thumb
+      end
+
+      it 'does nothing if the record has active status' do
+        expect(story.cover_thumbnail).to eq set_item_1_thumb
+
+        set_item_1.record.replace_stories_cover
+
+        expect(story.reload.cover_thumbnail).to eq set_item_1_thumb
+      end
+    end
+
   end
 end

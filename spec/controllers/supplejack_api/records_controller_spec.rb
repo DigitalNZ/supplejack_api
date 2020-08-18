@@ -14,7 +14,7 @@ module SupplejackApi
       before {
         @search = RecordSearch.new
         allow(@search).to receive(:valid?) { true }
-        allow(RecordSearch).to receive(:new) {@search}
+        allow(RecordSearch).to receive(:new) { @search }
       }
 
       it 'should initialize a new search instance' do
@@ -48,7 +48,7 @@ module SupplejackApi
         allow(@search).to receive(:errors) { ['The page parameter can not exceed 100,000'] }
         get :index, params: { api_key: 'apikey', page: 100001 }, format: 'json'
 
-        expect(response.body).to eq({errors: ['The page parameter can not exceed 100,000']}.to_json)
+        expect(response.body).to eq({ errors: ['The page parameter can not exceed 100,000'] }.to_json)
         expect(response.code).to eq '400'
       end
 
@@ -120,7 +120,7 @@ module SupplejackApi
       before(:each) do
         @record = create(:record)
         allow(controller).to receive(:current_user) { @user }
-        allow(RecordSchema).to receive(:roles) { {developer: developer_restriction} }
+        allow(RecordSchema).to receive(:roles) { { developer: developer_restriction } }
       end
 
       it 'should find the record and assign it' do
@@ -136,8 +136,8 @@ module SupplejackApi
       end
 
       it 'merges the scope in the options' do
-        expect(Record).to receive(:custom_find).with('123', @user, {'and' => {'category' => 'Books'}}).and_return(@record)
-        get :show, params: { id: 123, search: {and: {category: 'Books'}}, api_key: 'apikey' }, format: 'json'
+        expect(Record).to receive(:custom_find).with('123', @user, { 'and' => { 'category' => 'Books' } }).and_return(@record)
+        get :show, params: { id: 123, search: { and: { category: 'Books' } }, api_key: 'apikey' }, format: 'json'
         # expect(assigns(:record)).to eq(@record)
       end
 
@@ -190,7 +190,7 @@ module SupplejackApi
       before(:each) do
         @record = create(:record)
         allow(controller).to receive(:current_user) { @user }
-        allow(RecordSchema).to receive(:roles) { {developer: developer_restriction} }
+        allow(RecordSchema).to receive(:roles) { { developer: developer_restriction } }
       end
 
       it 'should find multiple records and assign them' do
@@ -198,6 +198,34 @@ module SupplejackApi
         allow(Record).to receive(:find_multiple) { @records }
         get :multiple, params: { record_ids: [123, 124, 456], api_key: 'apikey' }, format: 'json'
         expect(assigns(:records)).to eq(@records)
+      end
+    end
+
+    describe 'GET more_like_this' do
+      before(:each) do
+        @record = create(:record)
+        allow(controller).to receive(:current_user) { @user }
+        allow(RecordSchema).to receive(:roles) { { developer: developer_restriction } }
+        allow(Record).to receive(:custom_find).with(@record.id).and_return(@record)
+        allow(@record).to receive(:more_like_this).and_return(double(:mlt, results: [@record]))
+      end
+
+      context 'json' do
+        before { get :more_like_this, params: { record_id: @record.id, api_key: @user.authentication_token }, format: :json }
+
+        it 'has a succesful response code' do
+          expect(response).to be_successful
+        end
+
+        it 'sets the correct Content-Type' do
+          expect(response.headers['Content-Type']).to eq 'application/json; charset=utf-8'
+        end
+
+        it 'returns records that are more like this' do
+          result = JSON.parse(response.body)
+
+          expect(result['records'].count).to eq 1
+        end
       end
     end
 
@@ -215,7 +243,8 @@ module SupplejackApi
       it 'should merge in the search fields' do
         allow(@search).to receive(:field_list).and_return([:title, :description])
         allow(@search).to receive(:group_list).and_return([:verbose])
-        expect(controller.default_serializer_options).to eq({fields: [:title, :description], groups: [:verbose]})
+
+        expect(controller.default_serializer_options).to eq(fields: [:title, :description], groups: [:verbose])
       end
     end
 
@@ -223,13 +252,15 @@ module SupplejackApi
       it 'adds concept_id in the parameter' do
         controller.params = { concept_id: 3 }
         controller.send(:set_concept_param)
-        expect(controller.params[:and].to_unsafe_h).to eq({'concept_id' => 3})
+
+        expect(controller.params[:and].to_unsafe_h).to eq('concept_id' => 3)
       end
 
       it 'merges concept_id with existing "and" parameter' do
         controller.params = { concept_id: 3, and: { category: 'Category A' } }
         controller.send(:set_concept_param)
-        expect(controller.params[:and].to_unsafe_h).to eq({'concept_id' => 3, 'category' => 'Category A'})
+
+        expect(controller.params[:and].to_unsafe_h).to eq('concept_id' => 3, 'category' => 'Category A')
       end
     end
   end

@@ -76,19 +76,32 @@ module SupplejackApi
 
             options[:as] = field.solr_name if field.solr_name.present?
 
-            if search_as.include? :filter
-              filter_options = {}
-              filter_options[:multiple] = true if field.multi_value.present?
-              type = SUNSPOT_TYPE_NAMES[field.type]
+            add_filter_to(builder, field, options, value_block) if search_as.include? :filter
 
-              builder.public_send(type, field.name, options.merge(filter_options), &value_block)
-            end
+            add_fulltext_to(builder, field, options, value_block) if search_as.include? :fulltext
 
-            if search_as.include? :fulltext
-              options[:boost] = field.search_boost if field.search_boost.present?
-              builder.text field.name, options, &value_block
-            end
+            add_mlt_to(builder, field, options, value_block) if search_as.include? :mlt
           end
+        end
+
+        def add_filter_to(builder, field, options, value_block)
+          filter_options = {}
+          filter_options[:multiple] = true if field.multi_value.present?
+          type = SUNSPOT_TYPE_NAMES[field.type]
+
+          builder.public_send(type, field.name, options.merge(filter_options), &value_block)
+        end
+
+        def add_fulltext_to(builder, field, options, value_block)
+          options[:boost] = field.search_boost if field.search_boost.present?
+
+          builder.text field.name, options, &value_block
+        end
+
+        def add_mlt_to(builder, field, options, value_block)
+          options[:more_like_this] = true
+
+          builder.text field.name, options, &value_block
         end
 
         def valid_facets

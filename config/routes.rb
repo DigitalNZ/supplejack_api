@@ -23,6 +23,7 @@ SupplejackApi::Engine.routes.draw do
     # Records
     resources :records, only: [:index, :show] do
       get :multiple, on: :collection
+      get :more_like_this
     end
 
     # Sets

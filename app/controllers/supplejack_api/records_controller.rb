@@ -66,6 +66,17 @@ module SupplejackApi
       respond_with @records, each_serializer: self.class.record_serializer_class, root: 'records', adapter: :json
     end
 
+    def more_like_this
+      record = SupplejackApi.config.record_class.custom_find(params[:record_id])
+
+      mlt = record.more_like_this do
+        fields(*mlt_fields)
+        minimum_term_frequency(params[:frequency] || 1)
+      end
+
+      respond_with mlt.results, each_serializer: self.class.record_serializer_class, root: 'records', adapter: :json
+    end
+
     # This options are merged with the serializer options. Which will allow the serializer
     # to know which fields to render for a specific request
     #
@@ -86,6 +97,12 @@ module SupplejackApi
     end
 
     private
+
+    def mlt_fields
+      return [] unless params[:fields]
+
+      params[:fields].split(',').map(&:to_sym)
+    end
 
     def set_concept_param
       if params[:concept_id].present?

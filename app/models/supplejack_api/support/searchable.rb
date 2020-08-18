@@ -88,6 +88,11 @@ module SupplejackApi
               options[:boost] = field.search_boost if field.search_boost.present?
               builder.text field.name, options, &value_block
             end
+
+            if search_as.include? :mlt
+              options[:more_like_this] = true
+              builder.text field.name, options, &value_block
+            end
           end
         end
 

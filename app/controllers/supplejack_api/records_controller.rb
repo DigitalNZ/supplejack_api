@@ -101,7 +101,7 @@ module SupplejackApi
     def mlt_fields
       return [] unless params[:fields]
 
-      params[:fields].split(',').map(&:to_sym)
+      params[:fields].split(',').map { |field| field.strip.to_sym }
     end
 
     def set_concept_param

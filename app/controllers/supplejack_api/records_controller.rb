@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module SupplejackApi
+  # rubocop:disable Metrics/ClassLength
   class RecordsController < SupplejackApplicationController
     include SupplejackApi::Concerns::RecordsControllerMetrics
     include ActionController::RequestForgeryProtection
@@ -74,12 +75,11 @@ module SupplejackApi
         minimum_term_frequency(params[:frequency] || 1)
       end
 
-      respond_with mlt.results, each_serializer: self.class.record_serializer_class, root: 'records', adapter: :json
+      respond_with mlt.results, each_serializer: self.class.mlt_serializer_class, root: 'records', adapter: :json
     end
 
     # This options are merged with the serializer options. Which will allow the serializer
     # to know which fields to render for a specific request
-    #
     def default_serializer_options
       default_options = {}
       @search ||= SupplejackApi::RecordSearch.new(all_params)
@@ -92,6 +92,10 @@ module SupplejackApi
       SearchSerializer
     end
 
+    def self.mlt_serializer_class
+      MltSerializer
+    end
+
     def self.record_serializer_class
       RecordSerializer
     end
@@ -99,9 +103,9 @@ module SupplejackApi
     private
 
     def mlt_fields
-      return [] unless params[:fields]
+      return [] unless params[:mlt_fields]
 
-      params[:fields].split(',').map { |field| field.strip.to_sym }
+      params[:mlt_fields].split(',').map { |field| field.strip.to_sym }
     end
 
     def set_concept_param
@@ -135,4 +139,5 @@ module SupplejackApi
       _render_to_body_with_renderer(options) || super
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end

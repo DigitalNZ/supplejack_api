@@ -238,6 +238,8 @@ module SupplejackApi
             params['facet'] = 'on'
           end
           params['q.op'] = 'AND'
+          params['df'] = 'text'
+          params['sow'] = 'true'
         end
 
         # Facet Queries

@@ -77,13 +77,21 @@ module SupplejackApi
         if @records.present?
           render json: @records,
                  adapter: :json,
-                 each_serializer: ::SupplejackApi::RecordSerializer,
-                 include: [:fragments],
+                 each_serializer: self.class.record_serializer_class,
+                 include: self.class.record_serializer_includes,
                  root: 'records',
                  meta: { page: page, total_pages: @records.total_pages }
         else
           head :no_content
         end
+      end
+
+      def self.record_serializer_class
+        RecordSerializer
+      end
+
+      def self.record_serializer_includes
+        [:fragments]
       end
 
       private

@@ -240,6 +240,7 @@ module SupplejackApi
           params['q.op'] = 'AND'
           params['df'] = 'text'
           params['sow'] = 'true'
+          params['timeAllowed'] = '10000'
         end
 
         # Facet Queries

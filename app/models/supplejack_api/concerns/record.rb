@@ -119,6 +119,7 @@ module SupplejackApi::Concerns::Record
     end
 
     def replace_stories_cover
+      return unless RecordSchema.fields.include?(:thumbnail_url) && RecordSchema.fields.include?(:large_thumbnail_url)
       return if active?
 
       SupplejackApi::UserSet.where(

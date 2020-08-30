@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/ModuleLength
 module SupplejackApi::Concerns::Record
   extend ActiveSupport::Concern
 
@@ -146,3 +147,4 @@ module SupplejackApi::Concerns::Record
     end
   end
 end
+# rubocop:enable Metrics/ModuleLength

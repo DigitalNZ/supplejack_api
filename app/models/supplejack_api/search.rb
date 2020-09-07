@@ -210,7 +210,7 @@ module SupplejackApi
         with(:record_type, record_type) unless options[:record_type] == 'all'
 
         search_model.facet_list.each do |facet_name|
-          json_facet(facet_name, limit: facets_per_page, offset: facets_offset)
+          json_facet(facet_name, limit: facets_per_page, offset: facets_offset, method: 'dv')
         end
 
         spellcheck collate: true, only_more_popular: true if options[:suggest]
@@ -240,6 +240,7 @@ module SupplejackApi
           params['q.op'] = 'AND'
           params['df'] = 'text'
           params['sow'] = 'true'
+
         end
 
         # Facet Queries

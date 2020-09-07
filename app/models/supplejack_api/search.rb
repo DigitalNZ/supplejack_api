@@ -240,6 +240,7 @@ module SupplejackApi
           params['q.op'] = 'AND'
           params['df'] = 'text'
           params['sow'] = 'true'
+          params['facet.threads'] = ENV['SOLR_FACET_THREADS'] || 4
         end
 
         # Facet Queries

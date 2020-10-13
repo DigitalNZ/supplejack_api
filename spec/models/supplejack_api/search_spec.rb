@@ -62,6 +62,11 @@ module SupplejackApi
         @search.options[:facets] = 'name, address, other_facet'
         expect(@search.facet_list).to eq [:name, :address]
       end
+
+      it 'should return string versions of integer facets' do
+        @search.options[:facets] = 'age'
+        expect(@search.facet_list).to eq [:age_str]
+      end
     end
 
     describe '#facet_pivot_list' do
@@ -292,7 +297,6 @@ module SupplejackApi
 	      allow(@search).to receive(:solr_search_object).and_return({})
 	      expect(@search.something_missing).to be_nil
 	    end
-	  end
-
+    end
   end
 end

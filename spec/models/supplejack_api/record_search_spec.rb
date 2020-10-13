@@ -446,6 +446,48 @@ module SupplejackApi
           @search.options[:facets] = 'name'
           expect{@search.execute_solr_search}.to raise_exception('exclude_filters_from_facets does not allow nested (:and, :or)')
         end
+
+        it 'does not add additional facets into the search' do
+          @search.options[:and] = {category: ['Audio'], subject: ['forest']}
+          @search.options[:facets] = 'category'
+          @search.execute_solr_search
+
+          expect(@session).to have_search_params(:facet) {
+            category_filter = with(:category, ['Audio'])
+            facet(:category, :exclude => category_filter)
+          }
+
+          expect(@session).not_to have_search_params(:facet) {
+            subject_filter = with(:subject, ['forest'])
+            facet(:subject, :exclude => subject_filter)
+          }
+        end
+
+        it 'does not add facets into the search when you aren\'t asking for any' do
+          @search.options[:and] = {category: ['Audio'], subject: ['forest']}
+          @search.execute_solr_search
+
+          expect(@session).not_to have_search_params(:facet) {
+            category_filter = with(:category, ['Audio'])
+            facet(:category, :exclude => category_filter)
+          }
+
+          expect(@session).not_to have_search_params(:facet) {
+            subject_filter = with(:subject, ['forest'])
+            facet(:subject, :exclude => subject_filter)
+          } 
+        end
+
+        it 'handles integer facets correctly' do
+          @search.options[:and] = {age: ['10'], subject: ['forest']}
+          @search.options[:facets] = 'age'
+          @search.execute_solr_search 
+
+          expect(@session).to have_search_params(:facet) {
+            age_filter = with(:age_str, ['10'])
+            facet(:age_str, :exclude => age_filter)
+          }
+        end
       end
     end
   end

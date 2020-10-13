@@ -37,11 +37,22 @@ module SupplejackApi
     # It will remove any invalid facets in order to avoid Solr errors
     #
     def facet_list
-      return @facet_list if @facet_list
+      facet_list = options[:facets].split(',').map { |f| f.strip.to_sym }
+      facet_list.keep_if { |f| self.class.model_class.valid_facets.include?(f) }
 
-      @facet_list = options[:facets].split(',').map { |f| f.strip.to_sym }
-      @facet_list.keep_if { |f| self.class.model_class.valid_facets.include?(f) }
-      @facet_list
+      # This is to prevent users from requesting integer fields as facets
+      # because we do not have docValues built up for these fields facetting does not work.
+      # We do not have docValues because we are experiencing an issue with the facet counts being wrong
+      # between different Solr replicas.
+      facets = facet_list.map do |facet|
+        if RecordSchema.fields[facet].type == :integer
+          "#{facet}_str".to_sym
+        else
+          facet
+        end
+      end
+
+      facets
     end
 
     def facet_pivot_list
@@ -208,7 +219,7 @@ module SupplejackApi
 
       @search_builder ||= Sunspot.new_search(SupplejackApi.config.record_class) do
         with(:record_type, record_type) unless options[:record_type] == 'all'
-
+        
         search_model.facet_list.each do |facet_name|
           facet(facet_name, limit: facets_per_page, offset: facets_offset)
         end
@@ -285,7 +296,18 @@ module SupplejackApi
 
         if options[:exclude_filters_from_facets] == 'true'
           or_and_options = {}.merge(options[:and]).merge(options[:or])
-          or_and_options.each do |key, value|
+
+          # This is to clean up any valid integer facets that have been requested
+          # Through the filter options, so that they are treated as strings.
+          integer_facets = or_and_options.each_with_object([]) do |(facet_name, _facet_value), array|
+            array.push(facet_name) if RecordSchema.fields[facet_name.to_sym]&.type == :integer
+          end
+
+          integer_facets.each do |facet|
+            or_and_options["#{facet}_str".to_sym] = or_and_options.delete(facet)
+          end
+
+          or_and_options.slice(*facet_list).each do |key, value|
             raise Exception, 'exclude_filters_from_facets does not allow nested (:and, :or)' if %i[or and].include? key
 
             facet(key.to_sym, exclude: with(key.to_sym, value))

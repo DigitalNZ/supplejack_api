@@ -308,9 +308,7 @@ module SupplejackApi
           end
 
           or_and_options.slice(*facet_list).each do |key, value|
-            raise Exception, 'exclude_filters_from_facets does not allow nested (:and, :or)' if %i[or and].include? key
-
-            facet(key.to_sym, exclude: with(key.to_sym, value))
+            facet(key.to_sym, exclude: with(key.to_sym, value), limit: facets_per_page, offset: facets_offset)
           end
         end
 

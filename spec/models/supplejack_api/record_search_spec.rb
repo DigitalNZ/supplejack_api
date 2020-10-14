@@ -488,6 +488,17 @@ module SupplejackApi
             facet(:age_str, :exclude => age_filter)
           }
         end
+
+        it 'applies filters that are given as strings via the URL correctly' do
+          @search.options[:and] = {'category' => ['Images']}
+          @search.options[:facets] = 'subject, category'
+          @search.execute_solr_search
+
+          expect(@session).to have_search_params(:facet) {
+            category_filter = with(:category, ['Images'])
+            facet(:category, :exclude => category_filter)
+          } 
+        end
       end
     end
   end

@@ -295,7 +295,7 @@ module SupplejackApi
         end
 
         if options[:exclude_filters_from_facets] == 'true'
-          or_and_options = {}.merge(options[:and]).merge(options[:or])
+          or_and_options = {}.merge(options[:and]).merge(options[:or]).symbolize_keys
 
           # This is to clean up any valid integer facets that have been requested
           # Through the filter options, so that they are treated as strings.

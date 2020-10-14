@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
 class BatchIndexRecords
-  attr_reader :records
+  attr_reader   :records
+  attr_accessor :failed_records
 
   def initialize(records)
     Sunspot.session = Sunspot::Rails.build_session
 
     @records = records
+    @failed_records = []
   end
 
   def call

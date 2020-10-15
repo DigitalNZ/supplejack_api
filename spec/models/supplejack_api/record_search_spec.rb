@@ -441,12 +441,6 @@ module SupplejackApi
           }
         end
 
-        it 'does not allow nested :and :or queries' do
-          @search.options[:and] = {name: 'John', or: {address: 'Wellington', and: {nz_citizen: 'true', email: 'john@test.com'}}}
-          @search.options[:facets] = 'name'
-          expect{@search.execute_solr_search}.to raise_exception('exclude_filters_from_facets does not allow nested (:and, :or)')
-        end
-
         it 'does not add additional facets into the search' do
           @search.options[:and] = {category: ['Audio'], subject: ['forest']}
           @search.options[:facets] = 'category'
@@ -498,6 +492,15 @@ module SupplejackApi
             category_filter = with(:category, ['Images'])
             facet(:category, :exclude => category_filter)
           } 
+        end
+
+        it 'applies filters that are given which are not facets' do
+          @search.options[:and] = {'category' => ['Images']}
+          @search.options[:facets] = 'subject'
+          @search.execute_solr_search
+          expect(@session).to have_search_params(:with, :category, ['Images'])
+          expect(@session).to have_search_params(:facet, :subject)
+          expect(@session).not_to have_search_params(:facet, :category)
         end
       end
     end

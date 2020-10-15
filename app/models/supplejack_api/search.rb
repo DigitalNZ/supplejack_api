@@ -315,8 +315,7 @@ module SupplejackApi
         paginate page: page, per_page: per_page
       end
 
-      @search_builder.build(&build_conditions) unless options[:exclude_filters_from_facets] == 'true'
-
+      @search_builder.build(&build_conditions)
       @search_builder
     end
     # rubocop:enable Metrics/AbcSize
@@ -434,7 +433,13 @@ module SupplejackApi
             end
           end
         else
-          Utils.call_block(self, &filter_values(key, conditions, current_operator))
+          if options[:exclude_filters_from_facets] == 'true'
+            if facet_list.exclude?(key.to_sym)
+              Utils.call_block(self, &filter_values(key, conditions, current_operator))
+            end
+          else
+            Utils.call_block(self, &filter_values(key, conditions, current_operator))
+          end
         end
       end
     end

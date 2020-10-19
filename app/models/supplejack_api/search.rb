@@ -308,7 +308,11 @@ module SupplejackApi
           end
 
           or_and_options.slice(*facet_list).each do |key, value|
-            facet(key.to_sym, exclude: with(key.to_sym, value), limit: facets_per_page, offset: facets_offset)
+            if value =~ /(.+)\*$/
+              facet(key.to_sym, exclude: with(key.to_sym).starting_with(Regexp.last_match(1)), limit: facets_per_page, offset: facets_offset)
+            else
+              facet(key.to_sym, exclude: with(key.to_sym, value), limit: facets_per_page, offset: facets_offset)
+            end
           end
         end
 

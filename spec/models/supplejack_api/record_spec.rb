@@ -331,4 +331,13 @@ module SupplejackApi
     end
 
   end
+
+  describe '#ready_for_processing' do
+    let!(:record)                { create(:record_with_fragment) }
+    let!(:record_for_processing) { create(:record_with_fragment, :ready_for_processing) }
+
+    it 'returns records that are ready for processing' do
+      expect(SupplejackApi::Record.ready_for_processing.count).to eq 1
+    end
+  end
 end

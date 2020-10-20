@@ -31,6 +31,8 @@ module SupplejackApi::Concerns::Record
     scope :suppressed,      -> { where(status: 'suppressed') }
     scope :solr_rejected,   -> { where(status: 'solr_rejected') }
 
+    scope :ready_for_processing, -> { where(processed: false) }
+
     build_model_fields
 
     def self.created_on(date)

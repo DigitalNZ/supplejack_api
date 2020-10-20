@@ -27,6 +27,10 @@ module SupplejackApi
         after(:build) do |record_with_fragment|
           record_with_fragment.save!
         end
+
+        trait :ready_for_processing do
+          processed false
+        end
       end
 
       factory :record_with_no_large_thumb do

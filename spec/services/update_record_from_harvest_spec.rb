@@ -52,6 +52,14 @@ RSpec.describe UpdateRecordFromHarvest do
       it 'sets the source_id' do
         expect(record.primary_fragment.source_id).to eq 'end_to_end_test'
       end
+
+      it 'sets the processed flag to false' do
+        expect(record.processed).to eq false
+      end
+
+      it 'sets the processed_at field to nil' do
+        expect(record.processed_at).to eq nil
+      end
     end
 
     context 'record already exists' do
@@ -77,6 +85,14 @@ RSpec.describe UpdateRecordFromHarvest do
 
       it 'sets multivalue fields on the primary fragment' do
         expect(record.content_partner).to eq(["DNZ end to end test content_partner", "test content partner"])
+      end
+
+      it 'resets the processed flag to be false' do
+        expect(record.processed).to eq false
+      end
+
+      it 'resets the processed_at field to be nil' do
+        expect(record.processed_at).to eq nil
       end
     end
 

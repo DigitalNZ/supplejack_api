@@ -29,6 +29,7 @@ class RecordSchema
   string    :category,     multi_value: true,     search_as: [:filter]
   string    :copyright,    multi_value: true,     search_as: [:filter]
 
+
   string  :thumbnail_url
   string  :large_thumbnail_url
   string  :landing_url, namespace: :dc
@@ -87,4 +88,6 @@ class RecordSchema
   role :admin, admin: true
   role :harvester, harvester: true
 
+  model_field :processed, field_options: { type: Boolean }
+  model_field :processed_at, field_options: { type: DateTime }
 end

@@ -13,9 +13,9 @@ class BatchIndexRecords
   # does not apply the limit until the query happens
   # so without `to_a` everything that matches gets updated
   def call
-    Sunspot.index(records.to_a)
+    Sunspot.index(records.to_a) if records.any?
     
-    SupplejackApi::Record.where(:record_id.in => records.map(&:record_id)).update_all(processed_at: Time.current)
+    SupplejackApi::Record.where(:record_id.in => records.map(&:record_id)).update_all(processed: true, processed_at: Time.current)
   rescue StandardError
     retry_index_records(records)
   end
@@ -34,7 +34,7 @@ class BatchIndexRecords
     p 'Record has errored'
     Sunspot.index record
     p 'Updating failed record'
-    record.update(processed_at: Time.current)
+    record.update(processed: true)
   rescue StandardError => e
     p 'Record completely failed'
     Rails.logger.error "BatchIndexRecords - Failed to index: #{record.inspect} - #{e.message}"

@@ -5,10 +5,6 @@
 set :environment, :development if Rails.env.development?
 set :output, {:error => 'log/whenever.stderr.log', :standard => 'log/whenever.stdout.log'}
 
-every '*/5 * * * *' do
-  runner 'SupplejackApi::IndexRemainingRecordsInQueue.perform_async'
-end
-
 every '57 23 * * *' do
   runner 'SupplejackApi::DailyMetricsWorker.perform_async'
 end

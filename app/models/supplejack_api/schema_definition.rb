@@ -36,7 +36,7 @@ module SupplejackApi
         field = Field.new(name, options, &block)
         self.fields[name] = field
 
-        # This is so we have a string alternative of an integer field that can be used for facetting. 
+        # This is so we have a string alternative of an integer field that can be used for facetting.
         field(:string, "#{name}_str", options.merge(type: :string), &block) if type == :integer
       end
 

@@ -219,7 +219,7 @@ module SupplejackApi
 
       @search_builder ||= Sunspot.new_search(SupplejackApi.config.record_class) do
         with(:record_type, record_type) unless options[:record_type] == 'all'
-        
+
         search_model.facet_list.each do |facet_name|
           facet(facet_name, limit: facets_per_page, offset: facets_offset)
         end
@@ -309,7 +309,8 @@ module SupplejackApi
 
           or_and_options.slice(*facet_list).each do |key, value|
             if value =~ /(.+)\*$/
-              facet(key.to_sym, exclude: with(key.to_sym).starting_with(Regexp.last_match(1)), limit: facets_per_page, offset: facets_offset)
+              facet(key.to_sym, exclude: with(key.to_sym).starting_with(Regexp.last_match(1)), limit: facets_per_page,
+                                offset: facets_offset)
             else
               facet(key.to_sym, exclude: with(key.to_sym, value), limit: facets_per_page, offset: facets_offset)
             end
@@ -438,9 +439,7 @@ module SupplejackApi
           end
         else
           if options[:exclude_filters_from_facets] == 'true'
-            if facet_list.exclude?(key.to_sym)
-              Utils.call_block(self, &filter_values(key, conditions, current_operator))
-            end
+            Utils.call_block(self, &filter_values(key, conditions, current_operator)) if facet_list.exclude?(key.to_sym)
           else
             Utils.call_block(self, &filter_values(key, conditions, current_operator))
           end

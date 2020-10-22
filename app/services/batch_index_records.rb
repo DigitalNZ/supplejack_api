@@ -9,9 +9,6 @@ class BatchIndexRecords
     @records = records
   end
 
-  # to_a is called on the records because Mongoid critieria 
-  # does not apply the limit until the query happens
-  # so without `to_a` everything that matches gets updated
   def call
     Sunspot.index(records.to_a) if records.any?
     
@@ -31,12 +28,9 @@ class BatchIndexRecords
 
   def index_individual_record(record)
     Rails.logger.info "BatchIndexRecords - INDEXING: #{record}"
-    p 'Record has errored'
     Sunspot.index record
-    p 'Updating failed record'
-    record.update(processed: true)
+    record.update(processed: true, processed_at: Time.current)
   rescue StandardError => e
-    p 'Record completely failed'
     Rails.logger.error "BatchIndexRecords - Failed to index: #{record.inspect} - #{e.message}"
   end
 end

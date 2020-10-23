@@ -19,7 +19,7 @@ module SupplejackApi
         BatchIndexRecords.new(records.compact).call
       end
 
-      p 'Looking for records to remove..'
+      p 'Looking for records to remove..' unless Rails.env.test?
 
       records_to_remove = SupplejackApi::Record.ready_for_indexing.where(:status.ne => 'active')
 

@@ -23,10 +23,6 @@ class UpdateRecordFromHarvest
     # TODO: probably a meaningless field..
     @record[:source_url] = nil
 
-    # Reset flags so that this record can be processed
-    @record[:processed] = false
-    @record[:processed_at] = nil
-
     target_fragment = select_fragment(@record)
 
     target_fragment.update(new_fragment_attributes(target_fragment))

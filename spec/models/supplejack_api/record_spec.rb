@@ -332,12 +332,12 @@ module SupplejackApi
 
   end
 
-  describe '#ready_for_processing' do
+  describe '#ready_for_indexing' do
     let!(:record)                { create(:record_with_fragment) }
-    let!(:record_for_processing) { create(:record_with_fragment, :ready_for_processing) }
+    let!(:record_for_indexing) { create(:record_with_fragment, :ready_for_indexing) }
 
-    it 'returns records that are ready for processing' do
-      expect(SupplejackApi::Record.ready_for_processing.count).to eq 1
+    it 'returns records that are ready for indexing' do
+      expect(SupplejackApi::Record.ready_for_indexing.count).to eq 1
     end
   end
 end

@@ -28,8 +28,8 @@ module SupplejackApi
           record_with_fragment.save!
         end
 
-        trait :ready_for_processing do
-          processed false
+        trait :ready_for_indexing do
+          index_updated false
         end
       end
 

@@ -31,7 +31,7 @@ module SupplejackApi::Concerns::Record
     scope :suppressed,      -> { where(status: 'suppressed') }
     scope :solr_rejected,   -> { where(status: 'solr_rejected') }
 
-    scope :ready_for_processing, -> { where(processed: false) }
+    scope :ready_for_indexing, -> { where(index_updated: false) }
 
     build_model_fields
 

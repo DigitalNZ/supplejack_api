@@ -31,6 +31,10 @@ module SupplejackApi
         trait :ready_for_indexing do
           index_updated false
         end
+
+        trait :deleted do
+          status 'deleted'
+        end
       end
 
       factory :record_with_no_large_thumb do

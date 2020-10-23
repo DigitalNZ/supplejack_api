@@ -82,9 +82,6 @@ module SupplejackApi
       primary_fragment.description = description
       primary_fragment.subject = subjects
 
-      record.index_updated = false
-      record.index_updated_at = nil
-
       record.save!
     end
 

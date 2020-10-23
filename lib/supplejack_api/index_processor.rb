@@ -4,8 +4,8 @@ module SupplejackApi
   class IndexProcessor
     attr_accessor :size
 
-    def initialize(size = 1000)
-      @size = size
+    def initialize(size)
+      @size = size || 1000
     end
 
     def call

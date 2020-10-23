@@ -324,7 +324,6 @@ module SupplejackApi
   end
 
   describe '#ready_for_indexing' do
-    let!(:record)                { create(:record_with_fragment) }
     let!(:record_for_indexing) { create(:record_with_fragment, :ready_for_indexing) }
 
     it 'returns records that are ready for indexing' do

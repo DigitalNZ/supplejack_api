@@ -311,7 +311,7 @@ module SupplejackApi
     end
   end
 
-  describe '#mark_for_processing' do
+  describe '#mark_for_indexing' do
     let(:record) { build(:record, index_updated: true, index_updated_at: Time.now) }
     it 'sets index_updated to be false when changes are made to a record' do
       expect(record.index_updated).to eq true

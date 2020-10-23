@@ -22,7 +22,7 @@ module SupplejackApi::Concerns::Record
 
     # Callbacks
     before_save :merge_fragments
-    before_save :mark_for_processing
+    before_save :mark_for_indexing
     after_save :replace_stories_cover
 
     # Scopes
@@ -117,7 +117,7 @@ module SupplejackApi::Concerns::Record
       SupplejackApi::ApiRecord::RecordFragment
     end
 
-    def mark_for_processing
+    def mark_for_indexing
       self.index_updated = false
       self.index_updated_at = nil
     end

@@ -8,6 +8,7 @@ module SupplejackApi
       @size = size
     end
 
+    # rubocop:disable Rails/Output
     def call
       p 'Looking for records to index..' unless Rails.env.test?
 
@@ -29,5 +30,6 @@ module SupplejackApi
         BatchRemoveRecordsFromIndex.new(records.compact).call
       end
     end
+    # rubocop:enable Rails/Output
   end
 end

@@ -1,5 +1,3 @@
-
-
 class RecordSchema
   include SupplejackApi::SupplejackSchema
 
@@ -14,7 +12,7 @@ class RecordSchema
   string    :email,        multi_value: true,     search_as: [:filter]
   string    :children,     multi_value: true
   string    :contact,      multi_value: true
-  integer   :age
+  integer   :age,                                 search_as: [:filter]
   datetime  :birth_date
   boolean   :nz_citizen,                          search_as: [:filter]
   string    :display_collection,                                search_as: [:filter, :fulltext],  namespace: :sj

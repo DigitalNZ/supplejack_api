@@ -37,11 +37,22 @@ module SupplejackApi
     # It will remove any invalid facets in order to avoid Solr errors
     #
     def facet_list
-      return @facet_list if @facet_list
+      facet_list = options[:facets].split(',').map { |f| f.strip.to_sym }
+      facet_list.keep_if { |f| self.class.model_class.valid_facets.include?(f) }
 
-      @facet_list = options[:facets].split(',').map { |f| f.strip.to_sym }
-      @facet_list.keep_if { |f| self.class.model_class.valid_facets.include?(f) }
-      @facet_list
+      # This is to prevent users from requesting integer fields as facets
+      # because we do not have docValues built up for these fields facetting does not work.
+      # We do not have docValues because we are experiencing an issue with the facet counts being wrong
+      # between different Solr replicas.
+      facets = facet_list.map do |facet|
+        if RecordSchema.fields[facet].type == :integer
+          "#{facet}_str".to_sym
+        else
+          facet
+        end
+      end
+
+      facets
     end
 
     def facet_pivot_list
@@ -284,19 +295,32 @@ module SupplejackApi
         end
 
         if options[:exclude_filters_from_facets] == 'true'
-          or_and_options = {}.merge(options[:and]).merge(options[:or])
-          or_and_options.each do |key, value|
-            raise Exception, 'exclude_filters_from_facets does not allow nested (:and, :or)' if %i[or and].include? key
+          or_and_options = {}.merge(options[:and]).merge(options[:or]).symbolize_keys
 
-            facet(key.to_sym, exclude: with(key.to_sym, value))
+          # This is to clean up any valid integer facets that have been requested
+          # Through the filter options, so that they are treated as strings.
+          integer_facets = or_and_options.each_with_object([]) do |(facet_name, _facet_value), array|
+            array.push(facet_name) if RecordSchema.fields[facet_name.to_sym]&.type == :integer
+          end
+
+          integer_facets.each do |facet|
+            or_and_options["#{facet}_str".to_sym] = or_and_options.delete(facet)
+          end
+
+          or_and_options.slice(*facet_list).each do |key, value|
+            if value =~ /(.+)\*$/
+              facet(key.to_sym, exclude: with(key.to_sym).starting_with(Regexp.last_match(1)), limit: facets_per_page,
+                                offset: facets_offset)
+            else
+              facet(key.to_sym, exclude: with(key.to_sym, value), limit: facets_per_page, offset: facets_offset)
+            end
           end
         end
 
         paginate page: page, per_page: per_page
       end
 
-      @search_builder.build(&build_conditions) unless options[:exclude_filters_from_facets] == 'true'
-
+      @search_builder.build(&build_conditions)
       @search_builder
     end
     # rubocop:enable Metrics/AbcSize
@@ -414,7 +438,11 @@ module SupplejackApi
             end
           end
         else
-          Utils.call_block(self, &filter_values(key, conditions, current_operator))
+          if options[:exclude_filters_from_facets] == 'true'
+            Utils.call_block(self, &filter_values(key, conditions, current_operator)) if facet_list.exclude?(key.to_sym)
+          else
+            Utils.call_block(self, &filter_values(key, conditions, current_operator))
+          end
         end
       end
     end

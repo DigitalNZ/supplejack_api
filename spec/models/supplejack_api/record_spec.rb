@@ -269,26 +269,6 @@ module SupplejackApi
       end
     end
 
-    describe '#remove_from_index' do
-      before(:each) do
-        @record = FactoryBot.build(:record)
-      end
-
-      it 'calls Sunspot remove on a record that does not have active status' do
-        @record.update_attribute(:status, 'suppressed')
-        expect(Sunspot).to receive(:remove)
-
-        @record.remove_from_index
-      end
-
-      it 'does nothing if the record has active status' do
-        @record.update_attribute(:status, 'active')
-        expect(Sunspot).not_to receive(:remove)
-
-        @record.remove_from_index
-      end
-    end
-
     describe '#replace_stories_cover' do
       let(:set_item_1) { story.set_items.first }
       let(:set_item_1_thumb) { 'https://deleted.example.com' }
@@ -329,6 +309,25 @@ module SupplejackApi
         expect(story.reload.cover_thumbnail).to eq set_item_1_thumb
       end
     end
+  end
 
+  describe '#mark_for_indexing' do
+    let(:record) { build(:record, index_updated: true, index_updated_at: Time.now) }
+    it 'sets index_updated to be false when changes are made to a record' do
+      expect(record.index_updated).to eq true
+      expect(record.index_updated_at).to be_a(Date)
+      record.update_attributes(status: 'active')
+      record.reload
+      expect(record.index_updated).to eq false
+      expect(record.index_updated_at).to eq nil
+    end
+  end
+
+  describe '#ready_for_indexing' do
+    let!(:record_for_indexing) { create(:record_with_fragment, :ready_for_indexing) }
+
+    it 'returns records that are ready for indexing' do
+      expect(SupplejackApi::Record.ready_for_indexing.count).to eq 1
+    end
   end
 end

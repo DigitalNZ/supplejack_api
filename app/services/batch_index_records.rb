@@ -10,7 +10,10 @@ class BatchIndexRecords
   end
 
   def call
-    Sunspot.index(records)
+    Sunspot.index(records.to_a) if records.any?
+
+    SupplejackApi::Record.where(:record_id.in => records.map(&:record_id))
+                         .update_all(index_updated: true, index_updated_at: Time.current)
   rescue StandardError
     retry_index_records(records)
   end
@@ -27,6 +30,7 @@ class BatchIndexRecords
   def index_individual_record(record)
     Rails.logger.info "BatchIndexRecords - INDEXING: #{record}"
     Sunspot.index record
+    record.update(index_updated: true, index_updated_at: Time.current)
   rescue StandardError => e
     Rails.logger.error "BatchIndexRecords - Failed to index: #{record.inspect} - #{e.message}"
   end

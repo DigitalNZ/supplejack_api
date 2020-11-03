@@ -140,8 +140,8 @@ module SupplejackApi
           expect(assigns(:record)).to eq(record)
         end
 
-        it "updates the status of the record" do
-          expect(record).to receive(:update_attribute).with(:status, 'supressed')
+        it "updates the status of the record and marks it for indexing" do
+          expect(record).to receive(:update).with(status: 'supressed')
           put :update, params: { id: 123, record: { status: 'supressed' }, api_key: api_key}, format: :json
         end
       end

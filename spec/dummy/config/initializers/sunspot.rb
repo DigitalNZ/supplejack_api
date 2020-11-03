@@ -1,7 +1,3 @@
-
-
-Sunspot.session = Sunspot::SidekiqSessionProxy.new(Sunspot.session) unless Rails.env.test?
-
 OriginalDismax = Sunspot::Query::Dismax
 
 api_gem_dir = Gem::Specification.find_by_name("supplejack_api").gem_dir

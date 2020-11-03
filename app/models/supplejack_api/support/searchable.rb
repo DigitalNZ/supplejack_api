@@ -8,7 +8,7 @@ module SupplejackApi
       included do
         include Sunspot::Mongoid
 
-        searchable if: :should_index? do
+        searchable if: :should_index?, auto_index: false, auto_remove: false do
           string :internal_identifier
           integer :record_type
 

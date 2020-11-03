@@ -46,7 +46,7 @@ module SupplejackApi
       def update
         @record = SupplejackApi.config.record_class.custom_find(params[:id], nil, status: :all)
         if params[:record].present? && params[:record][:status].present?
-          @record.update_attribute(:status, params[:record][:status])
+          @record.update(status: params[:record][:status])
         end
         respond_with @record
       end

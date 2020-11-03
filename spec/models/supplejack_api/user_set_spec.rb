@@ -112,23 +112,11 @@ module SupplejackApi
           before do
             allow(user_set).to receive(:record_status).and_return("active")
             allow(user_set).to receive(:record).and_return(record)
-            expect(record).to receive(:index)
           end
 
-          it 'calls sunspot index if privacy field changed' do
-            user_set.update_attribute(:privacy, 'hidden')
-          end
-
-          it 'calls sunspot index if name field changed' do
-            user_set.update_attribute(:name, 'A new name')
-          end
-
-          it 'calls sunspot index if description field changed' do
-            user_set.update_attribute(:description, 'A new description')
-          end
-
-          it 'calls sunspot index if approved field changed' do
-            user_set.update_attribute(:approved, !user_set.approved)
+          it 'sets index_updated on a record that needs to be indexed' do
+            expect(record.index_updated).to eq false
+            expect(record.index_updated_at).to eq nil
           end
         end
 
@@ -176,11 +164,11 @@ module SupplejackApi
         context 'an un-active user_set that is approved' do
           before do
             allow(user_set).to receive(:record).and_return(record)
-            expect(record).to receive(:index)
           end
 
-           it 'calls sunspot index' do
+           it 'sets index_updated to be false' do
             user_set.update_attribute(:approved, true)
+            expect(user_set.record.index_updated).to eq false
           end
         end
       end

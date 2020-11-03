@@ -22,7 +22,7 @@ module SupplejackApi::Concerns::Record
 
     # Callbacks
     before_save :merge_fragments
-    after_save :remove_from_index
+    before_save :mark_for_indexing
     after_save :replace_stories_cover
 
     # Scopes
@@ -30,6 +30,8 @@ module SupplejackApi::Concerns::Record
     scope :deleted,         -> { where(status: 'deleted') }
     scope :suppressed,      -> { where(status: 'suppressed') }
     scope :solr_rejected,   -> { where(status: 'solr_rejected') }
+
+    scope :ready_for_indexing, -> { where(index_updated: false) }
 
     build_model_fields
 
@@ -115,8 +117,9 @@ module SupplejackApi::Concerns::Record
       SupplejackApi::ApiRecord::RecordFragment
     end
 
-    def remove_from_index
-      Sunspot.remove(self) unless active?
+    def mark_for_indexing
+      self.index_updated = false
+      self.index_updated_at = nil
     end
 
     def replace_stories_cover

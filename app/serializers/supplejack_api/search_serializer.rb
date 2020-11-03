@@ -44,7 +44,7 @@ module SupplejackApi
           { name: row.value, count: row.count }
         end
 
-        facets << { name: facet.name.to_s, values: values }
+        facets << { name: facet.name.to_s.gsub('_str', ''), values: values }
       end
     end
 
@@ -55,6 +55,8 @@ module SupplejackApi
         end
 
         facets[facet.name] = rows
+
+        facets[facet.name.to_s.gsub('_str', '')] = facets.delete(facet.name) if facet.name.to_s.include? '_str'
       end
     end
 

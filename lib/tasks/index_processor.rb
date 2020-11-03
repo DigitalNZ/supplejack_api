@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'rake'
 
 namespace :index_processor do

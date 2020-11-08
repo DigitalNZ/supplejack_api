@@ -67,6 +67,11 @@ module SupplejackApi
         @search.options[:facets] = 'age'
         expect(@search.facet_list).to eq [:age_str]
       end
+
+      it 'should return string versions of date facets' do
+        @search.options[:facets] = 'birth_date'
+        expect(@search.facet_list).to eq [:birth_date_str]
+      end
     end
 
     describe '#facet_pivot_list' do

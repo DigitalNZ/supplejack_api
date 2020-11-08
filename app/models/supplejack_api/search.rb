@@ -40,12 +40,13 @@ module SupplejackApi
       facet_list = options[:facets].split(',').map { |f| f.strip.to_sym }
       facet_list.keep_if { |f| self.class.model_class.valid_facets.include?(f) }
 
-      # This is to prevent users from requesting integer fields as facets
-      # because we do not have docValues built up for these fields facetting does not work.
+      # This is to prevent users from requesting integer and date fields as facets
+      # because we do not have docValues built up for these fields faceting does not work.
       # We do not have docValues because we are experiencing an issue with the facet counts being wrong
       # between different Solr replicas.
+      str_facets = %i[integer datetime]
       facets = facet_list.map do |facet|
-        if RecordSchema.fields[facet].type == :integer
+        if str_facets.include?(RecordSchema.fields[facet].type)
           "#{facet}_str".to_sym
         else
           facet
@@ -297,13 +298,16 @@ module SupplejackApi
         if options[:exclude_filters_from_facets] == 'true'
           or_and_options = {}.merge(options[:and]).merge(options[:or]).symbolize_keys
 
-          # This is to clean up any valid integer facets that have been requested
+          # This is to clean up any valid integer or date facets that have been requested
           # Through the filter options, so that they are treated as strings.
-          integer_facets = or_and_options.each_with_object([]) do |(facet_name, _facet_value), array|
-            array.push(facet_name) if RecordSchema.fields[facet_name.to_sym]&.type == :integer
+          str_facets = %i[integer datetime]
+          converted_string_facets = or_and_options.each_with_object([]) do |(facet_name, _facet_value), array|
+            if str_facets.include?(RecordSchema.fields[facet_name.to_sym]&.type)
+              array.push(facet_name)
+            end
           end
 
-          integer_facets.each do |facet|
+          converted_string_facets.each do |facet|
             or_and_options["#{facet}_str".to_sym] = or_and_options.delete(facet)
           end
 

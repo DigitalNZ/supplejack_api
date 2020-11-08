@@ -13,7 +13,7 @@ class RecordSchema
   string    :children,     multi_value: true
   string    :contact,      multi_value: true
   integer   :age,                                 search_as: [:filter]
-  datetime  :birth_date
+  datetime  :birth_date,                          search_as: [:filter]
   boolean   :nz_citizen,                          search_as: [:filter]
   string    :display_collection,                                search_as: [:filter, :fulltext],  namespace: :sj
   string    :tag,         multi_value: true,      search_as: [:filter]

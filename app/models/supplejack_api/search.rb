@@ -45,15 +45,13 @@ module SupplejackApi
       # We do not have docValues because we are experiencing an issue with the facet counts being wrong
       # between different Solr replicas.
       str_facets = %i[integer datetime]
-      facets = facet_list.map do |facet|
+      facet_list.map do |facet|
         if str_facets.include?(RecordSchema.fields[facet].type)
           "#{facet}_str".to_sym
         else
           facet
         end
       end
-
-      facets
     end
 
     def facet_pivot_list

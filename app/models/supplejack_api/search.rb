@@ -300,9 +300,7 @@ module SupplejackApi
           # Through the filter options, so that they are treated as strings.
           str_facets = %i[integer datetime]
           converted_string_facets = or_and_options.each_with_object([]) do |(facet_name, _facet_value), array|
-            if str_facets.include?(RecordSchema.fields[facet_name.to_sym]&.type)
-              array.push(facet_name)
-            end
+            array.push(facet_name) if str_facets.include?(RecordSchema.fields[facet_name.to_sym]&.type)
           end
 
           converted_string_facets.each do |facet|

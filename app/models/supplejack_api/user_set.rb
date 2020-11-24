@@ -34,7 +34,7 @@ module SupplejackApi
     # field :user_selected_cover, type: Boolean,  default: false
 
     scope :excluding_favorites, -> { where(:name.ne => 'Favorites') }
-    scope :publicly_viewable,              -> { where(privacy: 'public') }
+    scope :publicly_viewable,   -> { where(privacy: 'public') }
 
     index({ 'set_items.record_id' => 1 }, background: true)
     index({ featured: 1 }, background: true)
@@ -111,14 +111,13 @@ module SupplejackApi
       options.reverse_merge!(page: 1, per_page: 10, order_by: :updated_at,
                              direction: :asc, search: nil)
       where(
-        privacy: 'public',
         :name.ne => 'Favourites',
         '$or' => [
           { name: /#{options[:search]}/i },
           { user_id: options[:search] },
           { id: options[:search] }
         ]
-      )
+      ).in(privacy: %w[public hidden])
         .order(options[:order_by] => options[:direction])
         .page(options[:page])
         .per(options[:per_page])

@@ -506,10 +506,9 @@ module SupplejackApi
       end
     end
 
-    describe "#calculate_count" do
+    describe "#count" do
       it "returns 2 when there are 2 active set items" do
         allow(user_set).to receive(:records){[double(:record), double(:record)]}
-        user_set.calculate_count
         expect(user_set.count).to eq(2)
       end
     end

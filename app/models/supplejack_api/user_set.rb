@@ -18,7 +18,6 @@ module SupplejackApi
     field :copyright,           type: Integer,  default: 0
     field :url,                 type: String
     field :priority,            type: Integer,  default: 0
-    field :count,               type: Integer,  default: 0
     field :count_updated_at,    type: DateTime
     field :tags,                type: Array,    default: []
     field :subjects,            type: Array,    default: []
@@ -43,7 +42,6 @@ module SupplejackApi
     validates :privacy, inclusion: { in: %w[public hidden private] }
 
     before_validation :set_default_privacy
-    before_save :calculate_count
     before_save :strip_html_tags!
     before_save :update_record
     before_destroy :delete_record
@@ -201,8 +199,8 @@ module SupplejackApi
       end
     end
 
-    def calculate_count
-      self.count = records.size
+    def count
+      records.size
     end
 
     def set_default_privacy

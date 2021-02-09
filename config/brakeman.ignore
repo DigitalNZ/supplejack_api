@@ -1,0 +1,26 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Mass Assignment",
+      "warning_code": 70,
+      "fingerprint": "86997a14d71ed5d0a54840e57f1e7de43784a94e6935ed3770a160260be04a77",
+      "check_name": "MassAssignment",
+      "message": "Specify exact keys allowed for mass assignment instead of using `permit!` which allows any keys",
+      "file": "app/services/stories_api/v3/endpoints/story.rb",
+      "line": 73,
+      "link": "https://brakemanscanner.org/docs/warning_types/mass_assignment/",
+      "code": "params.require(:story).permit!",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "StoriesApi::V3::Endpoints::Story",
+        "method": "story_params"
+      },
+      "user_input": null,
+      "confidence": "Medium",
+      "note": ""
+    }
+  ],
+  "updated": "2021-02-09 21:23:33 +0100",
+  "brakeman_version": "5.0.0"
+}

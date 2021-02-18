@@ -1,0 +1,76 @@
+name: Tests
+on: pull_request
+
+jobs:
+  rubocop:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        bundler-cache: true
+
+    - name: Rubocop
+      run: |
+        bundle exec rubocop
+
+  rspec:
+    runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: mongo:3.4.23
+        ports:
+          - 27017:27017
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        bundler-cache: true
+
+    - name: Run RSpec unit tests
+      run: |
+        bundle exec rspec spec --fail-fast --format=progress
+
+  brakeman:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        bundler-cache: true
+
+    - name: Run RSpec unit tests
+      run: |
+        gem install brakeman
+        brakeman --run-all-checks
+
+  bundle-audit:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up Ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        bundler-cache: true
+
+    - name: Run RSpec unit tests
+      run: |
+        gem install bundler-audit
+        bundle audit update
+        bundle audit check --ignore CVE-2021-22880

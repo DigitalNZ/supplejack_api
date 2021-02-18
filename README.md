@@ -2,8 +2,6 @@
 
 # Supplejack API
 
-[![Build Status](https://travis-ci.org/DigitalNZ/supplejack_api.svg?branch=master)](https://travis-ci.org/DigitalNZ/supplejack_api)
-
 The Supplejack API is a [mountable engine](http://guides.rubyonrails.org/engines.html) which provides functionality to store, index and retrieve metadata via an API.
 
 For more information on how to configure and use this application refer to the [documentation](http://digitalnz.github.io/supplejack).

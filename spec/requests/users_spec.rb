@@ -40,7 +40,7 @@ RSpec.describe 'Users', type: :request do
     end
   end
 
-  describe 'show' do
+  describe 'delete' do
     before { delete "/v3/users/#{user.id}?api_key=#{admin.authentication_token}" }
 
     it 'returns user info' do

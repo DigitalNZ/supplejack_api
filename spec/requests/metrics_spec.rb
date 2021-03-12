@@ -4,7 +4,7 @@ RSpec.describe 'Users', type: :request do
   let(:admin) { create(:admin_user) }
 
   describe 'root' do
-    context 'no facates provided' do
+    context 'no facets provided' do
       before { get "/v3/metrics" }
 
       it 'returns user info' do

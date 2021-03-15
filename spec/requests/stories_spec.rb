@@ -214,7 +214,8 @@ RSpec.describe 'Story index', type: :request do
       story = SupplejackApi::UserSet.last
       response_attributes = JSON.parse(response.body)
 
-      expect(response_attributes).to eq ({ 'name' => story.name,
+      expect(response_attributes).to eq ({
+        'name' => story.name,
         'description' => story.description,
         'privacy' => story.privacy,
         'copyright' => 0,
@@ -235,49 +236,85 @@ RSpec.describe 'Story index', type: :request do
   end
 
   describe 'update' do
-    before do
-      params = { story: { name: 'Updated Story Name' } }.to_query
+    context 'when story id exists' do
+      before do
+        params = { story: { name: 'Updated Story Name' } }.to_query
+  
+        patch "/v3/stories/#{story.id}.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
+      end
 
-      patch "/v3/stories/#{story.id}.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
+      it 'returns user info of updated story' do
+        response_attributes = JSON.parse(response.body)
+
+        story.reload
+  
+        expect(response_attributes).to eq ({
+          'name' => 'Updated Story Name',
+          'description' => story.description,
+          'privacy' => story.privacy,
+          'copyright' => 0,
+          'featured' => story.featured,
+          'featured_at' => story.featured_at,
+          'approved' => story.approved,
+          'tags' => story.tags,
+          'subjects' => story.subjects,
+          'updated_at' => JSON.parse(story.updated_at.to_json),
+          'cover_thumbnail' => story.cover_thumbnail,
+          'id' => story.id.to_s,
+          'number_of_items'=> story.set_items.to_a.count { |item| item.type != 'text' },
+          'creator' => story.user.name,
+          'category' => 'Other',
+          'contents' => story.set_items.sort_by(&:position).map do |item|
+            { 
+              'record_id' => item.record_id,
+              'id' => item.id.to_s,
+              'position' => item.position,
+              'type' => item.type,
+              'sub_type' => item.sub_type,
+              'content' => DEFAULT_CONTENT_PRESENTER.call(item),
+              'meta' => { 'size' => item.meta[:size], 'is_cover' => (item.content[:image_url] == story.cover_thumbnail) }
+            }
+          end
+        })
+      end
     end
 
-    it 'returns user info of updated user' do
-      response_attributes = JSON.parse(response.body)
+    context 'when story id does not exist' do
+      before do
+        params = { story: { name: 'Updated Story Name' } }.to_query
+  
+        patch "/v3/stories/fakestoryid.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
+      end
 
-      story.reload
+      it 'returns error message' do
+        response_attributes = JSON.parse(response.body)
+  
+        expect(response_attributes).to eq ({ 'errors' => 'Story with provided Id fakestoryid not found' })
+      end
+    end
+  end
 
-      expect(response_attributes).to eq ({ 'name' => 'Updated Story Name',
-        'description' => story.description,
-        'privacy' => story.privacy,
-        'copyright' => 0,
-        'featured' => story.featured,
-        'featured_at' => story.featured_at,
-        'approved' => story.approved,
-        'tags' => story.tags,
-        'subjects' => story.subjects,
-        'updated_at' => JSON.parse(story.updated_at.to_json),
-        'cover_thumbnail' => story.cover_thumbnail,
-        'id' => story.id.to_s,
-        'number_of_items'=> story.set_items.to_a.count { |item| item.type != 'text' },
-        'creator' => story.user.name,
-        'category' => 'Other',
-        'contents' => story.set_items.sort_by(&:position).map do |item|
-          { 
-            'record_id' => item.record_id,
-            'id' => item.id.to_s,
-            'position' => item.position,
-            'type' => item.type,
-            'sub_type' => item.sub_type,
-            'content' => DEFAULT_CONTENT_PRESENTER.call(item),
-            'meta' => { 'size' => item.meta[:size], 'is_cover' => (item.content[:image_url] == story.cover_thumbnail) }
-          }
-        end
-      })
+  describe '#destroy' do
+    context 'when story id exists' do
+      before { delete "/v3/stories/#{story.id.to_s}.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}" }
+
+      it 'returns ' do
+        expect(response.status).to eq 204
+      end
+    end
+
+    context 'when story id does not exist' do
+      before { delete "/v3/stories/fakestoryid.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}" }
+
+      it 'returns ' do
+        response_attributes = JSON.parse(response.body)
+  
+        expect(response_attributes).to eq ({ 'errors' => "Story with provided Id fakestoryid not found" })
+      end
     end
   end
 
   describe '#admin_index' do; end
-  describe '#destroy' do; end
 end
 
 DEFAULT_CONTENT_PRESENTER = lambda do |block|

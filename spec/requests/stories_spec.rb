@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe 'Stories', type: :request do
+RSpec.describe 'Story index', type: :request do
   let(:admin) { create(:admin_user) }
   let(:story) { create(:story) }
 
@@ -15,35 +15,88 @@ RSpec.describe 'Stories', type: :request do
       end
     end
 
-    context 'when requesting with a user_key' do
-      before { get "/v3/stories.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}" }
+    context 'when requesting with wrong user_key' do
+      before { get "/v3/stories.json?api_key=#{admin.authentication_token}&user_key=thisisafakekey" }
 
       it 'returns stories for the user key' do
         response_attributes = JSON.parse(response.body)
-  
-        expect(response_attributes).to eq (
-          [
-            { 'name' => story.name,
-              'description' => story.description,
-              'privacy' => story.privacy,
-              'copyright' => 0,
-              'featured' => story.featured,
-              'featured_at' => story.featured_at,
-              'approved' => story.approved,
-              'tags' => story.tags,
-              'subjects' => story.subjects,
-              'updated_at' => JSON.parse(story.updated_at.to_json),
-              'cover_thumbnail' => story.cover_thumbnail,
-              'id' => story.id.to_s,
-              'number_of_items'=> story.set_items.to_a.count { |item| item.type != 'text' },
-              'creator' => story.user.name,
-              'category' => 'Other',
-              'record_ids'=> story.set_items.sort_by(&:position).map do |item|
-                               { 'record_id' => item.record_id, 'story_item_id' => item._id.to_s }
-                             end
-            }
-          ]
-        )
+
+        expect(response_attributes).to eq ({ 'errors' => 'User with provided Api Key thisisafakekey not found' })
+      end
+    end
+
+    context 'when requesting with a user_key of the story user' do
+      context 'when requested without slim flag' do
+        before { get "/v3/stories.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}" }
+
+        it 'returns stories for the user key' do
+          response_attributes = JSON.parse(response.body)
+
+          expect(response_attributes).to eq (
+            [
+              { 'name' => story.name,
+                'description' => story.description,
+                'privacy' => story.privacy,
+                'copyright' => 0,
+                'featured' => story.featured,
+                'featured_at' => story.featured_at,
+                'approved' => story.approved,
+                'tags' => story.tags,
+                'subjects' => story.subjects,
+                'updated_at' => JSON.parse(story.updated_at.to_json),
+                'cover_thumbnail' => story.cover_thumbnail,
+                'id' => story.id.to_s,
+                'number_of_items'=> story.set_items.to_a.count { |item| item.type != 'text' },
+                'creator' => story.user.name,
+                'category' => 'Other',
+                'record_ids'=> story.set_items.sort_by(&:position).map do |item|
+                                 { 'record_id' => item.record_id, 'story_item_id' => item._id.to_s }
+                               end
+              }
+            ]
+          )
+        end
+      end
+
+      context 'when requested with slim flag false' do
+        before { get "/v3/stories.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&slim=false" }
+
+        it 'returns stories for the user key' do
+          response_attributes = JSON.parse(response.body)
+
+          expect(response_attributes).to eq (
+            [
+              { 'name' => story.name,
+                'description' => story.description,
+                'privacy' => story.privacy,
+                'copyright' => 0,
+                'featured' => story.featured,
+                'featured_at' => story.featured_at,
+                'approved' => story.approved,
+                'tags' => story.tags,
+                'subjects' => story.subjects,
+                'updated_at' => JSON.parse(story.updated_at.to_json),
+                'cover_thumbnail' => story.cover_thumbnail,
+                'id' => story.id.to_s,
+                'number_of_items'=> story.set_items.to_a.count { |item| item.type != 'text' },
+                'creator' => story.user.name,
+                'category' => 'Other',
+                'contents' => story.set_items.map do |content|
+                  { 'record_id' => content.record_id,
+                    'id' => content.id.to_s,
+                    'position' => content.position,
+                    'type' => content.type,
+                    'sub_type' => content.sub_type,
+                    'content' => {'value' => content.content[:value],
+                                  'image_url' => content.content[:image_url],
+                                  'display_collection' => content.content[:display_collection],
+                                  'category' => content.content[:category] },
+                    'meta' => {'size' => content.meta[:size], 'is_cover' => false}}
+                end
+              }
+            ]
+          )
+        end
       end
     end
   end
@@ -51,7 +104,7 @@ RSpec.describe 'Stories', type: :request do
   describe 'show' do
     before { get "/v3/stories/#{story.id.to_s}.json?api_key=#{admin.authentication_token}" }
 
-    it 'returns user info' do
+    it 'returns story' do
       response_attributes = JSON.parse(response.body)
 
       expect(response_attributes).to eq (
@@ -158,6 +211,9 @@ RSpec.describe 'Stories', type: :request do
       })
     end
   end
+
+  describe '#admin_index' do; end
+  describe '#destroy' do; end
 end
 
 DEFAULT_CONTENT_PRESENTER = lambda do |block|

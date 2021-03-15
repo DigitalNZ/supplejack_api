@@ -34,7 +34,7 @@ RSpec.configure do |config|
   config.mock_with :rspec
   config.infer_spec_type_from_file_location!
   config.infer_base_class_for_anonymous_controllers = false
-  config.order = "random"
+  config.order = 'random'
   # Ignore focus on CI
   config.filter_run focus: true unless ENV['CI']
   config.run_all_when_everything_filtered = true

@@ -292,17 +292,37 @@ RSpec.describe 'Story index', type: :request do
         expect(response_attributes).to eq ({ 'errors' => 'Story with provided Id fakestoryid not found' })
       end
     end
-  end
 
-  describe '#destroy' do
-    context 'when story id exists' do
-      before { delete "/v3/stories/#{story.id.to_s}.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}" }
+    context 'when user_key belongs admin' do
+      %w[featured approved].each do |admin_field|
+        it "can update admin field #{admin_field}" do
+          params = { story: { name: 'Updated Story Name' } }
+          params[:story][admin_field] = true
+          patch "/v3/stories/#{story.id}.json?api_key=#{admin.authentication_token}&user_key=#{admin.api_key}&#{params.to_query}"
 
-      it 'returns ' do
-        expect(response.status).to eq 204
+          response_attributes = JSON.parse(response.body)
+
+          expect(response_attributes[admin_field]).to eq true
+        end
       end
     end
 
+    context 'when user_key belongs no admin' do
+      %w[featured approved].each do |admin_field|
+        it "can not update admin field #{admin_field}" do
+          params = { story: { name: 'Updated Story Name' } }
+          params[:story][admin_field] = true
+          patch "/v3/stories/#{story.id}.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params.to_query}"
+
+          response_attributes = JSON.parse(response.body)
+
+          expect(response_attributes[admin_field]).to eq false
+        end
+      end
+    end
+  end
+
+  describe '#destroy' do
     context 'when story id does not exist' do
       before { delete "/v3/stories/fakestoryid.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}" }
 
@@ -310,6 +330,33 @@ RSpec.describe 'Story index', type: :request do
         response_attributes = JSON.parse(response.body)
   
         expect(response_attributes).to eq ({ 'errors' => "Story with provided Id fakestoryid not found" })
+      end
+    end
+
+    context 'when story id exists' do
+      before { delete "/v3/stories/#{story.id.to_s}.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}" }
+
+      it 'returns 204' do
+        expect(response.status).to eq 204
+      end
+    end
+
+    context 'when user of the api_key is an admin' do
+      before { delete "/v3/stories/#{story.id.to_s}.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}" }
+
+      it 'returns 204' do
+        expect(response.status).to eq 204
+      end
+    end
+
+    # should be fixed
+    context 'when user of the api_key is not an admin' do
+      let(:user) { create(:user) }
+
+      before { delete "/v3/stories/#{story.id.to_s}.json?api_key=#{user.authentication_token}&user_key=#{story.user.api_key}" }
+
+      xit 'returns 401' do
+        expect(response.status).to eq 401
       end
     end
   end

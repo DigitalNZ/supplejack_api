@@ -4,7 +4,7 @@ RSpec.describe 'Users', type: :request do
   let(:admin) { create(:admin_user) }
   let(:user) { create(:user) }
 
-  describe 'show' do
+  describe '#show' do
     before { get "/v3/users/#{user.id}.json?api_key=#{admin.authentication_token}" }
 
     it 'returns user info' do
@@ -22,7 +22,7 @@ RSpec.describe 'Users', type: :request do
     end
   end
 
-  describe 'create' do
+  describe '#create' do
     before do
       params = { user: { name: 'New api user' } }
 
@@ -46,7 +46,7 @@ RSpec.describe 'Users', type: :request do
     end
   end
 
-  describe 'update' do
+  describe '#update' do
     before { put "/v3/users/#{user.id}.json?api_key=#{admin.authentication_token}&user[name]=NewName" }
 
     it 'returns user info of updated user' do
@@ -64,7 +64,7 @@ RSpec.describe 'Users', type: :request do
     end
   end
 
-  describe 'delete' do
+  describe '#delete' do
     before { delete "/v3/users/#{user.id}.json?api_key=#{admin.authentication_token}" }
 
     it 'returns user info' do

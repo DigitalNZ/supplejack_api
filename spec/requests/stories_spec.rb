@@ -4,7 +4,7 @@ RSpec.describe 'Story index', type: :request do
   let(:admin) { create(:admin_user) }
   let(:story) { create(:story) }
 
-  describe 'index' do
+  describe '#index' do
     context 'when requesting without a user_key' do
       before { get "/v3/stories.json?api_key=#{admin.authentication_token}" }
 
@@ -101,7 +101,7 @@ RSpec.describe 'Story index', type: :request do
     end
   end
 
-  describe 'show' do
+  describe '#show' do
     context 'when story id exists' do
       before { get "/v3/stories/#{story.id.to_s}.json?api_key=#{admin.authentication_token}" }
 
@@ -267,7 +267,7 @@ RSpec.describe 'Story index', type: :request do
     end
   end
 
-  describe 'update' do
+  describe '#update' do
     context 'when story id exists' do
       before do
         params = { story: { name: 'Updated Story Name' } }.to_query

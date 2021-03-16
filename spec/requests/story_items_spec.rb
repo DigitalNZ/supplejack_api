@@ -4,7 +4,7 @@ RSpec.describe 'Stories Items', type: :request do
   let(:admin) { create(:admin_user) }
   let(:story) { create(:story) }
 
-  describe 'index' do
+  describe '#index' do
     context 'when requesting without a user_key' do
       before { get "/v3/stories/#{story.id}/items.json?api_key=#{admin.authentication_token}" }
 
@@ -38,7 +38,7 @@ RSpec.describe 'Stories Items', type: :request do
     end
   end
 
-  describe 'show' do
+  describe '#show' do
     let(:item) { story.set_items.first }
 
     before { get "/v3/stories/#{story.id}/items/#{item.id.to_s}.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}" }
@@ -60,7 +60,7 @@ RSpec.describe 'Stories Items', type: :request do
     end
   end
 
-  describe 'create' do
+  describe '#create' do
     before do
       params = { story: { name: 'New Story Name' } }.to_query
 

@@ -3,9 +3,9 @@ require 'spec_helper'
 RSpec.describe 'Users', type: :request do
   let(:admin) { create(:admin_user) }
 
-  describe 'root' do
+  describe '#root' do
     context 'no facets provided' do
-      before { get "/v3/metrics" }
+      before { get '/v3/metrics' }
 
       it 'returns user info' do
         response_attributes = JSON.parse(response.body)
@@ -15,9 +15,11 @@ RSpec.describe 'Users', type: :request do
     end
   end
 
-  # describe 'facets' do
-  # end
+  describe '#facets' do
+    it 'returns facets'
+  end
 
-  # describe 'global' do
-  # end
+  describe '#global' do
+    it 'returns glbal values'
+  end
 end

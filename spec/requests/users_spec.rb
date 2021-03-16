@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe 'Users', type: :request do
+RSpec.describe 'Users Endpoint', type: :request do
   let(:admin) { create(:admin_user) }
   let(:user) { create(:user) }
 

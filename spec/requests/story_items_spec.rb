@@ -76,23 +76,4 @@ RSpec.describe 'Stories Items', type: :request do
     context 'when adding rich text to story' do
     end
   end
-
-  # describe 'update' do
-  # end
-end
-
-# POST   (/:version)/stories/:story_id/items(.:format)                supplejack_api/story_items#create {:version=>/v3/, :format=>"json"}
-# story_item GET    (/:version)/stories/:story_id/items/:id(.:format)            supplejack_api/story_items#show {:version=>/v3/, :format=>"json"}
-# PATCH  (/:version)/stories/:story_id/items/:id(.:format)            supplejack_api/story_items#update {:version=>/v3/, :format=>"json"}
-# PUT    (/:version)/stories/:story_id/items/:id(.:format)            supplejack_api/story_items#update {:version=>/v3/, :format=>"json"}
-# DELETE (/:version)/stories/:story_id/items/:id(.:format)            supplejack_api/story_items#destroy {:version=>/v3/, :format=>"json"}
-
-DEFAULT_CONTENT_PRESENTER = lambda do |block|
-  result = {}
-
-  block.content.each do |k, v|
-    result[k.to_s] = v
-  end
-
-  result
 end

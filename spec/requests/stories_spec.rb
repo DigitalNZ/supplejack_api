@@ -361,7 +361,51 @@ RSpec.describe 'Story index', type: :request do
     end
   end
 
-  describe '#admin_index' do; end
+  describe '#admin_index' do
+    context 'when requesting with wrong user_key' do
+      before { get "/v3/users/fakeuserkey/stories.json?api_key=#{admin.authentication_token}" }
+
+      it 'returns error message' do
+        response_attributes = JSON.parse(response.body)
+
+        expect(response_attributes).to eq ({ 'errors' => 'User with provided Api Key fakeuserkey not found' })
+      end
+    end
+
+    context 'when requesting with a user_key of the story user' do
+      context 'when requested without slim flag' do
+        before { get "/v3/users/#{story.user.api_key}/stories.json?api_key=#{admin.authentication_token}" }
+
+        it 'returns stories for the user key' do
+          response_attributes = JSON.parse(response.body)
+
+          expect(response_attributes).to eq (
+            [
+              { 'name' => story.name,
+                'description' => story.description,
+                'privacy' => story.privacy,
+                'copyright' => 0,
+                'featured' => story.featured,
+                'featured_at' => story.featured_at,
+                'approved' => story.approved,
+                'tags' => story.tags,
+                'subjects' => story.subjects,
+                'updated_at' => JSON.parse(story.updated_at.to_json),
+                'cover_thumbnail' => story.cover_thumbnail,
+                'id' => story.id.to_s,
+                'number_of_items'=> story.set_items.to_a.count { |item| item.type != 'text' },
+                'creator' => story.user.name,
+                'category' => 'Other',
+                'record_ids'=> story.set_items.sort_by(&:position).map do |item|
+                                 { 'record_id' => item.record_id, 'story_item_id' => item._id.to_s }
+                               end
+              }
+            ]
+          )
+        end
+      end
+    end
+  end
 end
 
 DEFAULT_CONTENT_PRESENTER = lambda do |block|

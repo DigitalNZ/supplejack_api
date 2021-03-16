@@ -203,35 +203,67 @@ RSpec.describe 'Story index', type: :request do
     end
   end
 
-  describe 'create' do
-    before do
-      params = { story: { name: 'New Story Name' } }.to_query
+  describe '#create' do
+    context 'successful post' do
+      before do
+        params = { story: { name: 'New Story Name' } }.to_query
 
-      post "/v3/stories.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
+        post "/v3/stories.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
+      end
+
+      it 'returns user info of updated user' do
+        story = SupplejackApi::UserSet.last
+        response_attributes = JSON.parse(response.body)
+
+        expect(response_attributes).to eq ({
+          'name' => story.name,
+          'description' => story.description,
+          'privacy' => story.privacy,
+          'copyright' => 0,
+          'featured' => story.featured,
+          'featured_at' => story.featured_at,
+          'approved' => story.approved,
+          'tags' => story.tags,
+          'subjects' => story.subjects,
+          'updated_at' => JSON.parse(story.updated_at.to_json),
+          'cover_thumbnail' => story.cover_thumbnail,
+          'id' => story.id.to_s,
+          'number_of_items'=> story.set_items.to_a.count { |item| item.type != 'text' },
+          'creator' => story.user.name,
+          'category' => 'Other',
+          'contents' => []
+        })
+      end
     end
 
-    it 'returns user info of updated user' do
-      story = SupplejackApi::UserSet.last
-      response_attributes = JSON.parse(response.body)
+    context 'failures' do
+      context 'when user not found' do
+        before do
+          params = { story: { name: 'New Story Name' } }.to_query
 
-      expect(response_attributes).to eq ({
-        'name' => story.name,
-        'description' => story.description,
-        'privacy' => story.privacy,
-        'copyright' => 0,
-        'featured' => story.featured,
-        'featured_at' => story.featured_at,
-        'approved' => story.approved,
-        'tags' => story.tags,
-        'subjects' => story.subjects,
-        'updated_at' => JSON.parse(story.updated_at.to_json),
-        'cover_thumbnail' => story.cover_thumbnail,
-        'id' => story.id.to_s,
-        'number_of_items'=> story.set_items.to_a.count { |item| item.type != 'text' },
-        'creator' => story.user.name,
-        'category' => 'Other',
-        'contents' => []
-      })
+          post "/v3/stories.json?api_key=#{admin.authentication_token}&user_key=fakeapiuserkey&#{params}"
+        end
+
+        it 'returns user not found error' do
+          response_attributes = JSON.parse(response.body)
+
+          expect(response_attributes).to eq ({ 'errors' => 'User with provided Api Key fakeapiuserkey not found' })
+        end
+      end
+
+      context 'when story name is empty' do
+        before do
+          params = { story: { privacy: 'public' } }.to_query
+
+          post "/v3/stories.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
+        end
+
+        it 'returns mandatory param error' do
+          response_attributes = JSON.parse(response.body)
+
+          expect(response_attributes).to eq ({ 'errors' => 'Mandatory Parameter name missing in request' })
+        end
+      end
     end
   end
 

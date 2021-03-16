@@ -358,7 +358,7 @@ RSpec.describe 'Story index', type: :request do
     context 'when story id does not exist' do
       before { delete "/v3/stories/fakestoryid.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}" }
 
-      it 'returns ' do
+      it 'returns error message' do
         response_attributes = JSON.parse(response.body)
   
         expect(response_attributes).to eq ({ 'errors' => "Story with provided Id fakestoryid not found" })

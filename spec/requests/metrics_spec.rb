@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe 'Metrics Endpoint', type: :request do
+RSpec.describe 'Metrics Endpoints', type: :request do
   let(:admin) { create(:admin_user) }
 
   describe '#root' do

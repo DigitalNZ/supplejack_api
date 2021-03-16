@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe 'Story Endpoint', type: :request do
+RSpec.describe 'Stories Endpoints', type: :request do
   let(:admin) { create(:admin_user) }
   let(:story) { create(:story) }
 

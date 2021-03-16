@@ -20,18 +20,21 @@ module SupplejackApi
 
     def create
       @user = User.create(user_params)
+
       render json: @user, root: 'user', adapter: :json, location: user_url(@user)
     end
 
     def update
       @user = User.custom_find(params[:id])
       @user.update(user_params)
+
       render json: @user, root: 'user', adapter: :json
     end
 
     def destroy
       @user = User.custom_find(params[:id])
       @user.destroy
+
       render json: @user, root: 'user', adapter: :json
     end
 

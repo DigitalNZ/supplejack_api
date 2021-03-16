@@ -8,6 +8,7 @@ module SupplejackApi
 
       def index
         user_sets = UserSet.public_search(index_params)
+
         render json: {
           sets: user_sets.map { |user_set| StoriesModerationSerializer.new(user_set) },
           total_filtered: user_sets.count,

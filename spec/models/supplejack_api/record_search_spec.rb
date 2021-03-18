@@ -441,6 +441,25 @@ module SupplejackApi
           }
         end
 
+        it 'excludes filters from AND filters if there are OR filters nested inside' do
+          and_query = {
+            subject:  { or: ['Birds', 'Plants'] },
+            category: { or: ['Image', 'Video'] }
+          }
+
+          @search.options[:and] = and_query
+          @search.options[:facets] = and_query.keys.join(', ')
+          @search.execute_solr_search
+
+          expect(@session).to have_search_params(:facet) {
+            subject_filter = with(:subject, ['Birds', 'Plants'])
+            facet(:subject, :exclude => subject_filter)
+
+            category_filter = with(:category, ['Image', 'Video'])
+            facet(:category, :exclude => category_filter)
+          }
+        end
+
         it 'does not add additional facets into the search' do
           @search.options[:and] = {category: ['Audio'], subject: ['forest']}
           @search.options[:facets] = 'category'
@@ -469,13 +488,13 @@ module SupplejackApi
           expect(@session).not_to have_search_params(:facet) {
             subject_filter = with(:subject, ['forest'])
             facet(:subject, :exclude => subject_filter)
-          } 
+          }
         end
 
         it 'handles integer facets correctly' do
           @search.options[:and] = {age: ['10'], subject: ['forest']}
           @search.options[:facets] = 'age'
-          @search.execute_solr_search 
+          @search.execute_solr_search
 
           expect(@session).to have_search_params(:facet) {
             age_filter = with(:age_str, ['10'])
@@ -491,7 +510,7 @@ module SupplejackApi
           expect(@session).to have_search_params(:facet) {
             category_filter = with(:category, ['Images'])
             facet(:category, :exclude => category_filter)
-          } 
+          }
         end
 
         it 'applies filters that are given which are not facets' do

@@ -308,11 +308,30 @@ module SupplejackApi
           end
 
           or_and_options.slice(*facet_list).each do |key, value|
-            if value =~ /(.+)\*$/
-              facet(key.to_sym, exclude: with(key.to_sym).starting_with(Regexp.last_match(1)), limit: facets_per_page,
-                                offset: facets_offset)
+            wildcard_search_term_regex = /(.+)\*$/ # search term ends in *
+
+            if value =~ wildcard_search_term_regex
+              facet(
+                key.to_sym,
+                exclude: with(key.to_sym).starting_with(Regexp.last_match(1)),
+                limit: facets_per_page,
+                offset: facets_offset
+              )
+            elsif value.class == Hash && value.key?(:or)
+              facet(
+                key.to_sym,
+                exclude: with(key.to_sym, value[:or]),
+                limit: facets_per_page,
+                offset: facets_offset
+              )
             else
-              facet(key.to_sym, exclude: with(key.to_sym, value), limit: facets_per_page, offset: facets_offset)
+              # Value is a non-wildcarded string, or an array
+              facet(
+                key.to_sym,
+                exclude: with(key.to_sym, value),
+                limit: facets_per_page,
+                offset: facets_offset
+              )
             end
           end
         end

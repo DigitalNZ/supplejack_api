@@ -1,5 +1,3 @@
-
-
 require 'spec_helper'
 
 module SupplejackApi
@@ -13,14 +11,14 @@ module SupplejackApi
     end
 
     describe '.role_collection_restrictions' do
-      let(:developer) { double(:scope, role: 'developer') }
-      let(:admin) { double(:scope, role: 'admin') }
-      let(:developer_restriction) { double(:developer_restriction, record_restrictions: {is_restricted: true}) }
-      let(:no_restriction) { double(:no_restriction, record_restrictions: nil) }
+      let(:developer)             { double(:scope, role: 'developer') }
+      let(:admin)                 { double(:scope, role: 'admin') }
+      let(:developer_restriction) { double(:developer_restriction, record_restrictions: { is_restricted: true }) }
+      let(:no_restriction)        { double(:no_restriction, record_restrictions: nil) }
 
       before(:each) do
         allow(RecordSearch).to receive(:role_collection_restrictions).and_call_original
-        allow(RecordSchema).to receive(:roles) { {admin: no_restriction, developer: developer_restriction} }
+        allow(RecordSchema).to receive(:roles) { { admin: no_restriction, developer: developer_restriction } }
       end
 
       it 'should handle nil scope' do
@@ -32,7 +30,7 @@ module SupplejackApi
       end
 
       it 'should return nil when no role restrictions are defined in the Schema' do
-        expect(RecordSearch.role_collection_restrictions(developer)).to eq({is_restricted: true})
+        expect(RecordSearch.role_collection_restrictions(developer)).to eq({ is_restricted: true })
       end
     end
 
@@ -41,6 +39,9 @@ module SupplejackApi
     end
 
     describe '#execute_solr_search' do
+      let(:names)     { %w[John James] }
+      let(:addresses) { ['Te Aro', 'Brooklyn'] }
+
       context 'solr errors' do
         before do
           @sunspot_builder = double(:sunspot_builder).as_null_object
@@ -100,9 +101,9 @@ module SupplejackApi
 
       it 'restricts to multiple query fields' do
         @search.options[:text] = 'dog'
-        @search.options[:query_fields] = [:name, :address]
+        @search.options[:query_fields] = %i[name address]
         @search.execute_solr_search
-        expect(query_fields_for_search.split(' ').sort).to eq ['address_text', 'name_text']
+        expect(query_fields_for_search.split(' ').sort).to eq %w[address_text name_text]
       end
 
       it 'should search for all text fields' do
@@ -112,7 +113,7 @@ module SupplejackApi
       end
 
       it "should not use the query fields if text isn't present" do
-        @search.options[:query_fields] = [:name, :address]
+        @search.options[:query_fields] = %i[name address]
         @search.execute_solr_search
         expect(query_fields_for_search).to be_nil
       end
@@ -128,7 +129,7 @@ module SupplejackApi
         @search.options.merge!(facets: 'name', facets_per_page: 10)
         @search.execute_solr_search
         expect(@session).to have_search_params(:facet, Proc.new {
-          facet(:name, :limit => 10)
+          facet(:name, limit: 10)
         })
       end
 
@@ -136,18 +137,18 @@ module SupplejackApi
         @search.options.merge!(facets: 'name', facets_per_page: 10, facets_page: 2)
         @search.execute_solr_search
         expect(@session).to have_search_params(:facet, Proc.new {
-          facet(:name, :offset => 10)
+          facet(:name, offset: 10)
         })
       end
 
       it 'should restrict results by facet values' do
-        @search.options[:and] = {address: 'Wellington'}
+        @search.options[:and] = { address: 'Wellington' }
         @search.execute_solr_search
         expect(@session).to have_search_params(:with, :address, 'Wellington')
       end
 
       it 'should restrict results by multiple facet values' do
-        @search.options[:and] = {name: 'John Doe', address: 'Wellington'}
+        @search.options[:and] = { name: 'John Doe', address: 'Wellington' }
         @search.execute_solr_search
         expect(@session).to have_search_params(:with, Proc.new {
           all_of do
@@ -158,7 +159,7 @@ module SupplejackApi
       end
 
       it 'should preserve commas in facet values' do
-        @search.options[:and] = {address: '12 Smith St, Te Aro, Wellington'}
+        @search.options[:and] = { address: '12 Smith St, Te Aro, Wellington' }
         @search.execute_solr_search
         expect(@session).to have_search_params(:with, Proc.new {
           all_of do
@@ -168,7 +169,7 @@ module SupplejackApi
       end
 
       it 'should restrict result by multiple facet values if an array is passed' do
-        @search.options[:and] = {email: ['jd@example.com', 'johnd@test.com']}
+        @search.options[:and] = { email: ['jd@example.com', 'johnd@test.com'] }
         @search.execute_solr_search
         expect(@session).to have_search_params(:with, Proc.new {
           with(:email).all_of(['jd@example.com', 'johnd@test.com'])
@@ -176,19 +177,19 @@ module SupplejackApi
       end
 
       it 'converts the string true to a real true' do
-        @search.options[:and] = {nz_citizen: 'true'}
+        @search.options[:and] = { nz_citizen: 'true' }
         @search.execute_solr_search
         expect(@session).to have_search_params(:with, :nz_citizen, true)
       end
 
       it 'converts the string false to a real false' do
-        @search.options[:and] = {nz_citizen: 'false'}
+        @search.options[:and] = { nz_citizen: 'false' }
         @search.execute_solr_search
         expect(@session).to have_search_params(:with, :nz_citizen, false)
       end
 
       it 'executes a prefix query when a star(*) is at the end of the value' do
-        @search.options[:and] = {name: 'John*'}
+        @search.options[:and] = { name: 'John*' }
         @search.execute_solr_search
         expect(@session).to have_search_params(:with, Proc.new {
           with(:name).starting_with('John')
@@ -196,13 +197,13 @@ module SupplejackApi
       end
 
       it 'ignores a prefix query if the star(*) is not at the end' do
-        @search.options[:and] = {name: '*John'}
+        @search.options[:and] = { name: '*John' }
         @search.execute_solr_search
         expect(@session).to have_search_params(:with, :name, '*John')
       end
 
       it 'should return results matching any of the facet values' do
-        @search.options[:or] = {email: ['jd@example.com', 'johnd@test.com'], name: 'James Cook'}
+        @search.options[:or] = { email: ['jd@example.com', 'johnd@test.com'], name: 'James Cook' }
         @search.execute_solr_search
         expect(@session).to have_search_params(:with, Proc.new {
           any_of do
@@ -213,7 +214,7 @@ module SupplejackApi
       end
 
       it 'should not return results matching the facet values' do
-        @search.options[:without] = {email: 'jd@example.com, johnd@test.com', name: 'James Cook'}
+        @search.options[:without] = { email: 'jd@example.com, johnd@test.com', name: 'James Cook' }
         @search.execute_solr_search
         expect(@session).to have_search_params(:without, Proc.new {
           without(:email, 'jd@example.com')
@@ -223,7 +224,7 @@ module SupplejackApi
       end
 
       it 'should return results with any value' do
-        @search.options[:without] = {address: 'nil'}
+        @search.options[:without] = { address: 'nil' }
         @search.execute_solr_search
         expect(@session).to have_search_params(:without, :address, nil)
       end
@@ -261,14 +262,14 @@ module SupplejackApi
       end
 
       it 'removes records from the search based on role restrictions' do
-        allow(RecordSearch).to receive(:role_collection_restrictions) { {nz_citizen: true} }
+        allow(RecordSearch).to receive(:role_collection_restrictions) { { nz_citizen: true } }
 
         @search.execute_solr_search
         expect(@session).to have_search_params(:without, :nz_citizen, true)
       end
 
       it 'removes records from the search based on multiple restrictions per role' do
-        allow(RecordSearch).to receive(:role_collection_restrictions) { {email: ['jd@example.com', 'johnd@test.com']} }
+        allow(RecordSearch).to receive(:role_collection_restrictions) { { email: ['jd@example.com', 'johnd@test.com'] } }
 
         @search.execute_solr_search
         expect(@session).to have_search_params(:without, :email, ['jd@example.com', 'johnd@test.com'])
@@ -284,30 +285,30 @@ module SupplejackApi
 
       context 'nested queries' do
         it 'joins name values with a OR query' do
-          @search.options[:and] = {name: {or: ['John', 'James']}}
+          @search.options[:and] = { name: { or: names } }
           @search.execute_solr_search
           expect(@session).to have_search_params(:with, Proc.new {
-            with(:name).any_of(['John', 'James'])
+            with(:name).any_of(names)
           })
         end
 
         it 'joins two facets with OR but values within each filter with AND' do
-          @search.options[:or] = {name: {and: ['John', 'James']}, address: {and: ['Wellington', 'Auckland']} }
+          @search.options[:or] = { name: { and: names }, address: { and: addresses } }
           @search.execute_solr_search
           expect(@session).to have_search_params(:with, Proc.new {
             any_of do
-              with(:name).all_of(['John', 'James'])
-              with(:address).all_of(['Wellington', 'Auckland'])
+              with(:name).all_of(names)
+              with(:address).all_of(addresses)
             end
           })
         end
 
         it 'joins two AND conditions with OR, one AND condition contains multiple fields' do
-          @search.options[:or] = {name: {and: ['John', 'James']}, and: {address: 'Wellington', nz_citizen: 'true'} }
+          @search.options[:or] = { name: { and: names }, and: { address: 'Wellington', nz_citizen: 'true' } }
           @search.execute_solr_search
           expect(@session).to have_search_params(:with, Proc.new {
             any_of do
-              with(:name).all_of(['John', 'James'])
+              with(:name).all_of(names)
               all_of do
                 with(:address, 'Wellington')
                 with(:nz_citizen, 'true')
@@ -317,7 +318,11 @@ module SupplejackApi
         end
 
         it 'nesting OR and AND conditions 3 levels deep' do
-          @search.options[:and] = {name: 'John', or: {address: 'Wellington', and: {nz_citizen: 'true', email: 'john@test.com'}}}
+          @search.options[:and] = {
+            name: 'John',
+            or: { address: 'Wellington', and: { nz_citizen: 'true', email: 'john@test.com' } }
+          }
+
           @search.execute_solr_search
           expect(@session).to have_search_params(:with, Proc.new {
             all_of do
@@ -334,28 +339,28 @@ module SupplejackApi
         end
 
         it 'joins options[:and] and options[:or] conditions with AND' do
-          @search.options[:and] = {name: {or: ['John', 'James']}, nz_citizen: 'true'}
-          @search.options[:or] = {address: ['Wellington', 'Auckland']}
+          @search.options[:and] = { name: { or: names }, nz_citizen: 'true' }
+          @search.options[:or] = { address: addresses }
           @search.execute_solr_search
           expect(@session).to have_search_params(:with, Proc.new {
             all_of do
               all_of do
-                with(:name).any_of(['John', 'James'])
+                with(:name).any_of(names)
                 with(:nz_citizen, 'true')
               end
-              with(:address).any_of(['Wellington', 'Auckland'])
+              with(:address).any_of(addresses)
             end
           })
         end
 
         it 'nests multiple filters with :or queries in their values' do
-          @search.options[:and] = {name: {or: ['John', 'James']}, nz_citizen: 'true', address: {or: ['Wellington', 'Auckland']}}
+          @search.options[:and] = { name: { or: names }, nz_citizen: 'true', address: { or: addresses } }
           @search.execute_solr_search
           expect(@session).to have_search_params(:with, Proc.new {
             all_of do
-              with(:name).any_of(['John', 'James'])
+              with(:name).any_of(names)
               with(:nz_citizen, 'true')
-              with(:address).any_of(['Wellington', 'Auckland'])
+              with(:address).any_of(addresses)
             end
           })
         end
@@ -367,38 +372,38 @@ module SupplejackApi
         end
 
         it 'queries for all of given facet' do
-          @search.options.merge!({facet_query: {email: {email: 'all'}}})
+          @search.options.merge!({ facet_query: { email: { email: 'all' } } })
           @search.execute_solr_search
           expect(facet_query_params).to eq('email_sm:[* TO *]')
         end
 
         it 'queries for records with name "John"' do
-          @search.options.merge!({facet_query: {people: {'name' => 'John'}}})
+          @search.options.merge!({ facet_query: { people: { name: 'John' } } })
           @search.execute_solr_search
           expect(facet_query_params).to eq('name_s:John')
         end
 
         it 'queries for records without name "James"' do
-          @search.options.merge!({facet_query: {people: {'-name' => 'James'}}})
+          @search.options.merge!({ facet_query: { people: { '-name' => 'James' } } })
           @search.execute_solr_search
           expect(facet_query_params).to eq('-name_s:James')
         end
 
         it 'correctly reads a "false" value' do
-          @search.options.merge!({facet_query: {citizens: {'nz_citizen' => 'false'}}})
+          @search.options.merge!({ facet_query: { citizens: { nz_citizen: 'false' } } })
           @search.execute_solr_search
           expect(facet_query_params).to eq('nz_citizen_b:false')
         end
 
         it 'queries for records with category Images and Videos' do
-          @search.options.merge!({facet_query: {people: {'name' => ['John', 'James']}}})
+          @search.options.merge!({ facet_query: { people: { name: names  } } })
           @search.execute_solr_search
           expect(facet_query_params).to eq('name_s:(John AND James)')
         end
       end
 
       it 'removes blacklisted collections from results' do
-        FactoryBot.create(:source, source_id: 'DNZ', status: 'suppressed' )
+        FactoryBot.create(:source, source_id: 'DNZ', status: 'suppressed')
         @search.execute_solr_search
         expect(@session).to have_search_params(:without, :source_id, 'DNZ')
       end
@@ -414,91 +419,115 @@ module SupplejackApi
         end
 
         it 'exclude filters from ORed facets' do
-          @search.options[:or] = {name: ['John', 'James'], address: ['123', '321']}
+          @search.options[:or] = { name: names, address: addresses }
           @search.options[:facets] = 'name, address'
           @search.execute_solr_search
 
           expect(@session).to have_search_params(:facet) {
-            name_filter = with(:name, ['John', 'James'])
-            facet(:name, :exclude => name_filter)
+            name_filter = with(:name, names)
+            facet(:name, exclude: name_filter)
 
-            address_filter = with(:address, ['123', '321'])
-            facet(:address, :exclude => address_filter)
+            address_filter = with(:address, addresses)
+            facet(:address, exclude: address_filter)
           }
         end
 
         it 'exclude filters from ANDed facets' do
-          @search.options[:and] = {name: ['John', 'James'], address: ['123', '321']}
+          @search.options[:and] = { name: names, address: addresses }
           @search.options[:facets] = 'name, address'
           @search.execute_solr_search
 
           expect(@session).to have_search_params(:facet) {
-            name_filter = with(:name, ['John', 'James'])
-            facet(:name, :exclude => name_filter)
+            name_filter = with(:name, names)
+            facet(:name, exclude: name_filter)
 
-            address_filter = with(:address, ['123', '321'])
-            facet(:address, :exclude => address_filter)
+            address_filter = with(:address, addresses)
+            facet(:address, exclude: address_filter)
+          }
+        end
+
+        it 'excludes filters from AND filters if there are OR filters nested inside' do
+          subjects = %w[Birds Plants]
+          categories = %w[Image Video]
+          and_query = {
+            subject:  { or: subjects },
+            category: { or: categories }
+          }
+
+          @search.options[:and] = and_query
+          @search.options[:facets] = and_query.keys.join(', ')
+          @search.execute_solr_search
+
+          expect(@session).to have_search_params(:facet) {
+            subject_filter = with(:subject, subjects)
+            facet(:subject, exclude: subject_filter)
+
+            category_filter = with(:category, categories)
+            facet(:category, exclude: category_filter)
           }
         end
 
         it 'does not add additional facets into the search' do
-          @search.options[:and] = {category: ['Audio'], subject: ['forest']}
+          @search.options[:and] = { category: ['Audio'], subject: ['forest'] }
           @search.options[:facets] = 'category'
           @search.execute_solr_search
 
           expect(@session).to have_search_params(:facet) {
             category_filter = with(:category, ['Audio'])
-            facet(:category, :exclude => category_filter)
+            facet(:category, exclude: category_filter)
           }
 
           expect(@session).not_to have_search_params(:facet) {
             subject_filter = with(:subject, ['forest'])
-            facet(:subject, :exclude => subject_filter)
+            facet(:subject, exclude: subject_filter)
           }
         end
 
         it 'does not add facets into the search when you aren\'t asking for any' do
-          @search.options[:and] = {category: ['Audio'], subject: ['forest']}
+          @search.options[:and] = { category: ['Audio'], subject: ['forest'] }
           @search.execute_solr_search
 
           expect(@session).not_to have_search_params(:facet) {
             category_filter = with(:category, ['Audio'])
-            facet(:category, :exclude => category_filter)
+            facet(:category, exclude: category_filter)
           }
 
           expect(@session).not_to have_search_params(:facet) {
             subject_filter = with(:subject, ['forest'])
-            facet(:subject, :exclude => subject_filter)
-          } 
+            facet(:subject, exclude: subject_filter)
+          }
         end
 
         it 'handles integer facets correctly' do
-          @search.options[:and] = {age: ['10'], subject: ['forest']}
+          @search.options[:and] = { age: ['10'], subject: ['forest'] }
           @search.options[:facets] = 'age'
-          @search.execute_solr_search 
+          @search.execute_solr_search
 
           expect(@session).to have_search_params(:facet) {
             age_filter = with(:age_str, ['10'])
-            facet(:age_str, :exclude => age_filter)
+            facet(:age_str, exclude: age_filter)
           }
         end
 
         it 'applies filters that are given as strings via the URL correctly' do
-          @search.options[:and] = {'category' => ['Images']}
+          categories = %w[Images]
+          @search.options[:and] = { category: categories }
           @search.options[:facets] = 'subject, category'
           @search.execute_solr_search
 
           expect(@session).to have_search_params(:facet) {
-            category_filter = with(:category, ['Images'])
-            facet(:category, :exclude => category_filter)
-          } 
+            category_filter = with(:category, categories)
+            facet(:category, exclude: category_filter)
+          }
         end
 
         it 'applies filters that are given which are not facets' do
-          @search.options[:and] = {'category' => ['Images']}
+          categories = %w[Images]
+          @search.options[:and] = { category: categories }
           @search.options[:facets] = 'subject'
           @search.execute_solr_search
-          expect(@session).to have_search_params(:with, :category, ['Images'])
+
+          expect(@session).to have_search_params(:with, :category, categories)
           expect(@session).to have_search_params(:facet, :subject)
           expect(@session).not_to have_search_params(:facet, :category)
         end

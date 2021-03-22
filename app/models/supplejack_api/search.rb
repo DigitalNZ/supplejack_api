@@ -307,13 +307,15 @@ module SupplejackApi
             or_and_options["#{facet}_str".to_sym] = or_and_options.delete(facet)
           end
 
-          or_and_options.slice(*facet_list).each do |key, value|
-            if value =~ /(.+)\*$/
-              facet(key.to_sym, exclude: with(key.to_sym).starting_with(Regexp.last_match(1)), limit: facets_per_page,
-                                offset: facets_offset)
-            else
-              facet(key.to_sym, exclude: with(key.to_sym, value), limit: facets_per_page, offset: facets_offset)
-            end
+          or_and_options.slice(*facet_list).each do |facet_name, value|
+            name = facet_name.to_sym
+
+            facet(
+              name,
+              exclude: with_query_for_facet_exclusion(self, name, value),
+              limit: facets_per_page,
+              offset: facets_offset
+            )
           end
         end
 
@@ -327,6 +329,20 @@ module SupplejackApi
     # rubocop:enable Metrics/MethodLength
     # rubocop:enable Metrics/CyclomaticComplexity
     # rubocop:enable Metrics/PerceivedComplexity
+
+    def with_query_for_facet_exclusion(search_context, facet_name, value)
+      # Necessary to pass search_context in order to generate `with` queries
+      wildcard_search_term_regex = /(.+)\*$/ # search term ends in *
+
+      if value =~ wildcard_search_term_regex
+        search_context.with(facet_name).starting_with(Regexp.last_match(1))
+      elsif value.class == Hash && value.key?(:or)
+        search_context.with(facet_name, value[:or])
+      else
+        # Value is a non-wildcarded string, or an array
+        search_context.with(facet_name, value)
+      end
+    end
 
     # Returns the facets part of the search results converted to a hash
     #

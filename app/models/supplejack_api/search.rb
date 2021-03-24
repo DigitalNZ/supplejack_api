@@ -336,7 +336,7 @@ module SupplejackApi
 
       if value =~ wildcard_search_term_regex
         search_context.with(facet_name).starting_with(Regexp.last_match(1))
-      elsif value.class == Hash && value.key?(:or)
+      elsif value.is_a?(Hash) && value.key?(:or)
         search_context.with(facet_name, value[:or])
       else
         # Value is a non-wildcarded string, or an array

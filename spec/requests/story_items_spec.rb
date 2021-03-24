@@ -15,6 +15,16 @@ RSpec.describe 'Story Items Endpoints', type: :request do
       end
     end
 
+    context 'when requesting with a invalid user_key' do
+      before { get "/v3/stories/#{story.id}/items.json?api_key=#{admin.authentication_token}&user_key=fakeuserkey" }
+
+      it 'returns an error' do
+        response_attributes = JSON.parse(response.body)
+
+        expect(response_attributes).to eq ({ 'errors' => 'User with provided Api Key fakeuserkey not found' })
+      end
+    end
+
     context 'when requesting with a invalid story id' do
       before { get "/v3/stories/thisstoryiddontexist/items.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}" }
 
@@ -93,10 +103,40 @@ RSpec.describe 'Story Items Endpoints', type: :request do
   end
 
   describe '#create' do
-    before do
-      params = { story: { name: 'New Story Name' } }.to_query
+    let(:item) { story.set_items.first }
 
-      post "/v3/stories/#{story.id}/items/#{item.id.to_s}.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
+    context 'when request is unsuccessful' do
+      context 'when mandatory params are missing' do
+        it 'returns error for missing items' do
+          params = {}.to_query
+          post "/v3/stories/#{story.id}/items.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
+
+          response_attributes = JSON.parse(response.body)
+
+          expect(response_attributes).to eq ({ 'errors' => 'Mandatory Parameter item missing in request' })
+        end
+
+        it 'returns error for missing type & sub_type' do
+          params = { item: { name: 'text' } }.to_query
+          post "/v3/stories/#{story.id}/items.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
+          
+          response_attributes = JSON.parse(response.body)
+
+          expect(response_attributes).to eq ({ 'errors' => 'Mandatory Parameters Missing: type is missing sub_type is missing' })
+        end
+
+        it 'returns error for *' do
+          params = { item: { type: 'text', sub_type: 'heading' } }.to_query
+          post "/v3/stories/#{story.id}/items.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
+          
+          response_attributes = JSON.parse(response.body)
+
+          expect(response_attributes).to eq ({ 'errors' => 'Mandatory Parameters Missing: content is missing meta is missing' })
+        end
+      end
+
+      context 'validation errors' do
+      end
     end
 
     context 'when adding a new record to story' do

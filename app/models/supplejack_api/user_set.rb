@@ -6,6 +6,8 @@ module SupplejackApi
     include Mongoid::Document
     include Mongoid::Timestamps
     include ActionView::Helpers::SanitizeHelper
+    include SupplejackApi::Concerns::Privacyable
+    include SupplejackApi::Concerns::Taggable
 
     store_in collection: 'user_sets', client: 'strong'
 
@@ -14,12 +16,10 @@ module SupplejackApi
 
     field :name,                type: String
     field :description,         type: String,   default: ''
-    field :privacy,             type: String,   default: 'public'
     field :copyright,           type: Integer,  default: 0
     field :url,                 type: String
     field :priority,            type: Integer,  default: 0
     field :count_updated_at,    type: DateTime
-    field :tags,                type: Array,    default: []
     field :subjects,            type: Array,    default: []
     field :approved,            type: Boolean,  default: false
     field :featured,            type: Boolean,  default: false
@@ -33,15 +33,12 @@ module SupplejackApi
     # field :user_selected_cover, type: Boolean,  default: false
 
     scope :excluding_favorites, -> { where(:name.ne => 'Favorites') }
-    scope :publicly_viewable,   -> { where(privacy: 'public') }
 
     index({ 'set_items.record_id' => 1 }, background: true)
     index({ featured: 1 }, background: true)
 
     validates :name, presence: true
-    validates :privacy, inclusion: { in: %w[public hidden private] }
 
-    before_validation :set_default_privacy
     before_save :strip_html_tags!
     before_save :update_record
     before_destroy :delete_record
@@ -101,10 +98,6 @@ module SupplejackApi
       end
     end
 
-    def self.all_public_sets
-      where(privacy: 'public', :name.ne => 'Favourites').order(updated_at: :desc)
-    end
-
     def self.public_search(options = {})
       options.reverse_merge!(page: 1, per_page: 10, order_by: :updated_at,
                              direction: :asc, search: nil)
@@ -115,7 +108,7 @@ module SupplejackApi
           { user_id: options[:search] },
           { id: options[:search] }
         ]
-      ).in(privacy: %w[public hidden])
+      ).public_or_hidden
         .order(options[:order_by] => options[:direction])
         .page(options[:page])
         .per(options[:per_page])
@@ -125,11 +118,7 @@ module SupplejackApi
       options.reverse_merge!(page: 1, per_page: 100)
       page = options[:page].to_i
       page = page.zero? ? 1 : page
-      where(privacy: 'public', :name.ne => 'Favourites').desc(:created_at).page(page)
-    end
-
-    def self.public_sets_count
-      where(privacy: 'public', :name.ne => 'Favourites').count
+      public_not_favourites.desc(:created_at).page(page)
     end
 
     def self.featured_sets(num = 16)
@@ -266,19 +255,6 @@ module SupplejackApi
         records = records[0..amount.to_i - 1] if amount
         records
       end
-    end
-
-    def tags=(list)
-      self[:tags] = *list
-    end
-
-    def tag_list=(tags_string)
-      tags_string = tags_string.to_s.gsub(/[^\w ,-]/, '')
-      self.subjects = tags_string.to_s.split(',').map(&:strip).reject(&:blank?)
-    end
-
-    def tag_list
-      subjects.join(', ') if subjects.present?
     end
 
     # Return a array of SetItem objects with the actual Record object attached through

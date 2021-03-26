@@ -12,7 +12,7 @@ module SupplejackApi
         render json: {
           sets: user_sets.map { |user_set| StoriesModerationSerializer.new(user_set) },
           total_filtered: user_sets.count,
-          total: UserSet.public_sets_count,
+          total: UserSet.public_not_favourites.count,
           page: index_params[:page]&.to_i || 1,
           per_page: index_params[:per_page]&.to_i || 10
         }

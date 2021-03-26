@@ -31,7 +31,16 @@ module SupplejackApi
     #
     def public_index
       @user_sets = UserSet.public_sets(page: params[:page])
-      render json: @user_sets, root: 'sets', user: true, adapter: :json, meta: { total: UserSet.public_sets_count }
+
+      render(
+        json: @user_sets,
+        root: 'sets',
+        user: true,
+        adapter: :json,
+        meta: {
+          total: UserSet.public_not_favourites.count
+        }
+      )
     end
 
     def featured_sets_index

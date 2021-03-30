@@ -283,7 +283,7 @@ module SupplejackApi
       end
     end
 
-    describe '#public_search' do
+    describe '#moderation_search' do
       let!(:user_set1) { create(:user_set_with_set_item, name: 'Name 1', updated_at: Date.parse('2019-1-1')) }
       let!(:user_set2) { create(:user_set, name: 'Name 2', updated_at: Date.parse('2011-1-1')) }
       let!(:user_set3) { create(:user_set, name: 'Name 4', updated_at: Date.parse('2012-1-1')) }
@@ -297,50 +297,50 @@ module SupplejackApi
         # After calling page, Kaminari assigns dynamically the `per` method.
         expect_any_instance_of(Kaminari::PageScopeMethods).to receive(:per).with(10)
 
-        UserSet.public_search
+        UserSet.moderation_search
       end
 
       it 'returns a Mongoid::Criteria' do
-        expect(UserSet.public_search).to be_a(Mongoid::Criteria)
+        expect(UserSet.moderation_search).to be_a(Mongoid::Criteria)
       end
 
       it 'returns the good 4 sets with "Name" search term' do
-        sets = UserSet.public_search(page: 1, per_page: 10, orderby: :updated_at, direction: :desc, search: 'Name').to_a
+        sets = UserSet.moderation_search(page: 1, per_page: 10, orderby: :updated_at, direction: :desc, search: 'Name').to_a
 
         expect(sets.length).to eq(4)
         expect(sets).to eq([user_set1, user_set3, user_set2, user_set4])
       end
 
       it 'is case insensitive' do
-        sets = UserSet.public_search(page: 1, per_page: 10, orderby: :updated_at, direction: :desc, search: 'name').to_a
+        sets = UserSet.moderation_search(page: 1, per_page: 10, orderby: :updated_at, direction: :desc, search: 'name').to_a
 
         expect(sets.length).to eq(4)
         expect(sets).to eq([user_set1, user_set3, user_set2, user_set4])
       end
 
       it 'returns the good set with "story_id" search term' do
-        sets = UserSet.public_search(page: 1, per_page: 10, orderby: :updated_at, direction: :desc, search: user_set1.id.to_s).to_a
+        sets = UserSet.moderation_search(page: 1, per_page: 10, orderby: :updated_at, direction: :desc, search: user_set1.id.to_s).to_a
 
         expect(sets.length).to eq(1)
         expect(sets).to eq([user_set1])
       end
 
       it 'returns the good set with "user_id" search term' do
-        sets = UserSet.public_search(page: 1, per_page: 10, orderby: :updated_at, direction: :desc, search: user_set1.user_id.to_s).to_a
+        sets = UserSet.moderation_search(page: 1, per_page: 10, orderby: :updated_at, direction: :desc, search: user_set1.user_id.to_s).to_a
 
         expect(sets.length).to eq(1)
         expect(sets).to eq([user_set1])
       end
 
       it 'returns 3 sets if per_page=3' do
-        sets = UserSet.public_search(page: 1, per_page: 3, order_by: :updated_at, direction: :desc).to_a
+        sets = UserSet.moderation_search(page: 1, per_page: 3, order_by: :updated_at, direction: :desc).to_a
 
         expect(sets.length).to eq(3)
         expect(sets).to eq([user_set1, user_set3, user_set2])
       end
 
       it 'returns 2 sets if page=2 and per_page=3' do
-        sets = UserSet.public_search(page: 2, per_page: 3, order_by: :updated_at, direction: :desc).to_a
+        sets = UserSet.moderation_search(page: 2, per_page: 3, order_by: :updated_at, direction: :desc).to_a
 
         expect(sets.length).to eq(2)
         expect(sets).to eq([user_set4, user_set5])

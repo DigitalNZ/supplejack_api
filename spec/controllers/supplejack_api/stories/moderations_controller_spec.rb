@@ -28,7 +28,7 @@ module SupplejackApi
           end
 
           it 'finds all public sets' do
-            expect(UserSet).to receive(:public_search) { [] }
+            expect(UserSet).to receive(:moderation_search) { [] }
 
             get :index, format: 'json'
           end

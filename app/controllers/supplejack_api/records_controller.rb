@@ -28,9 +28,10 @@ module SupplejackApi
           end
           format.xml do
             options = { serializer: self.class.search_serializer_class, record_includes: available_fields,
-                        record_fields: available_fields, request_format: 'xml' }
+                        record_fields: available_fields, request_format: 'xml', root: 'search' }
             serializable_resource = ActiveModelSerializers::SerializableResource.new(@search, options)
             # The double as_json is required to render the inner json object as json as well as the exterior object
+
             render xml: serializable_resource.as_json.as_json.to_xml(root: 'search')
           end
           format.rss { respond_with @search }
@@ -54,7 +55,7 @@ module SupplejackApi
         end
         format.xml do
           options = { serializer: self.class.record_serializer_class,
-                      fields: available_fields, include: available_fields }
+                      fields: available_fields, include: available_fields, root: 'record' }
           serializable_resource = ActiveModelSerializers::SerializableResource.new(@record, options)
           render xml: serializable_resource.as_json.to_xml(root: 'record')
         end

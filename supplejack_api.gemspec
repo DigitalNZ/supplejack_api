@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.files = Dir['{app,config,db,lib}/**/*'] + ['Rakefile', 'README.md']
   s.test_files = Dir['spec/**/*']
 
-  s.add_dependency 'active_model_serializers', '0.10.9'
+  s.add_dependency 'active_model_serializers'
   s.add_dependency 'activemodel-serializers-xml'
   s.add_dependency 'dalli'
   s.add_dependency 'devise'
@@ -34,7 +34,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'mongoid_auto_increment'
   s.add_dependency 'paperclip'
   s.add_dependency 'progressbar'
-  s.add_dependency 'rails', '5.2.5'
+  s.add_dependency 'rails', '6.0.3.6'
   s.add_dependency 'responders'
   s.add_dependency 'rest-client'
   s.add_dependency 'sidekiq'

@@ -70,8 +70,8 @@ module StoriesApi
                                                                   :display_collection,
                                                                   :value,
                                                                   :image_url,
-                                                                  category: [],
-                                                                  tags: []],
+                                                                  { category: [],
+                                                                    tags: [] }],
                                                         meta: %i[align_mode is_cover caption title size metadata]).to_h
         end
       end

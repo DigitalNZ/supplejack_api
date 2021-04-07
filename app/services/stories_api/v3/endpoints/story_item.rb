@@ -95,10 +95,10 @@ module StoriesApi
 
         def item_params
           permitted_content_params = [:id, :title, :display_collection, :value,
-                                      :image_url, category: [], tags: []]
+                                      :image_url, { category: [], tags: [] }]
 
           permitted_meta_params = [:align_mode, :is_cover, :caption, :title,
-                                   :size, :metadata, :category, tags: []]
+                                   :size, :metadata, :category, { tags: [] }]
 
           @item_params ||= params.require(:item).permit(:title, :position, :type, :sub_type,
                                                         content: permitted_content_params,

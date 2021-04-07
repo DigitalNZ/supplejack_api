@@ -15,7 +15,7 @@ module SupplejackApi
         # HACK: We override SearchSerializable#facets_list in the api_app to
         # replace :display_collection with :primary_collection, this transparently fixes it
         mappings = { primary_collection: :display_collection }
-        facets = Hash[s.facets_hash.map { |k, v| [mappings[k] || k, v] }][facet_key.to_sym]
+        facets = s.facets_hash.transform_keys { |k| mappings[k] || k }[facet_key.to_sym]
 
         # Gone past last page of facets
         break if facets.length.zero?

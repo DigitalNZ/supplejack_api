@@ -24,9 +24,9 @@ module Utils
 
   def unsafe?(text, version = 3)
     if version == 3
-      text.to_s.match(/([\w]{3,40}:)/)
+      text.to_s.match(/(\w{3,40}:)/)
     else
-      text.to_s.match(/([\w]{3,40}:)|(AND|OR|NOT)/)
+      text.to_s.match(/(\w{3,40}:)|(AND|OR|NOT)/)
     end
   end
 

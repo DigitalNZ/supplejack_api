@@ -4,7 +4,7 @@ module SupplejackApi
   module Sortable
     module Criteria
       def sort_order(order)
-        if order.to_s =~ /^([\w\_\.]+)_(desc|asc)$/
+        if order.to_s =~ /^([\w_.]+)_(desc|asc)$/
           order_by("#{Regexp.last_match(1)} #{Regexp.last_match(2)}")
         else
           self
@@ -23,8 +23,7 @@ module SupplejackApi
 
           scope = unscoped
           scope = scope.sort_order(options[:order]) if options[:order]
-          scope = scope.page(options[:page]).per(options[:per_page])
-          scope
+          scope.page(options[:page]).per(options[:per_page])
         end
       end
     end

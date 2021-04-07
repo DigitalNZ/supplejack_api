@@ -34,7 +34,7 @@ PATH
       mongoid_auto_increment
       paperclip
       progressbar
-      rails (~> 5.1)
+      rails (= 5.2.4.5)
       responders
       rest-client
       rufus-scheduler

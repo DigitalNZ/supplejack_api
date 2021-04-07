@@ -34,7 +34,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'mongoid_auto_increment'
   s.add_dependency 'paperclip'
   s.add_dependency 'progressbar'
-  s.add_dependency 'rails', '~> 5.1'
+  s.add_dependency 'rails', '5.2.4.5'
   s.add_dependency 'responders'
   s.add_dependency 'rest-client'
   s.add_dependency 'sidekiq'

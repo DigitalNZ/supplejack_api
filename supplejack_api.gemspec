@@ -34,7 +34,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'mongoid_auto_increment'
   s.add_dependency 'paperclip'
   s.add_dependency 'progressbar'
-  s.add_dependency 'rails', '6.0.3.6'
+  s.add_dependency 'rails', '6.1.3.1'
   s.add_dependency 'responders'
   s.add_dependency 'rest-client'
   s.add_dependency 'sidekiq'
@@ -53,7 +53,7 @@ Gem::Specification.new do |s|
   # ## Development dependancies
   s.add_development_dependency 'better_errors'
   s.add_development_dependency 'binding_of_caller'
-  s.add_development_dependency 'database_cleaner'
+  s.add_development_dependency 'database_cleaner-mongoid'
   s.add_development_dependency 'factory_bot_rails'
   s.add_development_dependency 'json_spec'
   s.add_development_dependency 'launchy'

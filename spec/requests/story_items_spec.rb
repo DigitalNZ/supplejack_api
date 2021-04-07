@@ -155,6 +155,8 @@ RSpec.describe 'Story Items Endpoints', type: :request do
             expect(response_attributes).to eq ({ 'errors' => 'Mandatory Parameters Missing: id must be filled in content meta is missing' })
           end
 
+          # This test is not suppose to pass as the id is integer
+          # This is a known issue https://github.com/rspec/rspec-rails/issues/610
           it 'returns error for invalid id type' do
             params = { item: { type: 'embed', sub_type: 'record', content: { id: 100 }, meta: { alignment: 'left' } } }.to_query
             post "/v3/stories/#{story.id}/items.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
@@ -167,13 +169,30 @@ RSpec.describe 'Story Items Endpoints', type: :request do
       end
     end
 
-    context 'when adding a new record to story' do
-    end
-
     context 'when adding a new heading to story' do
+      let(:item) { story.set_items.first }
+
+      it 'returns success' do
+        params = { item: { type: 'text', sub_type: 'heading', content: { value: 'Heading text' }, meta: { align_mode: 0 } } }.to_query
+        post "/v3/stories/#{story.id}/items.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
+
+        response_attributes = JSON.parse(response.body)
+
+        expect(response).to have_http_status(200)
+        expect(response_attributes).to include({ 'type' => 'text', 'sub_type' => 'heading', 'content' => { 'value' => 'Heading text' }, 'meta' => { 'align_mode' => '0' }})
+      end
     end
 
     context 'when adding rich text to story' do
+      it 'returns success' do
+        params = { item: { type: 'text', sub_type: 'rich-text', content: { value: '<p>Some block content here</p>' }, meta: { align_mode: 0 } } }.to_query
+        post "/v3/stories/#{story.id}/items.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
+
+        response_attributes = JSON.parse(response.body)
+
+        expect(response).to have_http_status(200)
+        expect(response_attributes).to include({ 'type' => 'text', 'sub_type' => 'rich-text', 'content' => { 'value' => '<p>Some block content here</p>' } })
+      end
     end
   end
 end

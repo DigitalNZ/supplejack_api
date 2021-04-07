@@ -116,26 +116,54 @@ RSpec.describe 'Story Items Endpoints', type: :request do
           expect(response_attributes).to eq ({ 'errors' => 'Mandatory Parameter item missing in request' })
         end
 
-        it 'returns error for missing type & sub_type' do
-          params = { item: { name: 'text' } }.to_query
-          post "/v3/stories/#{story.id}/items.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
-          
-          response_attributes = JSON.parse(response.body)
+        context 'when item is text' do
+          it 'returns error for missing type & sub_type' do
+            params = { item: { name: 'text' } }.to_query
+            post "/v3/stories/#{story.id}/items.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
 
-          expect(response_attributes).to eq ({ 'errors' => 'Mandatory Parameters Missing: type is missing sub_type is missing' })
+            response_attributes = JSON.parse(response.body)
+
+            expect(response_attributes).to eq ({ 'errors' => 'Mandatory Parameters Missing: type is missing sub_type is missing' })
+          end
+
+          it 'returns error for missing content & meta' do
+            params = { item: { type: 'text', sub_type: 'heading' } }.to_query
+            post "/v3/stories/#{story.id}/items.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
+
+            response_attributes = JSON.parse(response.body)
+
+            expect(response_attributes).to eq ({ 'errors' => 'Mandatory Parameters Missing: content is missing meta is missing' })
+          end
+
+          it 'returns error for size is not valid' do
+            params = { item: { type: 'text', sub_type: 'heading', content: { value: 'Heading text' }, meta: { size: 45 } } }.to_query
+            post "/v3/stories/#{story.id}/items.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
+
+            response_attributes = JSON.parse(response.body)
+
+            expect(response_attributes).to eq ({ 'errors' => 'Unsupported Values: size must be one of: 1, 2, 3, 4, 5, 6 in meta' })
+          end
         end
 
-        it 'returns error for *' do
-          params = { item: { type: 'text', sub_type: 'heading' } }.to_query
-          post "/v3/stories/#{story.id}/items.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
-          
-          response_attributes = JSON.parse(response.body)
+        context 'when item is a embed record' do
+          it 'returns error for missing record id in content' do
+            params = { item: { type: 'embed', sub_type: 'record', content: { id: nil }, meta: {} } }.to_query
+            post "/v3/stories/#{story.id}/items.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
 
-          expect(response_attributes).to eq ({ 'errors' => 'Mandatory Parameters Missing: content is missing meta is missing' })
+            response_attributes = JSON.parse(response.body)
+
+            expect(response_attributes).to eq ({ 'errors' => 'Mandatory Parameters Missing: id must be filled in content meta is missing' })
+          end
+
+          it 'returns error for invalid id type' do
+            params = { item: { type: 'embed', sub_type: 'record', content: { id: 100 }, meta: { alignment: 'left' } } }.to_query
+            post "/v3/stories/#{story.id}/items.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
+
+            response_attributes = JSON.parse(response.body)
+
+            expect(response_attributes).to eq ({ 'errors' => 'Bad Request: id must be an integer in content' })
+          end
         end
-      end
-
-      context 'validation errors' do
       end
     end
 

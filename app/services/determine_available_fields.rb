@@ -10,7 +10,7 @@ class DetermineAvailableFields
 
   def call
     groups = (options[:groups] & RecordSchema.groups.keys) || []
-    fields = RecordSchema.groups.values_at(*groups).flat_map(&:fields).uniq
+    fields = RecordSchema.groups.values_at(*groups).flat_map(&:fields).uniq.compact
 
     fields += options[:fields] if options[:fields].present?
     fields += options[:groups] if options[:groups].present?

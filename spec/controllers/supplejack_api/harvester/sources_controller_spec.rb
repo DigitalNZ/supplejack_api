@@ -69,7 +69,7 @@ module SupplejackApi
 
         context 'limit and order sources' do
           before do
-            FactoryBot.create_list(:source, 11, status: 'active', status_updated_at: Faker::Date.between(2.days.ago.utc.to_date, Time.now.utc.to_date))
+            FactoryBot.create_list(:source, 11, status: 'active', status_updated_at: Faker::Date.between(from: 2.days.ago.utc.to_date, to: Time.now.utc.to_date))
             FactoryBot.create_list(:source, 5, status: 'suppressed')
           end
 

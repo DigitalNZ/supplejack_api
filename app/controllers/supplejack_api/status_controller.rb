@@ -34,8 +34,8 @@ module SupplejackApi
 
     private
 
-    def handle_timeout
-      time = Benchmark.ms { yield }
+    def handle_timeout(&block)
+      time = Benchmark.ms(&block)
       Support::StatusLogger.logger.warn("/status request took #{time.round}ms to complete") if time > 5000
     end
 

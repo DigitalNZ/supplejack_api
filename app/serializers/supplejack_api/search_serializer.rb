@@ -7,7 +7,8 @@ module SupplejackApi
     end
 
     attribute :results do
-      options = { fields: instance_options[:record_fields], include: instance_options[:record_includes] }
+      options = { fields: instance_options[:record_fields], include: instance_options[:record_includes],
+                  root: 'results' }
       ActiveModelSerializers::SerializableResource.new(object.results, options)
     end
 
@@ -89,7 +90,7 @@ module SupplejackApi
       facet_pivots = {}
 
       response = object.facet_response['facet_pivot']
-      response.keys.each do |key|
+      response.each_key do |key|
         rows = []
         response[key].each do |row|
           hash = {}

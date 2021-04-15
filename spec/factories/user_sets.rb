@@ -2,8 +2,8 @@ module SupplejackApi
   FactoryBot.define do
     factory :user_set, class: SupplejackApi::UserSet do
       association :record, factory: :record_with_fragment
-      name            'Dogs and cats'
-      description     'Ugly dogs and cats'
+      name            { 'Dogs and cats' }
+      description     { 'Ugly dogs and cats' }
       user
 
       factory :user_set_with_set_item do

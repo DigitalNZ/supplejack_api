@@ -96,9 +96,10 @@ module SupplejackApi
     def query_fields
       query_field_list = nil
 
-      if options[:query_fields].is_a?(String)
+      case options[:query_fields]
+      when String
         query_field_list = options[:query_fields].split(',').map(&:strip).map(&:to_sym)
-      elsif options[:query_fields].is_a?(Array)
+      when Array
         query_field_list = options[:query_fields].map(&:to_sym)
       end
 
@@ -129,7 +130,7 @@ module SupplejackApi
     #
     def text
       @text = options[:text]
-      if @text.present? && !@text.match(/:\"/)
+      if @text.present? && !@text.match(/:"/)
         @text.downcase!
         @text.gsub!(/ and | or | not /, &:upcase)
       end
@@ -392,9 +393,9 @@ module SupplejackApi
 
       begin
         Sunspot::Setup.for(self.class.model_class).field(value)
-        return value
+        value
       rescue Sunspot::UnrecognizedFieldError
-        return 'score'
+        'score'
       end
     end
 
@@ -476,16 +477,17 @@ module SupplejackApi
           values = conditions
         end
 
-        if values.is_a?(Array)
+        case values
+        when Array
           case operator.to_sym
           when :or
             with(key).any_of(values)
           when :and
             with(key).all_of(values)
           else
-            raise Exception, 'Expected operator (:and, :or)'
+            raise StandardError, 'Expected operator (:and, :or)'
           end
-        elsif values =~ /(.+)\*$/
+        when /(.+)\*$/
           with(key).starting_with(Regexp.last_match(1))
         else
           with(key, to_proper_value(key, values))

@@ -136,7 +136,7 @@ module SupplejackApi::Concerns::Record
           .record_class
           .active
           .where(:record_id.in => user_set.set_items.map(&:record_id))
-        active_record_map = Hash[active_set_item_records.map { |r| [r.record_id, r] }]
+        active_record_map = active_set_item_records.index_by(&:record_id)
 
         user_set.set_items.order([:position]).each do |set_item|
           record = active_record_map[set_item.record_id]

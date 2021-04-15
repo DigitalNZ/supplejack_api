@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 module SupplejackApi
-  class RequestLimitMailer < ActionMailer::Base
-    default from: ENV['REQUEST_LIMIT_MAILER']
-
+  class RequestLimitMailer < ApplicationMailer
     def at90percent(user)
       @limit = user.max_requests
 

@@ -4,17 +4,17 @@ module SupplejackApi
   FactoryBot.define do
     factory :record, class: SupplejackApi.config.record_class do
       transient do
-        display_collection 'test'
-        copyright ['0']
-        category ['0']
-        tag ['foo', 'bar']
+        display_collection { 'test' }
+        copyright { ['0'] }
+        category { ['0'] }
+        tag { ['foo', 'bar'] }
       end
 
-      internal_identifier 'nlnz:1234'
-      record_id 54123
-      status                 'active'
-      source_url             'http://google.com/landing.html'
-      record_type            0
+      internal_identifier { 'nlnz:1234' }
+      record_id { 54123 }
+      status                 { 'active' }
+      source_url             { 'http://google.com/landing.html' }
+      record_type            { 0 }
 
       factory :record_with_fragment do
         fragments do
@@ -29,11 +29,11 @@ module SupplejackApi
         end
 
         trait :ready_for_indexing do
-          index_updated false
+          index_updated { false }
         end
 
         trait :deleted do
-          status 'deleted'
+          status { 'deleted' }
         end
       end
 
@@ -51,24 +51,24 @@ module SupplejackApi
     end
 
     factory :record_fragment, class: SupplejackApi::ApiRecord::RecordFragment do
-      title           'title'
-      content_partner  ['content partner']
-      source_id       'source_name'
-      priority        0
-      name            'John Doe'
-      address         'Wellington'
-      email           ['johndoe@example.com']
-      children        ['Sally Doe', 'James Doe']
-      contact         nil
-      age             30
-      birth_date      Time.now.utc
-      nz_citizen      true
-      display_collection 'test'
-      large_thumbnail_url    'http://my-website-that-hosts-images/image.png'
-      thumbnail_url    'http://my-website-that-hosts-images/small-image.png'
-      landing_url      'http://my-website'
-      subject         []
-      job_id          '54'
+      title           { 'title' }
+      content_partner { ['content partner'] }
+      source_id       { 'source_name' }
+      priority        { 0 }
+      name            { 'John Doe' }
+      address         { 'Wellington' }
+      email           { ['johndoe@example.com'] }
+      children        { ['Sally Doe', 'James Doe'] }
+      contact         { nil }
+      age             { 30 }
+      birth_date      { Time.now.utc }
+      nz_citizen      { true }
+      display_collection { 'test' }
+      large_thumbnail_url    { 'http://my-website-that-hosts-images/image.png' }
+      thumbnail_url    { 'http://my-website-that-hosts-images/small-image.png' }
+      landing_url      { 'http://my-website' }
+      subject         { [] }
+      job_id          { '54' }
     end
   end
 end

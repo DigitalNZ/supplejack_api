@@ -7,6 +7,7 @@ module StoriesApi
     module Errors
       class Base
         attr_reader :error
+
         def initialize(status = nil, message = nil)
           @error = { status: status, exception: { message: message } }
         end

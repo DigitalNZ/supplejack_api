@@ -86,13 +86,11 @@ module SupplejackApi
     end
 
     def self.find_or_create_top_collection_metric(date, metric, display_collection)
-      top_collection_metric = find_or_create_by(
+      find_or_create_by(
         date: date,
         metric: metric,
         display_collection: display_collection
       )
-
-      top_collection_metric
     end
 
     def self.record_metrics_to_be_processed(date, metric, display_collection)

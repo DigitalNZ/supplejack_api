@@ -4,6 +4,8 @@ $LOAD_PATH.push File.expand_path('lib', __dir__)
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
+  s.required_ruby_version = '>= 2.6.5'
+
   s.name        = 'supplejack_api'
   s.version     = '1'
   s.authors     = ['DigitalNZ']
@@ -16,7 +18,7 @@ Gem::Specification.new do |s|
   s.files = Dir['{app,config,db,lib}/**/*'] + ['Rakefile', 'README.md']
   s.test_files = Dir['spec/**/*']
 
-  s.add_dependency 'active_model_serializers', '0.10.9'
+  s.add_dependency 'active_model_serializers'
   s.add_dependency 'activemodel-serializers-xml'
   s.add_dependency 'dalli'
   s.add_dependency 'devise'
@@ -34,7 +36,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'mongoid_auto_increment'
   s.add_dependency 'paperclip'
   s.add_dependency 'progressbar'
-  s.add_dependency 'rails', '~> 5.1'
+  s.add_dependency 'rails', '6.1.3.1'
   s.add_dependency 'responders'
   s.add_dependency 'rest-client'
   s.add_dependency 'sidekiq'
@@ -53,7 +55,7 @@ Gem::Specification.new do |s|
   # ## Development dependancies
   s.add_development_dependency 'better_errors'
   s.add_development_dependency 'binding_of_caller'
-  s.add_development_dependency 'database_cleaner'
+  s.add_development_dependency 'database_cleaner-mongoid'
   s.add_development_dependency 'factory_bot_rails'
   s.add_development_dependency 'json_spec'
   s.add_development_dependency 'launchy'

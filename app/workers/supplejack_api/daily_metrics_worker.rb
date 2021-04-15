@@ -43,7 +43,7 @@ module SupplejackApi
     def retrieve_facet_data(facet)
       s = RecordSearch.new(facets: secondary_keys.join(','), and: { primary_key.to_sym => facet })
       facet_key_mappings = secondary_keys.reduce({}) { |a, e| a.merge(e.to_sym => custom_key_to_field_name(e)) }
-      facet_metadata = Hash[s.facets_hash.map { |k, v| [facet_key_mappings[k] || k, v] }]
+      facet_metadata = s.facets_hash.transform_keys { |k| facet_key_mappings[k] || k }
 
       {
         name: facet,

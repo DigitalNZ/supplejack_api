@@ -4,8 +4,8 @@ require 'spec_helper'
 
 module SupplejackApi
   describe UserSet do
-
     let(:user_set) { FactoryBot.build(:user_set)}
+
     before(:each) do
       allow(user_set).to receive(:update_record)
       allow(user_set).to receive(:reindex_items)
@@ -55,6 +55,17 @@ module SupplejackApi
           user_set.set_default_privacy
 
           expect(user_set.privacy).to eq 'private'
+        end
+      end
+
+      describe '#set_username' do
+        it 'sets username as the name of the user' do
+          username = user_set.user.username
+
+          user_set.save
+          user_set.reload
+
+          expect(user_set.username).to eq username
         end
       end
 
@@ -439,7 +450,7 @@ module SupplejackApi
       end
 
       it 'should allow admins to change the :featured attribute' do
-        admin_user = FactoryBot.create(:user, role: "admin")
+        admin_user = FactoryBot.create(:user, role: 'admin')
         user_set = FactoryBot.create(:user_set, user_id: admin_user.id)
         user_set.update_attributes_and_embedded({featured: true}, admin_user)
         user_set.reload
@@ -447,7 +458,7 @@ module SupplejackApi
       end
 
       it 'should update the featured_at when the featured attribute is updated' do
-        admin_user = FactoryBot.create(:user, role: "admin")
+        admin_user = FactoryBot.create(:user, role: 'admin')
         user_set = FactoryBot.create(:user_set, user_id: admin_user.id)
         Timecop.freeze(Time.now.utc) do
           user_set.update_attributes_and_embedded({featured: true}, admin_user)
@@ -457,7 +468,7 @@ module SupplejackApi
       end
 
       it "should not update the featured_at if the featured hasn't changed" do
-        admin_user = FactoryBot.create(:user, role: "admin")
+        admin_user = FactoryBot.create(:user, role: 'admin')
         time = Time.now.utc-1.day
         user_set = FactoryBot.create(:user_set, user_id: admin_user.id, featured: true, featured_at: time)
         Timecop.freeze(Time.now.utc) do
@@ -468,7 +479,7 @@ module SupplejackApi
       end
 
       it 'removes the set from the featured' do
-        admin_user = FactoryBot.create(:user, role: "admin")
+        admin_user = FactoryBot.create(:user, role: 'admin')
         time = Time.now.utc-1.day
         user_set = FactoryBot.create(:user_set, user_id: admin_user.id, featured: true, featured_at: time)
         user_set.update_attributes_and_embedded({featured: false}, admin_user)

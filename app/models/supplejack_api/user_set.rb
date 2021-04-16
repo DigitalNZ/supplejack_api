@@ -14,17 +14,18 @@ module SupplejackApi
     belongs_to :user, class_name: 'SupplejackApi::User'
     belongs_to :record, class_name: SupplejackApi.config.record_class.to_s, inverse_of: nil, touch: true, optional: true
 
-    field :name,                type: String
-    field :description,         type: String,   default: ''
-    field :copyright,           type: Integer,  default: 0
-    field :url,                 type: String
-    field :priority,            type: Integer,  default: 0
-    field :count_updated_at,    type: DateTime
-    field :subjects,            type: Array,    default: []
-    field :approved,            type: Boolean,  default: false
-    field :featured,            type: Boolean,  default: false
-    field :featured_at,         type: DateTime
-    field :cover_thumbnail,     type: String
+    field :name,             type: String
+    field :description,      type: String,   default: ''
+    field :copyright,        type: Integer,  default: 0
+    field :url,              type: String
+    field :priority,         type: Integer,  default: 0
+    field :count_updated_at, type: DateTime
+    field :subjects,         type: Array,    default: []
+    field :approved,         type: Boolean,  default: false
+    field :featured,         type: Boolean,  default: false
+    field :featured_at,      type: DateTime
+    field :cover_thumbnail,  type: String
+    field :username,         type: String
 
     # This field was created for sorting items to know that
     # the cover_thumbnail was selected by the user so dont change it.
@@ -39,11 +40,9 @@ module SupplejackApi
 
     validates :name, presence: true
 
-    before_save :strip_html_tags!
-    before_save :update_record
+    before_save :strip_html_tags!, :update_record, :set_username
     before_destroy :delete_record
-    after_save :reindex_items
-    after_save :reindex_if_changed
+    after_save :reindex_items, :reindex_if_changed
     after_create :create_record_representation
 
     # we originally had this method named `#create_method`
@@ -230,6 +229,10 @@ module SupplejackApi
       primary_fragment.thumbnail_url = cover_thumbnail
 
       record.save!
+    end
+
+    def set_username
+      self.username = user.username
     end
 
     def delete_record

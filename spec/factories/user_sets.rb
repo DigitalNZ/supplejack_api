@@ -2,9 +2,20 @@ module SupplejackApi
   FactoryBot.define do
     factory :user_set, class: SupplejackApi::UserSet do
       association :record, factory: :record_with_fragment
-      name            { 'Dogs and cats' }
-      description     { 'Ugly dogs and cats' }
       user
+
+      name             { Faker::Movie.title }
+      description      { 'Ugly dogs and cats' }
+      copyright        { Faker::Movie.quote }
+      url              { Faker::Internet.url }
+      priority         { 0 }
+      count_updated_at { Date.today }
+      subjects         { [Faker::Verb.base] }
+      approved         { false }
+      featured         { false }
+      featured_at      { Date.today }
+      cover_thumbnail  { Faker::Internet.url }
+
 
       factory :user_set_with_set_item do
         after(:create) do |user_set|

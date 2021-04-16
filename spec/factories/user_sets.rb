@@ -5,8 +5,8 @@ module SupplejackApi
       association :user, factory: :user
 
       name             { Faker::Movie.title }
-      description      { 'Ugly dogs and cats' }
-      copyright        { Faker::Movie.quote }
+      description      { Faker::Movie.quote }
+      copyright        { 0 }
       url              { Faker::Internet.url }
       priority         { 0 }
       count_updated_at { Date.today }

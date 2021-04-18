@@ -109,11 +109,12 @@ module SupplejackApi
         .per(options[:per_page])
     end
 
-    def self.moderation_search_attributes(word)
+    def self.moderation_search_attributes(search_term)
       [
-        { name: /#{word}/i },
-        { user_id: word },
-        { id: word }
+        { name: /#{search_term}/i },
+        { username: /#{search_term}/i },
+        { user_id: search_term },
+        { id: search_term }
       ]
     end
 

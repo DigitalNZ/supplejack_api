@@ -327,32 +327,47 @@ module SupplejackApi
         expect(UserSet.moderation_search).to be_a(Mongoid::Criteria)
       end
 
-      it 'returns the good 4 sets with "Name" search term' do
-        sets = UserSet.moderation_search(page: 1, per_page: 10, orderby: :updated_at, direction: :desc, search: 'Name').to_a
+      context 'when search term is story name' do
+        it 'returns the 4 sets with "Name" in name' do
+          sets = UserSet.moderation_search(page: 1, per_page: 10, orderby: :updated_at, direction: :desc, search: 'Name').to_a
 
-        expect(sets.length).to eq(4)
-        expect(sets).to eq([user_set1, user_set3, user_set2, user_set4])
+          expect(sets.length).to eq(4)
+          expect(sets).to eq([user_set1, user_set3, user_set2, user_set4])
+        end
+
+        it 'returns the 4 sets with "Name" in name as search is case insensitive' do
+          sets = UserSet.moderation_search(page: 1, per_page: 10, orderby: :updated_at, direction: :desc, search: 'name').to_a
+
+          expect(sets.length).to eq(4)
+          expect(sets).to eq([user_set1, user_set3, user_set2, user_set4])
+        end
       end
 
-      it 'is case insensitive' do
-        sets = UserSet.moderation_search(page: 1, per_page: 10, orderby: :updated_at, direction: :desc, search: 'name').to_a
+      context 'when search term is username' do
+        it 'returns the set with username' do
+          user_set = [user_set1, user_set2, user_set3, user_set4, user_set5].sample
+          sets = UserSet.moderation_search(page: 1, per_page: 10, orderby: :updated_at, direction: :desc, search: user_set.username).to_a
 
-        expect(sets.length).to eq(4)
-        expect(sets).to eq([user_set1, user_set3, user_set2, user_set4])
+          expect(sets).to include user_set
+        end
       end
 
-      it 'returns the good set with "story_id" search term' do
-        sets = UserSet.moderation_search(page: 1, per_page: 10, orderby: :updated_at, direction: :desc, search: user_set1.id.to_s).to_a
+      context 'when search term is story_id' do
+        it 'returns user_set with searched story_id' do
+          sets = UserSet.moderation_search(page: 1, per_page: 10, orderby: :updated_at, direction: :desc, search: user_set1.id.to_s).to_a
 
-        expect(sets.length).to eq(1)
-        expect(sets).to eq([user_set1])
+          expect(sets.length).to eq(1)
+          expect(sets).to eq([user_set1])
+        end
       end
 
-      it 'returns the good set with "user_id" search term' do
-        sets = UserSet.moderation_search(page: 1, per_page: 10, orderby: :updated_at, direction: :desc, search: user_set1.user_id.to_s).to_a
+      context 'when search term is user_id' do
+        it 'returns user_set with searched user_id' do
+          sets = UserSet.moderation_search(page: 1, per_page: 10, orderby: :updated_at, direction: :desc, search: user_set1.user_id.to_s).to_a
 
-        expect(sets.length).to eq(1)
-        expect(sets).to eq([user_set1])
+          expect(sets.length).to eq(1)
+          expect(sets).to eq([user_set1])
+        end
       end
 
       it 'returns 3 sets if per_page=3' do

@@ -40,7 +40,8 @@ module SupplejackApi
 
     validates :name, presence: true
 
-    before_save :strip_html_tags!, :update_record, :set_username
+    before_create :set_username
+    before_save :strip_html_tags!, :update_record
     before_destroy :delete_record
     after_save :reindex_items, :reindex_if_changed
     after_create :create_record_representation

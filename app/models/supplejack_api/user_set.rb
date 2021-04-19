@@ -36,7 +36,7 @@ module SupplejackApi
     scope :excluding_favorites, -> { where(:name.ne => 'Favorites') }
 
     index({ 'set_items.record_id' => 1 }, background: true)
-    index({ featured: 1 }, background: true)
+    index({ featured: 1, username: 1 }, background: true)
 
     validates :name, presence: true
 

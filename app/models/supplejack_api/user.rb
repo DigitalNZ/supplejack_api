@@ -68,7 +68,7 @@ module SupplejackApi
     def update_user_sets
       return unless username_changed?
 
-      user_sets.each { |set| set.update_attribute(:username, username) }
+      user_sets.update_all(username: username)
     end
 
     def sets=(attrs_array)

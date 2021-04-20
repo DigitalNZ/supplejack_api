@@ -359,5 +359,21 @@ module SupplejackApi
         expect(user_two.errors['authentication_token']).to include 'is already taken'
       end
     end
+
+    describe '#update_user_sets' do
+      let(:user_set) { FactoryBot.build(:user_set)}
+      let(:user) { user_set.user }
+
+      context 'when username of the user updated' do
+        before do
+          user.username = 'newusername'
+          user.save!
+        end
+
+        it 'updates the username of the user set' do
+          expect(user_set.username).to eq 'newusername'
+        end
+      end
+    end
   end
 end

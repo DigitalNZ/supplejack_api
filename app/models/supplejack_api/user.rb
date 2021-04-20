@@ -53,6 +53,7 @@ module SupplejackApi
     validates :authentication_token, uniqueness: true
 
     before_save :ensure_authentication_token
+    after_save :update_user_sets
 
     has_many :user_sets, dependent: :destroy, autosave: true, class_name: 'SupplejackApi::UserSet' do
       def custom_find(id)
@@ -62,6 +63,12 @@ module SupplejackApi
                      where(url: id).first
                    end
       end
+    end
+
+    def update_user_sets
+      return unless username_changed?
+
+      user_sets.each { |set| set.update_attribute(:username, username) }
     end
 
     def sets=(attrs_array)

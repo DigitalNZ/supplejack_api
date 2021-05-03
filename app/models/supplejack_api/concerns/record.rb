@@ -68,7 +68,6 @@ module SupplejackApi::Concerns::Record
       return nil unless search.valid? && !search.hits.nil?
 
       Rails.logger.info("NEXT AND PREVIOUS primary_keys: #{search.hits.map(&:primary_key)}")
-      Rails.logger.info("NEXT AND PREVIOUS record_ids: #{search.hits.map(&:record_id)}")
 
       # Find the index in the array for the current record
       record_index = search.hits.find_index { |i| i.primary_key == id.to_s }

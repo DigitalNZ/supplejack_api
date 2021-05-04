@@ -59,21 +59,16 @@ module SupplejackApi::Concerns::Record
     def find_next_and_previous_records(scope, options = {})
       return unless options.try(:any?)
 
-      Rails.logger.info("NEXT AND PREVIOUS id: #{id}")
-      Rails.logger.info("NEXT AND PREVIOUS options: #{options}")
-
       search = ::SupplejackApi::RecordSearch.new(options)
       search.scope = scope
 
       return nil unless search.valid? && !search.hits.nil?
 
-      Rails.logger.info("NEXT AND PREVIOUS primary_keys: #{search.hits.map(&:primary_key)}")
-
       # Find the index in the array for the current record
       record_index = search.hits.find_index { |i| i.primary_key == id.to_s }
       total_pages = (search.total.to_f / search.per_page).ceil
 
-      Rails.logger.info("NEXT AND PREVIOUS record_index: #{record_index}")
+      Rails.logger.info("NEXT AND PREVIOUS: #{id} | #{options} | #{search.hits.map(&:primary_key)} | #{record_index}")
 
       self.next_page = search.page
       self.previous_page = search.page
@@ -92,7 +87,6 @@ module SupplejackApi::Concerns::Record
 
       if previous_primary_key.present?
         self.previous_record = SupplejackApi.config.record_class.find(previous_primary_key).try(:record_id) rescue nil
-        Rails.logger.info("NEXT AND PREVIOUS previous_record_id: #{self.previous_record}")
       end
 
       if record_index == search.hits.size - 1
@@ -108,7 +102,6 @@ module SupplejackApi::Concerns::Record
       return if next_primary_key.blank?
 
       self.next_record = SupplejackApi.config.record_class.find(next_primary_key).try(:record_id) rescue nil
-      Rails.logger.info("NEXT AND PREVIOUS next_record_id: #{self.next_record}")
     end
     # rubocop:enable Metrics/MethodLength
 

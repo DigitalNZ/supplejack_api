@@ -54,7 +54,7 @@ module SupplejackApi
       # Landing_url It is not correct on the record model (possibly schema issue)
       # Record fragrment has a complex method_missing implementation which is makign this happen.
 
-      # result[:landing_url] = record[:landing_url] if result[:landing_url].nil?
+      result[:landing_url] = record[:landing_url] if result[:landing_url].nil?
 
       result
     end

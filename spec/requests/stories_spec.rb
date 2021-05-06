@@ -394,13 +394,43 @@ RSpec.describe 'Stories Endpoints', type: :request do
   end
 
   describe '#admin_index' do
-    context 'when requesting with wrong user_key' do
-      before { get "/v3/users/fakeuserkey/stories.json?api_key=#{admin.authentication_token}" }
+    context 'when requesting without a api_key' do
+      before { get "/v3/users/#{story.user.api_key}/stories.json" }
+
+      it 'returns an error' do
+        response_attributes = JSON.parse(response.body)
+
+        expect(response_attributes).to eq ({ 'errors' => 'Please provide a API Key' })
+      end
+    end
+
+    context 'when requesting with wrong api_key' do
+      before { get "/v3/users/#{story.user.api_key}/stories.json?api_key=thisisafakekey" }
 
       it 'returns error message' do
         response_attributes = JSON.parse(response.body)
 
-        expect(response_attributes).to eq ({ 'errors' => 'User with provided Api Key fakeuserkey not found' })
+        expect(response_attributes).to eq ({ 'errors' => 'Invalid API Key' })
+      end
+    end
+
+    context 'when requesting with api_key of a non admin user' do
+      before { get "/v3/users/#{story.user.api_key}/stories.json?api_key=#{story.user.api_key}" }
+
+      it 'returns error message' do
+        response_attributes = JSON.parse(response.body)
+
+        expect(response_attributes).to eq ({ 'errors' => 'You need Administrator privileges to perform this request' })
+      end
+    end
+
+    context 'when requesting invalid user_id BUT user id is their api key :(' do
+      before { get "/v3/users/thisisafakekey/stories.json?api_key=#{admin.authentication_token}" }
+
+      it 'returns error message' do
+        response_attributes = JSON.parse(response.body)
+
+        expect(response_attributes).to eq ({ 'errors' => 'User with provided user id thisisafakekey not found' })
       end
     end
 

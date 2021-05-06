@@ -48,7 +48,7 @@ module SupplejackApi
         end
 
         it 'includes the error message' do
-          expect(response.body).to include('User with provided Api Key 1231231231 not found')
+          expect(response.body).to include('User with provided user id 1231231231 not found')
         end
       end
 

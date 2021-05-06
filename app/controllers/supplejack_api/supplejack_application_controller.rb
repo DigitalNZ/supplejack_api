@@ -45,6 +45,10 @@ module SupplejackApi
       @current_user ||= User.find_by_api_key(params[:api_key])
     end
 
+    def current_story_user
+      @current_story_user ||= User.find_by_api_key(params[:user_key])
+    end
+
     def authenticate_admin!
       return true if RecordSchema.roles[current_user.role.to_sym].try(:admin)
 
@@ -64,10 +68,16 @@ module SupplejackApi
       }, status: :forbidden
     end
 
-    def user_key_check!
-      render request.format.to_sym => {
-        errors: 'Mandatory parameter user_key missing'
-      }, status: :bad_request unless params[:user_key]
+    def story_user_check!
+      if params[:user_key]
+        render request.format.to_sym => {
+          errors: "User with provided Api Key #{params[:user_key]} not found"
+        }, status: :not_found unless current_story_user
+      else
+        render request.format.to_sym => {
+          errors: 'Mandatory parameter user_key missing'
+        }, status: :bad_request
+      end
     end
 
     def find_user_set

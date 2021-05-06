@@ -314,6 +314,10 @@ module SupplejackApi
         where(id: id).first
       end
     end
+
+    def contents
+      set_items
+    end
   end
 end
 # rubocop:enable Metrics/ClassLength

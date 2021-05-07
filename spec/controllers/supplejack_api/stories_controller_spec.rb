@@ -133,7 +133,7 @@ module SupplejackApi
         end
 
         it 'includes the error message' do
-          expect(response.body).to include('Mandatory Parameter name missing in request')
+          expect(response.body).to include("Name field can't be blank.")
         end
       end
 
@@ -145,8 +145,8 @@ module SupplejackApi
           post :create, params: {user_key: api_key, api_key: api_key, story: { name: story_name }}
         end
 
-        it 'returns a 200 http code' do
-          expect(response.status).to eq(200)
+        it 'returns a 201 http code' do
+          expect(response.status).to eq(201)
         end
 
         it 'creates the story' do

@@ -211,7 +211,7 @@ RSpec.describe 'Stories Endpoints', type: :request do
         post "/v3/stories.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
       end
 
-      it 'returns user info of updated user' do
+      it 'returns attributes for the story created' do
         story = SupplejackApi::UserSet.last
         response_attributes = JSON.parse(response.body)
 
@@ -261,7 +261,7 @@ RSpec.describe 'Stories Endpoints', type: :request do
         it 'returns mandatory param error' do
           response_attributes = JSON.parse(response.body)
 
-          expect(response_attributes).to eq ({ 'errors' => 'Mandatory Parameter name missing in request' })
+          expect(response_attributes).to eq ({ 'errors' => ["Name field can't be blank."] })
         end
       end
     end

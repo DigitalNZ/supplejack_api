@@ -8,7 +8,6 @@ en:
     reached_limit: You have reached your maximum number of api requests today
     invalid_token: Invalid API Key
     blank_token: Please provide a API Key
-
     title: Users
     username: Username
     name: Name
@@ -16,9 +15,7 @@ en:
     role: Role
     daily_requests: API requests today
     monthly_requests: API requests last 30 days
-
     log_out: Log out
-
     edit: Edit
 
   site_activities:
@@ -32,7 +29,6 @@ en:
     title: Supplejack API
     download_csv: Download as CSV
     not_a_admin: This area is restricted to Administrators
-
 
   mongoid:
     models:

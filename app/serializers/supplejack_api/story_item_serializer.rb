@@ -43,17 +43,7 @@ module SupplejackApi
       end
 
       result[:title] = 'Untitled' if result[:title].nil?
-
       result[:image_url] = record&.thumbnail_url if result[:image_url].nil?
-
-      # FIXME
-      # some records have landing_url ending in 'replace_this'.  This is on the record fragment.
-      # Calling record.public_send(:landing_url) calls the method on the fragment, which might have landing_url
-      # 'replace_this' depending on how it was harvested.  eg record_id 23036618
-      # Strangely, record[:landing_url] returns the correct landing_url, as it is on the mongo record.
-      # Landing_url It is not correct on the record model (possibly schema issue)
-      # Record fragrment has a complex method_missing implementation which is makign this happen.
-
       result[:landing_url] = record[:landing_url] if result[:landing_url].nil?
 
       result

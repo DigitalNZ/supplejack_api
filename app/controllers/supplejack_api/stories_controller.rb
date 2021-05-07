@@ -3,11 +3,11 @@
 module SupplejackApi
   class StoriesController < SupplejackApplicationController
     include Concerns::Stories
-    include Concerns::StoriesControllerMetrics
+    # include Concerns::StoriesControllerMetrics
 
-    before_action :authenticate_admin!, only: [:admin_index]
-    before_action :story_user_id_check!, only: [:admin_index]
+    before_action :authenticate_admin!, :story_user_id_check!, only: [:admin_index]
     before_action :story_user_check!, except: %i[admin_index show]
+    before_action :find_story, only: %i[show update destroy]
 
     def index
       slim = params[:slim] != 'false'
@@ -23,8 +23,15 @@ module SupplejackApi
     end
 
     def show
-      params[:slim] = false
-      render_response(:story)
+      if @story.privacy == 'private'
+        if @story.user == current_story_user || current_story_user&.admin?
+          render json: StorySerializer.new(@story, slim: false).to_json(include_root: false), status: :ok
+        else
+          render json: { errors: "Story with provided Id #{params[:id]} is private story and requires the creator's key as user_key" }.to_json(include_root: false), status: :ok
+        end
+      else
+        render json: StorySerializer.new(@story, slim: false).to_json(include_root: false), status: :ok
+      end
     end
 
     def create
@@ -53,6 +60,14 @@ module SupplejackApi
       render request.format.to_sym => {
         errors: "User with provided user id #{params[:user_id]} not found"
       }, status: :not_found unless @story_user
+    end
+
+    def find_story
+      @story = SupplejackApi::UserSet.custom_find(params[:id])
+
+      render request.format.to_sym => {
+        errors: "Story with provided Id #{params[:id]} not found"
+      }, status: :not_found unless @story
     end
   end
 end

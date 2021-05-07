@@ -48,7 +48,7 @@ module SupplejackApi
         end
 
         it 'includes the error message' do
-          expect(response.body).to include('User with provided user id 1231231231 not found')
+          expect(response.body).to include(I18n.t('errors.user_with_id_not_found', id: '1231231231'))
         end
       end
 
@@ -60,7 +60,7 @@ module SupplejackApi
         end
 
         it 'includes the error message' do
-          expect(response.body).to include('Administrator privileges')
+          expect(response.body).to include('You need Administrator privileges to perform this request')
         end
       end
 
@@ -86,7 +86,7 @@ module SupplejackApi
     end
 
     describe 'GET show' do
-      context 'unsuccessful request - provided story id does not exist' do
+      context 'when provided story id does not exist' do
         before { get :show, params: { api_key: api_key, id: '1231231231' }}
 
         it 'returns 404' do
@@ -94,11 +94,11 @@ module SupplejackApi
         end
 
         it 'includes the error message' do
-          expect(response.body).to include('Story with provided Id 1231231231 not found')
+          expect(response.body).to include(I18n.t('errors.story_not_found', id: '1231231231'))
         end
       end
 
-      context 'successful request' do
+      context 'when successful' do
         let(:response_body) { JSON.parse(response.body).deep_symbolize_keys }
         let(:story_id) { user.user_sets.first.id.to_s }
 
@@ -171,7 +171,7 @@ module SupplejackApi
         end
 
         it 'includes the error message' do
-          expect(response.body).to include('Story with provided Id 1231231231 not found')
+          expect(response.body).to include(I18n.t('errors.story_not_found', id: '1231231231'))
         end
       end
 
@@ -204,7 +204,7 @@ module SupplejackApi
         end
 
         it 'includes the error message' do
-          expect(response.body).to include('Story with provided Id 1231231231 not found')
+          expect(response.body).to include(I18n.t('errors.story_not_found', id: '1231231231'))
         end
       end
 

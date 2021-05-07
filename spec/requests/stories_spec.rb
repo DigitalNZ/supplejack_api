@@ -11,7 +11,7 @@ RSpec.describe 'Stories Endpoints', type: :request do
       it 'returns an error' do
         response_attributes = JSON.parse(response.body)
 
-        expect(response_attributes).to eq ({ 'errors' => 'Mandatory parameter user_key missing' })
+        expect(response_attributes).to eq ({ 'errors' => I18n.t('errors.user_key_missing') })
       end
     end
 
@@ -21,7 +21,7 @@ RSpec.describe 'Stories Endpoints', type: :request do
       it 'returns error message' do
         response_attributes = JSON.parse(response.body)
 
-        expect(response_attributes).to eq ({ 'errors' => 'User with provided Api Key thisisafakekey not found' })
+        expect(response_attributes).to eq ({ 'errors' => I18n.t('errors.user_not_found', key: 'thisisafakekey') })
       end
     end
 
@@ -146,7 +146,7 @@ RSpec.describe 'Stories Endpoints', type: :request do
       it 'returns error message' do
         response_attributes = JSON.parse(response.body)
 
-        expect(response_attributes).to eq ({ 'errors' => 'Story with provided Id fakestoryid not found' })
+        expect(response_attributes).to eq ({ 'errors' => I18n.t('errors.story_not_found', id: 'fakestoryid') })
       end
     end
 
@@ -197,7 +197,7 @@ RSpec.describe 'Stories Endpoints', type: :request do
         it 'returns error message' do
           response_attributes = JSON.parse(response.body)
 
-          expect(response_attributes).to eq ({ 'errors' => "Story with provided Id #{story.id.to_s} is private story and requires the creator's key as user_key" })
+          expect(response_attributes).to eq ({ 'errors' => I18n.t('errors.user_not_authorized_for_story', id: story.id.to_s) })
         end
       end
     end
@@ -247,7 +247,7 @@ RSpec.describe 'Stories Endpoints', type: :request do
         it 'returns user not found error' do
           response_attributes = JSON.parse(response.body)
 
-          expect(response_attributes).to eq ({ 'errors' => 'User with provided Api Key fakeapiuserkey not found' })
+          expect(response_attributes).to eq ({ 'errors' => I18n.t('errors.user_not_found', key: 'fakeapiuserkey') })
         end
       end
 
@@ -321,7 +321,7 @@ RSpec.describe 'Stories Endpoints', type: :request do
       it 'returns error message' do
         response_attributes = JSON.parse(response.body)
   
-        expect(response_attributes).to eq ({ 'errors' => 'Story with provided Id fakestoryid not found' })
+        expect(response_attributes).to eq ({ 'errors' => I18n.t('errors.story_not_found', id: 'fakestoryid') })
       end
     end
 
@@ -361,7 +361,7 @@ RSpec.describe 'Stories Endpoints', type: :request do
       it 'returns error message' do
         response_attributes = JSON.parse(response.body)
   
-        expect(response_attributes).to eq ({ 'errors' => "Story with provided Id fakestoryid not found" })
+        expect(response_attributes).to eq ({ 'errors' => I18n.t('errors.story_not_found', id: 'fakestoryid') })
       end
     end
 
@@ -430,7 +430,7 @@ RSpec.describe 'Stories Endpoints', type: :request do
       it 'returns error message' do
         response_attributes = JSON.parse(response.body)
 
-        expect(response_attributes).to eq ({ 'errors' => 'User with provided user id thisisafakekey not found' })
+        expect(response_attributes).to eq ({ 'errors' => I18n.t('errors.user_not_found', key: 'thisisafakekey') })
       end
     end
 

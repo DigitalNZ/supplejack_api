@@ -70,13 +70,9 @@ module SupplejackApi
 
     def story_user_check!
       if params[:user_key]
-        render request.format.to_sym => {
-          errors: "User with provided Api Key #{params[:user_key]} not found"
-        }, status: :not_found unless current_story_user
+        render_error_with(I18n.t('errors.user_not_found', key: params[:user_key]), :not_found) unless current_story_user
       else
-        render request.format.to_sym => {
-          errors: 'Mandatory parameter user_key missing'
-        }, status: :bad_request
+        render_error_with(I18n.t('errors.user_key_missing'), :bad_request)
       end
     end
 
@@ -89,7 +85,11 @@ module SupplejackApi
                     current_user.user_sets.custom_find(user_set_id)
                   end
 
-      render(json: { errors: "Set with id: #{params[:id]} was not found." }, status: :not_found) unless @user_set
+      render(json: { errors: "UserSet with id: #{params[:id]} was not found." }, status: :not_found) unless @user_set
+    end
+
+    def render_error_with(message, code)
+      render(json: { errors: message }, status: code)
     end
   end
 end

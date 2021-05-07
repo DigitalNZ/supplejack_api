@@ -27,7 +27,7 @@ module SupplejackApi
         if @story.user == current_story_user || current_story_user&.admin?
           render json: StorySerializer.new(@story, slim: false).to_json(include_root: false), status: :ok
         else
-          render json: { errors: "Story with provided Id #{params[:id]} is private story and requires the creator's key as user_key" }.to_json(include_root: false), status: :ok
+          render_error_with(I18n.t('errors.user_not_authorized_for_story', id: params[:id]), :unauthorized)
         end
       else
         render json: StorySerializer.new(@story, slim: false).to_json(include_root: false), status: :ok
@@ -41,7 +41,7 @@ module SupplejackApi
         story.save!
         render json: StorySerializer.new(story, slim: false).to_json(include_root: false), status: :created
       else
-        render json: { errors: story.errors[:name] }.to_json(include_root: false), status: :bad_request
+        render_error_with(story.errors[:name], :bad_request)
       end
     end
 
@@ -70,17 +70,13 @@ module SupplejackApi
     def story_user_id_check!
       @story_user = User.find_by_api_key(params[:user_id])
 
-      render request.format.to_sym => {
-        errors: "User with provided user id #{params[:user_id]} not found"
-      }, status: :not_found unless @story_user
+      render_error_with(I18n.t('errors.user_with_id_not_found', id: params[:user_id]), :not_found) unless @story_user
     end
 
     def find_story
       @story = SupplejackApi::UserSet.custom_find(params[:id])
 
-      render request.format.to_sym => {
-        errors: "Story with provided Id #{params[:id]} not found"
-      }, status: :not_found unless @story
+      render_error_with(I18n.t('errors.story_not_found', id: params[:id]), :not_found) unless @story
     end
   end
 end

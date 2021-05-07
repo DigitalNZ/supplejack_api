@@ -42,7 +42,14 @@ en:
       messages:
         blank: "%{attribute} field can't be blank."
         inclusion: "%{value} is not a valid %{attribute} value"
-      
+
+  errors:
+    user_not_found: "User with provided Api Key %{key} not found"
+    user_with_id_not_found: "User with provided user id %{id} not found"
+    user_key_missing: 'Mandatory parameter user_key missing'
+    story_not_found: "Story with provided Id %{id} not found"
+    user_not_authorized_for_story: "Story with provided Id %{id} is private story and requires the creator's key as user_key"
+
   time:
     formats:
       default: "%Y-%m-%d %H:%M:%S %Z"

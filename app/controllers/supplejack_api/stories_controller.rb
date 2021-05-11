@@ -35,7 +35,7 @@ module SupplejackApi
     end
 
     def create
-      story = current_story_user.user_sets.build(name: story_params[:name])
+      story = current_story_user.user_sets.build(story_params)
 
       if story.valid?
         story.save!
@@ -46,7 +46,11 @@ module SupplejackApi
     end
 
     def update
-      render_response(:story)
+      if @story.update(story_params)
+        render json: StorySerializer.new(@story, slim: false).to_json(include_root: false), status: :ok
+      else
+        render_error_with('Failed to update', :bad_request)
+      end
     end
 
     def destroy
@@ -58,7 +62,13 @@ module SupplejackApi
     private
 
     def story_params
-      params.require(:story).permit(:name).to_h
+      fields = if current_story_user.admin?
+                 %w[name description privacy copyright featured approved tags subjects updated_at cover_thumbnail]
+               else
+                 %w[name description privacy copyright tags subjects updated_at cover_thumbnail]
+               end
+
+      params.require(:story).permit(fields).to_h
     end
 
     def stories_of(user, slim)

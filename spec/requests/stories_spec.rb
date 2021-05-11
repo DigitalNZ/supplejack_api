@@ -269,45 +269,100 @@ RSpec.describe 'Stories Endpoints', type: :request do
 
   describe '#update' do
     context 'when story id exists' do
-      before do
-        params = { story: { name: 'Updated Story Name' } }.to_query
+      context 'when updating top level story fields' do
+        before do
+          params = { story: { name: 'Updated Story Name' } }.to_query
+    
+          patch "/v3/stories/#{story.id}.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
+        end
   
-        patch "/v3/stories/#{story.id}.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
+        it 'returns user info of updated story' do
+          response_attributes = JSON.parse(response.body)
+  
+          story.reload
+    
+          expect(response_attributes).to eq ({
+            'name' => 'Updated Story Name',
+            'description' => story.description,
+            'privacy' => story.privacy,
+            'copyright' => 0,
+            'featured' => story.featured,
+            'featured_at' => story.featured_at,
+            'approved' => story.approved,
+            'tags' => story.tags,
+            'subjects' => story.subjects,
+            'updated_at' => JSON.parse(story.updated_at.to_json),
+            'cover_thumbnail' => story.cover_thumbnail,
+            'id' => story.id.to_s,
+            'number_of_items'=> story.set_items.to_a.count { |item| item.type != 'text' },
+            'creator' => story.user.name,
+            'category' => 'Other',
+            'contents' => story.set_items.sort_by(&:position).map do |item|
+              { 
+                'record_id' => item.record_id,
+                'id' => item.id.to_s,
+                'position' => item.position,
+                'type' => item.type,
+                'sub_type' => item.sub_type,
+                'content' => DEFAULT_CONTENT_PRESENTER.call(item),
+                'meta' => { 'size' => item.meta[:size], 'is_cover' => (item.content[:image_url] == story.cover_thumbnail) }
+              }
+            end
+          })
+        end
       end
 
-      it 'returns user info of updated story' do
-        response_attributes = JSON.parse(response.body)
-
-        story.reload
+      context 'when adding a content' do
+        before do
+          params = { story: { content: { position: 5, type: 'text', sub_type: 'heading', content: 'Heading Text' } } }.to_query
+    
+          patch "/v3/stories/#{story.id}.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
+        end
   
-        expect(response_attributes).to eq ({
-          'name' => 'Updated Story Name',
-          'description' => story.description,
-          'privacy' => story.privacy,
-          'copyright' => 0,
-          'featured' => story.featured,
-          'featured_at' => story.featured_at,
-          'approved' => story.approved,
-          'tags' => story.tags,
-          'subjects' => story.subjects,
-          'updated_at' => JSON.parse(story.updated_at.to_json),
-          'cover_thumbnail' => story.cover_thumbnail,
-          'id' => story.id.to_s,
-          'number_of_items'=> story.set_items.to_a.count { |item| item.type != 'text' },
-          'creator' => story.user.name,
-          'category' => 'Other',
-          'contents' => story.set_items.sort_by(&:position).map do |item|
-            { 
-              'record_id' => item.record_id,
-              'id' => item.id.to_s,
-              'position' => item.position,
-              'type' => item.type,
-              'sub_type' => item.sub_type,
-              'content' => DEFAULT_CONTENT_PRESENTER.call(item),
-              'meta' => { 'size' => item.meta[:size], 'is_cover' => (item.content[:image_url] == story.cover_thumbnail) }
-            }
-          end
-        })
+        it 'returns user info of updated story' do
+          response_attributes = JSON.parse(response.body)
+  
+          story.reload
+    
+          expect(response_attributes).to eq ({
+            'name' => story.name,
+            'description' => story.description,
+            'privacy' => story.privacy,
+            'copyright' => 0,
+            'featured' => story.featured,
+            'featured_at' => story.featured_at,
+            'approved' => story.approved,
+            'tags' => story.tags,
+            'subjects' => story.subjects,
+            'updated_at' => JSON.parse(story.updated_at.to_json),
+            'cover_thumbnail' => story.cover_thumbnail,
+            'id' => story.id.to_s,
+            'number_of_items'=> story.set_items.to_a.count { |item| item.type != 'text' },
+            'creator' => story.user.name,
+            'category' => 'Other',
+            'contents' => story.set_items.sort_by(&:position).map do |item|
+              { 
+                'record_id' => item.record_id,
+                'id' => item.id.to_s,
+                'position' => item.position,
+                'type' => item.type,
+                'sub_type' => item.sub_type,
+                'content' => DEFAULT_CONTENT_PRESENTER.call(item),
+                'meta' => { 'size' => item.meta[:size], 'is_cover' => (item.content[:image_url] == story.cover_thumbnail) }
+              }
+            end
+          })
+        end
+      end
+
+      context 'when updating content' do
+        it 'returns story with updated content' do
+        end
+      end
+
+      context 'when adding a record' do
+        it 'returns story with new record item' do
+        end
       end
     end
 
@@ -430,7 +485,7 @@ RSpec.describe 'Stories Endpoints', type: :request do
       it 'returns error message' do
         response_attributes = JSON.parse(response.body)
 
-        expect(response_attributes).to eq ({ 'errors' => I18n.t('errors.user_not_found', key: 'thisisafakekey') })
+        expect(response_attributes).to eq ({ 'errors' => I18n.t('errors.user_with_id_not_found', id: 'thisisafakekey') })
       end
     end
 

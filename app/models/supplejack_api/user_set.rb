@@ -27,6 +27,8 @@ module SupplejackApi
     field :cover_thumbnail,  type: String
     field :username,         type: String
 
+    validates :copyright, inclusion: { in: [0, 1, 2] }
+
     # This field was created for sorting items to know that
     # the cover_thumbnail was selected by the user so dont change it.
     # We have decided not to do this for now

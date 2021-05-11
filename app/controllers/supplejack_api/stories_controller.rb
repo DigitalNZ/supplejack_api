@@ -63,12 +63,12 @@ module SupplejackApi
 
     def story_params
       fields = if current_story_user.admin?
-                 %w[name description privacy copyright featured approved tags subjects updated_at cover_thumbnail]
+                 [:name, :description, :privacy, :copyright, :cover_thumbnail, :featured, :approved, tags: [], subjects: []]
                else
-                 %w[name description privacy copyright tags subjects updated_at cover_thumbnail]
+                 [:name, :description, :privacy, :copyright, :cover_thumbnail, tags: [], subjects: []]
                end
 
-      params.require(:story).permit(fields).to_h
+      params.require(:story).permit(fields)
     end
 
     def stories_of(user, slim)

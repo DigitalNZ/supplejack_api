@@ -271,7 +271,7 @@ RSpec.describe 'Stories Endpoints', type: :request do
     context 'when story id exists' do
       context 'when updating top level story fields' do
         before do
-          params = { story: { name: 'Updated Story Name' } }.to_query
+          params = { story: { name: 'Updated Story Name', tags: ['tag1'] } }.to_query
     
           patch "/v3/stories/#{story.id}.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
         end
@@ -289,7 +289,7 @@ RSpec.describe 'Stories Endpoints', type: :request do
             'featured' => story.featured,
             'featured_at' => story.featured_at,
             'approved' => story.approved,
-            'tags' => story.tags,
+            'tags' => ['tag1'],
             'subjects' => story.subjects,
             'updated_at' => JSON.parse(story.updated_at.to_json),
             'cover_thumbnail' => story.cover_thumbnail,

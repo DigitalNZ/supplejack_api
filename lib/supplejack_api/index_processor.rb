@@ -12,20 +12,20 @@ module SupplejackApi
     def call
       p 'Looking for records to index..' unless Rails.env.test?
 
-      records_to_index = SupplejackApi::Record.ready_for_indexing.where(status: 'active')
+      while SupplejackApi::Record.ready_for_indexing.where(status: 'active').count.positive?
+        p "There are #{SupplejackApi::Record.ready_for_indexing.where(status: 'active').count} records to be indexed.." unless Rails.env.test?
 
-      records_to_index.in_groups_of(size).each do |records|
-        # p "There are #{records_to_index.count} records to be indexed.." unless Rails.env.test?
+        records = SupplejackApi::Record.ready_for_indexing.where(status: 'active').limit(500)
 
         BatchIndexRecords.new(records.compact).call
       end
 
       p 'Looking for records to remove..' unless Rails.env.test?
 
-      records_to_remove = SupplejackApi::Record.ready_for_indexing.where(:status.ne => 'active')
+      while SupplejackApi::Record.ready_for_indexing.where(:status.ne => 'active').count.positive?
+        p "There are #{SupplejackApi::Record.ready_for_indexing.where(:status.ne => 'active').count} records to be removed from the index.." unless Rails.env.test?
 
-      records_to_remove.in_groups_of(size).each do |records|
-        # p "There are #{records_to_remove.count} records to be removed from the index.." unless Rails.env.test?
+        records = SupplejackApi::Record.ready_for_indexing.where(:status.ne => 'active').limit(500)
 
         BatchRemoveRecordsFromIndex.new(records.compact).call
       end

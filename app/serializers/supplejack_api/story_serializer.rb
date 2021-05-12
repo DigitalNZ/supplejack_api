@@ -6,7 +6,7 @@ module SupplejackApi
                :featured, :featured_at, :approved, :tags,
                :subjects, :updated_at, :cover_thumbnail
 
-    has_many :contents, serializer: StoryItemSerializer, unless: -> { @instance_options[:slim] }
+    has_many :contents, serializer: StoryItemSerializer, unless: -> { scope[:slim] }
 
     attribute :creator do
       object.user.name
@@ -16,7 +16,7 @@ module SupplejackApi
       items.to_a.count { |item| item.type != 'text' }
     end
 
-    attribute :record_ids, if: -> { @instance_options[:slim] } do
+    attribute :record_ids, if: -> { scope[:slim] } do
       items.sort_by(&:position).map do |item|
         { record_id: item.record_id, story_item_id: item._id.to_s }
       end

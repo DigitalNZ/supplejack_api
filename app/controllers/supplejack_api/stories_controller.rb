@@ -13,22 +13,25 @@ module SupplejackApi
     before_action :find_story, only: %i[show update destroy]
 
     def index
-      slim = params[:slim] != 'false'
-
-      render json: stories_of(current_story_user, slim).to_json(include_root: false), status: :ok
+      render json: current_story_user.user_sets.order_by(updated_at: 'desc'),
+             each_serializer: StorySerializer,
+             scope: { slim: params[:slim] != 'false' },
+             root: false
     end
 
     # This route is created for front end application to get all stories for a user.
     # Application dont know about the user id but has the api_key for a user.
     # So in this nested route the user api_key is passed as the id.
     def admin_index
-      render json: stories_of(@story_user, true).to_json(include_root: false), status: :ok
+      render json: @story_user.user_sets.order_by(updated_at: 'desc'),
+             each_serializer: StorySerializer,
+             root: false, scope: { slim: true }
     end
 
     def show
       authorize(@story)
 
-      render json: StorySerializer.new(@story, slim: false).to_json(include_root: false), status: :ok
+      render json: StorySerializer.new(@story, scope: { slim: false }).to_json(include_root: false), status: :ok
     end
 
     def create
@@ -36,7 +39,7 @@ module SupplejackApi
 
       if story.valid?
         story.save!
-        render json: StorySerializer.new(story, slim: false).to_json(include_root: false), status: :created
+        render json: StorySerializer.new(story, scope: { slim: false }).to_json(include_root: false), status: :created
       else
         render_error_with(story.errors[:name], :bad_request)
       end
@@ -46,7 +49,7 @@ module SupplejackApi
       authorize(@story)
 
       if @story.update(story_params)
-        render json: StorySerializer.new(@story, slim: false).to_json(include_root: false), status: :ok
+        render json: StorySerializer.new(@story, scope: { slim: false }).to_json(include_root: false), status: :ok
       else
         render_error_with('Failed to update', :bad_request)
       end
@@ -64,12 +67,6 @@ module SupplejackApi
       fields = [:name, :description, :privacy, :copyright, :cover_thumbnail, { tags: [], subjects: [] }]
 
       params.require(:story).permit(fields)
-    end
-
-    def stories_of(user, slim)
-      user.user_sets.order_by(updated_at: 'desc').map do |user_set|
-        StorySerializer.new(user_set, slim: slim)
-      end
     end
 
     def story_user_id_check!

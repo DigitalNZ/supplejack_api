@@ -168,7 +168,7 @@ module SupplejackApi
           allow(controller.current_user.user_sets).to receive(:custom_find) { nil }
           put :update, params: { id: @user_set.id.to_s }
           expect(response.code).to eq("404")
-          expect(response.body).to eq({errors: "Set with id: #{@user_set.id.to_s} was not found."}.to_json)
+          expect(response.body).to eq({errors: "UserSet with id: #{@user_set.id.to_s} was not found."}.to_json)
         end
 
         it "updates the attributes of the @user_set" do
@@ -210,7 +210,7 @@ module SupplejackApi
         allow(controller.current_user.user_sets).to receive(:custom_find) { nil }
         delete :destroy, params: { id: @user_set.id.to_s }
         expect(response.code).to eq("404")
-        expect(response.body).to eq({errors: "Set with id: #{@user_set.id.to_s} was not found."}.to_json)
+        expect(response.body).to eq({errors: "UserSet with id: #{@user_set.id.to_s} was not found."}.to_json)
       end
 
       it "finds the @user_set through the user" do

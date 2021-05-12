@@ -22,7 +22,7 @@ module SupplejackApi
         @user_set.save
         respond_with @user_set, @set_item
       else
-        render json: { errors: "The record with id: #{params[:id]} was not found." }, status: :not_found
+        render json: { errors: I18n.t('errors.record_not_found', id: params[:id]) }, status: :not_found
       end
     end
 

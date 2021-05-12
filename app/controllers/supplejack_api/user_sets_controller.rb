@@ -53,7 +53,7 @@ module SupplejackApi
       if @user_set
         render json: @user_set, user: true, root: 'set', full_set_items: true, adapter: :json
       else
-        render json: { errors: "Set with id: #{params[:id]} was not found." }, status: :not_found
+        render json: { errors: I18n.t('errors.user_set_not_found', id: params[:id]) }, status: :not_found
       end
     end
 

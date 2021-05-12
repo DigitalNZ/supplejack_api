@@ -54,7 +54,7 @@ module SupplejackApi
         it 'returns a 404' do
           delete :destroy, params: { user_set_id: @user_set.id, id: '12' }
           expect(response.code).to eq '404'
-          expect(response.body).to eq({errors: 'The record with id: 12 was not found.'}.to_json)
+          expect(response.body).to eq({errors: I18n.t('errors.record_not_found', id: '12')}.to_json)
         end
       end
     end

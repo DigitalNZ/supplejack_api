@@ -109,8 +109,9 @@ module SupplejackApi
       it "returns a 404 error when the set is not found" do
         allow(UserSet).to receive(:custom_find) { nil }
         get :show, params: { id: @user_set.id.to_s }
+
         expect(response.code).to eq("404")
-        expect(response.body).to eq({errors: "Set with id: #{@user_set.id.to_s} was not found."}.to_json)
+        expect(response.body).to eq({errors: I18n.t('errors.user_set_not_found', id: @user_set.id.to_s)}.to_json)
       end
     end
 

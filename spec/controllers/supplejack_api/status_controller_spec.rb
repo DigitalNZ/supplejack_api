@@ -13,43 +13,57 @@ module SupplejackApi
     end
 
     describe "GET 'status'" do
-      it "returns a '200' HTTP status if both Solr and Mongo are up and running" do
-        allow(controller).to receive(:solr_up?).and_return(true)
-        allow(controller).to receive(:mongod_up?).and_return(true)
+      context 'when Solr and Mongo are up and running' do
+        before do
+          allow(controller).to receive(:solr_up?).and_return(true)
+          allow(controller).to receive(:mongod_up?).and_return(true)
 
-        get :show
-        expect(response.status).to eq 200
+          get :show
+        end
+
+        it 'returns 200' do
+          expect(response).to have_http_status(:ok)
+        end
+
+        it 'returns the correct cache headers' do
+          expect(response.headers['Cache-Control']).to eq 'no-cache'
+        end
       end
 
-      it 'returns the correct cache headers' do
-        allow(controller).to receive(:solr_up?).and_return(true)
-        allow(controller).to receive(:mongod_up?).and_return(true)
-        get :show
+      context 'when Solr down and Mongo is up' do
+        before do
+          allow(controller).to receive(:solr_up?).and_return(false)
+          allow(controller).to receive(:mongod_up?).and_return(true)
 
-        expect(response.headers['Cache-Control']).to eq 'no-cache'
+          get :show
+        end
+
+        it 'returns 500' do
+          expect(response).to have_http_status(:internal_server_error)
+        end
       end
 
-      it "returns a '500' HTTP response if Solr is down" do
-        allow(controller).to receive(:solr_up?).and_return(false)
-        allow(controller).to receive(:mongod_up?).and_return(true)
+      context 'when Solr up and Mongo is down' do
+        before do
+          allow(controller).to receive(:solr_up?).and_return(true)
+          allow(controller).to receive(:mongod_up?).and_return(false)
 
-        get :show
-        expect(response.status).to eq 500
+          get :show
+        end
+
+        it 'returns 500' do
+          expect(response).to have_http_status(:internal_server_error)
+        end
       end
 
-      it "returns a '500' http response if Mongo is down" do
-        allow(controller).to receive(:solr_up?).and_return(true)
-        allow(controller).to receive(:mongod_up?).and_return(false)
+      context 'when Solr times out' do
+        before { allow(controller).to receive(:solr_up?).and_raise(Timeout::Error) }
 
-        get :show
-        expect(response.status).to eq 500
-      end
+        it 'logs an error message' do
+          expect(logger).to receive(:error)
 
-      it "logs an error message when the status call takes a long time" do
-        allow(controller).to receive(:solr_up?).and_raise(Timeout::Error)
-
-        expect(logger).to receive(:error)
-        get :show
+          get :show
+        end
       end
     end
 

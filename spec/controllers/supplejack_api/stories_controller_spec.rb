@@ -100,12 +100,11 @@ module SupplejackApi
 
       context 'when successful' do
         let(:response_body) { JSON.parse(response.body).deep_symbolize_keys }
-        let(:story_id) { user.user_sets.first.id.to_s }
+        let(:story)         { user.user_sets.first }
+        let(:story_id)      { story.id.to_s }
 
         before do
-          2.times do
-            create(:story, user: user)
-          end
+          2.times { create(:story, user: user) }
 
           get :show, params: { api_key: api_key, id: story_id}
         end
@@ -120,6 +119,13 @@ module SupplejackApi
 
         it 'returns a valid story' do
           expect(::StoriesApi::V3::Schemas::Story.call(response_body).success?).to eq(true)
+        end
+
+        it 'creates a user_story_views entry for RequestMetric' do
+          expect(SupplejackApi::RequestMetric.count).to eq 1
+          expect(SupplejackApi::RequestMetric.first.records.map { |x| x[:record_id] }).to eq story.set_items.map(&:record_id)
+          expect(SupplejackApi::RequestMetric.first.records.map { |x| x[:display_collection] }).to eq story.set_items.map { |x| x[:content][:display_collection] }
+          expect(SupplejackApi::RequestMetric.first.metric).to eq 'user_story_views'
         end
       end
     end

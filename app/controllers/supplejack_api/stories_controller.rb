@@ -3,14 +3,14 @@
 module SupplejackApi
   class StoriesController < SupplejackApplicationController
     include Pundit
-    include Concerns::Stories
-    include Concerns::StoriesControllerMetrics
+    include Concerns::IgnoreMetrics
 
     rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
     before_action :authenticate_admin!, :story_user_id_check!, only: [:admin_index]
     before_action :story_user_check!, except: %i[admin_index show]
     before_action :find_story, only: %i[show update destroy]
+    after_action :create_story_record_views, only: :show
 
     def index
       render json: current_story_user.user_sets.order_by(updated_at: 'desc'),
@@ -87,6 +87,17 @@ module SupplejackApi
 
     def user_not_authorized
       render_error_with(I18n.t('errors.user_not_authorized_for_story'), :unauthorized)
+    end
+
+    def create_story_record_views
+      return unless log_request_for_metrics?
+
+      payload = JSON.parse(response.body)
+      log = payload['contents']&.map do |record|
+        { record_id: record['record_id'], display_collection: record['content']['display_collection'] }
+      end
+
+      SupplejackApi::RequestMetric.spawn(log, 'user_story_views') if log
     end
   end
 end

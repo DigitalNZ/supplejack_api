@@ -206,7 +206,13 @@ RSpec.describe 'Stories Endpoints', type: :request do
   describe '#create' do
     context 'successful post' do
       before do
-        params = { story: { name: 'New Story Name' } }.to_query
+        params = { story: { name: 'New Story Name',
+                            description: nil,
+                            privacy: nil,
+                            copyright: nil,
+                            tags: nil,
+                            subjects: nil }
+                 }.to_query
 
         post "/v3/stories.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
       end
@@ -216,7 +222,7 @@ RSpec.describe 'Stories Endpoints', type: :request do
         response_attributes = JSON.parse(response.body)
 
         expect(response_attributes).to eq ({
-          'name' => story.name,
+          'name' => 'New Story Name',
           'description' => story.description,
           'privacy' => story.privacy,
           'copyright' => 0,

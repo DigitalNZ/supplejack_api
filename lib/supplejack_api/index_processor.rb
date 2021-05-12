@@ -15,7 +15,7 @@ module SupplejackApi
       records_to_index = SupplejackApi::Record.ready_for_indexing.where(status: 'active')
 
       records_to_index.in_groups_of(size).each do |records|
-        p "There are #{records_to_index.count} records to be indexed.." unless Rails.env.test?
+        # p "There are #{records_to_index.count} records to be indexed.." unless Rails.env.test?
 
         BatchIndexRecords.new(records.compact).call
       end
@@ -25,7 +25,7 @@ module SupplejackApi
       records_to_remove = SupplejackApi::Record.ready_for_indexing.where(:status.ne => 'active')
 
       records_to_remove.in_groups_of(size).each do |records|
-        p "There are #{records_to_remove.count} records to be removed from the index.." unless Rails.env.test?
+        # p "There are #{records_to_remove.count} records to be removed from the index.." unless Rails.env.test?
 
         BatchRemoveRecordsFromIndex.new(records.compact).call
       end

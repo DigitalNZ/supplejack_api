@@ -36,6 +36,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'mongoid_auto_increment'
   s.add_dependency 'paperclip'
   s.add_dependency 'progressbar'
+  s.add_dependency 'pundit', '~> 2.1'
   s.add_dependency 'rails', '6.1.3.1'
   s.add_dependency 'responders'
   s.add_dependency 'rest-client'

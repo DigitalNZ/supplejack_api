@@ -48,7 +48,7 @@ en:
     user_with_id_not_found: "User with provided user id %{id} not found"
     user_key_missing: 'Mandatory parameter user_key missing'
     story_not_found: "Story with provided Id %{id} not found"
-    user_not_authorized_for_story: "Story with provided Id %{id} is private story and requires the creator's key as user_key"
+    user_not_authorized_for_story: "Provided user key is not authorized to access this story"
 
   time:
     formats:

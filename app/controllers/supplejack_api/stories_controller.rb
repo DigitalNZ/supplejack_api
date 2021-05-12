@@ -2,8 +2,11 @@
 
 module SupplejackApi
   class StoriesController < SupplejackApplicationController
+    include Pundit
     include Concerns::Stories
     # include Concerns::StoriesControllerMetrics
+
+    rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
     before_action :authenticate_admin!, :story_user_id_check!, only: [:admin_index]
     before_action :story_user_check!, except: %i[admin_index show]
@@ -23,15 +26,9 @@ module SupplejackApi
     end
 
     def show
-      if @story.privacy == 'private'
-        if @story.user == current_story_user || current_story_user&.admin?
-          render json: StorySerializer.new(@story, slim: false).to_json(include_root: false), status: :ok
-        else
-          render_error_with(I18n.t('errors.user_not_authorized_for_story', id: params[:id]), :unauthorized)
-        end
-      else
-        render json: StorySerializer.new(@story, slim: false).to_json(include_root: false), status: :ok
-      end
+      authorize(@story)
+
+      render json: StorySerializer.new(@story, slim: false).to_json(include_root: false), status: :ok
     end
 
     def create
@@ -46,6 +43,8 @@ module SupplejackApi
     end
 
     def update
+      authorize(@story)
+
       if @story.update(story_params)
         render json: StorySerializer.new(@story, slim: false).to_json(include_root: false), status: :ok
       else
@@ -62,11 +61,7 @@ module SupplejackApi
     private
 
     def story_params
-      fields = if current_story_user.admin?
-                 [:name, :description, :privacy, :copyright, :cover_thumbnail, :featured, :approved, tags: [], subjects: []]
-               else
-                 [:name, :description, :privacy, :copyright, :cover_thumbnail, tags: [], subjects: []]
-               end
+      fields = [:name, :description, :privacy, :copyright, :cover_thumbnail, { tags: [], subjects: [] }]
 
       params.require(:story).permit(fields)
     end
@@ -87,6 +82,14 @@ module SupplejackApi
       @story = SupplejackApi::UserSet.custom_find(params[:id])
 
       render_error_with(I18n.t('errors.story_not_found', id: params[:id]), :not_found) unless @story
+    end
+
+    def pundit_user
+      current_story_user
+    end
+
+    def user_not_authorized
+      render_error_with(I18n.t('errors.user_not_authorized_for_story'), :unauthorized)
     end
   end
 end

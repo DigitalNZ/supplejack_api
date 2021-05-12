@@ -269,6 +269,22 @@ RSpec.describe 'Stories Endpoints', type: :request do
 
   describe '#update' do
     context 'when story id exists' do
+      context 'when user key does not belong to story' do
+        let(:user) { create(:user) }
+
+        before do
+          params = { story: { name: 'Updated Story Name' } }.to_query
+
+          patch "/v3/stories/#{story.id}.json?api_key=#{admin.authentication_token}&user_key=#{user.api_key}&#{params}"
+        end
+
+        it 'returns error message' do
+          response_attributes = JSON.parse(response.body)
+
+          expect(response_attributes).to eq ({ 'errors' => I18n.t('errors.user_not_authorized_for_story') })
+        end
+      end
+
       context 'when updating top level story fields' do
         before do
           params = { story: { name: 'Updated Story Name', tags: ['tag1'] } }.to_query
@@ -354,16 +370,6 @@ RSpec.describe 'Stories Endpoints', type: :request do
           })
         end
       end
-
-      context 'when updating content' do
-        it 'returns story with updated content' do
-        end
-      end
-
-      context 'when adding a record' do
-        it 'returns story with new record item' do
-        end
-      end
     end
 
     context 'when story id does not exist' do
@@ -377,34 +383,6 @@ RSpec.describe 'Stories Endpoints', type: :request do
         response_attributes = JSON.parse(response.body)
   
         expect(response_attributes).to eq ({ 'errors' => I18n.t('errors.story_not_found', id: 'fakestoryid') })
-      end
-    end
-
-    context 'when user_key belongs admin' do
-      %w[featured approved].each do |admin_field|
-        it "can update admin field #{admin_field}" do
-          params = { story: { name: 'Updated Story Name' } }
-          params[:story][admin_field] = true
-          patch "/v3/stories/#{story.id}.json?api_key=#{admin.authentication_token}&user_key=#{admin.api_key}&#{params.to_query}"
-
-          response_attributes = JSON.parse(response.body)
-
-          expect(response_attributes[admin_field]).to eq true
-        end
-      end
-    end
-
-    context 'when user_key belongs no admin' do
-      %w[featured approved].each do |admin_field|
-        it "can not update admin field #{admin_field}" do
-          params = { story: { name: 'Updated Story Name' } }
-          params[:story][admin_field] = true
-          patch "/v3/stories/#{story.id}.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params.to_query}"
-
-          response_attributes = JSON.parse(response.body)
-
-          expect(response_attributes[admin_field]).to eq false
-        end
       end
     end
   end

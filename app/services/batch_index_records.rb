@@ -32,7 +32,9 @@ class BatchIndexRecords
     Sunspot.index record
     record.update(index_updated: true, index_updated_at: Time.current)
   rescue StandardError => e
-    Rails.logger.error "BatchIndexRecords - Failed to index Record #{record.record_id}: #{record.inspect} - #{e.message}"
+    Rails.logger.error(
+      "BatchIndexRecords - Failed to index Record #{record.record_id}: #{record.inspect} - #{e.message}"
+    )
     record.update(index_updated: true, index_updated_at: Time.current)
   end
 end

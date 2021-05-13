@@ -3,6 +3,7 @@
 module SupplejackApi
   class IndexProcessor
     # rubocop:disable Rails/Output
+    # rubocop:disable Layout/LineLength
     def call
       p 'Looking for records to index..' unless Rails.env.test?
 
@@ -17,9 +18,12 @@ module SupplejackApi
       while SupplejackApi::Record.ready_for_indexing.where(:status.ne => 'active').count.positive?
         p "There are #{SupplejackApi::Record.ready_for_indexing.where(:status.ne => 'active').count} records to be removed from the index.." unless Rails.env.test?
 
-        BatchRemoveRecordsFromIndex.new( SupplejackApi::Record.ready_for_indexing.where(:status.ne => 'active').limit(500)).call
+        BatchRemoveRecordsFromIndex.new(
+          SupplejackApi::Record.ready_for_indexing.where(:status.ne => 'active').limit(500)
+        ).call
       end
     end
     # rubocop:enable Rails/Output
+    # rubocop:enable Layout/LineLength
   end
 end

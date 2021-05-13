@@ -12,12 +12,30 @@ module SupplejackApi
     def call
       p 'Looking for records to index..' unless Rails.env.test?
 
+      # mem = GetProcessMem.new
+      # puts "Before the mock indexing.. #{mem.mb}"
+
+      # 5.times do
+      #   SupplejackApi::Record.ready_for_indexing.where(status: 'active').count
+
+      #   p "I am indexing records ... "
+      # end
+
+      # puts "After the mock indexing ... #{mem.mb}"
+
+      mem = GetProcessMem.new
+      puts "Before the while loop #{mem.mb}"
+
       while SupplejackApi::Record.ready_for_indexing.where(status: 'active').count.positive?
+        # puts "Before the count #{mem.mb}"
+
         p "There are #{SupplejackApi::Record.ready_for_indexing.where(status: 'active').count} records to be indexed.." unless Rails.env.test?
+      
+        # puts "Before sending to the index job #{mem.mb}"
 
-        records = SupplejackApi::Record.ready_for_indexing.where(status: 'active').limit(500)
+        BatchIndexRecords.new(SupplejackApi::Record.ready_for_indexing.where(status: 'active').limit(500)).call
 
-        BatchIndexRecords.new(records.compact).call
+        # puts "After Batch Index Records #{mem.mb}"
       end
 
       p 'Looking for records to remove..' unless Rails.env.test?
@@ -25,9 +43,7 @@ module SupplejackApi
       while SupplejackApi::Record.ready_for_indexing.where(:status.ne => 'active').count.positive?
         p "There are #{SupplejackApi::Record.ready_for_indexing.where(:status.ne => 'active').count} records to be removed from the index.." unless Rails.env.test?
 
-        records = SupplejackApi::Record.ready_for_indexing.where(:status.ne => 'active').limit(500)
-
-        BatchRemoveRecordsFromIndex.new(records.compact).call
+        BatchRemoveRecordsFromIndex.new( SupplejackApi::Record.ready_for_indexing.where(:status.ne => 'active').limit(500)).call
       end
     end
     # rubocop:enable Rails/Output

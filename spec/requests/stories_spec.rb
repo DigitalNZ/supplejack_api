@@ -46,7 +46,7 @@ RSpec.describe 'Stories Endpoints', type: :request do
                 'updated_at' => JSON.parse(story.updated_at.to_json),
                 'cover_thumbnail' => story.cover_thumbnail,
                 'id' => story.id.to_s,
-                'number_of_items'=> story.set_items.to_a.count { |item| item.type != 'text' },
+                'number_of_items'=> story.set_items.reject { |item| item.type == 'text' }.count,
                 'creator' => story.user.name,
                 'category' => 'Other',
                 'record_ids'=> story.set_items.sort_by(&:position).map do |item|
@@ -78,7 +78,7 @@ RSpec.describe 'Stories Endpoints', type: :request do
                 'updated_at' => JSON.parse(story.updated_at.to_json),
                 'cover_thumbnail' => story.cover_thumbnail,
                 'id' => story.id.to_s,
-                'number_of_items'=> story.set_items.to_a.count { |item| item.type != 'text' },
+                'number_of_items'=> story.set_items.reject { |item| item.type == 'text' }.count,
                 'creator' => story.user.name,
                 'category' => 'Other',
                 'contents' => story.set_items.map do |content|
@@ -121,7 +121,7 @@ RSpec.describe 'Stories Endpoints', type: :request do
             'updated_at' => JSON.parse(story.updated_at.to_json),
             'cover_thumbnail' => story.cover_thumbnail,
             'id' => story.id.to_s,
-            'number_of_items'=> story.set_items.to_a.count { |item| item.type != 'text' },
+            'number_of_items'=> story.set_items.reject { |item| item.type == 'text' }.count,
             'creator' => story.user.name,
             'category' => 'Other',
             'contents' => story.set_items.sort_by(&:position).map do |item|
@@ -172,7 +172,7 @@ RSpec.describe 'Stories Endpoints', type: :request do
               'updated_at' => JSON.parse(story.updated_at.to_json),
               'cover_thumbnail' => story.cover_thumbnail,
               'id' => story.id.to_s,
-              'number_of_items'=> story.set_items.to_a.count { |item| item.type != 'text' },
+              'number_of_items'=> story.set_items.reject { |item| item.type == 'text' }.count,
               'creator' => story.user.name,
               'category' => 'Other',
               'contents' => story.set_items.sort_by(&:position).map do |item|
@@ -234,7 +234,7 @@ RSpec.describe 'Stories Endpoints', type: :request do
           'updated_at' => JSON.parse(story.updated_at.to_json),
           'cover_thumbnail' => story.cover_thumbnail,
           'id' => story.id.to_s,
-          'number_of_items'=> story.set_items.to_a.count { |item| item.type != 'text' },
+          'number_of_items'=> story.set_items.reject { |item| item.type == 'text' }.count,
           'creator' => story.user.name,
           'category' => 'Other',
           'contents' => []
@@ -316,7 +316,7 @@ RSpec.describe 'Stories Endpoints', type: :request do
             'updated_at' => JSON.parse(story.updated_at.to_json),
             'cover_thumbnail' => story.cover_thumbnail,
             'id' => story.id.to_s,
-            'number_of_items'=> story.set_items.to_a.count { |item| item.type != 'text' },
+            'number_of_items'=> story.set_items.reject { |item| item.type == 'text' }.count,
             'creator' => story.user.name,
             'category' => 'Other',
             'contents' => story.set_items.sort_by(&:position).map do |item|
@@ -359,7 +359,7 @@ RSpec.describe 'Stories Endpoints', type: :request do
             'updated_at' => JSON.parse(story.updated_at.to_json),
             'cover_thumbnail' => story.cover_thumbnail,
             'id' => story.id.to_s,
-            'number_of_items'=> story.set_items.to_a.count { |item| item.type != 'text' },
+            'number_of_items'=> story.set_items.reject { |item| item.type == 'text' }.count,
             'creator' => story.user.name,
             'category' => 'Other',
             'contents' => story.set_items.sort_by(&:position).map do |item|
@@ -494,7 +494,7 @@ RSpec.describe 'Stories Endpoints', type: :request do
                 'updated_at' => JSON.parse(story.updated_at.to_json),
                 'cover_thumbnail' => story.cover_thumbnail,
                 'id' => story.id.to_s,
-                'number_of_items'=> story.set_items.to_a.count { |item| item.type != 'text' },
+                'number_of_items'=> story.set_items.reject { |item| item.type == 'text' }.count,
                 'creator' => story.user.name,
                 'category' => 'Other',
                 'record_ids'=> story.set_items.sort_by(&:position).map do |item|

@@ -13,7 +13,7 @@ module SupplejackApi
     end
 
     attribute :number_of_items do
-      items.to_a.count { |item| item.type != 'text' }
+      items.reject { |item| item.type == 'text' }.count
     end
 
     attribute :record_ids, if: -> { scope[:slim] } do

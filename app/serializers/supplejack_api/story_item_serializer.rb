@@ -35,7 +35,7 @@ module SupplejackApi
       }
 
       record_id = object[:content][:id]
-      record = SupplejackApi.config.record_class.find_by(record_id: record_id) rescue nil
+      record = SupplejackApi::Record.find_by(record_id: record_id) rescue nil
       result = { id: record_id.to_i }
 
       record_fields.each do |name, field|

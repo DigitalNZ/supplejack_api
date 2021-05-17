@@ -43,9 +43,9 @@ RSpec.configure do |config|
 
   config.example_status_persistence_file_path = 'spec/examples.txt'
 
-  require 'database_cleaner'
+  require 'database_cleaner-mongoid'
   config.before(:suite) do
-    DatabaseCleaner[:mongoid].strategy = :truncation
+    DatabaseCleaner[:mongoid].strategy = :deletion
   end
 
   config.before(:each) do

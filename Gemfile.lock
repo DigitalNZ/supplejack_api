@@ -146,13 +146,9 @@ GEM
     crass (1.0.6)
     daemons (1.4.0)
     dalli (2.7.11)
-    database_cleaner (1.8.5)
-    database_cleaner-mongo (1.8.1)
-      database_cleaner (~> 1.8.0)
-      mongo
-    database_cleaner-mongoid (1.8.1)
-      database_cleaner (~> 1.8.0)
-      database_cleaner-mongo (~> 1.8.0)
+    database_cleaner-core (2.0.1)
+    database_cleaner-mongoid (2.0.1)
+      database_cleaner-core (~> 2.0.0)
       mongoid
     debug_inspector (1.1.0)
     devise (4.8.0)
@@ -483,7 +479,7 @@ DEPENDENCIES
   better_errors
   binding_of_caller
   codeclimate-test-reporter
-  database_cleaner-mongoid
+  database_cleaner-mongoid (~> 2.0, >= 2.0.1)
   factory_bot_rails
   faker
   generator_spec

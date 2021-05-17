@@ -55,7 +55,7 @@ Gem::Specification.new do |s|
   # ## Development dependancies
   s.add_development_dependency 'better_errors'
   s.add_development_dependency 'binding_of_caller'
-  s.add_development_dependency 'database_cleaner-mongoid'
+  s.add_development_dependency 'database_cleaner-mongoid', '~> 2.0', '>= 2.0.1'
   s.add_development_dependency 'factory_bot_rails'
   s.add_development_dependency 'json_spec'
   s.add_development_dependency 'launchy'

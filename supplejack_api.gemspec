@@ -27,7 +27,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'dry-struct'
   s.add_dependency 'dry-validation', '0.13.0'
   s.add_dependency 'figaro'
-  s.add_dependency 'gabba'
   s.add_dependency 'kaminari'
   s.add_dependency 'kaminari-mongoid'
   s.add_dependency 'lazy_high_charts'

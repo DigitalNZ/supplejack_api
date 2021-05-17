@@ -24,7 +24,6 @@ PATH
       dry-struct
       dry-validation (= 0.13.0)
       figaro
-      gabba
       json-ld
       kaminari
       kaminari-mongoid
@@ -223,7 +222,6 @@ GEM
     fugit (1.4.5)
       et-orbi (~> 1.1, >= 1.1.8)
       raabro (~> 1.4)
-    gabba (1.0.1)
     generator_spec (0.9.4)
       activesupport (>= 3.0.0)
       railties (>= 3.0.0)

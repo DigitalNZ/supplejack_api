@@ -21,9 +21,6 @@ require 'rails-controller-testing'
 require 'pundit/rspec'
 
 Rails::Controller::Testing.install
-# require "codeclimate-test-reporter"
-# CodeClimate::TestReporter.start
-
 Rails.backtrace_cleaner.remove_silencers!
 
 # Load support files

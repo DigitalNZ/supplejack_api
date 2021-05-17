@@ -62,7 +62,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'pry-byebug'
   s.add_development_dependency 'pry-rails'
   s.add_development_dependency 'rails-controller-testing'
-  s.add_development_dependency 'rb-fsevent'
   s.add_development_dependency 'rspec'
   s.add_development_dependency 'rspec-activemodel-mocks'
   s.add_development_dependency 'rspec-rails'

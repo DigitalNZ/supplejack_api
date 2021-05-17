@@ -12,7 +12,7 @@ class BatchIndexRecords
   def call
     Sunspot.index(records.to_a) if records.any?
 
-    # update_all skips the callbacks. 
+    # update_all skips the callbacks.
     SupplejackApi::Record.where(:record_id.in => records.map(&:record_id))
                          .update_all(index_updated: true, index_updated_at: Time.current)
   rescue StandardError

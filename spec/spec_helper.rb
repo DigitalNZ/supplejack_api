@@ -15,7 +15,6 @@ require 'rspec/rails'
 require 'factory_bot_rails'
 require 'timecop'
 require 'sunspot_matchers'
-# require 'simplecov'
 require 'rspec/active_model/mocks'
 require 'sunspot_test/rspec'
 require 'rails-controller-testing'
@@ -24,7 +23,6 @@ require 'pundit/rspec'
 Rails::Controller::Testing.install
 # require "codeclimate-test-reporter"
 # CodeClimate::TestReporter.start
-# SimpleCov.start
 
 Rails.backtrace_cleaner.remove_silencers!
 

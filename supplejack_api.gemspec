@@ -68,7 +68,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec-rails'
   s.add_development_dependency 'rubocop'
   s.add_development_dependency 'rubocop-rails'
-  s.add_development_dependency 'simplecov'
   s.add_development_dependency 'sunspot_matchers'
   s.add_development_dependency 'sunspot_test'
   s.add_development_dependency 'timecop'

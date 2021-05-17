@@ -29,7 +29,7 @@ PATH
       kaminari-mongoid
       lazy_high_charts
       mimemagic
-      mongoid (~> 7.0.1)
+      mongoid (~> 7.1.0)
       mongoid_auto_increment
       paperclip
       progressbar
@@ -282,7 +282,7 @@ GEM
     minitest (5.14.4)
     mongo (2.14.0)
       bson (>= 4.8.2, < 5.0.0)
-    mongoid (7.0.12)
+    mongoid (7.1.8)
       activemodel (>= 5.1, < 6.2)
       mongo (>= 2.7.0, < 3.0.0)
     mongoid_auto_increment (0.1.5)

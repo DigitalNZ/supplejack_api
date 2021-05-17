@@ -19,6 +19,7 @@ require 'sunspot_matchers'
 require 'rspec/active_model/mocks'
 require 'sunspot_test/rspec'
 require 'rails-controller-testing'
+require 'pundit/rspec'
 
 Rails::Controller::Testing.install
 # require "codeclimate-test-reporter"

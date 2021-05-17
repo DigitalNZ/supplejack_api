@@ -5,16 +5,16 @@ module SupplejackApi
     before_action :authenticate_user!
 
     rescue_from Timeout::Error do |_exception|
-      render request.format.to_sym => { errors: ['Request timed out'] }, status: :request_timeout
+      render request.format.to_sym => { errors: [I18n.t('errors.time_out')] }, status: :request_timeout
     end
 
     rescue_from Errno::ECONNREFUSED, Errno::ECONNRESET do |_exception|
-      render request.format.to_sym => { errors: ['Solr is temporarily unavailable please try again in a few seconds'] },
+      render request.format.to_sym => { errors: [I18n.t('errors.solr_unavailable')] },
              status: :service_unavailable
     end
 
     rescue_from Mongoid::Errors::DocumentNotFound do |_exception|
-      render request.format.to_sym => { errors: "Record with ID #{params[:id]} was not found" }, status: :not_found
+      render request.format.to_sym => { errors: I18n.t('errors.record_not_found', id: params[:id]) }, status: :not_found
     end
 
     def authenticate_user!
@@ -45,11 +45,15 @@ module SupplejackApi
       @current_user ||= User.find_by_api_key(params[:api_key])
     end
 
+    def current_story_user
+      @current_story_user ||= User.find_by_api_key(params[:user_key])
+    end
+
     def authenticate_admin!
       return true if RecordSchema.roles[current_user.role.to_sym].try(:admin)
 
       render request.format.to_sym => {
-        errors: 'You need Administrator privileges to perform this request'
+        errors: I18n.t('errors.requires_admin_privileges')
       }, status: :forbidden
     end
 
@@ -58,28 +62,32 @@ module SupplejackApi
       return true if RecordSchema.roles[current_user.role.to_sym].try(:harvester)
 
       render format => {
-        errors: "You need Harvester privileges to perform this request.\
-        Your API key role must have the attribute { harvester: true }.\
-        Check the available roles in your record_schema.rb file."
+        errors: I18n.t('errors.requires_harvest_privileges')
       }, status: :forbidden
     end
 
-    def user_key_check!
-      render request.format.to_sym => {
-        errors: 'Mandatory parameter user_key missing'
-      }, status: :bad_request unless params[:user_key]
+    def story_user_check!
+      if params[:user_key]
+        render_error_with(I18n.t('errors.user_not_found', key: params[:user_key]), :not_found) unless current_story_user
+      else
+        render_error_with(I18n.t('errors.user_key_missing'), :bad_request)
+      end
     end
 
     def find_user_set
-      user_set_id = params[:user_set_id] || params[:id]
+      id = params[:user_set_id] || params[:id]
 
       @user_set = if RecordSchema.roles[current_user.role.to_sym].try(:admin)
-                    UserSet.custom_find(user_set_id)
+                    UserSet.custom_find(id)
                   else
-                    current_user.user_sets.custom_find(user_set_id)
+                    current_user.user_sets.custom_find(id)
                   end
 
-      render(json: { errors: "Set with id: #{params[:id]} was not found." }, status: :not_found) unless @user_set
+      render(json: { errors: I18n.t('errors.user_set_not_found', id: id) }, status: :not_found) unless @user_set
+    end
+
+    def render_error_with(message, code)
+      render(json: { errors: message }, status: code)
     end
   end
 end

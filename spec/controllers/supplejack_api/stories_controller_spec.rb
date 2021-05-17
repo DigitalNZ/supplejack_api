@@ -20,7 +20,7 @@ module SupplejackApi
         end
 
         it 'returns a 200 http code' do
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(:ok)
         end
 
         it 'returns all their stories' do
@@ -44,11 +44,11 @@ module SupplejackApi
         before { get :admin_index, params: { api_key: api_key, user_id: '1231231231' }}
 
         it 'returns 404' do
-          expect(response.status).to eq(404)
+          expect(response).to have_http_status(:not_found)
         end
 
         it 'includes the error message' do
-          expect(response.body).to include('User with provided Api Key 1231231231 not found')
+          expect(response.body).to include(I18n.t('errors.user_with_id_not_found', id: '1231231231'))
         end
       end
 
@@ -56,11 +56,11 @@ module SupplejackApi
         before { get :admin_index, params: { api_key: user.api_key, user_id: user.api_key }}
 
         it 'returns 403' do
-          expect(response.status).to eq(403)
+          expect(response).to have_http_status(:forbidden)
         end
 
         it 'includes the error message' do
-          expect(response.body).to include('Administrator privileges')
+          expect(response.body).to include('You need Administrator privileges to perform this request')
         end
       end
 
@@ -76,7 +76,7 @@ module SupplejackApi
         end
 
         it 'returns a 200 http code' do
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(:ok)
         end
 
         it 'returns all their stories' do
@@ -86,32 +86,31 @@ module SupplejackApi
     end
 
     describe 'GET show' do
-      context 'unsuccessful request - provided story id does not exist' do
+      context 'when provided story id does not exist' do
         before { get :show, params: { api_key: api_key, id: '1231231231' }}
 
         it 'returns 404' do
-          expect(response.status).to eq(404)
+          expect(response).to have_http_status(:not_found)
         end
 
         it 'includes the error message' do
-          expect(response.body).to include('Story with provided Id 1231231231 not found')
+          expect(response.body).to include(I18n.t('errors.story_not_found', id: '1231231231'))
         end
       end
 
-      context 'successful request' do
+      context 'when successful' do
         let(:response_body) { JSON.parse(response.body).deep_symbolize_keys }
-        let(:story_id) { user.user_sets.first.id.to_s }
+        let(:story)         { user.user_sets.first }
+        let(:story_id)      { story.id.to_s }
 
         before do
-          2.times do
-            create(:story, user: user)
-          end
+          2.times { create(:story, user: user) }
 
           get :show, params: { api_key: api_key, id: story_id}
         end
 
         it 'returns a 200 http code' do
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(:ok)
         end
 
         it 'returns the correct story' do
@@ -121,6 +120,13 @@ module SupplejackApi
         it 'returns a valid story' do
           expect(::StoriesApi::V3::Schemas::Story.call(response_body).success?).to eq(true)
         end
+
+        it 'creates a user_story_views entry for RequestMetric' do
+          expect(SupplejackApi::RequestMetric.count).to eq 1
+          expect(SupplejackApi::RequestMetric.first.records.map { |x| x[:record_id] }).to eq story.set_items.map(&:record_id)
+          expect(SupplejackApi::RequestMetric.first.records.map { |x| x[:display_collection] }).to eq story.set_items.map { |x| x[:content][:display_collection] }
+          expect(SupplejackApi::RequestMetric.first.metric).to eq 'user_story_views'
+        end
       end
     end
 
@@ -129,11 +135,11 @@ module SupplejackApi
         before { post :create, params: {user_key: api_key, api_key: api_key, story: {nope: '1231231231'} }}
 
         it 'returns 400' do
-          expect(response.status).to eq(400)
+          expect(response).to have_http_status(:bad_request)
         end
 
         it 'includes the error message' do
-          expect(response.body).to include('Mandatory Parameter name missing in request')
+          expect(response.body).to include("Name field can't be blank.")
         end
       end
 
@@ -145,8 +151,8 @@ module SupplejackApi
           post :create, params: {user_key: api_key, api_key: api_key, story: { name: story_name }}
         end
 
-        it 'returns a 200 http code' do
-          expect(response.status).to eq(200)
+        it 'returns a 201 http code' do
+          expect(response).to have_http_status(:created)
         end
 
         it 'creates the story' do
@@ -167,11 +173,11 @@ module SupplejackApi
         before { delete :destroy, params: {api_key: api_key, user_key: api_key, id: '1231231231' }}
 
         it 'returns 404' do
-          expect(response.status).to eq(404)
+          expect(response).to have_http_status(:not_found)
         end
 
         it 'includes the error message' do
-          expect(response.body).to include('Story with provided Id 1231231231 not found')
+          expect(response.body).to include(I18n.t('errors.story_not_found', id: '1231231231'))
         end
       end
 
@@ -183,7 +189,7 @@ module SupplejackApi
         end
 
         it 'returns a 204 http code' do
-          expect(response.status).to eq(204)
+          expect(response).to have_http_status(:no_content)
         end
 
         it 'deletes the story' do
@@ -200,11 +206,11 @@ module SupplejackApi
         before { patch :update, params: {api_key: api_key, user_key: api_key, id: '1231231231' }}
 
         it 'returns 404' do
-          expect(response.status).to eq(404)
+          expect(response).to have_http_status(:not_found)
         end
 
         it 'includes the error message' do
-          expect(response.body).to include('Story with provided Id 1231231231 not found')
+          expect(response.body).to include(I18n.t('errors.story_not_found', id: '1231231231'))
         end
       end
 
@@ -225,7 +231,7 @@ module SupplejackApi
         end
 
         it 'returns a 200 http code' do
-          expect(response.status).to eq(200)
+          expect(response).to have_http_status(:ok)
         end
 
         it 'updates the given Story' do

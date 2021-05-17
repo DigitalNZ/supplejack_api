@@ -14,7 +14,27 @@ module SupplejackApi
     context 'validations' do
       it 'is not valid without a name' do
         user_set.name = nil
-        expect(user_set).to_not be_valid
+        expect(user_set).to be_invalid
+      end
+
+      it 'is not valid for copyright values other than 0, 1 or 2' do
+        user_set.copyright = 3
+
+        expect(user_set).to be_invalid
+      end
+
+      it 'is not valid for privacy values other than public, hidden or private' do
+        user_set.privacy = 'exposed'
+
+        expect(user_set).to be_invalid
+      end
+
+      [0, 1, 2].each do |copyright|
+        it "is valid with a #{copyright} copyright" do
+          user_set.copyright = copyright
+
+          expect(user_set).to be_valid
+        end
       end
 
       %w[public hidden private].each do |privacy|
@@ -23,12 +43,6 @@ module SupplejackApi
 
           expect(user_set).to be_valid
         end
-      end
-
-      it 'is not valid with another privacy setting' do
-        user_set.privacy = 'admin'
-
-        expect(user_set).to_not be_valid
       end
     end
 

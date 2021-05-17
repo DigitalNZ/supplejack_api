@@ -22,7 +22,8 @@ module SupplejackApi
         allow_any_instance_of(RecordSearch).to receive(:errors) { [] }
 
         expect(RecordSearch).to receive(:new).with(hash_including(text: 'dogs')).and_return(@search)
-        get :index, params: { api_key: 'apikey', text: "dogs" }, format: "json"
+        get :index, params: { api_key: 'apikey', text: 'dogs' }, format: :json
+
         expect(assigns(:search)).to eq(@search)
       end
 
@@ -30,7 +31,7 @@ module SupplejackApi
         allow_any_instance_of(RecordSearch).to receive(:valid?) { false }
         allow_any_instance_of(RecordSearch).to receive(:errors) { [] }
 
-        get :index, params: { api_key: 'apikey', text: '123'}, format: "json"
+        get :index, params: { api_key: 'apikey', text: '123'}, format: :json
 
         expect(assigns[:search].request_url).to eq "http://test.host/records?api_key=apikey&text=123"
       end
@@ -40,7 +41,7 @@ module SupplejackApi
         allow_any_instance_of(RecordSearch).to receive(:errors) { [] }
 
         expect(@search).to receive(:scope=).with(@user)
-        get :index, params: { api_key: 'apikey' }, format: "json"
+        get :index, params: { api_key: 'apikey' }, format: :json
       end
 
       it 'should return an error if the search request is invalid' do
@@ -49,26 +50,28 @@ module SupplejackApi
         get :index, params: { api_key: 'apikey', page: 100001 }, format: 'json'
 
         expect(response.body).to eq({ errors: ['The page parameter can not exceed 100,000'] }.to_json)
-        expect(response.code).to eq '400'
+
+        expect(response).to have_http_status(:bad_request)
       end
 
       it 'should return timeout 408 error if error is solr unavailable' do
         allow_any_instance_of(RecordSearch).to receive(:valid?).and_raise(Timeout::Error)
 
 
-        get :index, params: { api_key: 'apikey', text: "dogs" }, format: "json"
+        get :index, params: { api_key: 'apikey', text: "dogs" }, format: :json
 
         expect(response.body).to eq({errors: ['Request timed out']}.to_json)
-        expect(response.code).to eq '408'
+
+        expect(response).to have_http_status(:request_timeout)
       end
 
       it 'should return timeout 400 error if error error' do
         allow_any_instance_of(RecordSearch).to receive(:valid?) { false }
         allow_any_instance_of(RecordSearch).to receive(:errors) { [RSolr::Error::Http] }
 
-        get :index, params: { api_key: 'apikey', text: "dogs" }, format: "json"
+        get :index, params: { api_key: 'apikey', text: "dogs" }, format: :json
 
-        expect(response.code).to eq '400'
+        expect(response).to have_http_status(:bad_request)
       end
 
       context 'json' do
@@ -147,7 +150,7 @@ module SupplejackApi
         end
 
         it 'has a succesful response code' do
-          expect(response).to be_successful
+          expect(response).to have_http_status(:ok)
         end
 
         it 'sets the correct Content-Type' do
@@ -161,7 +164,7 @@ module SupplejackApi
         end
 
         it 'has a succesful response code' do
-          expect(response).to be_successful
+          expect(response).to have_http_status(:ok)
         end
 
         it 'sets the correct Content-Type' do

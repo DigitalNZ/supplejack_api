@@ -34,8 +34,13 @@ module SupplejackApi
         status: :status
       }
 
-      record_id = object[:content][:id]
+      # This is done as user_set and stories endpoints behaved differently
+      # and created content with :id and :record_id. So now we have to deal with both.
+      record_id = object[:content][:id] || object[:content][:record_id]
       record = SupplejackApi::Record.find_by(record_id: record_id) rescue nil
+
+      return {} unless record
+
       result = { id: record_id.to_i }
 
       record_fields.each do |name, field|

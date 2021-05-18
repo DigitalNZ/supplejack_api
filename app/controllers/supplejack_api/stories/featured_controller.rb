@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-# frozen_string_literal: true# frozen_string_literal: true
-
 module SupplejackApi
   module Stories
     class FeaturedController < SupplejackApplicationController

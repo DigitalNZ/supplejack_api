@@ -5,7 +5,7 @@ module SupplejackApi
     include Concerns::Stories
     include Concerns::StoryItemsControllerMetrics
 
-    before_action :user_key_check!, except: %i[create update destroy]
+    before_action :story_user_check!, except: %i[create update destroy]
 
     def index
       render_response(:story_items)

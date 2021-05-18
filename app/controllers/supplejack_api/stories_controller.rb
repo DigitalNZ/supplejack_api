@@ -2,40 +2,102 @@
 
 module SupplejackApi
   class StoriesController < SupplejackApplicationController
-    include Concerns::Stories
-    include Concerns::StoriesControllerMetrics
+    include Pundit
+    include Concerns::IgnoreMetrics
 
-    before_action :authenticate_admin!, only: [:admin_index]
-    before_action :user_key_check!, except: %i[admin_index show]
+    rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+
+    before_action :authenticate_admin!, :story_user_id_check!, only: [:admin_index]
+    before_action :story_user_check!, except: %i[admin_index show]
+    before_action :find_story, only: %i[show update destroy]
+    after_action :create_story_record_views, only: :show
 
     def index
-      render_response(:stories)
+      render json: current_story_user.user_sets.order_by(updated_at: 'desc'),
+             each_serializer: StorySerializer,
+             scope: { slim: params[:slim] != 'false' },
+             root: false
     end
 
     # This route is created for front end application to get all stories for a user.
     # Application dont know about the user id but has the api_key for a user.
     # So in this nested route the user api_key is passed as the id.
     def admin_index
-      params[:slim] = true
-      params[:user_key] = params[:user_id]
-      render_response(:stories)
+      render json: @story_user.user_sets.order_by(updated_at: 'desc'),
+             each_serializer: StorySerializer,
+             root: false, scope: { slim: true }
     end
 
     def show
-      params[:slim] = false
-      render_response(:story)
+      authorize(@story)
+
+      render json: StorySerializer.new(@story, scope: { slim: false }).to_json(include_root: false), status: :ok
     end
 
     def create
-      render_response(:stories)
+      story = current_story_user.user_sets.build(story_params)
+
+      if story.valid?
+        story.save!
+        render json: StorySerializer.new(story, scope: { slim: false }).to_json(include_root: false), status: :created
+      else
+        render_error_with(story.errors[:name], :bad_request)
+      end
     end
 
     def update
-      render_response(:story)
+      authorize(@story)
+
+      if @story.update(story_params)
+        render json: StorySerializer.new(@story, scope: { slim: false }).to_json(include_root: false), status: :ok
+      else
+        render_error_with('Failed to update', :bad_request)
+      end
     end
 
     def destroy
-      render_response(:story)
+      @story.destroy
+
+      head :no_content
+    end
+
+    private
+
+    def story_params
+      fields = [:name, :description, :privacy, :copyright, :cover_thumbnail, { tags: [], subjects: [] }]
+
+      params.require(:story).permit(fields)
+    end
+
+    def story_user_id_check!
+      @story_user = User.find_by_api_key(params[:user_id])
+
+      render_error_with(I18n.t('errors.user_with_id_not_found', id: params[:user_id]), :not_found) unless @story_user
+    end
+
+    def find_story
+      @story = SupplejackApi::UserSet.custom_find(params[:id])
+
+      render_error_with(I18n.t('errors.story_not_found', id: params[:id]), :not_found) unless @story
+    end
+
+    def pundit_user
+      current_story_user
+    end
+
+    def user_not_authorized
+      render_error_with(I18n.t('errors.user_not_authorized_for_story'), :unauthorized)
+    end
+
+    def create_story_record_views
+      return unless log_request_for_metrics?
+
+      payload = JSON.parse(response.body)
+      log = payload['contents']&.map do |record|
+        { record_id: record['record_id'], display_collection: record['content']['display_collection'] }
+      end
+
+      SupplejackApi::RequestMetric.spawn(log, 'user_story_views') if log
     end
   end
 end

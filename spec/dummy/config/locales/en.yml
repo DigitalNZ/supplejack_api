@@ -8,7 +8,6 @@ en:
     reached_limit: You have reached your maximum number of api requests today
     invalid_token: Invalid API Key
     blank_token: Please provide a API Key
-
     title: Users
     username: Username
     name: Name
@@ -16,9 +15,7 @@ en:
     role: Role
     daily_requests: API requests today
     monthly_requests: API requests last 30 days
-
     log_out: Log out
-
     edit: Edit
 
   site_activities:
@@ -33,7 +30,6 @@ en:
     download_csv: Download as CSV
     not_a_admin: This area is restricted to Administrators
 
-
   mongoid:
     models:
       user_set: Set
@@ -46,7 +42,22 @@ en:
       messages:
         blank: "%{attribute} field can't be blank."
         inclusion: "%{value} is not a valid %{attribute} value"
-      
+
+  errors:
+    record_not_found: "Record with ID %{id} was not found"
+    user_not_found: "User with provided Api Key %{key} not found"
+    user_with_id_not_found: "User with provided user id %{id} not found"
+    user_key_missing: 'Mandatory parameter user_key missing'
+    story_not_found: "Story with provided Id %{id} not found"
+    user_set_not_found: "UserSet with id: %{id} was not found."
+    user_not_authorized_for_story: "Provided user key is not authorized to access this story"
+    requires_admin_privileges: "You need Administrator privileges to perform this request"
+    solr_unavailable: "Solr is temporarily unavailable please try again in a few seconds"
+    time_out: "Request timed out"
+    requires_harvest_privileges: "You need Harvester privileges to perform this request.\
+                                 Your API key role must have the attribute { harvester: true }.\
+                                 Check the available roles in your record_schema.rb file."
+
   time:
     formats:
       default: "%Y-%m-%d %H:%M:%S %Z"

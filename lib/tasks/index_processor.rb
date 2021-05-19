@@ -3,7 +3,7 @@
 require 'rake'
 
 namespace :index_processor do
-  task :run, :environment do
+  task run: :environment do
     loop do
       fork do
         SupplejackApi::IndexProcessor.new.call

@@ -87,10 +87,10 @@ RSpec.describe 'Stories Endpoints', type: :request do
                     'position' => content.position,
                     'type' => content.type,
                     'sub_type' => content.sub_type,
-                    'content' => {'value' => content.content[:value],
-                                  'image_url' => content.content[:image_url],
-                                  'display_collection' => content.content[:display_collection],
-                                  'category' => content.content[:category] },
+                    'content' => { 'value' => content.content[:value],
+                                   'image_url' => content.content[:image_url],
+                                   'display_collection' => content.content[:display_collection],
+                                   'category' => content.content[:category] },
                     'meta' => {'size' => content.meta[:size], 'is_cover' => false } }
                 end
               }

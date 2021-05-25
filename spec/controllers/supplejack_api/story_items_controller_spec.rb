@@ -33,17 +33,19 @@ module SupplejackApi
         it 'returns 400 if user_key not passed' do
           get :index, params: { story_id: 'madeupkey', api_key: api_key}
 
-          expect(response.status).to eq(400)
+          expect(response).to have_http_status(:not_found)
         end
 
         it 'returns a 404 if story dosent exist' do
           get :index, params: { story_id: 'madeupkey', api_key: api_key, user_key: api_key}
-          expect(response.status).to eq(404)
+
+          expect(response).to have_http_status(:not_found)
           expect(JSON.parse(response.body)['errors']).to eq("Story with provided Id madeupkey not found")
         end
 
         it 'returns a 404 if user dosent exist' do
           get :index, params: { story_id: story.id.to_s, api_key: 'madeupkey'}
+
           expect(response.status).to eq(403)
           expect(JSON.parse(response.body)['errors']).to eq("Invalid API Key")
         end

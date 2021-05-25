@@ -195,4 +195,36 @@ RSpec.describe 'Story Items Endpoints', type: :request do
       end
     end
   end
+
+  describe '#destroy' do
+    let(:item) { story.set_items.first }
+
+    context 'when story id does not exist' do
+      before { delete "/v3/stories/fakestoryid/items/#{item.id.to_s}.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}" }
+
+      it 'returns error message' do
+        response_attributes = JSON.parse(response.body)
+
+        expect(response_attributes).to eq ({ 'errors' => I18n.t('errors.story_not_found', id: 'fakestoryid') })
+      end
+    end
+
+    context 'when story item dosent exist' do
+      before { delete "/v3/stories/#{story.id}/items/fakeitemid.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}" }
+
+      it 'returns error' do
+        response_attributes = JSON.parse(response.body)
+
+        expect(response_attributes).to eq ({ 'errors' => "StoryItem with provided Id fakeitemid not found for Story with provided Story Id #{story.id}" })
+      end
+    end
+
+    context 'when story & item exists' do
+      before { delete "/v3/stories/#{story.id}/items/#{item.id.to_s}.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}" }
+
+      it 'returns 204' do
+        expect(response.status).to eq 204
+      end
+    end
+  end
 end

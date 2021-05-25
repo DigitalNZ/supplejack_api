@@ -15,17 +15,12 @@ require 'rspec/rails'
 require 'factory_bot_rails'
 require 'timecop'
 require 'sunspot_matchers'
-# require 'simplecov'
 require 'rspec/active_model/mocks'
 require 'sunspot_test/rspec'
 require 'rails-controller-testing'
 require 'pundit/rspec'
 
 Rails::Controller::Testing.install
-# require "codeclimate-test-reporter"
-# CodeClimate::TestReporter.start
-# SimpleCov.start
-
 Rails.backtrace_cleaner.remove_silencers!
 
 # Load support files
@@ -43,9 +38,9 @@ RSpec.configure do |config|
 
   config.example_status_persistence_file_path = 'spec/examples.txt'
 
-  require 'database_cleaner'
+  require 'database_cleaner-mongoid'
   config.before(:suite) do
-    DatabaseCleaner[:mongoid].strategy = :truncation
+    DatabaseCleaner[:mongoid].strategy = :deletion
   end
 
   config.before(:each) do

@@ -6,8 +6,8 @@ module SupplejackApi
     include Concerns::StoryItemsControllerMetrics
 
     before_action :story_user_check, except: :index
-    before_action :find_story, only: %i[index show]
-    before_action :find_story_item, only: :show
+    before_action :find_story, only: %i[index show destroy]
+    before_action :find_story_item, only: %i[show destroy]
     before_action :story_user_check, except: %i[create update destroy]
 
     def index
@@ -29,7 +29,9 @@ module SupplejackApi
     end
 
     def destroy
-      render_response(:story_item)
+      @item.destroy
+
+      head :no_content
     end
 
     private

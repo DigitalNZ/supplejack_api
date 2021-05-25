@@ -66,7 +66,7 @@ module SupplejackApi
       }, status: :forbidden
     end
 
-    def story_user_check!
+    def story_user_check
       if params[:user_key]
         render_error_with(I18n.t('errors.user_not_found', key: params[:user_key]), :not_found) unless current_story_user
       else

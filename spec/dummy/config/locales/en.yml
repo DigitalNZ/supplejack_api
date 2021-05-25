@@ -49,6 +49,7 @@ en:
     user_with_id_not_found: "User with provided user id %{id} not found"
     user_key_missing: 'Mandatory parameter user_key missing'
     story_not_found: "Story with provided Id %{id} not found"
+    story_item_not_found: "StoryItem with provided Id %{id} not found for Story with provided Story Id %{story_id}"
     user_set_not_found: "UserSet with id: %{id} was not found."
     user_not_authorized_for_story: "Provided user key is not authorized to access this story"
     requires_admin_privileges: "You need Administrator privileges to perform this request"

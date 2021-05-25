@@ -6,7 +6,8 @@ module SupplejackApi
     include Concerns::StoryItemsControllerMetrics
 
     before_action :story_user_check, except: :index
-    before_action :find_story, only: :index
+    before_action :find_story, only: %i[index show]
+    before_action :find_story_item, only: :show
     before_action :story_user_check, except: %i[create update destroy]
 
     def index
@@ -16,7 +17,7 @@ module SupplejackApi
     end
 
     def show
-      render_response(:story_item)
+      render json: StoryItemSerializer.new(@item).to_json(include_root: false), status: :ok
     end
 
     def create
@@ -37,6 +38,13 @@ module SupplejackApi
       @story = SupplejackApi::UserSet.find_by_id(params[:story_id])
 
       render_error_with(I18n.t('errors.story_not_found', id: params[:story_id]), :not_found) unless @story
+    end
+
+    def find_story_item
+      @item = @story.set_items.find_by_id(params[:id])
+
+      render_error_with(I18n.t('errors.story_item_not_found', id: params[:id], story_id: params[:story_id]),
+                        :not_found) unless @item
     end
   end
 end

@@ -19,13 +19,51 @@ module SupplejackApi
     field :content,     type: Hash,  default: {}
     field :meta,        type: Hash,  default: {}
 
-    # validates :record_id,   presence: true, uniqueness: true, numericality: { greater_than: 0 }
-    validates :record_id,   allow_blank: true, uniqueness: true, numericality: { greater_than: 0 }
-    validates :position,    presence: true, uniqueness: true
-    validate  :not_adding_set_to_itself
+    validates :record_id, allow_blank: true, uniqueness: true, numericality: { greater_than: 0 }
+    validates :position, presence: true, uniqueness: true
+    validates :type, presence: { message: 'Mandatory Parameters Missing: type is missing' }
+    validates :sub_type, presence: { message: 'Mandatory Parameters Missing: sub_type is missing' }
+
+    validate :not_adding_set_to_itself
+    validate :valid_type_text_heading,   if: -> { type == 'text' && sub_type == 'heading' }
+    validate :valid_type_text_rich_text, if: -> { type == 'text' && sub_type == 'rich_text' }
+    validate :valid_type_embed_record,   if: -> { type == 'embed' && sub_type == 'record' }
 
     before_validation :set_position
     after_destroy :reindex_record
+
+    # Make content check a seperate method
+    def valid_type_embed_record
+      if content
+        if content[:id] && !content[:id].is_a?(Integer)
+          errors.add(:content, 'Unsupported Value: content must contain integer field id')
+        end
+      else
+        errors.add(:content, 'Content is missing')
+      end
+
+      if meta.blank?
+        errors.add(:meta, 'Meta is missing')
+      else
+        return unless meta[:alignment] && %w[left center right].exclude?(meta[:alignment])
+
+        errors.add(:meta, 'Unsupported Values: alignment must be one of: left center or right in meta')
+      end
+    end
+
+    def valid_type_text_rich_text
+      errors.add(:content, 'Content is missing') if content.blank?
+    end
+
+    def valid_type_text_heading
+      errors.add(:content, 'Content is missing') if content.blank?
+
+      errors.add(:meta, 'Meta is missing') if meta.blank?
+
+      return unless meta[:size] && [1, 2, 3, 4, 5, 6].exclude?(meta[:size])
+
+      errors.add(:meta, 'Unsupported Values: size must be one of: 1, 2, 3, 4, 5, 6 in meta')
+    end
 
     # The Schema validations for meta and content require the keys to be symbols
     def meta

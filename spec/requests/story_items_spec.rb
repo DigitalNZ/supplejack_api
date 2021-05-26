@@ -123,7 +123,7 @@ RSpec.describe 'Story Items Endpoints', type: :request do
 
             response_attributes = JSON.parse(response.body)
 
-            expect(response_attributes).to eq ({ 'errors' => 'Mandatory Parameters Missing: type is missing sub_type is missing' })
+            expect(response_attributes).to eq ({ 'errors' => 'Mandatory Parameters Missing: type is missing, Mandatory Parameters Missing: sub_type is missing' })
           end
 
           it 'returns error for missing content & meta' do
@@ -132,7 +132,7 @@ RSpec.describe 'Story Items Endpoints', type: :request do
 
             response_attributes = JSON.parse(response.body)
 
-            expect(response_attributes).to eq ({ 'errors' => 'Mandatory Parameters Missing: content is missing meta is missing' })
+            expect(response_attributes).to eq ({ 'errors' => 'Content is missing, Meta is missing' })
           end
 
           it 'returns error for size is not valid' do
@@ -147,12 +147,12 @@ RSpec.describe 'Story Items Endpoints', type: :request do
 
         context 'when item is a embed record' do
           it 'returns error for missing record id in content' do
-            params = { item: { type: 'embed', sub_type: 'record', content: { id: nil }, meta: {} } }.to_query
+            params = { item: { type: 'embed', sub_type: 'record', content: { id: nil }, meta: { alignment: 'left' } } }.to_query
             post "/v3/stories/#{story.id}/items.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
 
             response_attributes = JSON.parse(response.body)
 
-            expect(response_attributes).to eq ({ 'errors' => 'Mandatory Parameters Missing: id must be filled in content meta is missing' })
+            expect(response_attributes).to eq ({ 'errors' => 'Unsupported Value: content must contain integer field id' })
           end
 
           # This test is not suppose to pass as the id is integer
@@ -163,7 +163,7 @@ RSpec.describe 'Story Items Endpoints', type: :request do
 
             response_attributes = JSON.parse(response.body)
 
-            expect(response_attributes).to eq ({ 'errors' => 'Bad Request: id must be an integer in content' })
+            expect(response_attributes).to eq ({ 'errors' => 'Unsupported Value: content must contain integer field id' })
           end
         end
       end
@@ -179,7 +179,7 @@ RSpec.describe 'Story Items Endpoints', type: :request do
         response_attributes = JSON.parse(response.body)
 
         expect(response).to have_http_status(200)
-        expect(response_attributes).to include({ 'type' => 'text', 'sub_type' => 'heading', 'content' => { 'value' => 'Heading text' }, 'meta' => { 'align_mode' => '0' }})
+        expect(response_attributes).to include('type' => 'text', 'sub_type' => 'heading', 'content' => { 'value' => 'Heading text' }, 'meta' => { 'align_mode' => '0', 'is_cover' => false })
       end
     end
 

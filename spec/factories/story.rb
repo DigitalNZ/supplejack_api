@@ -6,13 +6,13 @@ FactoryBot.define do
       number_of_story_items { 2 }
     end
 
-    name { 'Story name' }
-    description { 'Story description' }
     user
-    featured { false }
-    approved { false }
-    tags { ['story', 'tags'] }
-    copyright { 0 }
+    name            { 'Story name' }
+    description     { 'Story description' }
+    featured        { false }
+    approved        { false }
+    tags            { ['story', 'tags'] }
+    copyright       { 0 }
     cover_thumbnail { 'https://thumbnail_url' }
 
     after(:create) do |story, evaluator|

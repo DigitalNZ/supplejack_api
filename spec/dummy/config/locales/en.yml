@@ -44,6 +44,7 @@ en:
         inclusion: "%{value} is not a valid %{attribute} value"
 
   errors:
+    param_missing: "Mandatory Parameter %{param} missing in request"
     record_not_found: "Record with ID %{id} was not found"
     user_not_found: "User with provided Api Key %{key} not found"
     user_with_id_not_found: "User with provided user id %{id} not found"

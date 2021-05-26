@@ -2,10 +2,10 @@ FactoryBot.define do
   factory :story_item, class: SupplejackApi::SetItem do
     user_set
     sequence(:position)
-    type { 'text' }
-    sub_type { 'heading' }
-    content {{value: 'foo', image_url: ('a'..'z').to_a.shuffle.join, display_collection: 'TAPHUI', category: ['Audio']}}
-    meta {{size: 1}}
+    type      { 'text' }
+    sub_type  { 'heading' }
+    content   { { value: 'foo', image_url: ('a'..'z').to_a.shuffle.join, display_collection: 'TAPHUI', category: ['Audio'] } }
+    meta      { { size: 1 } }
     record_id { record&.record_id.present? ? record.record_id : SecureRandom.random_number(1000000) }
 
     trait :script_value do
@@ -17,31 +17,30 @@ FactoryBot.define do
     end
 
     factory :heading_item do
-      type { 'text' }
+      type     { 'text' }
       sub_type { 'heading' }
-      content {{value: 'foo'}}
-      meta {{size: 1}}
+      content  { { value: 'foo' } }
+      meta     { { size: 1 } }
     end
 
     factory :rich_text_item do
-      type { 'text' }
+      type     { 'text' }
       sub_type { 'rich-text' }
-      content {{value: 'foo'}}
+      content  { { value: 'foo' } }
     end
 
     factory :embed_dnz_item do
       transient do
-        title { 'A title' }
+        title              { 'A title' }
         display_collection { 'Display collection' }
-        category { 'Category' }
-        image_url { 'http://foo.bar' }
-        tags { ['tags', 'yo'] }
-
-        alignment { 'left' }
-        caption { 'a caption' }
+        category           { 'Category' }
+        image_url          { 'http://foo.bar' }
+        tags               { ['tags', 'yo'] }
+        alignment          { 'left' }
+        caption            { 'a caption' }
       end
 
-      type { 'embed' }
+      type     { 'embed' }
       sub_type { 'record' }
 
       record do

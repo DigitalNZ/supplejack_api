@@ -4,6 +4,11 @@ module SupplejackApi
   class SupplejackApplicationController < ::ApplicationController
     before_action :authenticate_user!
 
+    rescue_from ActionController::ParameterMissing do |error|
+      render request.format.to_sym => { errors: I18n.t('errors.param_missing', param: error.param.to_s) },
+             status: :bad_request
+    end
+
     rescue_from Timeout::Error do |_exception|
       render request.format.to_sym => { errors: [I18n.t('errors.time_out')] }, status: :request_timeout
     end

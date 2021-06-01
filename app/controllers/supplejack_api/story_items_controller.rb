@@ -27,19 +27,21 @@ module SupplejackApi
         @story.cover_thumbnail = item.content[:image_url] unless @story.cover_thumbnail
         @story.save!
 
+        # specs for postion change & setting is_cover url required
+
+        #   if position
+        #     StoriesApi::V3::Endpoints::Moves.new(story_id: story.id.to_s,
+        #                                          user_key: user.api_key,
+        #                                          item_id: story_item.id.to_s,
+        #                                          position: position).post
+        #     story_item.reload
+        #   end
+
         render json: StoryItemSerializer.new(item).to_json(include_root: false), status: :ok
       else
         render_error_with(item.errors.messages.values.join(', '), :bad_request)
       end
     end
-
-    #   if position
-    #     StoriesApi::V3::Endpoints::Moves.new(story_id: story.id.to_s,
-    #                                          user_key: user.api_key,
-    #                                          item_id: story_item.id.to_s,
-    #                                          position: position).post
-    #     story_item.reload
-    #   end
 
     def update
       render_response(:story_item)

@@ -13,6 +13,7 @@ module StoriesApi
             end
 
             required(:content).schema do
+              # required(:id).maybe(:str?)
               required(:id).filled(:int?)
               optional(:title).filled(:str?)
               optional(:display_collection).filled(:str?)

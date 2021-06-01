@@ -20,14 +20,16 @@ module SupplejackApi
     field :meta,        type: Hash,  default: {}
 
     validates :record_id, allow_blank: true, uniqueness: true, numericality: { greater_than: 0 }
+
     validates :position, presence: true, uniqueness: true
-    validates :type, presence: { message: 'Mandatory Parameters Missing: type is missing' }
+    validates :type,     presence: { message: 'Mandatory Parameters Missing: type is missing' }
     validates :sub_type, presence: { message: 'Mandatory Parameters Missing: sub_type is missing' }
 
-    validate :not_adding_set_to_itself
     validate :valid_type_text_heading,   if: -> { type == 'text' && sub_type == 'heading' }
     validate :valid_type_text_rich_text, if: -> { type == 'text' && sub_type == 'rich_text' }
     validate :valid_type_embed_record,   if: -> { type == 'embed' && sub_type == 'record' }
+
+    validate :not_adding_set_to_itself
 
     before_validation :set_position
     after_destroy :reindex_record
@@ -35,7 +37,7 @@ module SupplejackApi
     # Make content check a seperate method
     def valid_type_embed_record
       if content
-        if content[:id] && !content[:id].is_a?(Integer)
+        if content[:id] && !(content[:id].is_a?(Integer) || content[:id] =~ /^\d+$/)
           errors.add(:content, 'Unsupported Value: content must contain integer field id')
         end
       else

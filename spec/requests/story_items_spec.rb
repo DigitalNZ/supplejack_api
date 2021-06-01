@@ -146,24 +146,54 @@ RSpec.describe 'Story Items Endpoints', type: :request do
         end
 
         context 'when item is a embed record' do
-          it 'returns error for missing record id in content' do
-            params = { item: { type: 'embed', sub_type: 'record', content: { id: nil }, meta: { alignment: 'left' } } }.to_query
-            post "/v3/stories/#{story.id}/items.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
+          context 'params are right' do
+            let(:record) { create(:record) }
 
-            response_attributes = JSON.parse(response.body)
+            it 'returns success' do
+              params = { item: { type: 'embed', sub_type: 'record', record_id: record.record_id, content: { id: record.record_id }, meta: { alignment: 'left' } } }.to_query
+              post "/v3/stories/#{story.id}/items.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
 
-            expect(response_attributes).to eq ({ 'errors' => 'Unsupported Value: content must contain integer field id' })
+              response_attributes = JSON.parse(response.body)
+              story.reload
+              new_item = story.set_items.last
+              expected_attributes = { 'id' => new_item.id.to_s, 'position' => new_item.position,
+                                      'type' => "embed", 'sub_type' => 'record',
+                                      'record_id' => record.record_id,
+                                      'content' => {
+                                        'id' =>  record.record_id, 'title' => 'Untitled',
+                                        'display_collection' => nil, 'category' => [],
+                                        'image_url' => nil, 'landing_url' => nil,
+                                        'tags' => [], 'description' => nil,
+                                        'content_partner' => [], 'creator' => [],
+                                        'rights' => nil, 'contributing_partner' => [],
+                                        'status' => "active"
+                                      },
+                                      'meta' => { 'alignment' => 'left', 'is_cover' => false } }
+
+
+
+              expect(response_attributes).to eq expected_attributes
+            end
           end
 
-          # This test is not suppose to pass as the id is integer
-          # This is a known issue https://github.com/rspec/rspec-rails/issues/610
-          it 'returns error for invalid id type' do
-            params = { item: { type: 'embed', sub_type: 'record', content: { id: 100 }, meta: { alignment: 'left' } } }.to_query
-            post "/v3/stories/#{story.id}/items.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
+          context 'when record id is passed wrongly' do
+            it 'returns error for missing record id in content' do
+              params = { item: { type: 'embed', sub_type: 'record', content: { id: nil }, meta: { alignment: 'left' } } }.to_query
+              post "/v3/stories/#{story.id}/items.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
 
-            response_attributes = JSON.parse(response.body)
+              response_attributes = JSON.parse(response.body)
 
-            expect(response_attributes).to eq ({ 'errors' => 'Unsupported Value: content must contain integer field id' })
+              expect(response_attributes).to eq ({ 'errors' => 'Unsupported Value: content must contain integer field id' })
+            end
+
+            it 'returns error for invalid id type' do
+              params = { item: { type: 'embed', sub_type: 'record', content: { id: 'i100' }, meta: { alignment: 'left' } } }.to_query
+              post "/v3/stories/#{story.id}/items.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
+
+              response_attributes = JSON.parse(response.body)
+
+              expect(response_attributes).to eq ({ 'errors' => 'Unsupported Value: content must contain integer field id' })
+            end
           end
         end
       end

@@ -3,56 +3,61 @@ require 'spec_helper'
 module SupplejackApi
   describe SetItem do
   	let(:user_set) { FactoryBot.build(:user_set) }
-    let(:set_item) { user_set.set_items.build(record_id: 10, position: 1, type: 'embed', sub_type: 'record') }
+    let(:set_item) { user_set.set_items.build(record_id: 10, position: 1, type: 'embed', sub_type: 'record', meta: { alignment: 'left' }) }
 
     before(:each) do
       allow(user_set).to receive(:record) {double(:record, record_id: 4321, touch: true)}
       allow(user_set).to receive(:update_record)
     end
 
-    context "validations" do
-      it "should not be valid when record_id is not a number" do
-        set_item.record_id = "abc"
+    context 'validations' do
+      it 'should not be valid when record_id is not a number' do
+        set_item.record_id = 'abc'
+
         expect(set_item).to_not be_valid
       end
 
-      it "should be valid when the record_id is a number in string format" do
-        set_item.record_id = "1234"
+      it 'should be valid when the record_id is a number in string format' do
+        set_item.record_id = '1234'
         expect(set_item.record_id).to eq 1234
 
         expect(set_item).to be_valid
       end
 
-      it "should not be valid when the record_id already exists in another set item" do
+      it 'should not be valid when the record_id already exists in another set item' do
         user_set.set_items.build(record_id: 2, position: 1)
         user_set.save
         set_item = user_set.set_items.build(record_id: 2, position: 2)
+
         expect(set_item).to_not be_valid
       end
 
-      it "should not be valid when trying to add a set to itself" do
+      it 'should not be valid when trying to add a set to itself' do
         allow(user_set).to receive(:record) {double(:record, record_id: 1234)}
         user_set.set_items.build(record_id: 1234, position: 1)
         set_item = user_set.set_items.first
+
         expect(set_item).to_not be_valid
       end
 
-      it "should allow set_item to be added to user_set without an associated Record" do
+      it 'should allow set_item to be added to user_set without an associated Record' do
         allow(user_set).to receive(:record)
-        user_set.set_items.build(record_id: 1234, position: 1)
+        user_set.set_items.build(record_id: 1234, position: 1, type: 'embed', sub_type: 'record', meta: { alignment: 'left' })
         set_item = user_set.set_items.first
+
         expect(set_item).to be_valid
       end
     end
 
-    context "callbacks" do
-      it "calls set_position before_validation" do
+    context 'callbacks' do
+      it 'calls set_position before_validation' do
         set_item = user_set.set_items.build(record_id: 20)
         expect(set_item).to receive(:set_position)
+
         set_item.save
       end
 
-       it "updates the user_set updated at field when an item is updated and saved" do
+       it 'updates the user_set updated at field when an item is updated and saved' do
         old_time = user_set.updated_at
         set_item.position = 2
         set_item.save!
@@ -61,7 +66,7 @@ module SupplejackApi
       end
     end
 
-    it "delegates record fields to the :record object" do
+    it 'delegates record fields to the :record object' do
       set_item.record = FactoryBot.create(:record_with_fragment)
 
       expect(set_item.name).to eq "John Doe"
@@ -74,41 +79,45 @@ module SupplejackApi
       end
     end
 
-    describe "#set_position" do
-      context "with a set item" do
+    describe '#set_position' do
+      context 'with a set item' do
         before(:each) do
           user_set.set_items.build(record_id: 1, position: 1)
           user_set.save
         end
 
-        it "positions the set item at the end" do
+        it 'positions the set item at the end' do
           set_item = user_set.set_items.build(record_id: 2)
           set_item.set_position
+
           expect(set_item.position).to eq 2
         end
 
         it "doesn't override the position when already set" do
           set_item = user_set.set_items.build(record_id: 2, position: 4)
           set_item.set_position
+
           expect(set_item.position).to eq 4
         end
       end
 
-      context "without set items" do
-        it "sets the position to 1" do
+      context 'without set items' do
+        it 'sets the position to 1' do
           set_item = user_set.set_items.build(record_id: 2)
           set_item.set_position
+
           expect(set_item.position).to eq 1
         end
       end
     end
 
-    describe "#reindex_record" do
+    describe '#reindex_record' do
       let(:record) {double(:record)}
 
-      it "finds the record and calls index" do
+      it 'finds the record and calls index' do
         expect(Record).to receive(:custom_find).with(set_item.record_id) {record}
         expect(record).to receive(:index)
+
         set_item.reindex_record
       end
     end

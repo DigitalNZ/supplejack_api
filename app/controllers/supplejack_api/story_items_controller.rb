@@ -2,7 +2,6 @@
 
 module SupplejackApi
   class StoryItemsController < SupplejackApplicationController
-    include Concerns::Stories
     # include Concerns::StoryItemsControllerMetrics
 
     before_action :story_user_check, except: :index
@@ -44,7 +43,19 @@ module SupplejackApi
     end
 
     def update
-      render_response(:story_item)
+      if @item.update(item_params)
+        if item_params[:meta]
+          if item_params[:meta][:is_cover]
+            @story.update_attribute(:cover_thumbnail, item.content[:image_url])
+          elsif story.cover_thumbnail == item.content[:image_url]
+            @story.update_attribute(:cover_thumbnail, nil)
+          end
+        end
+
+        render json: StorySerializer.new(@story, scope: { slim: false }).to_json(include_root: false), status: :ok
+      else
+        render_error_with('Failed to update', :bad_request)
+      end
     end
 
     def destroy

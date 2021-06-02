@@ -12,7 +12,7 @@ module SupplejackApi
 
     context 'validations' do
       it 'should not be valid when record_id is not a number' do
-        set_item.record_id = 'abc'
+        set_item.record_id = Faker::Lorem.word
 
         expect(set_item).to_not be_valid
       end
@@ -67,10 +67,11 @@ module SupplejackApi
     end
 
     it 'delegates record fields to the :record object' do
-      set_item.record = FactoryBot.create(:record_with_fragment)
+      record = FactoryBot.create(:record_with_fragment)
+      set_item.record = record
 
-      expect(set_item.name).to eq "John Doe"
-      expect(set_item.address).to eq "Wellington"
+      expect(set_item.name).to eq record.name
+      expect(set_item.address).to eq record.address
     end
 
     it "returns nil for any record field if the record doesn't exist" do

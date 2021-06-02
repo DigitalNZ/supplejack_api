@@ -2,9 +2,8 @@ require 'spec_helper'
 
 module SupplejackApi
   describe SetItem do
-
   	let(:user_set) { FactoryBot.build(:user_set) }
-    let(:set_item) { user_set.set_items.build(record_id: 10, position: 1) }
+    let(:set_item) { user_set.set_items.build(record_id: 10, position: 1, type: 'embed', sub_type: 'record') }
 
     before(:each) do
       allow(user_set).to receive(:record) {double(:record, record_id: 4321, touch: true)}
@@ -20,6 +19,7 @@ module SupplejackApi
       it "should be valid when the record_id is a number in string format" do
         set_item.record_id = "1234"
         expect(set_item.record_id).to eq 1234
+
         expect(set_item).to be_valid
       end
 

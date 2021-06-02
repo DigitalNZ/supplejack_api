@@ -1,246 +1,246 @@
-module StoriesApi
-  module V3
-    module Schemas
-      RSpec.describe Story do
-        let(:valid_story) { build(:story_json, contents: [build(:heading_block)]) }
+# module StoriesApi
+#   module V3
+#     module Schemas
+#       RSpec.describe Story do
+#         let(:valid_story) { build(:story_json, contents: [build(:heading_block)]) }
 
-        it 'requires an id' do
-          result = subject.call(valid_story.except(:id))
+#         it 'requires an id' do
+#           result = subject.call(valid_story.except(:id))
 
-          expect(result.success?).to eq(false)
-          expect(result.messages).to include(:id)
-        end
+#           expect(result.success?).to eq(false)
+#           expect(result.messages).to include(:id)
+#         end
 
-        it 'requires a name' do
-          result = subject.call(valid_story.except(:name))
+#         it 'requires a name' do
+#           result = subject.call(valid_story.except(:name))
 
-          expect(result.success?).to eq(false)
-          expect(result.messages).to include(:name)
-        end
+#           expect(result.success?).to eq(false)
+#           expect(result.messages).to include(:name)
+#         end
 
-        describe '#description' do
-          it 'is required' do
-            result = subject.call(valid_story.except(:description))
+#         describe '#description' do
+#           it 'is required' do
+#             result = subject.call(valid_story.except(:description))
 
-            expect(result.success?).to eq(false)
-            expect(result.messages).to include(:description)
-          end
+#             expect(result.success?).to eq(false)
+#             expect(result.messages).to include(:description)
+#           end
 
-          it 'is allowed to be empty' do
-            result = subject.call(valid_story.update(description: ''))
+#           it 'is allowed to be empty' do
+#             result = subject.call(valid_story.update(description: ''))
 
-            expect(result.success?).to eq(true)
-          end
+#             expect(result.success?).to eq(true)
+#           end
 
-          it 'is not allowed to be nil' do
-            result = subject.call(valid_story.update(description: nil))
+#           it 'is not allowed to be nil' do
+#             result = subject.call(valid_story.update(description: nil))
 
-            expect(result.success?).to eq(false)
-            expect(result.messages).to include(:description)
-          end
-        end
+#             expect(result.success?).to eq(false)
+#             expect(result.messages).to include(:description)
+#           end
+#         end
 
-        describe '#privacy' do
-          context 'invalid' do
-            it 'is invalid when missing' do
-              result = subject.call(valid_story.except(:privacy))
+#         describe '#privacy' do
+#           context 'invalid' do
+#             it 'is invalid when missing' do
+#               result = subject.call(valid_story.except(:privacy))
 
-              expect(result.success?).to eq(false)
-              expect(result.messages).to include(:privacy)
-            end
+#               expect(result.success?).to eq(false)
+#               expect(result.messages).to include(:privacy)
+#             end
 
-            it 'is invalid when invalid privacy status' do
-              result = subject.call(valid_story.update(privacy: 'visible'))
+#             it 'is invalid when invalid privacy status' do
+#               result = subject.call(valid_story.update(privacy: 'visible'))
 
-              expect(result.success?).to eq(false)
-              expect(result.messages).to include(:privacy)
-            end
-          end
+#               expect(result.success?).to eq(false)
+#               expect(result.messages).to include(:privacy)
+#             end
+#           end
 
-          context 'valid' do
-            it 'is valid when it is a valid privacy status' do
-              result = subject.call(valid_story)
+#           context 'valid' do
+#             it 'is valid when it is a valid privacy status' do
+#               result = subject.call(valid_story)
 
-              expect(result.success?).to eq(true)
-            end
-          end
-        end
+#               expect(result.success?).to eq(true)
+#             end
+#           end
+#         end
 
-        describe '#featured' do
-          context 'invalid' do
-            it 'is invalid when missing' do
-              result = subject.call(valid_story.except(:featured))
+#         describe '#featured' do
+#           context 'invalid' do
+#             it 'is invalid when missing' do
+#               result = subject.call(valid_story.except(:featured))
 
-              expect(result.success?).to eq(false)
-              expect(result.messages).to include(:featured)
-            end
+#               expect(result.success?).to eq(false)
+#               expect(result.messages).to include(:featured)
+#             end
 
-            it 'is invalid when set to a non boolean value' do
-              result = subject.call(valid_story.update(featured: 'foo'))
+#             it 'is invalid when set to a non boolean value' do
+#               result = subject.call(valid_story.update(featured: 'foo'))
 
-              expect(result.success?).to eq(false)
-              expect(result.messages).to include(:featured)
-            end
-          end
+#               expect(result.success?).to eq(false)
+#               expect(result.messages).to include(:featured)
+#             end
+#           end
 
-          context 'valid' do
-            it 'is valid when set to a boolean value' do
-              result = subject.call(valid_story)
+#           context 'valid' do
+#             it 'is valid when set to a boolean value' do
+#               result = subject.call(valid_story)
 
-              expect(result.success?).to eq(true)
-            end
-          end
-        end
+#               expect(result.success?).to eq(true)
+#             end
+#           end
+#         end
 
-        describe '#tags' do
-          context 'invalid' do
-            it 'is invalid when missing' do
-              result = subject.call(valid_story.except(:tags))
+#         describe '#tags' do
+#           context 'invalid' do
+#             it 'is invalid when missing' do
+#               result = subject.call(valid_story.except(:tags))
 
-              expect(result.success?).to eq(false)
-              expect(result.messages).to include(:tags)
-            end
+#               expect(result.success?).to eq(false)
+#               expect(result.messages).to include(:tags)
+#             end
 
-            it 'is invalid when set to a non array value' do
-              result = subject.call(valid_story.update(tags: 'foo'))
+#             it 'is invalid when set to a non array value' do
+#               result = subject.call(valid_story.update(tags: 'foo'))
 
-              expect(result.success?).to eq(false)
-              expect(result.messages).to include(:tags)
-            end
-          end
+#               expect(result.success?).to eq(false)
+#               expect(result.messages).to include(:tags)
+#             end
+#           end
 
-          context 'valid' do
-            it 'is valid when set to an array of strings' do
-              result = subject.call(valid_story)
+#           context 'valid' do
+#             it 'is valid when set to an array of strings' do
+#               result = subject.call(valid_story)
 
-              expect(result.success?).to eq(true)
-            end
-          end
-        end
+#               expect(result.success?).to eq(true)
+#             end
+#           end
+#         end
 
-        describe '#approved' do
-          context 'invalid' do
-            it 'is invalid when missing' do
-              result = subject.call(valid_story.except(:approved))
+#         describe '#approved' do
+#           context 'invalid' do
+#             it 'is invalid when missing' do
+#               result = subject.call(valid_story.except(:approved))
 
-              expect(result.success?).to eq(false)
-              expect(result.messages).to include(:approved)
-            end
+#               expect(result.success?).to eq(false)
+#               expect(result.messages).to include(:approved)
+#             end
 
-            it 'is invalid when set to a non boolean value' do
-              result = subject.call(valid_story.update(approved: 'foo'))
+#             it 'is invalid when set to a non boolean value' do
+#               result = subject.call(valid_story.update(approved: 'foo'))
 
-              expect(result.success?).to eq(false)
-              expect(result.messages).to include(:approved)
-            end
-          end
+#               expect(result.success?).to eq(false)
+#               expect(result.messages).to include(:approved)
+#             end
+#           end
 
-          context 'valid' do
-            it 'is valid when set to a boolean value' do
-              result = subject.call(valid_story)
+#           context 'valid' do
+#             it 'is valid when set to a boolean value' do
+#               result = subject.call(valid_story)
 
-              expect(result.success?).to eq(true)
-            end
-          end
-        end
+#               expect(result.success?).to eq(true)
+#             end
+#           end
+#         end
 
-        describe '#number_of_items' do
-          context 'invalid' do
-            it 'is invalid when missing' do
-              result = subject.call(valid_story.except(:number_of_items))
+#         describe '#number_of_items' do
+#           context 'invalid' do
+#             it 'is invalid when missing' do
+#               result = subject.call(valid_story.except(:number_of_items))
 
-              expect(result.success?).to eq(false)
-              expect(result.messages).to include(:number_of_items)
-            end
+#               expect(result.success?).to eq(false)
+#               expect(result.messages).to include(:number_of_items)
+#             end
 
-            it 'is invalid when set to a non integer' do
-              result = subject.call(valid_story.update(number_of_items: 'foo'))
+#             it 'is invalid when set to a non integer' do
+#               result = subject.call(valid_story.update(number_of_items: 'foo'))
 
-              expect(result.success?).to eq(false)
-              expect(result.messages).to include(:number_of_items)
-            end
+#               expect(result.success?).to eq(false)
+#               expect(result.messages).to include(:number_of_items)
+#             end
 
-            it 'is invalid when set to a negative integer' do
-              result = subject.call(valid_story.update(number_of_items: -1))
+#             it 'is invalid when set to a negative integer' do
+#               result = subject.call(valid_story.update(number_of_items: -1))
 
-              expect(result.success?).to eq(false)
-              expect(result.messages).to include(:number_of_items)
-            end
-          end
+#               expect(result.success?).to eq(false)
+#               expect(result.messages).to include(:number_of_items)
+#             end
+#           end
 
-          context 'valid' do
-            it 'is valid when set to a positive integer value' do
-              result = subject.call(valid_story)
+#           context 'valid' do
+#             it 'is valid when set to a positive integer value' do
+#               result = subject.call(valid_story)
 
-              expect(result.success?).to eq(true)
-            end
+#               expect(result.success?).to eq(true)
+#             end
 
-            it 'is valid when set to 0' do
-              result = subject.call(valid_story.update(number_of_items: 0))
+#             it 'is valid when set to 0' do
+#               result = subject.call(valid_story.update(number_of_items: 0))
 
-              expect(result.success?).to eq(true)
-            end
-          end
-        end
+#               expect(result.success?).to eq(true)
+#             end
+#           end
+#         end
 
-        describe '#contents' do
-          context 'invalid' do
-            it 'is invalid when missing' do
-              result = subject.call(valid_story.except(:contents))
+#         describe '#contents' do
+#           context 'invalid' do
+#             it 'is invalid when missing' do
+#               result = subject.call(valid_story.except(:contents))
 
-              expect(result.success?).to eq(false)
-              expect(result.messages).to include(:contents)
-            end
+#               expect(result.success?).to eq(false)
+#               expect(result.messages).to include(:contents)
+#             end
 
-            it 'is invalid when it contains malformed blocks' do
-              result = subject.call(valid_story.update(contents: valid_story[:contents].map { |x| x.except(:meta) }))
+#             it 'is invalid when it contains malformed blocks' do
+#               result = subject.call(valid_story.update(contents: valid_story[:contents].map { |x| x.except(:meta) }))
 
-              expect(result.success?).to eq(false)
-              expect(result.messages).to include(:contents)
-            end
-          end
+#               expect(result.success?).to eq(false)
+#               expect(result.messages).to include(:contents)
+#             end
+#           end
 
-          context 'valid' do
-            it 'is valid when contains valid blocks' do
-              result = subject.call(valid_story)
+#           context 'valid' do
+#             it 'is valid when contains valid blocks' do
+#               result = subject.call(valid_story)
 
-              expect(result.success?).to eq(true)
-            end
-          end
-        end
+#               expect(result.success?).to eq(true)
+#             end
+#           end
+#         end
 
-        describe '#copyright' do
-          context 'invalid' do
-            it 'is invalid when missing' do
-              result = subject.call(valid_story.except(:copyright))
+#         describe '#copyright' do
+#           context 'invalid' do
+#             it 'is invalid when missing' do
+#               result = subject.call(valid_story.except(:copyright))
 
-              expect(result.success?).to eq(false)
-              expect(result.messages).to include(:copyright)
-            end
+#               expect(result.success?).to eq(false)
+#               expect(result.messages).to include(:copyright)
+#             end
 
-            it 'is invalid when set to an invalid copyright number' do
-              result = subject.call(valid_story.update(copyright: 99))
+#             it 'is invalid when set to an invalid copyright number' do
+#               result = subject.call(valid_story.update(copyright: 99))
 
-              expect(result.success?).to eq(false)
-              expect(result.messages).to include(:copyright)
-            end
-          end
+#               expect(result.success?).to eq(false)
+#               expect(result.messages).to include(:copyright)
+#             end
+#           end
 
-          context 'valid' do
-            it 'is valid when it is a valid privacy status' do
-              result = subject.call(valid_story)
+#           context 'valid' do
+#             it 'is valid when it is a valid privacy status' do
+#               result = subject.call(valid_story)
 
-              expect(result.success?).to eq(true)
-            end
-          end
-        end
+#               expect(result.success?).to eq(true)
+#             end
+#           end
+#         end
 
-        it 'is valid for a valid story' do
-          result = subject.call(valid_story)
+#         it 'is valid for a valid story' do
+#           result = subject.call(valid_story)
 
-          expect(result.success?).to eq(true)
-        end
-      end
-    end
-  end
-end
+#           expect(result.success?).to eq(true)
+#         end
+#       end
+#     end
+#   end
+# end

@@ -179,12 +179,9 @@ module SupplejackApi
         new_set_items = []
         set_items.each do |set_item_hash|
           set_item_hash.symbolize_keys!
-          # This ugly fix should be removed when digitalnz.org is decommissioned
           params = set_item_hash.merge(record_id: set_item_hash[:record_id], type: 'embed',
                                        sub_type: 'record', content: { record_id: set_item_hash[:record_id] },
                                        meta: { align_mode: 0 })
-
-          # set_item = self.set_items.find_or_initialize_by(params)
 
           unless (set_item = self.set_items.find_by_record_id(params[:record_id]))
             set_item = self.set_items.new(params)

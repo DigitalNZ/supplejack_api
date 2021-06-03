@@ -20,7 +20,7 @@ module SupplejackApi
     end
 
     def create
-      item = @story.set_items.build(item_params)
+      item = @story.set_items.build(item_params.except(:position))
 
       if item.valid?
         @story.cover_thumbnail = item.content[:image_url] unless @story.cover_thumbnail
@@ -28,13 +28,14 @@ module SupplejackApi
 
         # specs for postion change & setting is_cover url required
 
-        #   if position
-        #     StoriesApi::V3::Endpoints::Moves.new(story_id: story.id.to_s,
-        #                                          user_key: user.api_key,
-        #                                          item_id: story_item.id.to_s,
-        #                                          position: position).post
-        #     story_item.reload
-        #   end
+        # This should be removed when DRY code is removed for StoryItemMovesController
+        if item_params[:position]
+          StoriesApi::V3::Endpoints::Moves.new(story_id: @story.id.to_s,
+                                               user_key: current_story_user.api_key,
+                                               item_id: item.id.to_s,
+                                               position: item_params[:position]).post
+          item.reload
+        end
 
         render json: StoryItemSerializer.new(item).to_json(include_root: false), status: :ok
       else
@@ -46,8 +47,8 @@ module SupplejackApi
       if @item.update(item_params)
         if item_params[:meta]
           if item_params[:meta][:is_cover]
-            @story.update_attribute(:cover_thumbnail, item.content[:image_url])
-          elsif story.cover_thumbnail == item.content[:image_url]
+            @story.update_attribute(:cover_thumbnail, @item.content[:image_url])
+          elsif @story.cover_thumbnail == @item.content[:image_url]
             @story.update_attribute(:cover_thumbnail, nil)
           end
         end

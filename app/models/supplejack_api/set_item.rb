@@ -25,14 +25,31 @@ module SupplejackApi
     validates :type,     presence: { message: 'Mandatory Parameters Missing: type is missing' }
     validates :sub_type, presence: { message: 'Mandatory Parameters Missing: sub_type is missing' }
 
+    validate :valid_type_sub_type,       if: -> { type && sub_type }
     validate :valid_type_text_heading,   if: -> { type == 'text' && sub_type == 'heading' }
-    validate :valid_type_text_rich_text, if: -> { type == 'text' && sub_type == 'rich_text' }
+    validate :valid_type_text_rich_text, if: -> { type == 'text' && sub_type == 'rich-text' }
     validate :valid_type_embed_record,   if: -> { type == 'embed' && sub_type == 'record' }
 
     validate :not_adding_set_to_itself
 
     before_validation :set_position
     after_destroy :reindex_record
+
+    def valid_type_sub_type
+      if %w[text embed].include? type
+        if type == 'text'
+          return if %w[heading rich-text].include? sub_type
+
+          errors.add(:type, 'Unsupported Value: sub_type must be one of: heading or rich-text')
+        else
+          return if  sub_type == 'record'
+
+          errors.add(:type, 'Unsupported Value: sub_type must record')
+        end
+      else
+        errors.add(:type, 'Unsupported Value: type must be one of: text or embed')
+      end
+    end
 
     # Make content check a seperate method
     def valid_type_embed_record

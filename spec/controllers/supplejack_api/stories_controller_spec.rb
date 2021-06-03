@@ -7,7 +7,6 @@ module SupplejackApi
     let(:api_key) { user.api_key }
 
     describe 'GET index' do
-
       context 'successful request' do
         let(:response_body) { JSON.parse(response.body).map(&:deep_symbolize_keys) }
 
@@ -28,7 +27,9 @@ module SupplejackApi
         end
 
         it 'returns valid stories' do
-          expect(response_body.all? {|story| ::StoriesApi::V3::Schemas::Story.call(story).success?}).to eq(true)
+          UserSet.all.each do |story|
+            expect(response_body).to include(StorySerializer.new(story, scope: { slim: false }).as_json)
+          end
         end
       end
     end
@@ -118,7 +119,7 @@ module SupplejackApi
         end
 
         it 'returns a valid story' do
-          expect(::StoriesApi::V3::Schemas::Story.call(response_body).success?).to eq(true)
+          expect(response.body).to eq(StorySerializer.new(story, scope: { slim: false }).to_json)
         end
 
         it 'creates a user_story_views entry for RequestMetric' do
@@ -147,9 +148,7 @@ module SupplejackApi
         let(:response_body) { JSON.parse(response.body).deep_symbolize_keys }
         let(:story_name) { 'StoryNameGoesHere' }
 
-        before do
-          post :create, params: {user_key: api_key, api_key: api_key, story: { name: story_name }}
-        end
+        before { post :create, params: {user_key: api_key, api_key: api_key, story: { name: story_name }} }
 
         it 'returns a 201 http code' do
           expect(response).to have_http_status(:created)
@@ -163,7 +162,9 @@ module SupplejackApi
         end
 
         it 'returns a valid story' do
-          expect(::StoriesApi::V3::Schemas::Story.call(response_body).success?).to eq(true)
+          new_story = SupplejackApi::UserSet.find response_body[:id]
+
+          expect(response.body).to eq(StorySerializer.new(new_story, scope: { slim: false }).to_json)
         end
       end
     end
@@ -219,16 +220,8 @@ module SupplejackApi
         let(:name) { 'InsertANameHere' }
         let(:description) { 'InsertADescriptionHere' }
         let(:story) {user.user_sets.create(attributes_for(:story)) }
-        let(:story_patch) do
-          {
-            name: name,
-            description: description
-          }
-        end
 
-        before do
-          patch :update, params: {api_key: api_key, user_key: api_key, id: story.id, story: story_patch}
-        end
+        before { patch :update, params: { api_key: api_key, user_key: api_key, id: story.id, story: { name: name, description: description } } }
 
         it 'returns a 200 http code' do
           expect(response).to have_http_status(:ok)
@@ -241,8 +234,8 @@ module SupplejackApi
           expect(updated_story.description).to eq(description)
         end
 
-        it 'returns a valid story shape' do
-          expect(::StoriesApi::V3::Schemas::Story.call(response_body).success?).to eq(true)
+        it 'returns a valid story' do
+          expect(response.body).to eq(StorySerializer.new(story.reload, scope: { slim: false }).to_json)
         end
       end
     end

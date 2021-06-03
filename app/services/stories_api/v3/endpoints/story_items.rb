@@ -1,4 +1,4 @@
-# # frozen_string_literal: true
+# frozen_string_literal: true
 
 # module StoriesApi
 #   module V3
@@ -24,7 +24,7 @@
 #         def get
 #           return @errors if @errors
 
-#           presented_story_items = @story.set_items.map { |i| StoriesApi::V3::Presenters::StoryItem.new.call(i, @story) }
+#         presented_story_items = @story.set_items.map { |i| StoriesApi::V3::Presenters::StoryItem.new.call(i, @story) }
 
 #           create_response(status: 200, payload: presented_story_items)
 #         end
@@ -34,7 +34,7 @@
 #           return create_error('MandatoryParamMissing', param: :item) unless params[:item]
 
 #           validator = StoriesApi::V3::Schemas::StoryItem::BlockValidator.new.call(item_params)
-#           return create_error('SchemaValidationError', errors: validator.messages(full: true)) unless validator.success?
+#        return create_error('SchemaValidationError', errors: validator.messages(full: true)) unless validator.success?
 
 #           position = item_params.delete(:position)
 
@@ -72,7 +72,7 @@
 #                                                                   :image_url,
 #                                                                   { category: [],
 #                                                                     tags: [] }],
-#                                                         meta: %i[align_mode is_cover caption title size metadata]).to_h
+#                                                       meta: %i[align_mode is_cover caption title size metadata]).to_h
 #         end
 #       end
 #     end

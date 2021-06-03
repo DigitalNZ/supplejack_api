@@ -134,10 +134,10 @@ module SupplejackApi
       public_not_favourites.desc(:created_at).page(page)
     end
 
-    def self.featured_sets(num = 16)
-      sets = where(privacy: 'public', featured: true).desc(:featured_at).limit(num).to_a
-      sets.delete_if { |s| s.records(1).try(:empty?) }
-      sets
+    def self.featured_sets(limit = 16)
+      sets = where(privacy: 'public', featured: true).desc(:featured_at).limit(limit).to_a
+
+      sets.reject { |set| set.records(1).try(:empty?) }
     end
 
     # Accept a hash of attributes with the user_set attributes, a array

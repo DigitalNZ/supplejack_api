@@ -287,8 +287,8 @@ module SupplejackApi
 
     describe '#public_sets' do
       before :each do
-        @set1 = FactoryBot.create(:user_set, privacy: "public")
-        @set2 = FactoryBot.create(:user_set, privacy: "hidden")
+        @set1 = FactoryBot.create(:user_set, privacy: 'public')
+        @set2 = FactoryBot.create(:user_set, privacy: 'hidden')
       end
 
       it 'returns all public sets' do
@@ -296,7 +296,7 @@ module SupplejackApi
       end
 
       it 'ignores favourites' do
-        @set3 = FactoryBot.create(:user_set, privacy: "public", name: "Favourites")
+        @set3 = FactoryBot.create(:user_set, privacy: 'public', name: "Favourites")
         expect(UserSet.public_sets.to_a).to_not include(@set3)
       end
 
@@ -400,29 +400,29 @@ module SupplejackApi
     end
 
     describe '#featured_sets' do
-      before :each do
-        @record = FactoryBot.create(:record, status: 'active')
-        @set1 = FactoryBot.create(:user_set, privacy: "public", featured: true, featured_at: Time.now.utc - 4.hours)
-        @set1.set_items.create(record_id: @record.record_id)
-        @set2 = FactoryBot.create(:user_set, privacy: "hidden", featured: true)
-        @set2.set_items.create(record_id: @record.record_id)
-        @set3 = FactoryBot.create(:user_set, privacy: "public", featured: false)
-        @set3.set_items.create(record_id: @record.record_id)
+      let(:record) { FactoryBot.create(:record, status: 'active') }
+      let(:set1)   { FactoryBot.create(:user_set, privacy: 'public', featured: true, featured_at: Time.now.utc - 4.hours) }
+      let(:set2)   { FactoryBot.create(:user_set, privacy: 'hidden', featured: true) }
+      let(:set3)   { FactoryBot.create(:user_set, privacy: 'public', featured: false) }
+      let(:set4)   { FactoryBot.create(:user_set, privacy: 'public', featured: true, featured_at: Time.now.utc - 4.hours) }
+      let(:set5)   { FactoryBot.create(:user_set, privacy: 'public', featured: true) }
+
+      before do
+        [set1, set2, set3, set4].each do |set|
+          set.set_items.create(record_id: record.record_id, type: 'embed', sub_type: 'record', meta: { align_mode: 0 }, content: { id: record.record_id })
+        end
       end
 
-      it 'returns public sets' do
-        expect(UserSet.featured_sets.to_a).to eq [@set1]
+      it 'returns public featured sets in the order of featured_at' do
+        expect(UserSet.featured_sets.to_a).to eq [set4, set1]
       end
 
-      it 'orders the sets based on when they were added' do
-        @set4 = FactoryBot.create(:user_set, privacy: "public", featured: true, featured_at: Time.now.utc)
-        @set4.set_items.create(record_id: @record.record_id)
-        expect(UserSet.featured_sets.first).to eq @set4
+      it 'returns only one set when argument limit passed' do
+        expect(UserSet.featured_sets(1).to_a).to eq [set4]
       end
 
       it "doesn't return sets without active records" do
-        @set4 = FactoryBot.create(:user_set, privacy: "public", featured: true, name: "No records")
-        expect(UserSet.featured_sets).to_not include(@set4)
+        expect(UserSet.featured_sets).to_not include(set5)
       end
     end
 
@@ -434,11 +434,11 @@ module SupplejackApi
       }
 
       it 'updates the set attributes' do
-        user_set.update_attributes_and_embedded(name: "New dog", description: "New dog", privacy: "hidden")
+        user_set.update_attributes_and_embedded(name: "New dog", description: "New dog", privacy: 'hidden')
         user_set.reload
         expect(user_set.name).to eq "New dog"
         expect(user_set.description).to eq "New dog"
-        expect(user_set.privacy).to eq "hidden"
+        expect(user_set.privacy).to eq 'hidden'
       end
 
       it 'updates the embedded set items' do
@@ -533,7 +533,7 @@ module SupplejackApi
 
       it 'should not replace the set items if :records is nil' do
         user_set.save
-        user_set.set_items.create(record_id: 13)
+        user_set.set_items.create(record_id: 13, type: 'embed', sub_type: 'record', meta: { align_mode: 0 })
         user_set.update_attributes_and_embedded(records: nil)
         user_set.reload
         expect(user_set.set_items.count).to eq 1
@@ -615,7 +615,7 @@ module SupplejackApi
           end
 
           it 'should set the status to active if set is public and is approved' do
-            user_set.privacy = "public"
+            user_set.privacy = 'public'
             user_set.approved = true
 
             user_set.update_record

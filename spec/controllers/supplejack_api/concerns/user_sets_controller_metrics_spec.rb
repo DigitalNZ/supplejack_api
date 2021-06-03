@@ -17,12 +17,11 @@ describe ApplicationController, type: :controller do
 
   describe 'GET#show' do
     context 'active record' do
-      before do
-        create(:user_set_with_set_item)
-      end
+      before { create(:user_set_with_set_item) }
 
       it 'creates a user_set_views SupplejackApi::RequestMetric' do
         get :show, params: { id: 1 }
+
         expect(SupplejackApi::RequestMetric.count).to eq 1
         expect(SupplejackApi::RequestMetric.first.metric).to eq 'user_set_views'
         expect(SupplejackApi::RequestMetric.first.records).to eq  [{"record_id"=>2, "display_collection"=>"test"}]
@@ -37,6 +36,7 @@ describe ApplicationController, type: :controller do
 
       it 'does not die when requesting a record that has status deleted' do
         get :show, params: { id: 1 }
+
         expect(SupplejackApi::RequestMetric.count).to eq 0
       end
     end
@@ -44,12 +44,11 @@ describe ApplicationController, type: :controller do
 
   describe '#create' do
     context 'active record' do
-      before do
-        create(:user_set_with_set_item)
-      end
+      before { create(:user_set_with_set_item) }
 
       it 'creates a added_to_user_sets SupplejackApi::RequestMetric' do
         post :create, params: { id: 1 }
+
         expect(SupplejackApi::RequestMetric.count).to eq 1
         expect(SupplejackApi::RequestMetric.first.records).to eq [{"record_id"=>2, "display_collection"=>"test"}]
         expect(SupplejackApi::RequestMetric.first.metric).to eq 'added_to_user_sets'
@@ -64,6 +63,7 @@ describe ApplicationController, type: :controller do
 
       it 'does not die when requesting a record that has status deleted' do
         post :create, params: { id: 1 }
+
         expect(SupplejackApi::RequestMetric.count).to eq 0
       end
     end

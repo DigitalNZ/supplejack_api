@@ -39,7 +39,7 @@ module StoriesApi
 
               # FIXME
               # some records have landing_url ending in 'replace_this'.  This is on the record fragment.
-             # Calling record.public_send(:landing_url) calls the method on the fragment, which might have landing_url
+              # Calling record.public_send(:landing_url) calls the method on the fragment, which might have landing_url
               # 'replace_this' depending on how it was harvested.  eg record_id 23036618
               # Strangely, record[:landing_url] returns the correct landing_url, as it is on the mongo record.
               # Landing_url It is not correct on the record model (possibly schema issue)

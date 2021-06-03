@@ -224,6 +224,38 @@ RSpec.describe 'Story Items Endpoints', type: :request do
         expect(response_attributes).to include({ 'type' => 'text', 'sub_type' => 'rich-text', 'content' => { 'value' => '<p>Some block content here</p>' } })
       end
     end
+
+    context 'when adding record to story' do
+      let(:record) { create(:record) }
+
+      it 'returns success' do
+        params = { item: { type: 'embed', sub_type: 'record', record_id: record.record_id, content: { id: record.record_id }, meta: { align_mode: 0 } } }.to_query
+        post "/v3/stories/#{story.id}/items.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
+
+        response_attributes = JSON.parse(response.body)
+
+        expect(response).to have_http_status(200)
+        expect(response_attributes).to include({
+          'type' => 'embed',
+          'sub_type' => 'record',
+          'content' => {
+            'category' => [],
+            'content_partner' => [],
+            'contributing_partner' => [],
+            'creator' => [],
+            'description' => nil,
+            'display_collection' => nil,
+            'id' => record.record_id,
+            'image_url' => nil,
+            'landing_url' => nil,
+            'rights' => nil,
+            'status' => 'active',
+            'tags' => [],
+            'title' => 'Untitled'
+          }
+        })
+      end
+    end
   end
 
   describe '#destroy' do

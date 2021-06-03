@@ -10,16 +10,17 @@ module SupplejackApi
         after_action :create_story_item_interaction, only: :create
 
         def create_story_item_interaction
-          return unless @api_response[:payload] && log_request_for_metrics?
+          return unless log_request_for_metrics?
 
-          record = @api_response[:payload]
-          return if record[:record_id].blank?
+          record = JSON.parse(response.body)
+
+          return if record['record_id'].blank?
 
           SupplejackApi::RequestMetric.spawn(
             [
               {
-                record_id: record[:record_id],
-                display_collection: record[:content][:display_collection]
+                record_id: record['record_id'],
+                display_collection: record['content']['display_collection']
               }
             ],
             'added_to_user_stories'

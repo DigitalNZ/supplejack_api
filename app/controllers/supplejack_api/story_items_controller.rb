@@ -2,7 +2,7 @@
 
 module SupplejackApi
   class StoryItemsController < SupplejackApplicationController
-    # include Concerns::StoryItemsControllerMetrics
+    include Concerns::StoryItemsControllerMetrics
 
     before_action :story_user_check, except: :index
     before_action :find_story
@@ -25,8 +25,6 @@ module SupplejackApi
       if item.valid?
         @story.cover_thumbnail = item.content[:image_url] unless @story.cover_thumbnail
         @story.save!
-
-        # specs for postion change & setting is_cover url required
 
         # This should be removed when DRY code is removed for StoryItemMovesController
         if item_params[:position]

@@ -259,7 +259,7 @@ module SupplejackApi
     describe '#custom_find' do
       before(:each) do
         user = create(:user)
-        @user_set = FactoryBot.build(:user_set, user_id: user.id, url: "1234abc")
+        @user_set = FactoryBot.build(:user_set, user_id: user.id, url: '1234abc')
         allow(@user_set).to receive(:update_record)
         @user_set.save
       end
@@ -269,11 +269,11 @@ module SupplejackApi
       end
 
       it "returns nil when it doesn't find the user by Mongo ID" do
-        expect(UserSet.custom_find("111122223333444455556666")).to be_nil
+        expect(UserSet.custom_find('111122223333444455556666')).to be_nil
       end
 
       it "finds a user set by it's url" do
-        expect(UserSet.custom_find("1234abc")).to eq @user_set
+        expect(UserSet.custom_find('1234abc')).to eq @user_set
       end
 
       it 'returns nil when id is nil' do
@@ -281,7 +281,7 @@ module SupplejackApi
       end
 
       it "returns nil when it doesn't find the user set" do
-        expect(UserSet.custom_find("12345678")).to be_nil
+        expect(UserSet.custom_find('12345678')).to be_nil
       end
     end
 
@@ -296,7 +296,7 @@ module SupplejackApi
       end
 
       it 'ignores favourites' do
-        @set3 = FactoryBot.create(:user_set, privacy: 'public', name: "Favourites")
+        @set3 = FactoryBot.create(:user_set, privacy: 'public', name: 'Favourites')
         expect(UserSet.public_sets.to_a).to_not include(@set3)
       end
 
@@ -434,30 +434,24 @@ module SupplejackApi
       }
 
       it 'updates the set attributes' do
-        user_set.update_attributes_and_embedded(name: "New dog", description: "New dog", privacy: 'hidden')
+        user_set.update_attributes_and_embedded(name: 'New dog', description: 'New dog', privacy: 'hidden')
         user_set.reload
-        expect(user_set.name).to eq "New dog"
-        expect(user_set.description).to eq "New dog"
+        expect(user_set.name).to eq 'New dog'
+        expect(user_set.description).to eq 'New dog'
         expect(user_set.privacy).to eq 'hidden'
       end
 
       it 'updates the embedded set items' do
-        user_set.update_attributes_and_embedded(records: [{"record_id" => "13", "position" => "2"}])
+        user_set.update_attributes_and_embedded(records: [{ 'record_id' => '13', 'position' => '2' }])
         user_set.reload
+
         expect(user_set.set_items.size).to eq 1
         expect(user_set.set_items.first.record_id).to eq 13
         expect(user_set.set_items.first.position).to eq 2
       end
 
-      # With new mongoid, I don't think we need this test anymore. Mongoid throws an error, which is healthy
-      # it 'ignores invalid attributes' do
-      #   user_set.update_attributes_and_embedded(something: "Bad attribute")
-      #   user_set.reload
-      #   expect(user_set[:something]).to be_nil
-      # end
-
       it 'ignores invalid set item values but still saves the set' do
-        user_set.update_attributes_and_embedded(records: [{"record_id" => "13", "position" => "1"}, {"record_id" => "shtig", "position" => "2"}])
+        user_set.update_attributes_and_embedded(records: [{ 'record_id' => '13', 'position' => '1'}, { 'record_id' => 'shtig', 'position' => '2'}])
         user_set.reload
         expect(user_set.set_items.size).to eq 1
         expect(user_set.set_items.first.record_id).to eq 13
@@ -465,13 +459,13 @@ module SupplejackApi
       end
 
       it 'ignores set_items when the format is incorrect' do
-        user_set.update_attributes_and_embedded(records: {"record_id" => "13", "position" => "1"})
+        user_set.update_attributes_and_embedded(records: { 'record_id' => '13', 'position' => '1'})
         user_set.reload
         expect(user_set.set_items.size).to eq 0
       end
 
       it 'regular users should not be able to change the :featured attribute' do
-        regular_user = FactoryBot.create(:user, role: "developer")
+        regular_user = FactoryBot.create(:user, role: 'developer')
         user_set = FactoryBot.create(:user_set, user_id: regular_user.id, featured: false)
         user_set.update_attributes_and_embedded({featured: true}, regular_user)
         user_set.reload
@@ -519,13 +513,13 @@ module SupplejackApi
       it 'initializes the set_items through the user_set' do
         item = user_set.set_items.build(record_id: 13)
         expect(user_set.set_items).to receive(:find_by_record_id).with('13') { item }
-        user_set.update_attributes_and_embedded(records: [{"record_id" => "13", "position" => nil}])
+        user_set.update_attributes_and_embedded(records: [{ 'record_id' => '13', 'position' => nil }])
       end
 
       it 'can replace the set items' do
         user_set.save
-        user_set.set_items.create(record_id: 13, :type=>"embed", :sub_type=>"record", :content=>{:record_id=>"13"}, :meta=>{:align_mode=>0})
-        user_set.update_attributes_and_embedded(records: [{"record_id" => "13", "position" => nil, :type=>"embed", :sub_type=>"record", :content=>{:record_id=>"13"}, :meta=>{:align_mode=>0}}])
+        user_set.set_items.create(record_id: 13, :type => 'embed', :sub_type => 'record', :content => { :record_id => '13' }, :meta=>{:align_mode=>0})
+        user_set.update_attributes_and_embedded(records: [{ 'record_id' => '13', 'position' => nil, :type => 'embed', :sub_type => 'record', :content => { :record_id => '13' }, :meta => { :align_mode => 0 } }])
         user_set.reload
         expect(user_set.set_items.size).to eq 1
         expect(user_set.set_items.first.record_id).to eq 13
@@ -574,7 +568,7 @@ module SupplejackApi
       end
 
       it 'should return suppressed for non-public or non-approved sets' do
-        user_set.privacy = "protected"
+        user_set.privacy = 'protected'
         user_set.approved = false
 
         expect(user_set.record_status).to eq 'suppressed'
@@ -593,12 +587,6 @@ module SupplejackApi
           allow(user_set).to receive(:set_items) { [double(:set_item).as_null_object] }
         end
 
-        # I have introduced a user set before create call back, so we don't need this anymore.
-        # it 'should create a new record if not linked' do
-        #   expect(Supplejack.config.record_class).to receive(:new) { mock_model(SupplejackApi.config.record_class).as_null_object }
-        #   user_set.update_record
-        # end
-
         it 'should not create a new record if already linked' do
           allow(user_set).to receive(:record) { double(:record).as_null_object }
           expect(SupplejackApi.config.record_class).to_not receive(:new)
@@ -608,10 +596,10 @@ module SupplejackApi
         context 'record status' do
           let(:user_set) { FactoryBot.build(:user_set)}
           it 'should default the status to supressed' do
-            user_set.privacy = "private"
+            user_set.privacy = 'private'
 
             user_set.update_record
-            expect(user_set.record.status).to eq "suppressed"
+            expect(user_set.record.status).to eq 'suppressed'
           end
 
           it 'should set the status to active if set is public and is approved' do
@@ -702,12 +690,12 @@ module SupplejackApi
 
     describe '#tag_list=' do
       it 'should convert the comma seperate string to an array of tags' do
-        user_set.tag_list = "dogs, animals, cats"
-        expect(user_set.subjects).to include("dogs", "cats", "animals")
+        user_set.tag_list = 'dogs, animals, cats'
+        expect(user_set.subjects).to include('dogs', 'cats', 'animals')
       end
 
       it 'removes empty tags' do
-        user_set.tag_list = "dogs, , animals"
+        user_set.tag_list = 'dogs, , animals'
         expect(user_set.subjects.size).to eq(2)
       end
 
@@ -717,8 +705,8 @@ module SupplejackApi
       end
 
       it 'strips tags from punctuations except - and _' do
-        user_set.tag_list = "hola! d-a_s_h @#$\%^&*()+=.;: ,something else"
-        expect(user_set.subjects).to eq ["hola d-a_s_h", "something else"]
+        user_set.tag_list = 'hola! d-a_s_h @#$\%^&*()+=.;: ,something else'
+        expect(user_set.subjects).to eq ['hola d-a_s_h', 'something else']
       end
     end
 
@@ -739,7 +727,7 @@ module SupplejackApi
     describe '#items_with_records' do
       it 'returns an array of set items with record information' do
         record = FactoryBot.create(:record)
-        fragment = record.fragments.create( title: "Dog", description: "Ugly dog", display_content_partner: "ATL", display_collection: "Display collection", large_thumbnail_attributes: {url: "goo.gle/large"}, thumbnail_attributes: {url: "goo.gle/small"})
+        fragment = record.fragments.create( title: 'Dog', description: 'Ugly dog', display_content_partner: 'ATL', display_collection: 'Display collection', large_thumbnail_attributes: { url: 'goo.gle/large' }, thumbnail_attributes: { url: 'goo.gle/small' })
         user_set.set_items.build(record_id: record.record_id, position: 1)
         expect(user_set.items_with_records.first.record).to eq record
       end

@@ -6,6 +6,8 @@ module SupplejackApi
 
     def create
       if params[:user_key]
+        # When this DRY code is removed
+        # app/services/stories_api/v3/presenters/content/embed/record.rb can be deleted
         render_response(:moves)
       else
         render request.format.to_sym => {

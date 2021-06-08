@@ -14,6 +14,7 @@ module SupplejackApi
             ]
           )
         end
+
         let(:ordered_items) { story.set_items.sort_by(&:position) }
         let(:first_title) { ordered_items.first.content[:title] }
         let(:last_title) { ordered_items.last.content[:title] }

@@ -30,10 +30,6 @@ SupplejackApi::Engine.routes.draw do
     get '/sets/public' => 'user_sets#public_index', as: :public_user_sets
     get '/sets/featured' => 'user_sets#featured_sets_index', as: :featured_sets
 
-    # resources :user_sets, path: 'sets', except: [:new, :edit] do
-    #   resources :set_items, path: 'records', only: [:create, :destroy]
-    # end
-
     # Stories
     namespace 'stories' do
       resources :featured, only: [:index]

@@ -4,7 +4,7 @@ module SupplejackApi
   class StoryItemSerializer < ActiveModel::Serializer
     attributes :id, :position, :type, :sub_type, :record_id
 
-    # attribute :record_id, if: -> { object.type == 'embed' && object.sub_type == 'record' }
+    attribute :record_id, if: -> { object.type == 'embed' && object.sub_type == 'record' }
 
     attribute :content do
       if object.type == 'embed' && object.sub_type == 'record'

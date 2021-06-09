@@ -132,7 +132,7 @@ RSpec.describe 'Story Items Endpoints', type: :request do
 
             response_attributes = JSON.parse(response.body)
 
-            expect(response_attributes).to eq ({ 'errors' => 'Content value is missing: content must contain value filed' })
+            expect(response_attributes).to eq ({ 'errors' => 'Content value is missing: content must contain value field' })
           end
 
           it 'returns error for size is not valid' do

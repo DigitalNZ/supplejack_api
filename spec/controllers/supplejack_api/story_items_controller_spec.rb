@@ -94,7 +94,7 @@ module SupplejackApi
         end
 
         it 'should return error for unknow values for sub type' do
-          post :create, params: { story_id: story.id.to_s, api_key: api_key, user_key: api_key, item: { type: 'text', sub_type: 'foo' } }, format: :json
+          post :create, params: { story_id: story.id.to_s, api_key: api_key, user_key: api_key, item: { type: 'text', sub_type: 'foo', content: { value: 'foo' } } }, format: :json
 
           expect(response).to have_http_status(:bad_request)
           expect(JSON.parse(response.body)['errors']).to eq 'Unsupported Value: sub_type must be one of: heading or rich-text'
@@ -104,7 +104,7 @@ module SupplejackApi
           post :create, params: { story_id: story.id.to_s, api_key: api_key, user_key: api_key, item: { type: 'text', sub_type: 'heading' } }
 
           expect(response).to have_http_status(:bad_request)
-          expect(JSON.parse(response.body)['errors']).to eq 'Content is missing, Meta is missing'
+          expect(JSON.parse(response.body)['errors']).to eq 'Content value is missing: content must contain value field'
         end
       end
 

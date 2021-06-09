@@ -24,7 +24,7 @@ module SupplejackApi
           # @records that has been set in user_set
           # Without it you will not have set_items
           user_set.instance_variable_set(:@records, nil)
-          create :set_item, type: 'embed', sub_type: 'record', meta: { alignment: 'left' }, user_set: user_set
+          create :set_item, type: 'embed', sub_type: 'record', content: { id: user_set.record.record_id }, user_set: user_set
         end
       end
     end

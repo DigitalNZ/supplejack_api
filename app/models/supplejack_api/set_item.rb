@@ -25,10 +25,11 @@ module SupplejackApi
     validates :type,     presence: { message: 'Mandatory Parameters Missing: type is missing' }
     validates :sub_type, presence: { message: 'Mandatory Parameters Missing: sub_type is missing' }
 
-    validate :valid_type_sub_type,       if: -> { type && sub_type }
-    validate :valid_type_text_heading,   if: -> { type == 'text' && sub_type == 'heading' }
-    validate :valid_type_text_rich_text, if: -> { type == 'text' && sub_type == 'rich-text' }
-    validate :valid_type_embed_record,   if: -> { type == 'embed' && sub_type == 'record' }
+    validate :valid_type_sub_type,    if: -> { type && sub_type }
+    validate :validate_content
+    validate :validate_content_value, if: -> { type == 'text' }
+    validate :validate_meta_size,     if: -> { sub_type == 'heading' }
+    validate :validate_record_id,     if: -> { sub_type == 'record' }
 
     validate :not_adding_set_to_itself
 
@@ -42,7 +43,7 @@ module SupplejackApi
 
           errors.add(:type, 'Unsupported Value: sub_type must be one of: heading or rich-text')
         else
-          return if  sub_type == 'record'
+          return if sub_type == 'record'
 
           errors.add(:type, 'Unsupported Value: sub_type must record')
         end
@@ -51,34 +52,28 @@ module SupplejackApi
       end
     end
 
-    # Make content check a seperate method
-    def valid_type_embed_record
-      if content
-        if content[:id] && !(content[:id].is_a?(Integer) || content[:id] =~ /^\d+$/)
-          errors.add(:content, 'Unsupported Value: content must contain integer field id')
-        end
-      else
-        errors.add(:content, 'Content is missing')
-      end
-
-      if meta.blank?
-        errors.add(:meta, 'Meta is missing')
-      else
-        return unless meta[:alignment] && %w[left center right].exclude?(meta[:alignment])
-
-        errors.add(:meta, 'Unsupported Values: alignment must be one of: left center or right in meta')
-      end
+    def validate_content
+      errors.add(:content, 'Content is missing') unless content
     end
 
-    def valid_type_text_rich_text
-      errors.add(:content, 'Content is missing') if content.blank?
+    def validate_content_value
+      errors.add(:content, 'Content value is missing') if content[:value].blank?
     end
 
-    def valid_type_text_heading
-      errors.add(:content, 'Content is missing') if content.blank?
+    def validate_record_id
+      if content[:id].blank?
+        errors.add(:content, 'Content id is missing: content must contain integer field id')
+      elsif content[:id] && !(content[:id].is_a?(Integer) || content[:id] =~ /^\d+$/)
+        errors.add(:content, 'Unsupported Value: content must contain integer field id')
+      end
 
-      errors.add(:meta, 'Meta is missing') if meta.blank?
+      return unless meta && meta[:alignment]
+      return if %w[left center right].include?(meta[:alignment])
 
+      errors.add(:meta, 'Unsupported Values: alignment must be one of: left center or right in meta')
+    end
+
+    def validate_meta_size
       return unless meta[:size] && [1, 2, 3, 4, 5, 6].exclude?(meta[:size])
 
       errors.add(:meta, 'Unsupported Values: size must be one of: 1, 2, 3, 4, 5, 6 in meta')

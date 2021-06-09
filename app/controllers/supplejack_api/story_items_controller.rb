@@ -43,12 +43,10 @@ module SupplejackApi
 
     def update
       if @item.update(item_params)
-        if item_params[:meta]
-          if item_params[:meta][:is_cover]
-            @story.update_attribute(:cover_thumbnail, @item.content[:image_url])
-          elsif @story.cover_thumbnail == @item.content[:image_url]
-            @story.update_attribute(:cover_thumbnail, nil)
-          end
+        if item_params[:meta] && item_params[:meta][:is_cover]
+          @story.update_attribute(:cover_thumbnail, @item.content[:image_url])
+        elsif @story.cover_thumbnail == @item.content[:image_url]
+          @story.update_attribute(:cover_thumbnail, nil)
         end
 
         render json: StorySerializer.new(@story, scope: { slim: false }).to_json(include_root: false), status: :ok

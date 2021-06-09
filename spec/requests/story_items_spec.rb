@@ -132,7 +132,7 @@ RSpec.describe 'Story Items Endpoints', type: :request do
 
             response_attributes = JSON.parse(response.body)
 
-            expect(response_attributes).to eq ({ 'errors' => 'Content is missing, Meta is missing' })
+            expect(response_attributes).to eq ({ 'errors' => 'Content value is missing: content must contain value filed' })
           end
 
           it 'returns error for size is not valid' do
@@ -183,7 +183,7 @@ RSpec.describe 'Story Items Endpoints', type: :request do
 
               response_attributes = JSON.parse(response.body)
 
-              expect(response_attributes).to eq ({ 'errors' => 'Unsupported Value: content must contain integer field id' })
+              expect(response_attributes).to eq ({ 'errors' => 'Content id is missing: content must contain integer field id' })
             end
 
             it 'returns error for invalid id type' do

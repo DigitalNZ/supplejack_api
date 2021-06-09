@@ -404,7 +404,7 @@ module SupplejackApi
 
       before do
         [set1, set2, set3, set4].each do |set|
-          set.set_items.create(record_id: record.record_id, type: 'embed', sub_type: 'record', meta: { align_mode: 0 }, content: { id: record.record_id })
+          set.set_items.create(record_id: record.record_id, type: 'embed', sub_type: 'record', content: { id: record.record_id })
         end
       end
 
@@ -422,6 +422,8 @@ module SupplejackApi
     end
 
     describe '#update_attributes_and_embedded' do
+      let(:record) { create(:record, status: 'active') }
+
       before do
         developer = double(:developer)
         admin = double(:admin, admin: true, role: 'admin')
@@ -437,26 +439,24 @@ module SupplejackApi
       end
 
       it 'updates the embedded set items' do
-        user_set.update_attributes_and_embedded(records: [{ 'record_id' => '13', 'position' => '2' }])
+        user_set.update_attributes_and_embedded(records: [{ record_id: record.record_id, type: 'embed', sub_type: 'record', content: { id: record.record_id }, position: 2 }])
         user_set.reload
 
         expect(user_set.set_items.size).to eq 1
-        expect(user_set.set_items.first.record_id).to eq 13
+        expect(user_set.set_items.first.record_id).to eq record.record_id
         expect(user_set.set_items.first.position).to eq 2
       end
 
       it 'ignores invalid set item values but still saves the set' do
-        user_set.update_attributes_and_embedded(records: [{ 'record_id' => '13', 'position' => '1'}, { 'record_id' => 'shtig', 'position' => '2'}])
-        user_set.reload
-        expect(user_set.set_items.size).to eq 1
-        expect(user_set.set_items.first.record_id).to eq 13
-        expect(user_set.set_items.first.position).to eq 1
-      end
+        valid_item   = { record_id: record.record_id, type: 'embed', sub_type: 'record', content: { id: record.record_id }, position: 1 }
+        invalid_item = { 'record_id' => 'shtig', 'position' => '2'}
 
-      it 'ignores set_items when the format is incorrect' do
-        user_set.update_attributes_and_embedded(records: { 'record_id' => '13', 'position' => '1'})
+        user_set.update_attributes_and_embedded(records: [valid_item, invalid_item])
         user_set.reload
-        expect(user_set.set_items.size).to eq 0
+
+        expect(user_set.set_items.size).to eq 1
+        expect(user_set.set_items.first.record_id).to eq record.record_id
+        expect(user_set.set_items.first.position).to eq 1
       end
 
       it 'regular users should not be able to change the :featured attribute' do
@@ -515,22 +515,24 @@ module SupplejackApi
       it 'can replace the set items' do
         user_set.save
         user_set.set_items.create(record_id: 13, :type => 'embed', :sub_type => 'record', :content => { :record_id => '13' }, :meta=>{:align_mode=>0})
-        user_set.update_attributes_and_embedded(records: [{ 'record_id' => '13', 'position' => nil, :type => 'embed', :sub_type => 'record', :content => { :record_id => '13' }, :meta => { :align_mode => 0 } }])
+        user_set.update_attributes_and_embedded(records: [{ record_id: record.record_id, type: 'embed', sub_type: 'record', content: { id: record.record_id }, position: 2 }])
         user_set.reload
+
         expect(user_set.set_items.size).to eq 1
-        expect(user_set.set_items.first.record_id).to eq 13
+        expect(user_set.set_items.first.record_id).to eq record.record_id
       end
 
       it 'should not replace the set items if :records is nil' do
         user_set.save
-        user_set.set_items.create(record_id: 13, type: 'embed', sub_type: 'record', meta: { align_mode: 0 })
+        user_set.set_items.create(record_id: record.record_id, type: 'embed', sub_type: 'record', content: { id: record.record_id })
         user_set.update_attributes_and_embedded(records: nil)
         user_set.reload
+
         expect(user_set.set_items.count).to eq 1
       end
 
       it 'raises a error when then records array format is not correct' do
-        expect { user_set.update_attributes_and_embedded(records: [1,2]) }.to raise_error(UserSet::WrongRecordsFormat)
+        expect { user_set.update_attributes_and_embedded(records: [1,2]) }.to raise_error()
       end
 
       it 'overrides nil value for description' do

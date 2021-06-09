@@ -180,7 +180,7 @@ module SupplejackApi
         set_items.each do |set_item_hash|
           set_item_hash.symbolize_keys!
           params = set_item_hash.merge(record_id: set_item_hash[:record_id], type: 'embed',
-                                       sub_type: 'record', content: { record_id: set_item_hash[:record_id] },
+                                       sub_type: 'record', content: { id: set_item_hash[:record_id] },
                                        meta: { align_mode: 0 })
 
           unless (set_item = self.set_items.find_by_record_id(params[:record_id]))

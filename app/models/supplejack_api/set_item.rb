@@ -57,7 +57,7 @@ module SupplejackApi
     end
 
     def validate_content_value
-      errors.add(:content, 'Content value is missing: content must contain value field') if content[:value].blank?
+      errors.add(:content, 'Content value is missing: content must contain value field') unless content[:value]
     end
 
     def validate_record_id

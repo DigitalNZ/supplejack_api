@@ -126,7 +126,7 @@ RSpec.describe 'Story Items Endpoints', type: :request do
             expect(response_attributes).to eq ({ 'errors' => 'Mandatory Parameters Missing: type is missing, Mandatory Parameters Missing: sub_type is missing' })
           end
 
-          it 'returns error for missing content & meta' do
+          it 'returns error for missing content value' do
             params = { item: { type: 'text', sub_type: 'heading' } }.to_query
             post "/v3/stories/#{story.id}/items.json?api_key=#{admin.authentication_token}&user_key=#{story.user.api_key}&#{params}"
 

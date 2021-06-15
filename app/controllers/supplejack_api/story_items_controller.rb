@@ -49,7 +49,7 @@ module SupplejackApi
           @story.update_attribute(:cover_thumbnail, nil)
         end
 
-        render json: StorySerializer.new(@story, scope: { slim: false }).to_json(include_root: false), status: :ok
+        render json: StoryItemSerializer.new(@item).to_json(include_root: false), status: :ok
       else
         render_error_with('Failed to update', :bad_request)
       end

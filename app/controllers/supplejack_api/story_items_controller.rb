@@ -64,7 +64,10 @@ module SupplejackApi
     private
 
     def item_params
-      content_fields = [:id, :title, :display_collection, :value, :image_url, { category: [], tags: [] }]
+      content_fields = [:id, :record_id, :description, :content_partner, :title,
+                        :display_collection, :value, :image_url,
+                        { category: [], tags: [] }]
+
       meta_fields = %i[alignment align_mode is_cover caption title size metadata]
 
       params.require(:item).permit(:position, :type, :sub_type, :record_id, content: content_fields, meta: meta_fields)

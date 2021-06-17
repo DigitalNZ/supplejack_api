@@ -9,7 +9,7 @@ module SupplejackApi
 
     before_action :authenticate_admin!, :story_user_id_check, only: [:admin_index]
     before_action :story_user_check, except: %i[admin_index show]
-    before_action :find_story, only: %i[show update destroy]
+    before_action :find_story, only: %i[show update destroy reposition_items]
     after_action :create_story_record_views, only: :show
 
     def index
@@ -59,6 +59,15 @@ module SupplejackApi
       @story.destroy
 
       head :no_content
+    end
+
+    def reposition_items
+      params[:items].each do |item|
+        story_item = @story.set_items.find_by_id(item[:id])
+        story_item.update_attribute(:position, item[:position]) if item
+      end
+
+      head :ok
     end
 
     private

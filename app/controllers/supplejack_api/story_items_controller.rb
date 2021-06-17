@@ -61,6 +61,15 @@ module SupplejackApi
       head :no_content
     end
 
+    def repositon
+      repositon_params[:items].each do |item|
+        item = @story.set_items.find_by_id(item[:id])
+        item.update_attribute(:position, item[:position]) if item
+      end
+
+      head :ok
+    end
+
     private
 
     def item_params
@@ -71,6 +80,10 @@ module SupplejackApi
       meta_fields = %i[alignment align_mode is_cover caption title size metadata]
 
       params.require(:item).permit(:position, :type, :sub_type, :record_id, content: content_fields, meta: meta_fields)
+    end
+
+    def repositon_params
+      params.require(:items).permit(%i[id position])
     end
 
     def find_story

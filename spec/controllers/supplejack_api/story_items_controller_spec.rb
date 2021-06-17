@@ -57,12 +57,12 @@ module SupplejackApi
 
         it 'should return a Story Items' do
           response_item = JSON.parse(response.body).deep_symbolize_keys
-          first_item = ::StoriesApi::V3::Presenters::StoryItem.new.call(story.set_items.first, story)
+          first_item = StoryItemSerializer.new(story.set_items.first).as_json
 
           response_item.delete(:id)
           first_item.delete(:id)
 
-          expect(response_item).to eq(first_item)
+          expect(response_item).to eq first_item
         end
       end
 
@@ -160,7 +160,7 @@ module SupplejackApi
 
         it 'should return updated Story Items' do
           response_item = JSON.parse(response.body).deep_symbolize_keys
-          first_item = ::StoriesApi::V3::Presenters::StoryItem.new.call(story.set_items.first)
+          first_item = StoryItemSerializer.new(story.set_items.first).as_json
 
           expect(response_item).to_not eq(first_item)
         end

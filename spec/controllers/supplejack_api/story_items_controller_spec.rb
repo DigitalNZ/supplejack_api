@@ -126,7 +126,7 @@ module SupplejackApi
       end
     end
 
-    describe 'POST repositon' do
+    describe 'POST reposition' do
       let(:story) do
         create(:story,
                set_items: [create(:embed_dnz_item, title: 'first', position: 1),
@@ -137,12 +137,12 @@ module SupplejackApi
 
       before do
         items = story.set_items
-        repositon_params = [
+        reposition_params = [
           { id: items[0].id, position: 2 },
           { id: items[1].id, position: 1 },
           { id: items[2].id, position: 3 }
         ]
-        post :repositon, params: { story_id: story.id.to_s, api_key: api_key, user_key: api_key, items: repositon_params }
+        post :reposition, params: { story_id: story.id.to_s, api_key: api_key, user_key: api_key, items: reposition_params }
       end
 
       it 'returns status ok' do

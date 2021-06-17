@@ -111,7 +111,7 @@ module SupplejackApi
         it 'should return created Story Item' do
           block = { type: 'text', sub_type: 'heading',
                     content: { value: 'sometext'},
-                    meta: { title: 'foo' }, position: 0 }
+                    meta: { title: 'foo' }, position: 100 }
 
           post :create, params: { story_id: story.id.to_s, api_key: api_key, user_key: api_key, item: block }, format: :json
 
@@ -121,7 +121,7 @@ module SupplejackApi
           expect(result).to eq ({ type: 'text', sub_type: 'heading',
                                   content: { value: 'sometext'},
                                   meta: { title: 'foo', is_cover: false },
-                                  position: 1, record_id: nil })
+                                  position: 100, record_id: nil })
         end
       end
     end

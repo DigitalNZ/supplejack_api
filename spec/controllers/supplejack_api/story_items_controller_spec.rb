@@ -126,39 +126,6 @@ module SupplejackApi
       end
     end
 
-    describe 'POST reposition' do
-      let(:story) do
-        create(:story,
-               set_items: [create(:embed_dnz_item, title: 'first', position: 1),
-                           create(:embed_dnz_item, title: 'middle', position: 2),
-                           create(:embed_dnz_item, title: 'last', position: 3)]
-        )
-      end
-
-      before do
-        items = story.set_items
-        reposition_params = [
-          { id: items[0].id, position: 2 },
-          { id: items[1].id, position: 1 },
-          { id: items[2].id, position: 3 }
-        ]
-        post :reposition, params: { story_id: story.id.to_s, api_key: api_key, user_key: api_key, items: reposition_params }
-      end
-
-      it 'returns status ok' do
-        expect(response).to have_http_status :ok
-      end
-
-      it 'repositions story items' do
-        story.reload
-        items = story.set_items
-        
-        expect(items[0].position).to eq 2
-        expect(items[1].position).to eq 1
-        expect(items[2].position).to eq 3
-      end
-    end
-
     describe 'DELETE story item' do
       context 'successfull deletion' do
         it 'should return 204' do

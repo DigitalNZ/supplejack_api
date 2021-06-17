@@ -20,20 +20,11 @@ module SupplejackApi
     end
 
     def create
-      item = @story.set_items.build(item_params.except(:position))
+      item = @story.set_items.build(item_params)
 
       if item.valid?
         @story.cover_thumbnail = item.content[:image_url] unless @story.cover_thumbnail
         @story.save!
-
-        # This should be removed when DRY code is removed for StoryItemMovesController
-        if item_params[:position]
-          StoriesApi::V3::Endpoints::Moves.new(story_id: @story.id.to_s,
-                                               user_key: current_story_user.api_key,
-                                               item_id: item.id.to_s,
-                                               position: item_params[:position]).post
-          item.reload
-        end
 
         render json: StoryItemSerializer.new(item).to_json(include_root: false), status: :ok
       else

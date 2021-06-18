@@ -8,16 +8,14 @@ module SupplejackApi
     let!(:record) { create(:record) }
     let!(:user)   { create(:user) }
 
-    before {
-      @user = FactoryBot.create(:user, authentication_token: 'apikey', role: 'developer')
-    }
+    before { @user = FactoryBot.create(:user, authentication_token: 'apikey', role: 'developer') }
 
     describe 'GET index' do
-      before {
+      before do
         @search = RecordSearch.new
         allow(@search).to receive(:valid?) { true }
         allow(RecordSearch).to receive(:new) { @search }
-      }
+      end
 
       it 'should initialize a new search instance' do
         allow_any_instance_of(RecordSearch).to receive(:valid?) { false }
@@ -33,9 +31,9 @@ module SupplejackApi
         allow_any_instance_of(RecordSearch).to receive(:valid?) { false }
         allow_any_instance_of(RecordSearch).to receive(:errors) { [] }
 
-        get :index, params: { api_key: 'apikey', text: '123'}, format: :json
+        get :index, params: { api_key: 'apikey', text: '123' }, format: :json
 
-        expect(assigns[:search].request_url).to eq "http://test.host/records?api_key=apikey&text=123"
+        expect(assigns[:search].request_url).to eq 'http://test.host/records?api_key=apikey&text=123'
       end
 
       it 'should set the current_user on the search' do
@@ -49,7 +47,7 @@ module SupplejackApi
       it 'should return an error if the search request is invalid' do
         allow(@search).to receive(:valid?) { false }
         allow(@search).to receive(:errors) { ['The page parameter can not exceed 100,000'] }
-        get :index, params: { api_key: 'apikey', page: 100001 }, format: 'json'
+        get :index, params: { api_key: 'apikey', page: 100_001 }, format: 'json'
 
         expect(response.body).to eq({ errors: ['The page parameter can not exceed 100,000'] }.to_json)
 
@@ -59,10 +57,9 @@ module SupplejackApi
       it 'should return timeout 408 error if error is solr unavailable' do
         allow_any_instance_of(RecordSearch).to receive(:valid?).and_raise(Timeout::Error)
 
+        get :index, params: { api_key: 'apikey', text: 'dogs' }, format: :json
 
-        get :index, params: { api_key: 'apikey', text: "dogs" }, format: :json
-
-        expect(response.body).to eq({errors: ['Request timed out']}.to_json)
+        expect(response.body).to eq({ errors: ['Request timed out'] }.to_json)
 
         expect(response).to have_http_status(:request_timeout)
       end
@@ -71,7 +68,7 @@ module SupplejackApi
         allow_any_instance_of(RecordSearch).to receive(:valid?) { false }
         allow_any_instance_of(RecordSearch).to receive(:errors) { [RSolr::Error::Http] }
 
-        get :index, params: { api_key: 'apikey', text: "dogs" }, format: :json
+        get :index, params: { api_key: 'apikey', text: 'dogs' }, format: :json
 
         expect(response).to have_http_status(:bad_request)
       end
@@ -86,13 +83,15 @@ module SupplejackApi
         end
 
         it 'sets the correct Content-Type' do
-          expect(response.header['Content-Type']).to eq "application/json; charset=utf-8"
+          expect(response.header['Content-Type']).to eq 'application/json; charset=utf-8'
         end
       end
 
       context 'jsonp' do
         before do
-          get :index, params: { api_key: user.authentication_token, jsonp: 'jQuery18306022017613970934_1505872751581' }, format: :json
+          get :index,
+              params: { api_key: user.authentication_token, jsonp: 'jQuery18306022017613970934_1505872751581' },
+              format: :json
         end
 
         it 'has a succesful response code' do
@@ -135,15 +134,20 @@ module SupplejackApi
       end
 
       it 'renders a error when records is not found' do
-        allow(Record).to receive(:custom_find).and_raise(Mongoid::Errors::DocumentNotFound.new(Record, ['123'], ['123']))
+        allow(Record).to receive(:custom_find).and_raise(
+          Mongoid::Errors::DocumentNotFound.new(Record, ['123'], ['123'])
+        )
+
         get :show, params: { id: 123, search: {}, api_key: 'apikey' }, format: 'json'
-        expect(response.body).to eq({:errors => 'Record with ID 123 was not found'}.to_json)
+
+        expect(response.body).to eq({ errors: 'Record with ID 123 was not found' }.to_json)
       end
 
       it 'merges the scope in the options' do
-        expect(Record).to receive(:custom_find).with('123', @user, { 'and' => { 'category' => 'Books' } }).and_return(@record)
+        expect(Record).to receive(:custom_find).with('123', @user, { 'and' => { 'category' => 'Books' } })
+                                               .and_return(@record)
+
         get :show, params: { id: 123, search: { and: { category: 'Books' } }, api_key: 'apikey' }, format: 'json'
-        # expect(assigns(:record)).to eq(@record)
       end
 
       context 'json' do
@@ -162,7 +166,11 @@ module SupplejackApi
 
       context 'jsonp' do
         before do
-          get :show, params: { id: record.id, api_key: user.authentication_token, jsonp: 'jQuery18306022017613970934_1505872751581' }, format: :json
+          get :show,
+              params: { id: record.id,
+                        api_key: user.authentication_token,
+                        jsonp: 'jQuery18306022017613970934_1505872751581' },
+              format: :json
         end
 
         it 'has a succesful response code' do
@@ -216,7 +224,11 @@ module SupplejackApi
       end
 
       context 'json' do
-        before { get :more_like_this, params: { record_id: @record.id, api_key: @user.authentication_token }, format: :json }
+        before do
+          get :more_like_this,
+              params: { record_id: @record.id, api_key: @user.authentication_token },
+              format: :json
+        end
 
         it 'has a succesful response code' do
           expect(response).to be_successful
@@ -246,10 +258,10 @@ module SupplejackApi
       end
 
       it 'should merge in the search fields' do
-        allow(@search).to receive(:field_list).and_return([:title, :description])
+        allow(@search).to receive(:field_list).and_return(%i[title description])
         allow(@search).to receive(:group_list).and_return([:verbose])
 
-        expect(controller.default_serializer_options).to eq(fields: [:title, :description], groups: [:verbose])
+        expect(controller.default_serializer_options).to eq(fields: %i[title description], groups: [:verbose])
       end
     end
 

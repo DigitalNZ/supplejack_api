@@ -42,8 +42,7 @@ SupplejackApi::Engine.routes.draw do
     resources :stories, except: [:new, :edit] do
       post :reposition_items
 
-      resources :items, controller: :story_items, except: [:new, :edit] do
-      end
+      resources :items, controller: :story_items, except: [:new, :edit]
     end
   end
 

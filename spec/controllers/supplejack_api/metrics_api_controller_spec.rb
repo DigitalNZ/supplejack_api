@@ -15,7 +15,7 @@ module SupplejackApi
     end
 
     describe 'GET root' do
-      context "succesful requests" do
+      context 'succesful requests' do
         after do
           expect(response.body).to match_response_schema('metrics/extended_response')
         end
@@ -26,7 +26,13 @@ module SupplejackApi
           create(:collection_metric, display_collection: 'dc1', date: Time.now.utc.yesterday.to_date)
           create(:collection_metric, date: Time.now.utc.yesterday.to_date)
 
-          get :root, params: { version: 'v3', facets: 'dc1', start_date: Time.now.utc.yesterday.to_date, end_date: Time.now.utc.yesterday.to_date }
+          get :root, params: {
+            version: 'v3',
+            facets: 'dc1',
+            start_date: Time.now.utc.yesterday.to_date,
+            end_date: Time.now.utc.yesterday.to_date
+          }
+
           json = JSON.parse(response.body)
 
           expect(json.first['record'].count).to eq(1)
@@ -34,7 +40,7 @@ module SupplejackApi
         end
       end
 
-      context "failure requests" do
+      context 'failure requests' do
         it 'responds with a 400 status if the facets parameter is missing' do
           get :root, params: { version: 'v3' }
 
@@ -51,9 +57,8 @@ module SupplejackApi
 
     describe 'GET facets' do
       before do
-        allow(SupplejackApi::FacetsHelper).to receive(:get_list_of_facet_values).with(any_args).and_return([
-          '1', '2', '3', '4', '5'
-        ])
+        allow(SupplejackApi::FacetsHelper).to receive(:get_list_of_facet_values).with(any_args)
+                                                                                .and_return(%w[1 2 3 4 5])
       end
 
       after do
@@ -61,7 +66,7 @@ module SupplejackApi
       end
 
       it 'responds with a list of all facets' do
-        5.times{create(:faceted_metrics)}
+        5.times { create(:faceted_metrics) }
 
         get :facets, params: { version: 'v3' }
         json = JSON.parse(response.body)

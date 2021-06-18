@@ -11,7 +11,7 @@ module SupplejackApi
       context 'successfull request' do
         let(:response_body) { JSON.parse(response.body).map(&:deep_symbolize_keys) }
 
-        before { get :index, params: { story_id: story.id.to_s, api_key: api_key, user_key: api_key} }
+        before { get :index, params: { story_id: story.id.to_s, api_key: api_key, user_key: api_key } }
 
         it 'returns a 200 http code' do
           expect(response).to have_http_status(:ok)
@@ -35,21 +35,29 @@ module SupplejackApi
           get :index, params: { story_id: 'madeupkey', api_key: api_key, user_key: api_key }
 
           expect(response).to have_http_status(:not_found)
-          expect(JSON.parse(response.body)['errors']).to eq("Story with provided Id madeupkey not found")
+          expect(JSON.parse(response.body)['errors']).to eq('Story with provided Id madeupkey not found')
         end
 
         it 'returns a 404 if user dosent exist' do
           get :index, params: { story_id: story.id.to_s, api_key: 'madeupkey' }
 
           expect(response.status).to eq(403)
-          expect(JSON.parse(response.body)['errors']).to eq("Invalid API Key")
+          expect(JSON.parse(response.body)['errors']).to eq('Invalid API Key')
         end
       end
     end
 
     describe 'GET show' do
       context 'successfull requests' do
-        before { get :show, params: { story_id: story.id.to_s, id: story.set_items.first.id.to_s, api_key: api_key, user_key: api_key } }
+        before do
+          get :show,
+              params: {
+                story_id: story.id.to_s,
+                id: story.set_items.first.id.to_s,
+                api_key: api_key,
+                user_key: api_key
+              }
+        end
 
         it 'returns a 200 http code' do
           expect(response).to have_http_status(:ok)
@@ -71,7 +79,9 @@ module SupplejackApi
           get :show, params: { story_id: story.id.to_s, id: 'storyitemid', api_key: api_key, user_key: api_key }
 
           expect(response.status).to eq(404)
-          expect(JSON.parse(response.body)['errors']).to eq("StoryItem with provided Id storyitemid not found for Story with provided Story Id #{story.id}")
+
+          expect(JSON.parse(response.body)['errors'])
+            .to eq("StoryItem with provided Id storyitemid not found for Story with provided Story Id #{story.id}")
         end
       end
     end
@@ -79,28 +89,50 @@ module SupplejackApi
     describe 'POST create' do
       context 'unsuccessfull create requests' do
         it 'should return 400 if required params are not posted' do
-          post :create, params: { story_id: story.id.to_s, api_key: api_key, user_key: api_key, item: {} }, format: :json
+          post :create,
+               params: {
+                 story_id: story.id.to_s,
+                 api_key: api_key,
+                 user_key: api_key,
+                 item: {}
+               },
+               format: :json
 
           expect(response).to have_http_status(:bad_request)
           expect(JSON.parse(response.body)['errors']).to eq 'Mandatory Parameter item missing in request'
         end
 
         it 'should return error for unknow values for type' do
-          post :create, params: { story_id: story.id.to_s, api_key: api_key, user_key: api_key, item: { type: 'foo' } }, format: :json
+          post :create,
+               params: { story_id: story.id.to_s, api_key: api_key, user_key: api_key, item: { type: 'foo' } },
+               format: :json
 
           expect(response).to have_http_status(:bad_request)
           expect(JSON.parse(response.body)['errors']).to eq 'Mandatory Parameters Missing: sub_type is missing'
         end
 
         it 'should return error for unknow values for sub type' do
-          post :create, params: { story_id: story.id.to_s, api_key: api_key, user_key: api_key, item: { type: 'text', sub_type: 'foo', content: { value: 'foo' } } }, format: :json
+          post :create,
+               params: {
+                 story_id: story.id.to_s,
+                 api_key: api_key,
+                 user_key: api_key,
+                 item: { type: 'text', sub_type: 'foo', content: { value: 'foo' } }
+               },
+               format: :json
 
           expect(response).to have_http_status(:bad_request)
-          expect(JSON.parse(response.body)['errors']).to eq 'Unsupported Value: sub_type must be one of: heading or rich-text'
+          expect(JSON.parse(response.body)['errors'])
+            .to eq 'Unsupported Value: sub_type must be one of: heading or rich-text'
         end
 
         it 'should return error if content and meta is not posted' do
-          post :create, params: { story_id: story.id.to_s, api_key: api_key, user_key: api_key, item: { type: 'text', sub_type: 'heading' } }
+          post :create,
+               params: {
+                 story_id: story.id.to_s,
+                 api_key: api_key,
+                 user_key: api_key, item: { type: 'text', sub_type: 'heading' }
+               }
 
           expect(response).to have_http_status(:bad_request)
           expect(JSON.parse(response.body)['errors']).to eq 'Content value is missing: content must contain value field'
@@ -110,18 +142,25 @@ module SupplejackApi
       context 'successfull create request' do
         it 'should return created Story Item' do
           block = { type: 'text', sub_type: 'heading',
-                    content: { value: 'sometext'},
+                    content: { value: 'sometext' },
                     meta: { title: 'foo' }, position: 100 }
 
-          post :create, params: { story_id: story.id.to_s, api_key: api_key, user_key: api_key, item: block }, format: :json
+          post :create,
+               params: {
+                 story_id: story.id.to_s,
+                 api_key: api_key,
+                 user_key: api_key,
+                 item: block
+               },
+               format: :json
 
           result = JSON.parse(response.body).deep_symbolize_keys
           result.delete(:id)
 
-          expect(result).to eq ({ type: 'text', sub_type: 'heading',
-                                  content: { value: 'sometext'},
-                                  meta: { title: 'foo', is_cover: false },
-                                  position: 100, record_id: nil })
+          expect(result).to eq({ type: 'text', sub_type: 'heading',
+                                 content: { value: 'sometext' },
+                                 meta: { title: 'foo', is_cover: false },
+                                 position: 100, record_id: nil })
         end
       end
     end
@@ -129,7 +168,14 @@ module SupplejackApi
     describe 'DELETE story item' do
       context 'successfull deletion' do
         it 'should return 204' do
-          delete :destroy, params: { story_id: story.id.to_s, id: story.set_items.last.id.to_s, api_key: api_key, user_key: api_key }
+          delete :destroy,
+                 params: {
+                   story_id: story.id.to_s,
+                   id: story.set_items.last.id.to_s,
+                   api_key: api_key,
+                   user_key: api_key
+                 }
+
           expect(response.status).to eq 204
         end
       end

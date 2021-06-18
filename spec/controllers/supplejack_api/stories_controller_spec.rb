@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module SupplejackApi
   RSpec.describe StoriesController do
     routes { SupplejackApi::Engine.routes }

@@ -64,7 +64,7 @@ module SupplejackApi
     def reposition_items
       params[:items].each do |item|
         story_item = @story.set_items.find_by_id(item[:id])
-        story_item.update_attribute(:position, item[:position]) if item
+        story_item.update_attribute(:position, item[:position]) if story_item
       end
 
       head :ok

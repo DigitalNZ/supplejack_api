@@ -15,7 +15,7 @@ module SupplejackApi
             create(:story, user: user)
           end
 
-          get :index, params: {api_key: api_key, user_key: api_key, slim: 'false'}
+          get :index, params: { api_key: api_key, user_key: api_key, slim: 'false'}
         end
 
         it 'returns a 200 http code' do
@@ -42,7 +42,7 @@ module SupplejackApi
       end
 
       context 'unsuccessful request - provided user id does not exist' do
-        before { get :admin_index, params: { api_key: api_key, user_id: '1231231231' }}
+        before { get :admin_index, params: { api_key: api_key, user_id: '1231231231' } }
 
         it 'returns 404' do
           expect(response).to have_http_status(:not_found)
@@ -54,7 +54,7 @@ module SupplejackApi
       end
 
       context 'unsuccesful request - not admin' do
-        before { get :admin_index, params: { api_key: user.api_key, user_id: user.api_key }}
+        before { get :admin_index, params: { api_key: user.api_key, user_id: user.api_key } }
 
         it 'returns 403' do
           expect(response).to have_http_status(:forbidden)
@@ -73,7 +73,7 @@ module SupplejackApi
             create(:story, user: user)
           end
 
-          get :admin_index, params: { api_key: api_key, user_id: user.api_key}
+          get :admin_index, params: { api_key: api_key, user_id: user.api_key }
         end
 
         it 'returns a 200 http code' do
@@ -88,7 +88,7 @@ module SupplejackApi
 
     describe 'GET show' do
       context 'when provided story id does not exist' do
-        before { get :show, params: { api_key: api_key, id: '1231231231' }}
+        before { get :show, params: { api_key: api_key, id: '1231231231' } }
 
         it 'returns 404' do
           expect(response).to have_http_status(:not_found)
@@ -107,7 +107,7 @@ module SupplejackApi
         before do
           2.times { create(:story, user: user) }
 
-          get :show, params: { api_key: api_key, id: story_id}
+          get :show, params: { api_key: api_key, id: story_id }
         end
 
         it 'returns a 200 http code' do
@@ -133,7 +133,7 @@ module SupplejackApi
 
     describe 'POST create' do
       context 'unsuccessful request - malformed post body' do
-        before { post :create, params: {user_key: api_key, api_key: api_key, story: {nope: '1231231231'} }}
+        before { post :create, params: { user_key: api_key, api_key: api_key, story: { nope: '1231231231' } } }
 
         it 'returns 400' do
           expect(response).to have_http_status(:bad_request)
@@ -148,7 +148,7 @@ module SupplejackApi
         let(:response_body) { JSON.parse(response.body).deep_symbolize_keys }
         let(:story_name) { 'StoryNameGoesHere' }
 
-        before { post :create, params: {user_key: api_key, api_key: api_key, story: { name: story_name }} }
+        before { post :create, params: { user_key: api_key, api_key: api_key, story: { name: story_name } } }
 
         it 'returns a 201 http code' do
           expect(response).to have_http_status(:created)
@@ -204,7 +204,7 @@ module SupplejackApi
 
     describe 'DELETE create' do
       context 'unsuccessful request - story not found' do
-        before { delete :destroy, params: {api_key: api_key, user_key: api_key, id: '1231231231' }}
+        before { delete :destroy, params: { api_key: api_key, user_key: api_key, id: '1231231231' } }
 
         it 'returns 404' do
           expect(response).to have_http_status(:not_found)
@@ -219,7 +219,7 @@ module SupplejackApi
         before do
           story = create(:story, user: user)
 
-          delete :destroy, params: {api_key: api_key, user_key: api_key, id: story.id}
+          delete :destroy, params: { api_key: api_key, user_key: api_key, id: story.id }
         end
 
         it 'returns a 204 http code' do
@@ -237,7 +237,7 @@ module SupplejackApi
 
     describe 'PATCH update' do
       context 'unsuccessful request - story not found' do
-        before { patch :update, params: {api_key: api_key, user_key: api_key, id: '1231231231' }}
+        before { patch :update, params: { api_key: api_key, user_key: api_key, id: '1231231231' } }
 
         it 'returns 404' do
           expect(response).to have_http_status(:not_found)

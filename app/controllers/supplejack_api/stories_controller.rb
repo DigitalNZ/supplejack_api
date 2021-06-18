@@ -64,6 +64,7 @@ module SupplejackApi
     def reposition_items
       params[:items].each do |item|
         story_item = @story.set_items.find_by_id(item[:id])
+
         story_item.update_attribute(:position, item[:position]) if story_item
       end
 
@@ -85,7 +86,7 @@ module SupplejackApi
     end
 
     def find_story
-      @story = SupplejackApi::UserSet.custom_find(params[:id])
+      @story = SupplejackApi::UserSet.custom_find(params[:id] || params[:story_id])
 
       render_error_with(I18n.t('errors.story_not_found', id: params[:id]), :not_found) unless @story
     end

@@ -31,8 +31,6 @@ RSpec.describe 'Records Endpoints', type: :request do
       it 'returns record' do
         response_attributes = JSON.parse(response.body)
 
-        p record.updated_at.strftime('%y/%d/%m')
-
         expect(response_attributes).to eq(
           {
             'record' => {

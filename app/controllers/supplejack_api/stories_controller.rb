@@ -65,7 +65,10 @@ module SupplejackApi
       params[:items].each do |item|
         story_item = @story.set_items.find_by_id(item[:id])
 
-        story_item.update_attribute(:position, item[:position]) if story_item
+        next unless story_item
+
+        story_item.position = item[:position]
+        story_item.save(validate: false)
       end
 
       head :ok

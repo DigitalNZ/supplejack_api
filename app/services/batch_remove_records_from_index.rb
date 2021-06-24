@@ -27,9 +27,10 @@ class BatchRemoveRecordsFromIndex
     records.each do |record|
       Rails.logger.info "BatchRemoveRecordsFromIndex - REMOVE INDEX: #{record}"
       Sunspot.remove record
-      record.update(index_updated: true, index_updated_at: Time.current)
+      record.set(index_updated: true, index_updated_at: Time.current)
     rescue StandardError => e
       Rails.logger.error "BatchRemoveRecordsFromIndex - Failed to remove: #{record.inspect} - #{e.message}"
+      record.set(index_updated: true, index_updated_at: Time.current)
     end
   end
 end

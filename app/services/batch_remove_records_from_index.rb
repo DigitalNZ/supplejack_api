@@ -10,7 +10,7 @@ class BatchRemoveRecordsFromIndex
   end
 
   def call
-    Sunspot.remove(records.to_a) if records.any?
+    Sunspot.remove(records) if records.any?
 
     SupplejackApi::Record.where(:record_id.in => records.map(&:record_id))
                          .update_all(index_updated: true, index_updated_at: Time.current)
@@ -27,9 +27,10 @@ class BatchRemoveRecordsFromIndex
     records.each do |record|
       Rails.logger.info "BatchRemoveRecordsFromIndex - REMOVE INDEX: #{record}"
       Sunspot.remove record
-      record.update(index_updated: true, index_updated_at: Time.current)
+      record.set(index_updated: true, index_updated_at: Time.current)
     rescue StandardError => e
       Rails.logger.error "BatchRemoveRecordsFromIndex - Failed to remove: #{record.inspect} - #{e.message}"
+      record.set(index_updated: true, index_updated_at: Time.current)
     end
   end
 end

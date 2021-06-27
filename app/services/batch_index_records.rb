@@ -10,7 +10,7 @@ class BatchIndexRecords
   end
 
   def call
-    Sunspot.index(records.to_a) if records.any?
+    Sunspot.index(records) if records.any?
 
     # update_all skips the callbacks.
     SupplejackApi::Record.where(:record_id.in => records.map(&:record_id))

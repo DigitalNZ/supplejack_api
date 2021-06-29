@@ -10,11 +10,11 @@ module SupplejackApi
       result = OpenStruct.new(ids: [])
       number_of_ids = count_for_buffer_type(method)
 
-      # rubocop:disable Metrics/LineLength
+      # rubocop:disable Layout/LineLength
       if number_of_ids.positive?
         Rails.logger.info "INDEXING[#{Time.now.utc.strftime('%d/%m/%y %H:%M:%S')}]: #{number_of_ids} ids in #{method} buffer"
       end
-      # rubocop:enable Metrics/LineLength
+      # rubocop:enable Layout/LineLength
 
       Sidekiq.redis do |conn|
         conn.pipelined do

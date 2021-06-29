@@ -42,7 +42,7 @@ module SupplejackApi
         self.merged_fragment = nil
         return if fragments.size <= 1
 
-        # rubocop:disable Metrics/LineLength
+        # rubocop:disable Layout/LineLength
         new_fragment_attributes = fragment_class.mutable_fields.each_with_object({}) do |(field_name, field_type), attributes|
           if field_type == Array
             attributes[field_name] = []
@@ -58,7 +58,7 @@ module SupplejackApi
             attributes[field_name] = sorted_fragments.to_a.map { |fragment| fragment[field_name] }.compact.first
           end
         end
-        # rubocop:enable Metrics/LineLength
+        # rubocop:enable Layout/LineLength
 
         new_fragment_attributes.reject! { |_key, value| value.nil? || value == [] }
 

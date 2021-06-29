@@ -64,14 +64,14 @@ class UpdateRecordFromHarvest
                                    end
     end
 
-    # rubocop:disable Metrics/LineLength
+    # rubocop:disable Layout/LineLength
     existing_fragment_attributes_set_to_nil = fragment.raw_attributes.keys.each_with_object({}) do |field_name, existing_attributes|
       next if field_name == 'priority'
       next unless schema_fields.key?(field_name)
 
       existing_attributes[field_name] = nil
     end
-    # rubocop:enable Metrics/LineLength
+    # rubocop:enable Layout/LineLength
 
     # nil all mutable fields on primary_fragment except for the priority
     # delete all sub documents on primary fragment

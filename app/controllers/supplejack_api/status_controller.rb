@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SupplejackApi
-  # rubocop:disable Metrics/LineLength
+  # rubocop:disable Layout/LineLength
   # FIXME: make log lines smaller
   class StatusController < SupplejackApplicationController
     skip_before_action :authenticate_user!, only: [:show], raise: false
@@ -63,5 +63,5 @@ module SupplejackApi
       false
     end
   end
-  # rubocop:enable Metrics/LineLength
+  # rubocop:enable Layout/LineLength
 end

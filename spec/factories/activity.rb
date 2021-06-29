@@ -5,7 +5,7 @@ module SupplejackApi
     factory :activity, class: SiteActivity do
       created_at { 1.day.ago.utc }
       updated_at { Time.now.utc.to_date }
-      date       { Faker::Date.birthday(18, 65) }
+      date       { Faker::Date.birthday(min_age: 18, max_age: 65) }
       user_sets  { 1264 }
       search     { 696979 }
       records    { 74680 }

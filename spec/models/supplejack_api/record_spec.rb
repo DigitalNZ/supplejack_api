@@ -34,22 +34,22 @@ module SupplejackApi
       it 'should find next and previous records' do
         @user = double(:user)
         allow(Record).to receive_message_chain(:unscoped, :active, :where, :first).and_return(@record)
-        expect(@record).to receive(:find_next_and_previous_records).with(@user, {text: 'dogs'})
-        Record.custom_find(@record.record_id, @user, {text: 'dogs'})
+        expect(@record).to receive(:find_next_and_previous_records).with(@user, { text: 'dogs' })
+        Record.custom_find(@record.record_id, @user, { text: 'dogs' })
       end
 
       [Sunspot::UnrecognizedFieldError, Timeout::Error, Errno::ECONNREFUSED, Errno::ECONNRESET].each do |error_klass|
-        it 'should rescue from a #{error_klass}' do
+        it "should rescue from a #{error_klass}" do
           allow(Record).to receive_message_chain(:unscoped, :active, :where, :first).and_return(@record)
           allow(@record).to receive(:find_next_and_previous_records).and_raise(error_klass)
-          Record.custom_find(@record.record_id, nil, {text: 'dogs'})
+          Record.custom_find(@record.record_id, nil, { text: 'dogs' })
         end
       end
 
       it 'should rescue from a RSolr::Error::Http' do
         allow(Record).to receive_message_chain(:unscoped, :active, :where, :first).and_return(@record)
         allow(@record).to receive(:find_next_and_previous_records).and_raise(RSolr::Error::Http.new({}, {}))
-        Record.custom_find(@record.record_id, nil, {text: 'dogs'})
+        Record.custom_find(@record.record_id, nil, { text: 'dogs' })
       end
 
       context 'restricting inactive records' do
@@ -62,13 +62,13 @@ module SupplejackApi
         it 'finds also inactive records when :status => :all' do
           @record.update_attribute(:status, 'deleted')
           @record.reload
-          expect(Record.custom_find(@record.record_id, nil, {status: :all})).to eq @record
+          expect(Record.custom_find(@record.record_id, nil, { status: :all })).to eq @record
         end
 
         it "doesn't find next and previous record without any search options" do
           allow(Record).to receive_message_chain(:unscoped, :where, :first) { @record }
           expect(@record).to_not receive(:find_next_and_previous_records)
-          Record.custom_find(@record.record_id, nil, {status: :all})
+          Record.custom_find(@record.record_id, nil, { status: :all })
         end
 
         it "doesn't break with nil options" do
@@ -116,7 +116,7 @@ module SupplejackApi
       end
 
       it 'returns the records in the same order as requested' do
-        r1 = FactoryBot.create(:record, created_at: Time.now.utc-10.days)
+        r1 = FactoryBot.create(:record, created_at: Time.now.utc - 10.days)
         r2 = FactoryBot.create(:record, created_at: Time.now.utc)
         records = Record.find_multiple([r2.record_id, r1.record_id]).to_a
         expect(records.first).to eq r2
@@ -220,8 +220,8 @@ module SupplejackApi
       # end
     end
 
-    def mock_hits(primary_keys=[])
-      primary_keys.map {|pk| double(:hit, primary_key: pk.to_s )}
+    def mock_hits(primary_keys = [])
+      primary_keys.map { |pk| double(:hit, primary_key: pk.to_s) }
     end
 
     # describe 'harvest_job_id=()' do
@@ -270,9 +270,9 @@ module SupplejackApi
     end
 
     describe '#replace_stories_cover' do
-      let(:set_item_1) { story.set_items.first }
+      let(:set_item1) { story.set_items.first }
       let(:set_item_1_thumb) { 'https://deleted.example.com' }
-      let(:set_item_2) { story.set_items.last }
+      let(:set_item2) { story.set_items.last }
       let(:set_item_2_thumb) { 'https://valid.example.com' }
       let(:story) do
         create(
@@ -286,17 +286,17 @@ module SupplejackApi
       end
 
       before(:each) do
-        set_item_1.record.fragments << build(:fragment, large_thumbnail_url: set_item_1_thumb)
-        set_item_2.record.fragments << build(:fragment, large_thumbnail_url: set_item_2_thumb)
+        set_item1.record.fragments << build(:fragment, large_thumbnail_url: set_item_1_thumb)
+        set_item2.record.fragments << build(:fragment, large_thumbnail_url: set_item_2_thumb)
 
-        set_item_1.record.reload.save! # Without this, source_ids validation fails ...
-        set_item_2.record.reload.save!
+        set_item1.record.reload.save! # Without this, source_ids validation fails ...
+        set_item2.record.reload.save!
       end
 
       it 're-sets the cover_image of any stories if the Record is the cover image' do
         expect(story.cover_thumbnail).to eq set_item_1_thumb
 
-        set_item_1.record.update!(status: :deleted) # Triggers #replace_stories_cover
+        set_item1.record.update!(status: :deleted) # Triggers #replace_stories_cover
 
         expect(story.reload.cover_thumbnail).to eq set_item_2_thumb
       end
@@ -304,7 +304,7 @@ module SupplejackApi
       it 'does nothing if the record has active status' do
         expect(story.cover_thumbnail).to eq set_item_1_thumb
 
-        set_item_1.record.replace_stories_cover
+        set_item1.record.replace_stories_cover
 
         expect(story.reload.cover_thumbnail).to eq set_item_1_thumb
       end
@@ -312,12 +312,15 @@ module SupplejackApi
   end
 
   describe '#mark_for_indexing' do
-    let(:record) { build(:record, index_updated: true, index_updated_at: Time.now) }
+    let(:record) { build(:record, index_updated: true, index_updated_at: Time.current) }
+
     it 'sets index_updated to be false when changes are made to a record' do
       expect(record.index_updated).to eq true
       expect(record.index_updated_at).to be_a(Date)
-      record.update_attributes(status: 'active')
+      record.update(status: 'active')
+
       record.reload
+
       expect(record.index_updated).to eq false
       expect(record.index_updated_at).to eq nil
     end

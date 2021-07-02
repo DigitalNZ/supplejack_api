@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module SupplejackApi
   describe Search do
-  	before do
+    before do
       @search = Search.new
       Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session)
       @session = Sunspot.session
@@ -22,8 +22,7 @@ module SupplejackApi
       end
 
       it 'uses sensible defaults when no options are provided' do
-        default_options =
-        {
+        default_options = {
           facets: '',
           facet_pivots: '',
           and: {},
@@ -46,23 +45,23 @@ module SupplejackApi
       end
     end
 
-  	describe '#facet_list' do
-  		before {
+    describe '#facet_list' do
+      before do
         # Record Search is used here rather than Search
         # this method uses a RecordSearchSchema within `Search#schema_class`
         # Essentially, without RecordSearch the test breaks
         @search = RecordSearch.new
         allow(@search).to receive(:model_class) { Record }
-      }
+      end
 
       it 'should return a array of facets' do
         @search.options[:facets] = 'name, address'
-        expect(@search.facet_list).to eq [:name, :address]
+        expect(@search.facet_list).to eq %i[name address]
       end
 
       it 'should discard any fields not configured as facets' do
         @search.options[:facets] = 'name, address, other_facet'
-        expect(@search.facet_list).to eq [:name, :address]
+        expect(@search.facet_list).to eq %i[name address]
       end
 
       it 'should return string versions of integer facets' do
@@ -77,10 +76,10 @@ module SupplejackApi
     end
 
     describe '#facet_pivot_list' do
-      before {
+      before do
         @search = RecordSearch.new
         allow(@search).to receive(:model_class) { Record }
-      }
+      end
 
       it 'should return an empty string when an empty string is provided' do
         @search.options[:facet_pivots] = ''
@@ -99,17 +98,17 @@ module SupplejackApi
     end
 
     describe '#field_list' do
-    	before {
+      before do
         # Record Search is used here rather than Search
         # this method uses a RecordSearchSchema within `Search#schema_class`
         # Essentially, without RecordSearch the test breaks
         @search = RecordSearch.new
         allow(@search).to receive(:schema_class) { RecordSchema }
-      }
+      end
 
       it 'should return a array of fields' do
         @search.options[:fields] = 'name, address'
-        expect(@search.field_list).to eq [:name, :address]
+        expect(@search.field_list).to eq %i[name address]
       end
 
       it 'should only return valid fields' do
@@ -119,21 +118,21 @@ module SupplejackApi
     end
 
     describe '#group_list' do
-    	before {
+      before do
         # Record Search is used here rather than Search
         # this method uses a RecordSearchSchema within `Search#schema_class`
         # Essentially, without RecordSearch the test breaks
         @search = RecordSearch.new
         allow(@search).to receive(:model_class) { Record }
-      }
+      end
 
-	    it 'gets the groups from the fields list' do
-	      @search.options[:fields] = "content_partner, core"
-	      expect(@search.group_list).to eq [:core]
-	    end
-	  end
+      it 'gets the groups from the fields list' do
+        @search.options[:fields] = 'content_partner, core'
+        expect(@search.group_list).to eq [:core]
+      end
+    end
 
-	  describe '#query_fields' do
+    describe '#query_fields' do
       it 'returns nil when no query fields were specified' do
         @search = Search.new
         expect(@search.query_fields).to be_nil
@@ -146,12 +145,12 @@ module SupplejackApi
 
       it 'supports the query_fields as comma separated string' do
         @search = Search.new(query_fields: 'collection, creator, publisher')
-        expect(@search.query_fields).to eq([:collection, :creator, :publisher])
+        expect(@search.query_fields).to eq(%i[collection creator publisher])
       end
 
       it 'converts an array of strings to symbols' do
-        @search = Search.new(query_fields: ['collection','creator'])
-        expect(@search.query_fields).to eq([:collection, :creator])
+        @search = Search.new(query_fields: %w[collection creator])
+        expect(@search.query_fields).to eq(%i[collection creator])
       end
 
       it 'returns nil when query_fields is an empty string' do
@@ -179,7 +178,7 @@ module SupplejackApi
       end
     end
 
-     describe '#to_proper_value' do
+    describe '#to_proper_value' do
       it 'returns false for "false" string' do
         expect(@search.to_proper_value('active?', 'false')).to be_falsey
       end
@@ -210,7 +209,7 @@ module SupplejackApi
         expect(Search.new(text: 'McDowall').text).to eq 'mcdowall'
       end
 
-      ['AND', 'OR', 'NOT'].each do |operator|
+      %w[AND OR NOT].each do |operator|
         it "downcases everything except the #{operator} operators" do
           expect(Search.new(text: "McDowall #{operator} Dogs").text).to eq "mcdowall #{operator} dogs"
         end
@@ -274,13 +273,19 @@ module SupplejackApi
 
       it 'sets the solr request parameters when debug=true' do
         @search.options[:debug] = 'true'
-        allow(@search).to receive(:execute_solr_search) { double(:solr_request, query: double(:query, to_params: {param1: 1})) }
+        allow(@search).to receive(:execute_solr_search) {
+          double(:solr_request, query: double(:query, to_params: { param1: 1 }))
+        }
+
         @search.solr_search_object
-        expect(@search.solr_request_params).to eq({:param1 => 1})
+        expect(@search.solr_request_params).to eq({ param1: 1 })
       end
 
       it "doesn't set the solr request parameters" do
-        allow(@search).to receive(:execute_solr_search) { double(:solr_request, query: double(:query, to_params: {param1: 1})) }
+        allow(@search).to receive(:execute_solr_search) {
+          double(:solr_request, query: double(:query, to_params: { param1: 1 }))
+        }
+
         @search.solr_search_object
         expect(@search.solr_request_params).to be_nil
       end
@@ -293,17 +298,17 @@ module SupplejackApi
     end
 
     describe '#method_missing' do
-	    it 'delegates any missing method to the solr_search_object' do
-	      sso = double(:sso, something_missing: [], hits: [])
-	      allow(@search).to receive(:solr_search_object).and_return(sso)
-	      expect(sso).to receive(:something_missing)
-	      @search.something_missing
-	    end
+      it 'delegates any missing method to the solr_search_object' do
+        sso = double(:sso, something_missing: [], hits: [])
+        allow(@search).to receive(:solr_search_object).and_return(sso)
+        expect(sso).to receive(:something_missing)
+        @search.something_missing
+      end
 
-	    it 'returns nil when solr request failed' do
-	      allow(@search).to receive(:solr_search_object).and_return({})
-	      expect(@search.something_missing).to be_nil
-	    end
+      it 'returns nil when solr request failed' do
+        allow(@search).to receive(:solr_search_object).and_return({})
+        expect(@search.something_missing).to be_nil
+      end
     end
   end
 end

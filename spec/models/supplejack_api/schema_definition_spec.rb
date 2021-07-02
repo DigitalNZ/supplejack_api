@@ -4,7 +4,6 @@ require 'spec_helper'
 
 module SupplejackApi
   describe SchemaDefinition do
-
     class ExampleSchema
       include SchemaDefinition
 

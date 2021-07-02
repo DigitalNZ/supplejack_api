@@ -4,13 +4,13 @@ require 'spec_helper'
 
 module SupplejackApi
   describe Search do
-  	before {
+  	before do
       @search = Search.new
       Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session)
       @session = Sunspot.session
 
       allow(Search).to receive(:role_collection_restrictions) { [] }
-    }
+    end
 
     describe '#initialize' do
       it 'sets the options' do

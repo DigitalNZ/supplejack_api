@@ -41,7 +41,7 @@ module SupplejackApi
     field :role,              type: String,   default: 'developer'
 
     field :daily_activity,        type: Hash
-    field :daily_activity_stored, type: Boolean, default: true
+    field :daily_activity_stored, type: Mongoid::Boolean, default: true
     index({ daily_activity_stored: 1 }, background: true)
 
     has_many :user_activities, class_name: 'SupplejackApi::UserActivity', dependent: :destroy

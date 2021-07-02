@@ -15,9 +15,9 @@ module SupplejackApi
     field :source_clickthroughs,                type: Integer, default: 0
     field :appeared_in_searches,                type: Integer, default: 0
     field :added_to_user_stories,               type: Integer, default: 0
-    field :processed_by_collection_metrics,     type: Boolean, default: false
-    field :processed_by_top_metrics,            type: Boolean, default: false
-    field :processed_by_top_collection_metrics, type: Boolean, default: false
+    field :processed_by_collection_metrics,     type: Mongoid::Boolean, default: false
+    field :processed_by_top_metrics,            type: Mongoid::Boolean, default: false
+    field :processed_by_top_collection_metrics, type: Mongoid::Boolean, default: false
 
     validates :record_id, presence: true
     validates :record_id, uniqueness: { scope: :date }

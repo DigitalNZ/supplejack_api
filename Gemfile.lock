@@ -29,7 +29,7 @@ PATH
       kaminari-mongoid
       lazy_high_charts
       mimemagic
-      mongoid (~> 7.2.0)
+      mongoid (~> 7.2.3)
       mongoid_auto_increment
       paperclip
       progressbar

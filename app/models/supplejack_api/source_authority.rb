@@ -11,7 +11,7 @@ module SupplejackApi
       string: String,
       integer: Integer,
       datetime: DateTime,
-      boolean: Boolean
+      boolean: Mongoid::Boolean
     }.freeze
 
     store_in collection: 'source_authorities'

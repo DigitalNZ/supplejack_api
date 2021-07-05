@@ -86,6 +86,6 @@ class RecordSchema
   role :admin, admin: true
   role :harvester, harvester: true
 
-  model_field :index_updated, field_options: { type: Boolean }
+  model_field :index_updated, field_options: { type: Mongoid::Boolean }
   model_field :index_updated_at, field_options: { type: DateTime }
 end

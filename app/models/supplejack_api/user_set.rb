@@ -21,8 +21,8 @@ module SupplejackApi
     field :priority,         type: Integer,  default: 0
     field :count_updated_at, type: DateTime
     field :subjects,         type: Array,    default: []
-    field :approved,         type: Boolean,  default: false
-    field :featured,         type: Boolean,  default: false
+    field :approved,         type: Mongoid::Boolean,  default: false
+    field :featured,         type: Mongoid::Boolean,  default: false
     field :featured_at,      type: DateTime
     field :cover_thumbnail,  type: String
     field :username,         type: String
@@ -39,7 +39,7 @@ module SupplejackApi
     # the cover_thumbnail was selected by the user so dont change it.
     # We have decided not to do this for now
 
-    # field :user_selected_cover, type: Boolean,  default: false
+    # field :user_selected_cover, type: Mongoid::Boolean,  default: false
 
     scope :excluding_favorites, -> { where(:name.ne => 'Favorites') }
 

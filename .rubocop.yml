@@ -11,6 +11,7 @@ AllCops:
     - 'db/**/*'
     - 'config/**/*'
     - 'script/**/*'
+    - 'spec/dummy/**/*'
     - 'features/**/*'
     - 'lib/generators/**/*'
   DisplayStyleGuide: true

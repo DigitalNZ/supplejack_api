@@ -25,7 +25,9 @@ module SupplejackApi
                             tag: tag)]
         end
 
-        after(:build) { each(&:save!) }
+        after(:build) do |record_with_fragment|
+          record_with_fragment.save!
+        end
 
         trait :ready_for_indexing do
           index_updated { false }

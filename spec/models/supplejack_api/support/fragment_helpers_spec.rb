@@ -14,49 +14,49 @@ module SupplejackApi
         end
       end
 
-      describe "valiations" do
-        it "should be valid" do
+      describe 'valiations' do
+        it 'should be valid' do
           expect(record).to be_valid
         end
 
-        context "duplicate source_ids" do
+        context 'duplicate source_ids' do
           before do
             record.fragments << FactoryBot.build(:record_fragment, source_id: 'source_name')
           end
 
-          it "should not be valid" do
+          it 'should not be valid' do
             expect(record).to_not be_valid
           end
         end
       end
 
-      describe "#source_ids" do
-        it "should return an array with a single source_id" do
+      describe '#source_ids' do
+        it 'should return an array with a single source_id' do
           expect(record.source_ids).to eq ['source_name']
         end
 
-        context "multiple fragments" do
+        context 'multiple fragments' do
           before do
             record.fragments << FactoryBot.build(:record_fragment, source_id: 'another_source')
           end
 
-          it "should return an array with the source_ids" do
-            expect(record.source_ids).to eq ['source_name', "another_source"]
+          it 'should return an array with the source_ids' do
+            expect(record.source_ids).to eq %w[source_name another_source]
           end
         end
       end
 
-      describe "#duplicate_source_ids?" do
-        it "should return false" do
+      describe '#duplicate_source_ids?' do
+        it 'should return false' do
           expect(record.duplicate_source_ids?).to be_falsey
         end
 
-        context "duplicate source_ids" do
+        context 'duplicate source_ids' do
           before do
             record.fragments << FactoryBot.build(:record_fragment, source_id: 'source_name')
           end
 
-          it "should return true" do
+          it 'should return true' do
             expect(record.duplicate_source_ids?).to be_truthy
           end
         end
@@ -67,7 +67,7 @@ module SupplejackApi
         before { record.save }
 
         it 'returns the fragment with priority 0' do
-          fragment1 = record.fragments.create(name: 'John', priority: 1)
+          # fragment1 = record.fragments.create(name: 'John', priority: 1)
           fragment0 = record.fragments.create(name: 'John', priority: 0)
           expect(record.primary_fragment).to eq fragment0
         end
@@ -102,7 +102,13 @@ module SupplejackApi
 
         context 'multiple fragments' do
           before(:each) do
-            record.fragments << FactoryBot.build(:record_fragment, name: 'James Smith', email: ['jamessmith@example.com'], source_id: 'another_source', priority: -1)
+            fragment = FactoryBot.build(:record_fragment,
+                                        name: 'James Smith',
+                                        email: ['jamessmith@example.com'],
+                                        source_id: 'another_source',
+                                        priority: -1)
+
+            record.fragments << fragment
             record.reload.save!
           end
 
@@ -162,7 +168,10 @@ module SupplejackApi
 
         context 'multiple fragments' do
           before(:each) do
-            record.fragments << FactoryBot.build(:record_fragment, email: ['jamessmith@example.com'], source_id: 'another_source')
+            fragment = FactoryBot.build(:record_fragment,
+                                        email: ['jamessmith@example.com'],
+                                        source_id: 'another_source')
+            record.fragments << fragment
             record.reload.save!
           end
 
@@ -175,8 +184,8 @@ module SupplejackApi
           end
         end
 
-        # context "namespaced field names" do
-        #   it "should translate namespaced field names into their stored field name" do
+        # context 'namespaced field names' do
+        #   it 'should translate namespaced field names into their stored field name' do
         #     record.fragments.first.stub(:dc_name) { 'Joe Bloggs' }
         #     record.public_send(:'dc:name')).to eq 'Joe Bloggs'
         #   end
@@ -189,7 +198,7 @@ module SupplejackApi
           record.fragments.build(priority: -1)
           record.fragments.build(priority: 5)
 
-          expect(record.sorted_fragments.map(&:priority)).to eq [-1,0,5,10]
+          expect(record.sorted_fragments.map(&:priority)).to eq [-1, 0, 5, 10]
         end
       end
 

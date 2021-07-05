@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SupplejackApi
   FactoryBot.define do
     factory :preview_record, class: SupplejackApi.config.preview_record_class do

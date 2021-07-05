@@ -1,4 +1,4 @@
-
+# frozen_string_literal: true
 
 module SupplejackApi
   FactoryBot.define do
@@ -7,11 +7,11 @@ module SupplejackApi
         display_collection { 'test' }
         copyright { ['0'] }
         category { ['0'] }
-        tag { ['foo', 'bar'] }
+        tag { %w[foo bar] }
       end
 
       internal_identifier { 'nlnz:1234' }
-      record_id { 54123 }
+      record_id { 54_123 }
       status                 { 'active' }
       source_url             { 'http://google.com/landing.html' }
       record_type            { 0 }
@@ -19,14 +19,13 @@ module SupplejackApi
       factory :record_with_fragment do
         fragments do
           [FactoryBot.build(:record_fragment,
-                             display_collection: display_collection,
-                             copyright: copyright,
-                             category: category,
-                             tag: tag)]
+                            display_collection: display_collection,
+                            copyright: copyright,
+                            category: category,
+                            tag: tag)]
         end
-        after(:build) do |record_with_fragment|
-          record_with_fragment.save!
-        end
+
+        after(:build) { each(&:save!) }
 
         trait :ready_for_indexing do
           index_updated { false }
@@ -40,14 +39,13 @@ module SupplejackApi
       factory :record_with_no_large_thumb do
         fragments do
           [FactoryBot.build(:record_fragment,
-                             display_collection: display_collection,
-                             copyright: copyright,
-                             category: category,
-                             tag: tag,
-                             large_thumbnail_url: nil)]
+                            display_collection: display_collection,
+                            copyright: copyright,
+                            category: category,
+                            tag: tag,
+                            large_thumbnail_url: nil)]
         end
       end
-
     end
 
     factory :record_fragment, class: SupplejackApi::ApiRecord::RecordFragment do

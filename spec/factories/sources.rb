@@ -1,4 +1,4 @@
-
+# frozen_string_literal: true
 
 module SupplejackApi
   FactoryBot.define do
@@ -7,5 +7,4 @@ module SupplejackApi
       source_id   { '1234' }
     end
   end
-
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :story, class: SupplejackApi::UserSet do
     association :record, factory: :record_with_fragment
@@ -11,7 +13,7 @@ FactoryBot.define do
     description     { 'Story description' }
     featured        { false }
     approved        { false }
-    tags            { ['story', 'tags'] }
+    tags            { %w[story tags] }
     copyright       { 0 }
     cover_thumbnail { 'https://thumbnail_url' }
 
@@ -33,21 +35,19 @@ FactoryBot.define do
         story.save!
       end
     end
-
   end
 
   factory :story_json, class: Hash do
     transient do
       number_of_blocks { 2 }
     end
-
-    sequence(:id) {|n| n.to_s }
-    sequence(:name) {|n| "Story #{n}"}
+    sequence(:id) { map(&:to_s) }
+    sequence(:name) { |n| "Story #{n}" }
     privacy { 'hidden' }
     featured { false }
     approved { false }
     description { 'Story description' }
-    tags { ['story', 'tags'] }
+    tags { %w[story tags] }
     number_of_items { number_of_blocks }
     contents { [] }
     copyright { 0 }

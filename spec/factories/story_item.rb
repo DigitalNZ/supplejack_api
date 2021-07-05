@@ -1,12 +1,19 @@
+# frozen_string_literal: true
+
 FactoryBot.define do
   factory :story_item, class: SupplejackApi::SetItem do
     user_set
     sequence(:position)
     type      { 'text' }
     sub_type  { 'heading' }
-    content   { { value: 'foo', image_url: ('a'..'z').to_a.shuffle.join, display_collection: 'TAPHUI', category: ['Audio'] } }
+    content   do
+      { value: 'foo',
+        image_url: ('a'..'z').to_a.shuffle.join,
+        display_collection: 'TAPHUI',
+        category: ['Audio'] }
+    end
     meta      { { size: 1 } }
-    record_id { record&.record_id.present? ? record.record_id : SecureRandom.random_number(1000000) }
+    record_id { record&.record_id.present? ? record.record_id : SecureRandom.random_number(100_000_0) }
 
     trait :script_value do
       content { { value: '<script>alert("test");<script>' } }
@@ -35,7 +42,7 @@ FactoryBot.define do
         display_collection { 'Display collection' }
         category           { 'Category' }
         image_url          { 'http://foo.bar' }
-        tags               { ['tags', 'yo'] }
+        tags               { %w[tags yo] }
         alignment          { 'left' }
         caption            { 'a caption' }
       end
@@ -53,20 +60,16 @@ FactoryBot.define do
         )
       end
 
-      content {{
-        id: record.record_id,
-        title: title,
-        display_collection: display_collection,
-        category: category,
-        image_url: image_url,
-        tags: tags
-      }}
+      content do
+        { id: record.record_id,
+          title: title,
+          display_collection: display_collection,
+          category: category,
+          image_url: image_url,
+          tags: tags }
+      end
 
-      meta {{
-        alignment: alignment,
-        caption: caption
-      }}
+      meta { { alignment: alignment, caption: caption } }
     end
-
   end
 end

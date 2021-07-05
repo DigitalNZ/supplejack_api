@@ -7,10 +7,10 @@ module SupplejackApi
       updated_at { Time.now.utc.to_date }
       date       { Faker::Date.birthday(18, 65) }
       user_sets  { 1264 }
-      search     { 696979 }
-      records    { 74680 }
-      total      { 784091 }
-      source_clicks { 11168 }
+      search     { 696_979 }
+      records    { 74_680 }
+      total      { 784_091 }
+      source_clicks { 11_168 }
     end
   end
 end

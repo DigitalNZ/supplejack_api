@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 DEFAULT_CONTENT_PRESENTER = lambda do |block|
   result = {}
 

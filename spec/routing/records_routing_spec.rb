@@ -23,7 +23,8 @@ module SupplejackApi
 
     it 'routes /records/:record_id/more_like_this.json to records#more_like_this' do
       expect(get: '/records/1/more_like_this.json')
-        .to route_to(controller: 'supplejack_api/records', action: 'more_like_this', record_id: '1', format: 'json', version: nil)
+        .to route_to(controller: 'supplejack_api/records', action: 'more_like_this',
+                     record_id: '1', format: 'json', version: nil)
     end
   end
 end

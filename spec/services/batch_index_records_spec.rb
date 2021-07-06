@@ -1,7 +1,8 @@
+# frozen_string_literal: true
+
 RSpec.describe BatchIndexRecords do
   describe '#initialize' do
-    let!(:active_record) { FactoryBot.create_list(:record_with_fragment, 10, :ready_for_indexing)
-    }
+    let!(:active_record) { FactoryBot.create_list(:record_with_fragment, 10, :ready_for_indexing) }
 
     it 'Set Sunspot.session to post directly to solr' do
       BatchIndexRecords.new(SupplejackApi::Record.all)

@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 module MetricsApi
   module V3
     module Presenters
       describe ExtendedMetadata do
-        let(:presenter){ExtendedMetadata.new(@models, Time.now.utc.yesterday.to_date, Time.now.utc.to_date)}
+        let(:presenter) { ExtendedMetadata.new(@models, Time.now.utc.yesterday.to_date, Time.now.utc.to_date) }
 
         before do
           @models = [
@@ -24,7 +26,7 @@ module MetricsApi
               metric: 'record',
               models: {
                 Time.now.utc.to_date => [
-                  create(:faceted_metrics),
+                  create(:faceted_metrics)
                 ],
                 Time.now.utc.yesterday.to_date => [
                   create(:faceted_metrics, date: Time.now.utc.yesterday.to_date)
@@ -35,10 +37,10 @@ module MetricsApi
               metric: 'top_records',
               models: {
                 Time.now.utc.to_date => [
-                  create(:top_collection_metric, results: { 123 => 456, 345 => 678}, date: Time.now.utc.to_date),
+                  create(:top_collection_metric, results: { 123 => 456, 345 => 678 }, date: Time.now.utc.to_date)
                 ],
                 Time.now.utc.yesterday.to_date => [
-                  create(:top_collection_metric, results: { 910 => 123, 456 => 789}, date: Time.now.utc.yesterday)
+                  create(:top_collection_metric, results: { 910 => 123, 456 => 789 }, date: Time.now.utc.yesterday)
                 ]
               }
             }

@@ -22,12 +22,31 @@ RSpec.describe SupplejackApi::TopCollectionMetric, type: :model do
 
   describe '::spawn' do
     context 'no args, it defaults to all dates before today' do
-      let!(:metric_one)   { create(:record_metric, appeared_in_searches: 1, date: Time.now.utc.yesterday, display_collection: 'Gotta collect them all!') }
-      let!(:metric_two)   { create(:record_metric, appeared_in_searches: 2, date: Time.now.utc.yesterday, display_collection: 'Supplejack LTD') }
-      let!(:metric_three) { create(:record_metric, appeared_in_searches: 3, date: Time.now.utc.yesterday, display_collection: 'Collecty McCollectyface') }
+      let!(:metric_one) do
+        create(:record_metric, appeared_in_searches: 1,
+                               date: Time.now.utc.yesterday,
+                               display_collection: 'Gotta collect them all!')
+      end
 
-      let!(:metric_group) { create_list(:record_metric, 250, date: Time.now.utc.yesterday, page_views: 1, display_collection: 'Laramie') }
-      let!(:yesterdays_metric_group) { create_list(:record_metric, 5, date: Time.now.utc.yesterday - 1.day, page_views: 2, display_collection: 'Laramie') }
+      let!(:metric_two) do
+        create(:record_metric, appeared_in_searches: 2,
+                               date: Time.now.utc.yesterday, display_collection: 'Supplejack LTD')
+      end
+
+      let!(:metric_three) do
+        create(:record_metric, appeared_in_searches: 3,
+                               date: Time.now.utc.yesterday, display_collection: 'Collecty McCollectyface')
+      end
+
+      let!(:metric_group) do
+        create_list(:record_metric, 250, date: Time.now.utc.yesterday, page_views: 1, display_collection: 'Laramie')
+      end
+
+      let!(:yesterdays_metric_group) do
+        create_list(:record_metric, 5, date: Time.now.utc.yesterday - 1.day,
+                                       page_views: 2,
+                                       display_collection: 'Laramie')
+      end
 
       before do
         described_class::METRICS.each do |metric|
@@ -47,15 +66,21 @@ RSpec.describe SupplejackApi::TopCollectionMetric, type: :model do
       end
 
       it 'only takes the top 200 records for each metric AND collection' do
-        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.yesterday, metric: 'page_views', display_collection: 'Laramie').results.keys.count).to eq 200
+        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.yesterday,
+                                                          metric: 'page_views',
+                                                          display_collection: 'Laramie').results.keys.count).to eq 200
       end
 
       it 'orders the results from highest to lowest' do
-        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.yesterday, metric: 'appeared_in_searches', display_collection: 'Laramie').results.values.first).to eq 3
+        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.yesterday,
+                                                          metric: 'appeared_in_searches',
+                                                          display_collection: 'Laramie').results.values.first).to eq 3
       end
 
       it 'spawns metrics across multiple days' do
-        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.yesterday - 1.day, metric: 'page_views', display_collection: 'Laramie').results.keys.count).to eq 5
+        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.yesterday - 1.day,
+                                                          metric: 'page_views',
+                                                          display_collection: 'Laramie').results.keys.count).to eq 5
       end
 
       it 'sets RecordMetrics :processed_by_top_collection_metrics flag to `true`' do
@@ -67,14 +92,26 @@ RSpec.describe SupplejackApi::TopCollectionMetric, type: :model do
       it 'appends new top collection metrics that creep in after the initial run' do
         SupplejackApi::RecordMetric.destroy_all
 
-        create(:record_metric, appeared_in_searches: 1, date: Time.now.utc.yesterday, record_id: metric_three.record_id, display_collection: 'Laramie')
+        create(:record_metric, appeared_in_searches: 1,
+                               date: Time.now.utc.yesterday,
+                               record_id: metric_three.record_id,
+                               display_collection: 'Laramie')
+
         create(:record_metric, appeared_in_searches: 1, date: Time.now.utc.yesterday, display_collection: 'Laramie')
 
         described_class.spawn
 
-        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.yesterday, metric: 'appeared_in_searches', display_collection: 'Laramie').results.values.first).to eq 3
-        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.yesterday, metric: 'appeared_in_searches', display_collection: 'Laramie'))
-        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.yesterday, metric: 'appeared_in_searches', display_collection: 'Laramie').results.keys.count).to eq 6
+        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.yesterday,
+                                                          metric: 'appeared_in_searches',
+                                                          display_collection: 'Laramie').results.values.first).to eq 3
+
+        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.yesterday,
+                                                          metric: 'appeared_in_searches',
+                                                          display_collection: 'Laramie'))
+
+        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.yesterday,
+                                                          metric: 'appeared_in_searches',
+                                                          display_collection: 'Laramie').results.keys.count).to eq 6
       end
 
       it 'returns a collection of top collection metrics' do
@@ -84,27 +121,56 @@ RSpec.describe SupplejackApi::TopCollectionMetric, type: :model do
       end
 
       it 'does not include records that have 0 of the requested metric in the results' do
-        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.yesterday, metric: 'appeared_in_searches', display_collection: 'Laramie').results.values.uniq).not_to include 0
+        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.yesterday,
+                                                          metric: 'appeared_in_searches',
+                                                          display_collection: 'Laramie').results.values.uniq)
+          .not_to include 0
       end
 
       it 'only includes records that have valid data' do
-        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.yesterday, metric: 'appeared_in_searches', display_collection: 'Laramie').results.count).to eq 4
+        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.yesterday,
+                                                          metric: 'appeared_in_searches',
+                                                          display_collection: 'Laramie').results.count).to eq 4
       end
 
       it 'doesn\'t create top collection metrics when there are no results' do
-        expect( SupplejackApi::TopCollectionMetric.where(display_collection: 'Collecty McCollectyface').map(&:metric)).not_to include 'page_views'
+        expect(SupplejackApi::TopCollectionMetric.where(display_collection: 'Collecty McCollectyface').map(&:metric))
+          .not_to include 'page_views'
       end
     end
 
     context 'with date_range, it only creates top metrics for the given date range' do
       let(:today_and_tomorrow) { Time.now.utc.beginning_of_day..Time.now.utc.tomorrow.end_of_day }
 
-      let!(:metric_one)   { create(:record_metric, appeared_in_searches: 1, date: Time.now.utc.tomorrow, display_collection: 'Gotta collect them all!') }
-      let!(:metric_two)   { create(:record_metric, appeared_in_searches: 2, date: Time.now.utc.tomorrow, display_collection: 'Supplejack LTD') }
-      let!(:metric_three) { create(:record_metric, appeared_in_searches: 3, date: Time.now.utc.tomorrow, display_collection: 'Collecty McCollectyface') }
+      let!(:metric_one) do
+        create(:record_metric, appeared_in_searches: 1,
+                               date: Time.now.utc.tomorrow,
+                               display_collection: 'Gotta collect them all!')
+      end
 
-      let!(:metric_group) { create_list(:record_metric, 250, date: Time.now.utc.tomorrow, page_views: 1, display_collection: 'Laramie') }
-      let!(:tomorrows_metric_group) { create_list(:record_metric, 5, date: Time.now.utc.tomorrow - 1.day, page_views: 2, display_collection: 'Laramie') }
+      let!(:metric_two) do
+        create(:record_metric, appeared_in_searches: 2,
+                               date: Time.now.utc.tomorrow,
+                               display_collection: 'Supplejack LTD')
+      end
+
+      let!(:metric_three) do
+        create(:record_metric, appeared_in_searches: 3,
+                               date: Time.now.utc.tomorrow,
+                               display_collection: 'Collecty McCollectyface')
+      end
+
+      let!(:metric_group) do
+        create_list(:record_metric, 250, date: Time.now.utc.tomorrow,
+                                         page_views: 1,
+                                         display_collection: 'Laramie')
+      end
+
+      let!(:tomorrows_metric_group) do
+        create_list(:record_metric, 5, date: Time.now.utc.tomorrow - 1.day,
+                                       page_views: 2,
+                                       display_collection: 'Laramie')
+      end
 
       before do
         described_class::METRICS.each do |metric|
@@ -125,15 +191,21 @@ RSpec.describe SupplejackApi::TopCollectionMetric, type: :model do
       end
 
       it 'only takes the top 200 records for each metric AND collection' do
-        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.tomorrow, metric: 'page_views', display_collection: 'Laramie').results.keys.count).to eq 200
+        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.tomorrow,
+                                                          metric: 'page_views',
+                                                          display_collection: 'Laramie').results.keys.count).to eq 200
       end
 
       it 'orders the results from highest to lowest' do
-        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.tomorrow, metric: 'appeared_in_searches', display_collection: 'Laramie').results.values.first).to eq 3
+        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.tomorrow,
+                                                          metric: 'appeared_in_searches',
+                                                          display_collection: 'Laramie').results.values.first).to eq 3
       end
 
       it 'spawns metrics across multiple days' do
-        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.tomorrow - 1.day, metric: 'page_views', display_collection: 'Laramie').results.keys.count).to eq 5
+        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.tomorrow - 1.day,
+                                                          metric: 'page_views',
+                                                          display_collection: 'Laramie').results.keys.count).to eq 5
       end
 
       it 'sets RecordMetrics :processed_by_top_collection_metrics flag to `true`' do
@@ -145,14 +217,28 @@ RSpec.describe SupplejackApi::TopCollectionMetric, type: :model do
       it 'appends new top collection metrics that creep in after the initial run' do
         SupplejackApi::RecordMetric.destroy_all
 
-        create(:record_metric, appeared_in_searches: 1, date: Time.now.utc.tomorrow, record_id: metric_three.record_id, display_collection: 'Laramie')
-        create(:record_metric, appeared_in_searches: 1, date: Time.now.utc.tomorrow, display_collection: 'Laramie')
+        create(:record_metric, appeared_in_searches: 1,
+                               date: Time.now.utc.tomorrow,
+                               record_id: metric_three.record_id,
+                               display_collection: 'Laramie')
+
+        create(:record_metric, appeared_in_searches: 1,
+                               date: Time.now.utc.tomorrow,
+                               display_collection: 'Laramie')
 
         SupplejackApi::TopCollectionMetric.spawn(today_and_tomorrow)
 
-        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.tomorrow, metric: 'appeared_in_searches', display_collection: 'Laramie').results.values.first).to eq 3
-        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.tomorrow, metric: 'appeared_in_searches', display_collection: 'Laramie'))
-        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.tomorrow, metric: 'appeared_in_searches', display_collection: 'Laramie').results.keys.count).to eq 6
+        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.tomorrow,
+                                                          metric: 'appeared_in_searches',
+                                                          display_collection: 'Laramie').results.values.first).to eq 3
+
+        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.tomorrow,
+                                                          metric: 'appeared_in_searches',
+                                                          display_collection: 'Laramie'))
+
+        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.tomorrow,
+                                                          metric: 'appeared_in_searches',
+                                                          display_collection: 'Laramie').results.keys.count).to eq 6
       end
 
       it 'returns a collection of top collection metrics' do
@@ -162,15 +248,21 @@ RSpec.describe SupplejackApi::TopCollectionMetric, type: :model do
       end
 
       it 'does not include records that have 0 of the requested metric in the results' do
-        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.tomorrow, metric: 'appeared_in_searches', display_collection: 'Laramie').results.values.uniq).not_to include 0
+        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.tomorrow,
+                                                          metric: 'appeared_in_searches',
+                                                          display_collection: 'Laramie').results.values.uniq)
+          .not_to include 0
       end
 
       it 'only includes records that have valid data' do
-        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.tomorrow, metric: 'appeared_in_searches', display_collection: 'Laramie').results.count).to eq 4
+        expect(SupplejackApi::TopCollectionMetric.find_by(date: Time.now.utc.tomorrow,
+                                                          metric: 'appeared_in_searches',
+                                                          display_collection: 'Laramie').results.count).to eq 4
       end
 
       it 'doesn\'t create top collection metrics when there are no results' do
-        expect( SupplejackApi::TopCollectionMetric.where(display_collection: 'Collecty McCollectyface').map(&:metric)).not_to include 'page_views'
+        expect(SupplejackApi::TopCollectionMetric.where(display_collection: 'Collecty McCollectyface').map(&:metric))
+          .not_to include 'page_views'
       end
     end
   end

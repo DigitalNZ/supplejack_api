@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module SupplejackApi
   describe UserSet do
-    let(:user_set) { build(:user_set)}
+    let(:user_set) { build(:user_set) }
 
     before do
       allow(user_set).to receive(:update_record)
@@ -199,7 +199,7 @@ module SupplejackApi
         context 'an un-active user_set that is approved' do
           before { allow(user_set).to receive(:record).and_return(record) }
 
-           it 'sets index_updated to be false' do
+          it 'sets index_updated to be false' do
             user_set.update_attribute(:approved, true)
             expect(user_set.record.index_updated).to eq false
           end
@@ -239,21 +239,21 @@ module SupplejackApi
     end
 
     describe '#name' do
-      let(:user_set) { build(:user_set, user_id: User.new.id, url: "1234abc")}
+      let(:user_set) { build(:user_set, user_id: User.new.id, url: '1234abc') }
 
       it 'titlizes the name' do
-        user_set.name = "set name"
-        expect(user_set.name).to eq "Set name"
+        user_set.name = 'set name'
+        expect(user_set.name).to eq 'Set name'
       end
 
       it 'only force capitalizes the first letter' do
-        user_set.name = "YMCA"
-        expect(user_set.name).to eq "YMCA"
+        user_set.name = 'YMCA'
+        expect(user_set.name).to eq 'YMCA'
       end
     end
 
     describe '#custom_find' do
-      let(:user)     { create(:user)}
+      let(:user)     { create(:user) }
       let(:user_set) { build(:user_set, user_id: user.id, url: '1234abc') }
 
       before do
@@ -303,7 +303,7 @@ module SupplejackApi
         proxy = double(:proxy).as_null_object
         allow(UserSet).to receive(:where) { proxy }
         expect(proxy).to receive(:page).with(1)
-        UserSet.public_sets(page: "")
+        UserSet.public_sets(page: '')
       end
 
       it 'sorts the sets by last modified date' do
@@ -338,14 +338,22 @@ module SupplejackApi
 
       context 'when search term is story name' do
         it 'returns the 4 sets with "Name" in name' do
-          sets = UserSet.moderation_search(page: 1, per_page: 10, orderby: :updated_at, direction: :desc, search: 'Name').to_a
+          sets = UserSet.moderation_search(page: 1,
+                                           per_page: 10,
+                                           orderby: :updated_at,
+                                           direction: :desc,
+                                           search: 'Name').to_a
 
           expect(sets.length).to eq(4)
           expect(sets).to eq([user_set1, user_set3, user_set2, user_set4])
         end
 
         it 'returns the 4 sets with "Name" in name as search is case insensitive' do
-          sets = UserSet.moderation_search(page: 1, per_page: 10, orderby: :updated_at, direction: :desc, search: 'name').to_a
+          sets = UserSet.moderation_search(page: 1,
+                                           per_page: 10,
+                                           orderby: :updated_at,
+                                           direction: :desc,
+                                           search: 'name').to_a
 
           expect(sets.length).to eq(4)
           expect(sets).to eq([user_set1, user_set3, user_set2, user_set4])
@@ -355,7 +363,11 @@ module SupplejackApi
       context 'when search term is username' do
         it 'returns the set with username' do
           user_set = [user_set1, user_set2, user_set3, user_set4, user_set5].sample
-          sets = UserSet.moderation_search(page: 1, per_page: 10, orderby: :updated_at, direction: :desc, search: user_set.username).to_a
+          sets = UserSet.moderation_search(page: 1,
+                                           per_page: 10,
+                                           orderby: :updated_at,
+                                           direction: :desc,
+                                           search: user_set.username).to_a
 
           expect(sets).to include user_set
         end
@@ -363,7 +375,11 @@ module SupplejackApi
 
       context 'when search term is story_id' do
         it 'returns user_set with searched story_id' do
-          sets = UserSet.moderation_search(page: 1, per_page: 10, orderby: :updated_at, direction: :desc, search: user_set1.id.to_s).to_a
+          sets = UserSet.moderation_search(page: 1,
+                                           per_page: 10,
+                                           orderby: :updated_at,
+                                           direction: :desc,
+                                           search: user_set1.id.to_s).to_a
 
           expect(sets.length).to eq(1)
           expect(sets).to eq([user_set1])
@@ -372,7 +388,11 @@ module SupplejackApi
 
       context 'when search term is user_id' do
         it 'returns user_set with searched user_id' do
-          sets = UserSet.moderation_search(page: 1, per_page: 10, orderby: :updated_at, direction: :desc, search: user_set1.user_id.to_s).to_a
+          sets = UserSet.moderation_search(page: 1,
+                                           per_page: 10,
+                                           orderby: :updated_at,
+                                           direction: :desc,
+                                           search: user_set1.user_id.to_s).to_a
 
           expect(sets.length).to eq(1)
           expect(sets).to eq([user_set1])
@@ -404,7 +424,10 @@ module SupplejackApi
 
       before do
         [set1, set2, set3, set4].each do |set|
-          set.set_items.create(record_id: record.record_id, type: 'embed', sub_type: 'record', content: { id: record.record_id })
+          set.set_items.create(record_id: record.record_id,
+                               type: 'embed',
+                               sub_type: 'record',
+                               content: { id: record.record_id })
         end
       end
 
@@ -439,7 +462,11 @@ module SupplejackApi
       end
 
       it 'updates the embedded set items' do
-        user_set.update_attributes_and_embedded(records: [{ record_id: record.record_id, type: 'embed', sub_type: 'record', content: { id: record.record_id }, position: 2 }])
+        user_set.update_attributes_and_embedded(records: [{ record_id: record.record_id,
+                                                            type: 'embed',
+                                                            sub_type: 'record',
+                                                            content: { id: record.record_id },
+                                                            position: 2 }])
         user_set.reload
 
         expect(user_set.set_items.size).to eq 1
@@ -448,8 +475,12 @@ module SupplejackApi
       end
 
       it 'ignores invalid set item values but still saves the set' do
-        valid_item   = { record_id: record.record_id, type: 'embed', sub_type: 'record', content: { id: record.record_id }, position: 1 }
-        invalid_item = { 'record_id' => 'shtig', 'position' => '2'}
+        valid_item   = { record_id: record.record_id,
+                         type: 'embed',
+                         sub_type: 'record',
+                         content: { id: record.record_id },
+                         position: 1 }
+        invalid_item = { 'record_id' => 'shtig', 'position' => '2' }
 
         user_set.update_attributes_and_embedded(records: [valid_item, invalid_item])
         user_set.reload
@@ -462,7 +493,7 @@ module SupplejackApi
       it 'regular users should not be able to change the :featured attribute' do
         regular_user = create(:user, role: 'developer')
         user_set = create(:user_set, user_id: regular_user.id, featured: false)
-        user_set.update_attributes_and_embedded({featured: true}, regular_user)
+        user_set.update_attributes_and_embedded({ featured: true }, regular_user)
         user_set.reload
         expect(user_set.featured).to be_falsey
       end
@@ -470,7 +501,7 @@ module SupplejackApi
       it 'should allow admins to change the :featured attribute' do
         admin_user = create(:user, role: 'admin')
         user_set = create(:user_set, user_id: admin_user.id)
-        user_set.update_attributes_and_embedded({featured: true}, admin_user)
+        user_set.update_attributes_and_embedded({ featured: true }, admin_user)
         user_set.reload
         expect(user_set.featured).to be_truthy
       end
@@ -479,7 +510,7 @@ module SupplejackApi
         admin_user = create(:user, role: 'admin')
         user_set = create(:user_set, user_id: admin_user.id)
         Timecop.freeze(Time.now.utc) do
-          user_set.update_attributes_and_embedded({featured: true}, admin_user)
+          user_set.update_attributes_and_embedded({ featured: true }, admin_user)
           user_set.reload
           expect(user_set.featured_at.to_i).to eq Time.now.utc.to_i
         end
@@ -487,11 +518,11 @@ module SupplejackApi
 
       it "should not update the featured_at if the featured hasn't changed" do
         admin_user = create(:user, role: 'admin')
-        time = Time.now.utc-1.day
+        time = Time.now.utc - 1.day
         user_set = create(:user_set, user_id: admin_user.id, featured: true, featured_at: time)
 
         Timecop.freeze(Time.now.utc) do
-          user_set.update_attributes_and_embedded({featured: true}, admin_user)
+          user_set.update_attributes_and_embedded({ featured: true }, admin_user)
           user_set.reload
           expect(user_set.featured_at.to_i).to eq time.to_i
         end
@@ -499,9 +530,9 @@ module SupplejackApi
 
       it 'removes the set from the featured' do
         admin_user = create(:user, role: 'admin')
-        time = Time.now.utc-1.day
+        time = Time.now.utc - 1.day
         user_set = create(:user_set, user_id: admin_user.id, featured: true, featured_at: time)
-        user_set.update_attributes_and_embedded({featured: false}, admin_user)
+        user_set.update_attributes_and_embedded({ featured: false }, admin_user)
         user_set.reload
         expect(user_set.featured).to be_falsey
       end
@@ -514,8 +545,17 @@ module SupplejackApi
 
       it 'can replace the set items' do
         user_set.save
-        user_set.set_items.create(record_id: 13, :type => 'embed', :sub_type => 'record', :content => { :record_id => '13' }, :meta=>{:align_mode=>0})
-        user_set.update_attributes_and_embedded(records: [{ record_id: record.record_id, type: 'embed', sub_type: 'record', content: { id: record.record_id }, position: 2 }])
+        user_set.set_items.create(record_id: 13,
+                                  type: 'embed',
+                                  sub_type: 'record',
+                                  content: { record_id: '13' },
+                                  meta: { align_mode: 0 })
+
+        user_set.update_attributes_and_embedded(records: [{ record_id: record.record_id,
+                                                            type: 'embed',
+                                                            sub_type: 'record',
+                                                            content: { id: record.record_id },
+                                                            position: 2 }])
         user_set.reload
 
         expect(user_set.set_items.size).to eq 1
@@ -524,7 +564,11 @@ module SupplejackApi
 
       it 'should not replace the set items if :records is nil' do
         user_set.save
-        user_set.set_items.create(record_id: record.record_id, type: 'embed', sub_type: 'record', content: { id: record.record_id })
+        user_set.set_items.create(record_id: record.record_id,
+                                  type: 'embed',
+                                  sub_type: 'record',
+                                  content: { id: record.record_id })
+
         user_set.update_attributes_and_embedded(records: nil)
         user_set.reload
 
@@ -532,7 +576,7 @@ module SupplejackApi
       end
 
       it 'raises a error when then records array format is not correct' do
-        expect { user_set.update_attributes_and_embedded(records: [1,2]) }.to raise_error()
+        expect { user_set.update_attributes_and_embedded(records: [1, 2]) }.to raise_error
       end
 
       it 'overrides nil value for description' do
@@ -552,7 +596,7 @@ module SupplejackApi
 
     describe '#count' do
       it 'returns 2 when there are 2 active set items' do
-        allow(user_set).to receive(:records){[double(:record), double(:record)]}
+        allow(user_set).to receive(:records) { [double(:record), double(:record)] }
         expect(user_set.count).to eq(2)
       end
     end
@@ -574,8 +618,8 @@ module SupplejackApi
     end
 
     describe 'update record' do
-      let(:user_set) { build(:user_set)}
-      
+      let(:user_set) { build(:user_set) }
+
       before do
         allow(user_set).to receive(:update_record).and_call_original
         allow(SupplejackApi.config.record_class).to receive(:custom_find) { double(:record).as_null_object }
@@ -591,7 +635,7 @@ module SupplejackApi
         end
 
         context 'record status' do
-          let(:user_set) { build(:user_set)}
+          let(:user_set) { build(:user_set) }
           it 'should default the status to supressed' do
             user_set.privacy = 'private'
 
@@ -628,10 +672,10 @@ module SupplejackApi
 
     describe '#record_ids' do
       it 'returns an array of record ids for the set' do
-        user_set.set_items.build(record_id:100, position:0)
-        user_set.set_items.build(record_id:101, position:1)
+        user_set.set_items.build(record_id: 100, position: 0)
+        user_set.set_items.build(record_id: 101, position: 1)
         user_set.save
-        expect(user_set.record_ids).to include(100,101)
+        expect(user_set.record_ids).to include(100, 101)
       end
 
       it 'returns an empty array when set items is nil' do
@@ -640,10 +684,10 @@ module SupplejackApi
       end
 
       it "returns the record_id's in the correct order" do
-        user_set.set_items.build(record_id:100, position:1)
-        user_set.set_items.build(record_id:101, position:0)
+        user_set.set_items.build(record_id: 100, position: 1)
+        user_set.set_items.build(record_id: 101, position: 0)
         user_set.save
-        expect(user_set.record_ids).to eq([101,100])
+        expect(user_set.record_ids).to eq([101, 100])
       end
     end
 
@@ -652,28 +696,28 @@ module SupplejackApi
         record1 = create(:record, status: 'active')
         record2 = create(:record, status: 'deleted')
 
-        allow(user_set).to receive(:record_ids){[record1.record_id, record2.record_id]}
+        allow(user_set).to receive(:record_ids) { [record1.record_id, record2.record_id] }
         expect(user_set.records).to eq([record1])
       end
 
       it 'limits the amount of records' do
         record1 = create(:record, status: 'active')
         record2 = create(:record, status: 'active')
-        
-        allow(user_set).to receive(:record_ids){[record1.record_id, record2.record_id]}
+
+        allow(user_set).to receive(:record_ids) { [record1.record_id, record2.record_id] }
         expect(user_set.records(1)).to eq([record1])
       end
 
       it 'it returns the first active record' do
         record1 = create(:record, status: 'deleted')
         record2 = create(:record, status: 'active')
-        
-        allow(user_set).to receive(:record_ids){[record1.record_id, record2.record_id]}
+
+        allow(user_set).to receive(:record_ids) { [record1.record_id, record2.record_id] }
         expect(user_set.records(1)).to eq([record2])
       end
 
       it 'memoizes the records' do
-        expect(Record).to receive(:find_multiple).once { [] }
+        expect(Record).to(receive(:find_multiple).once) { [] }
         user_set.records
         user_set.records
       end
@@ -725,7 +769,12 @@ module SupplejackApi
     describe '#items_with_records' do
       it 'returns an array of set items with record information' do
         record = create(:record)
-        fragment = record.fragments.create( title: 'Dog', description: 'Ugly dog', display_content_partner: 'ATL', display_collection: 'Display collection', large_thumbnail_attributes: { url: 'goo.gle/large' }, thumbnail_attributes: { url: 'goo.gle/small' })
+        record.fragments.create(title: 'Dog', description: 'Ugly dog',
+                                display_content_partner: 'ATL',
+                                display_collection: 'Display collection',
+                                large_thumbnail_attributes: { url: 'goo.gle/large' },
+                                thumbnail_attributes: { url: 'goo.gle/small' })
+
         user_set.set_items.build(record_id: record.record_id, position: 1)
         expect(user_set.items_with_records.first.record).to eq record
       end

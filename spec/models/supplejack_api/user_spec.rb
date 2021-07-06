@@ -6,12 +6,12 @@ module SupplejackApi
   describe User do
     let(:user) { User.new }
 
-    before {
+    before do
       developer = double(:role, name: :developer)
       admin = double(:admin, admin: true)
       allow(RecordSchema).to receive(:default_role) { developer }
       allow(RecordSchema).to receive(:roles) { { admin: admin, developer: developer } }
-    }
+    end
 
     describe '#role' do
       it 'should set the default value of the role from the Schema' do
@@ -25,37 +25,37 @@ module SupplejackApi
       expect(user.authentication_token).to_not be_nil
     end
 
-    describe "user_sets" do
-      describe "custom_find" do
-        it "should lookup the UserSet by Mongo ID" do
+    describe 'user_sets' do
+      describe 'custom_find' do
+        it 'should lookup the UserSet by Mongo ID' do
           expect(user.user_sets).to receive(:find).with('503a95b112575773920005f4')
           user.user_sets.custom_find('503a95b112575773920005f4')
         end
 
-        it "should lookup the UserSet by URL if param not an ID" do
+        it 'should lookup the UserSet by URL if param not an ID' do
           expect(user.user_sets).to receive(:where).with(url: 'http://google.com') { [] }
           user.user_sets.custom_find('http://google.com')
         end
       end
     end
 
-    describe "#sets=" do
-      it "creates a new set for the user" do
-        user.sets = [{name: "Favourites", privacy: "hidden", priority: 0}]
+    describe '#sets=' do
+      it 'creates a new set for the user' do
+        user.sets = [{ name: 'Favourites', privacy: 'hidden', priority: 0 }]
         expect(user.user_sets.size).to eq 1
-        expect(user.user_sets.first.name).to eq "Favourites"
-        expect(user.user_sets.first.privacy).to eq "hidden"
+        expect(user.user_sets.first.name).to eq 'Favourites'
+        expect(user.user_sets.first.privacy).to eq 'hidden'
         expect(user.user_sets.first.priority).to eq 0
       end
 
-      it "doesn't create a new set when the sets are nil" do
+      it 'doesnt create a new set when the sets are nil' do
         user.sets = nil
         expect(user.user_sets.size).to eq 0
       end
     end
 
     describe '#name' do
-      it "returns the user's name" do
+      it 'returns the users name' do
         expect(User.new(name: 'John').name).to eq 'John'
       end
 
@@ -77,8 +77,8 @@ module SupplejackApi
     end
 
     describe '#check_daily_requests' do
-      it "should reset daily requests if it wasn't updated today" do
-        user.attributes = { updated_at: Time.now.utc-1.day, daily_requests: 100 }
+      it 'should reset daily requests if it wasnt updated today' do
+        user.attributes = { updated_at: Time.now.utc - 1.day, daily_requests: 100 }
         user.check_daily_requests
         expect(user.daily_requests).to eq 1
       end
@@ -89,36 +89,35 @@ module SupplejackApi
         expect(user.daily_requests).to eq 101
       end
 
-
       context 'api limit notifications' do
-        before {
+        before do
           @email = double
           allow(SupplejackApi::RequestLimitMailer).to receive(:at90percent) { @email }
-        }
+        end
 
         it 'should send an email if the user is at 90% daily requests' do
           expect(@email).to receive(:deliver_now)
-          user.attributes = {daily_requests: 89, updated_at: Time.now.utc, max_requests: 100}
-          expect(SupplejackApi::RequestLimitMailer).to receive(:at90percent).with(user) {@email}
+          user.attributes = { daily_requests: 89, updated_at: Time.now.utc, max_requests: 100 }
+          expect(SupplejackApi::RequestLimitMailer).to receive(:at90percent).with(user) { @email }
           user.check_daily_requests
         end
 
         it 'should not send an email if the user has past 90%' do
-          user.attributes = {daily_requests: 90, updated_at: Time.now.utc, max_requests: 100}
-          expect(SupplejackApi::RequestLimitMailer).to_not receive(:at90percent).with(user) {@email}
+          user.attributes = { daily_requests: 90, updated_at: Time.now.utc, max_requests: 100 }
+          expect(SupplejackApi::RequestLimitMailer).to_not receive(:at90percent).with(user) { @email }
           user.check_daily_requests
         end
 
         it 'should send an email if the user has reached 100%' do
           expect(@email).to receive(:deliver_now)
-          user.attributes = {daily_requests: 99, updated_at: Time.now.utc, max_requests: 100}
-          expect(SupplejackApi::RequestLimitMailer).to receive(:at100percent).with(user) {@email}
+          user.attributes = { daily_requests: 99, updated_at: Time.now.utc, max_requests: 100 }
+          expect(SupplejackApi::RequestLimitMailer).to receive(:at100percent).with(user) { @email }
           user.check_daily_requests
         end
 
         it 'should not send an email when the user has past 100%' do
-          user.attributes = {daily_requests: 100, updated_at: Time.now.utc, max_requests: 100}
-          expect(SupplejackApi::RequestLimitMailer).to_not receive(:at100percent).with(user) {@email}
+          user.attributes = { daily_requests: 100, updated_at: Time.now.utc, max_requests: 100 }
+          expect(SupplejackApi::RequestLimitMailer).to_not receive(:at100percent).with(user) { @email }
           user.check_daily_requests
         end
       end
@@ -155,7 +154,7 @@ module SupplejackApi
         end
 
         it 'increases the amount of requests for the day' do
-          allow(request).to receive(:params) { {action: 'index', controller: 'records'} }
+          allow(request).to receive(:params) { { action: 'index', controller: 'records' } }
           user.update_daily_activity(request)
           expect(user.daily_activity['search']['records']).to eq 1
 
@@ -164,7 +163,7 @@ module SupplejackApi
         end
 
         it 'increments user_sets view for the day' do
-          allow(request).to receive(:params) { {action: 'show', controller: 'set_items'} }
+          allow(request).to receive(:params) { { action: 'show', controller: 'set_items' } }
           user.update_daily_activity(request)
           expect(user.daily_activity['user_sets']['show_item']).to eq 1
 
@@ -173,7 +172,7 @@ module SupplejackApi
         end
 
         it 'increments user_sets view for the day if controller is story_items' do
-          allow(request).to receive(:params) { {action: 'show', controller: 'story_items'} }
+          allow(request).to receive(:params) { { action: 'show', controller: 'story_items' } }
           user.update_daily_activity(request)
           expect(user.daily_activity['user_sets']['show_item']).to eq 1
 
@@ -182,19 +181,19 @@ module SupplejackApi
         end
 
         it 'updates the requests for the record details' do
-          allow(request).to receive(:params) { {action: 'show', controller: 'records'} }
+          allow(request).to receive(:params) { { action: 'show', controller: 'records' } }
           user.update_daily_activity(request)
           expect(user.daily_activity['records']['show']).to eq 1
         end
 
         it 'updates the requests for multiple records' do
-          allow(request).to receive(:params) { {action: 'multiple', controller: 'records'} }
+          allow(request).to receive(:params) { { action: 'multiple', controller: 'records' } }
           user.update_daily_activity(request)
           expect(user.daily_activity['records']['multiple']).to eq 1
         end
 
         it 'updates the requests for the source redirect' do
-          allow(request).to receive(:params) { {action: 'source', controller: 'records'} }
+          allow(request).to receive(:params) { { action: 'source', controller: 'records' } }
           user.update_daily_activity(request)
           expect(user.daily_activity['records']['source']).to eq 1
         end
@@ -227,19 +226,19 @@ module SupplejackApi
         end
 
         it 'should return true when daily requests is greater than max requests' do
-          user.attributes = {daily_requests: 100, max_requests: 99}
+          user.attributes = { daily_requests: 100, max_requests: 99 }
           expect(user.over_limit?).to be_truthy
         end
 
         it 'should return false when daily requests is less than max requests' do
-          user.attributes = {daily_requests: 100, max_requests: 110}
+          user.attributes = { daily_requests: 100, max_requests: 110 }
           expect(user.over_limit?).to be_falsey
         end
       end
 
-      context "user wasn't updated today" do
+      context 'user wasnt updated today' do
         it 'should always return false' do
-          user.attributes = {updated_at: Time.now.utc-1.day, daily_requests: 100, max_requests: 99}
+          user.attributes = { updated_at: Time.now.utc - 1.day, daily_requests: 100, max_requests: 99 }
           expect(user.over_limit?).to be_falsey
         end
       end
@@ -277,8 +276,8 @@ module SupplejackApi
         expect(user.requests_per_day(2)).to eq [5, 2]
       end
 
-      it "returns 0 for days when there isn't any activity" do
-        FactoryBot.create(:user_activity, user_id: user.id, total: 1, created_at: Time.now.utc - 3.day)
+      it 'returns 0 for days when there isnt any activity' do
+        FactoryBot.create(:user_activity, user_id: user.id, total: 1, created_at: Time.now.utc - 3.days)
         expect(user.requests_per_day(4)).to eq [1, 0, 5, 2]
       end
     end
@@ -335,17 +334,17 @@ module SupplejackApi
       end
     end
 
-    describe "can_change_featured_sets?" do
-      context "admin user" do
+    describe 'can_change_featured_sets?' do
+      context 'admin user' do
         before { user.role = 'admin' }
 
-        it "should return true" do
+        it 'should return true' do
           expect(user.can_change_featured_sets?).to be_truthy
         end
       end
 
-      context "user" do
-        it "should return false" do
+      context 'user' do
+        it 'should return false' do
           expect(user.can_change_featured_sets?).to be_falsey
         end
       end
@@ -361,7 +360,7 @@ module SupplejackApi
     end
 
     describe '#update_user_sets' do
-      let(:user_set) { FactoryBot.build(:user_set)}
+      let(:user_set) { FactoryBot.build(:user_set) }
       let(:user) { user_set.user }
 
       context 'when username of the user updated' do

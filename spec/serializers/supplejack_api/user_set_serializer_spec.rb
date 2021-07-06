@@ -1,4 +1,4 @@
-
+# frozen_string_literal: true
 
 require 'spec_helper'
 
@@ -74,7 +74,7 @@ module SupplejackApi
     end
 
     context 'featured records' do
-      let(:current_user) { U}
+      let(:current_user) { U }
       let(:serialized_feature_set) { described_class.new(user_set, featured: true).as_json }
 
       it 'returns the *featured* record' do
@@ -103,11 +103,11 @@ module SupplejackApi
       context 'as a normal user' do
         # Stubbing didn't work, so this has happened
         before do
-          described_class.class_eval {
+          described_class.class_eval do
             define_method :current_user do
               FactoryBot.create(:user)
             end
-          }
+          end
         end
 
         it 'includes the user hash' do
@@ -125,11 +125,11 @@ module SupplejackApi
 
       context 'as an admin user' do
         before do
-          described_class.class_eval {
+          described_class.class_eval do
             define_method :current_user do
               FactoryBot.create(:admin_user)
             end
-          }
+          end
 
           it 'includes the user api key' do
             expect(serialized_user_details_set[:user]).to have_key :api_key

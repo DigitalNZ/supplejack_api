@@ -80,9 +80,8 @@ module SupplejackApi
       end
 
       describe '.mutable_fields' do
-        { name: String, email: Array, nz_citizen: Boolean }.each do |name, type|
+        { name: String, email: Array, nz_citizen: Mongoid::Boolean }.each do |name, type|
           it "should return a hash that includes the key #{name} and value #{type}" do
-            type = Mongoid::Boolean if type == Boolean
             expect(fragment_class.mutable_fields[name.to_s]).to eq type
           end
         end

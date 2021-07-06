@@ -41,16 +41,16 @@ FactoryBot.define do
     transient do
       number_of_blocks { 2 }
     end
-    sequence(:id) { map(&:to_s) }
+    sequence(:id)   { map(&:to_s) }
     sequence(:name) { |n| "Story #{n}" }
-    privacy { 'hidden' }
-    featured { false }
-    approved { false }
-    description { 'Story description' }
-    tags { %w[story tags] }
+    privacy         { 'hidden' }
+    featured        { false }
+    approved        { false }
+    description     { 'Story description' }
+    tags            { %w[story tags] }
     number_of_items { number_of_blocks }
-    contents { [] }
-    copyright { 0 }
+    contents        { [] }
+    copyright       { 0 }
 
     after(:build) do |story, evaluator|
       unless story[:contents].empty?

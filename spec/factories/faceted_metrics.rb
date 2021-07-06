@@ -10,17 +10,11 @@ module SupplejackApi
       total_new_records { 1 }
       sequence(:name) { |n| "Display collection #{n}" }
       category_counts do
-        {
-          'category-1' => 1,
-          'category-2' => 2
-        }
+        { 'category-1' => 1, 'category-2' => 2 }
       end
 
       copyright_counts do
-        {
-          'copyright-1' => 1,
-          'copyright-2' => 2
-        }
+        { 'copyright-1' => 1, 'copyright-2' => 2 }
       end
     end
   end

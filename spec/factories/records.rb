@@ -5,9 +5,9 @@ module SupplejackApi
     factory :record, class: SupplejackApi.config.record_class do
       transient do
         display_collection { 'test' }
-        copyright { ['0'] }
-        category { ['0'] }
-        tag { %w[foo bar] }
+        copyright          { ['0'] }
+        category           { ['0'] }
+        tag                { %w[foo bar] }
       end
 
       internal_identifier { 'nlnz:1234' }
@@ -25,9 +25,11 @@ module SupplejackApi
                             tag: tag)]
         end
 
+        # rubocop:disable Style/SymbolProc
         after(:build) do |record_with_fragment|
           record_with_fragment.save!
         end
+        # rubocop:enable Style/SymbolProc
 
         trait :ready_for_indexing do
           index_updated { false }
@@ -51,24 +53,24 @@ module SupplejackApi
     end
 
     factory :record_fragment, class: SupplejackApi::ApiRecord::RecordFragment do
-      title           { 'title' }
-      content_partner { ['content partner'] }
-      source_id       { 'source_name' }
-      priority        { 0 }
-      name            { 'John Doe' }
-      address         { 'Wellington' }
-      email           { ['johndoe@example.com'] }
-      children        { ['Sally Doe', 'James Doe'] }
-      contact         { nil }
-      age             { 30 }
-      birth_date      { Time.now.utc }
-      nz_citizen      { true }
-      display_collection { 'test' }
-      large_thumbnail_url    { 'http://my-website-that-hosts-images/image.png' }
-      thumbnail_url    { 'http://my-website-that-hosts-images/small-image.png' }
-      landing_url      { 'http://my-website' }
-      subject         { [] }
-      job_id          { '54' }
+      title               { 'title' }
+      content_partner     { ['content partner'] }
+      source_id           { 'source_name' }
+      priority            { 0 }
+      name                { 'John Doe' }
+      address             { 'Wellington' }
+      email               { ['johndoe@example.com'] }
+      children            { ['Sally Doe', 'James Doe'] }
+      contact             { nil }
+      age                 { 30 }
+      birth_date          { Time.now.utc }
+      nz_citizen          { true }
+      display_collection  { 'test' }
+      large_thumbnail_url { 'http://my-website-that-hosts-images/image.png' }
+      thumbnail_url       { 'http://my-website-that-hosts-images/small-image.png' }
+      landing_url         { 'http://my-website' }
+      subject             { [] }
+      job_id              { '54' }
     end
   end
 end

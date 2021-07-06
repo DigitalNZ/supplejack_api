@@ -9,10 +9,10 @@ module SupplejackApi
         'name'
       end
 
-      internal_identifier   { 'tepapa:1502' }
-      source_id             { 'tepapa' }
-      source_name           { 'Te Papa - Museum of New Zealand' }
-      url                   { 'http://collections.tepapa.govt.nz/Person/1502' }
+      internal_identifier { 'tepapa:1502' }
+      source_id           { 'tepapa' }
+      source_name         { 'Te Papa - Museum of New Zealand' }
+      url                 { 'http://collections.tepapa.govt.nz/Person/1502' }
     end
   end
 end

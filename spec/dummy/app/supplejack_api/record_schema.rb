@@ -34,12 +34,12 @@ class RecordSchema
   string :block_example do
     store false
     search_value do |record|
-      "Value of the block"
+      'Value of the block'
     end
   end
 
   string :default_example, default_value: 'Default value'
-  datetime :created_at, date_format: "%y/%d/%m"
+  datetime :created_at, date_format: '%y/%d/%m'
 
   # Groups
   group :default do
@@ -86,6 +86,6 @@ class RecordSchema
   role :admin, admin: true
   role :harvester, harvester: true
 
-  model_field :index_updated, field_options: { type: Boolean }
+  model_field :index_updated, field_options: { type: Mongoid::Boolean }
   model_field :index_updated_at, field_options: { type: DateTime }
 end

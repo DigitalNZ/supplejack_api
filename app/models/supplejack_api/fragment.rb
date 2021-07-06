@@ -16,7 +16,7 @@ module SupplejackApi
       string: String,
       integer: Integer,
       datetime: DateTime,
-      boolean: Boolean
+      boolean: Mongoid::Boolean
     }.freeze
 
     def self.schema_class

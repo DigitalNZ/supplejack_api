@@ -60,7 +60,7 @@ module SupplejackApi
           end
 
           it 'defines a boolean field' do
-            expect(fragment_class).to receive(:field).with(:is_active, type: Boolean)
+            expect(fragment_class).to receive(:field).with(:is_active, type: Mongoid::Boolean)
           end
 
           it 'defines a multivalue field' do

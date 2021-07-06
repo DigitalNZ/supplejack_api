@@ -80,6 +80,7 @@ module SupplejackApi
         elsif fragments.first
           value = fragments.first.public_send(symbol)
         end
+
         type == Array ? Array(value) : value
       end
 

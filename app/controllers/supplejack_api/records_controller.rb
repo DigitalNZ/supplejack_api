@@ -47,6 +47,7 @@ module SupplejackApi
 
     def show
       @record = SupplejackApi.config.record_class.custom_find(params[:id], current_user, search_params)
+
       respond_to do |format|
         format.json do
           render json: @record, serializer: self.class.record_serializer_class,

@@ -78,7 +78,6 @@ module SupplejackApi
                                               type: 'embed',
                                               sub_type: 'record',
                                               content: { id: 1234 })
-
           expect(set_item).to be_valid
         end
 
@@ -145,7 +144,6 @@ module SupplejackApi
             set_item = user_set.set_items.build(position: 1, type: 'text',
                                                 sub_type: 'heading', meta: { size: 1 },
                                                 content: { value: 'Heading' })
-
             expect(set_item).to be_valid
           end
         end

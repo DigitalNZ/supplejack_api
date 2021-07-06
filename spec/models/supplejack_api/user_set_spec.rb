@@ -495,6 +495,7 @@ module SupplejackApi
         user_set = create(:user_set, user_id: regular_user.id, featured: false)
         user_set.update_attributes_and_embedded({ featured: true }, regular_user)
         user_set.reload
+
         expect(user_set.featured).to be_falsey
       end
 
@@ -502,6 +503,7 @@ module SupplejackApi
         admin_user = create(:user, role: 'admin')
         user_set = create(:user_set, user_id: admin_user.id)
         user_set.update_attributes_and_embedded({ featured: true }, admin_user)
+
         user_set.reload
         expect(user_set.featured).to be_truthy
       end
@@ -519,6 +521,7 @@ module SupplejackApi
       it "should not update the featured_at if the featured hasn't changed" do
         admin_user = create(:user, role: 'admin')
         time = Time.now.utc - 1.day
+
         user_set = create(:user_set, user_id: admin_user.id, featured: true, featured_at: time)
 
         Timecop.freeze(Time.now.utc) do
@@ -533,6 +536,7 @@ module SupplejackApi
         time = Time.now.utc - 1.day
         user_set = create(:user_set, user_id: admin_user.id, featured: true, featured_at: time)
         user_set.update_attributes_and_embedded({ featured: false }, admin_user)
+
         user_set.reload
         expect(user_set.featured).to be_falsey
       end
@@ -556,6 +560,7 @@ module SupplejackApi
                                                             sub_type: 'record',
                                                             content: { id: record.record_id },
                                                             position: 2 }])
+
         user_set.reload
 
         expect(user_set.set_items.size).to eq 1
@@ -636,6 +641,7 @@ module SupplejackApi
 
         context 'record status' do
           let(:user_set) { build(:user_set) }
+
           it 'should default the status to supressed' do
             user_set.privacy = 'private'
 
@@ -705,6 +711,7 @@ module SupplejackApi
         record2 = create(:record, status: 'active')
 
         allow(user_set).to receive(:record_ids) { [record1.record_id, record2.record_id] }
+
         expect(user_set.records(1)).to eq([record1])
       end
 
@@ -713,6 +720,7 @@ module SupplejackApi
         record2 = create(:record, status: 'active')
 
         allow(user_set).to receive(:record_ids) { [record1.record_id, record2.record_id] }
+
         expect(user_set.records(1)).to eq([record2])
       end
 

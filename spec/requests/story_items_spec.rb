@@ -237,7 +237,6 @@ RSpec.describe 'Story Items Endpoints', type: :request do
       it 'returns success' do
         params = { item: { type: 'embed', sub_type: 'record', record_id: record.record_id, content: { id: record.record_id }, meta: { align_mode: 0 } } }.to_query
         post "/v3/stories/#{story.id}/items.json?api_key=#{api_key}&user_key=#{story.user.api_key}&#{params}"
-
         response_attributes = JSON.parse(response.body)
 
         expect(response).to have_http_status(200)

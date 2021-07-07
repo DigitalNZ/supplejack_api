@@ -16,8 +16,8 @@ module SupplejackApi
     describe '.generate_activity' do
       %i[user_sets search records].each do |field|
         it "agregates #{field} totals across all users" do
-          create(:user_activity, user_id: user.id, field.to_sym => { 'total' => 10 })
-          create(:user_activity, user_id: user.id, field.to_sym => { 'total' => 5 })
+          create(:user_activity, user_id: user.id, field.to_sym => { total: 10 })
+          create(:user_activity, user_id: user.id, field.to_sym => { total: 5 })
 
           site_activity = SupplejackApi::SiteActivity.generate_activity
           expect(site_activity.send(field)).to eq 15
@@ -25,7 +25,7 @@ module SupplejackApi
       end
 
       it 'only agregates user activities from the last 12 hours' do
-        create(:user_activity, user_id: user.id, search: { 'total' => 10 }, created_at: Time.now.utc - 14.hours)
+        create(:user_activity, user_id: user.id, search: { total: 10 }, created_at: Time.now.utc - 14.hours)
 
         site_activity = SupplejackApi::SiteActivity.generate_activity
         expect(site_activity.search).to eq 0
@@ -39,8 +39,8 @@ module SupplejackApi
       end
 
       it 'adds up a grand total' do
-        create(:user_activity, user_id: user.id, records: { 'total' => 10 })
-        create(:user_activity, user_id: user.id, user_sets: { 'total' => 5 })
+        create(:user_activity, user_id: user.id, records: { total: 10 })
+        create(:user_activity, user_id: user.id, user_sets: { total: 5 })
 
         site_activity = SupplejackApi::SiteActivity.generate_activity
         expect(site_activity.total).to eq 15
@@ -48,8 +48,8 @@ module SupplejackApi
 
       context 'specify a date in the past' do
         before do
-          create(:user_activity, user_id: user.id, records: { 'total' => 10 }, created_at: Time.now.utc - 26.hours)
-          create(:user_activity, user_id: user.id, user_sets: { 'total' => 5 }, created_at: Time.now.utc - 28.hours)
+          create(:user_activity, user_id: user.id, records: { total: 10 }, created_at: Time.now.utc - 26.hours)
+          create(:user_activity, user_id: user.id, user_sets: { total: 5 }, created_at: Time.now.utc - 28.hours)
         end
 
         it 'generates the site activity for a day in the past' do
@@ -58,7 +58,7 @@ module SupplejackApi
         end
 
         it 'should add up user activity created after the date' do
-          create(:user_activity, user_id: user.id, records: { 'total' => 2 }, created_at: Time.now.utc)
+          create(:user_activity, user_id: user.id, records: { total: 2 }, created_at: Time.now.utc)
 
           site_activity = SupplejackApi::SiteActivity.generate_activity(Time.now.utc - 24.hours)
 

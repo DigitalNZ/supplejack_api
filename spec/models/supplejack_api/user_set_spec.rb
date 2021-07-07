@@ -480,7 +480,7 @@ module SupplejackApi
                          sub_type: 'record',
                          content: { id: record.record_id },
                          position: 1 }
-        invalid_item = { 'record_id' => 'shtig', 'position' => '2' }
+        invalid_item = { record_id: 'shtig', position: '2' }
 
         user_set.update_attributes_and_embedded(records: [valid_item, invalid_item])
         user_set.reload
@@ -544,7 +544,7 @@ module SupplejackApi
       it 'initializes the set_items through the user_set' do
         item = user_set.set_items.build(record_id: 13)
         expect(user_set.set_items).to receive(:find_by_record_id).with('13') { item }
-        user_set.update_attributes_and_embedded(records: [{ 'record_id' => '13', 'position' => nil }])
+        user_set.update_attributes_and_embedded(records: [{ record_id: '13', position: nil }])
       end
 
       it 'can replace the set items' do

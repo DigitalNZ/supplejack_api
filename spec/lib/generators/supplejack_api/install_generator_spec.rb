@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 require 'generator_spec'
 
 module SupplejackApi
   module Generators
     describe InstallGenerator, type: :generator do
-      destination_path = File.expand_path("../tmp/", __FILE__)
+      destination_path = File.expand_path('tmp/', __dir__)
       generator_files_path = File.expand_path(Rails.root)
       destination(destination_path)
 
@@ -24,7 +26,7 @@ module SupplejackApi
       describe '#config files' do
         let(:generated_application_yml) { File.read("#{destination_path}/config/application.yml") }
         let(:generated_schedule) { File.read("#{destination_path}/config/schedule.rb") }
-        let(:example_schedule) { File.read("#{generator_files_path}/config/schedule.example.rb")}
+        let(:example_schedule) { File.read("#{generator_files_path}/config/schedule.example.rb") }
 
         it 'adds details to application.yml' do
           File.open("#{generator_files_path}/config/application.yml.example").each do |line|
@@ -77,7 +79,8 @@ module SupplejackApi
 
       describe '#mount_engine' do
         it 'mounts the supplejac routes' do
-          expect(File.read("#{destination_path}/config/routes.rb")).to include 'mount SupplejackApi::Engine => \'/\', as: \'supplejack_api\''
+          expect(File.read("#{destination_path}/config/routes.rb"))
+            .to include 'mount SupplejackApi::Engine => \'/\', as: \'supplejack_api\''
         end
       end
 

@@ -7,7 +7,8 @@ module SupplejackApi
     routes { SupplejackApi::Engine.routes }
 
     it 'routes /users/1.format to users#show' do
-      expect(get('/users/1.json')).to route_to(controller: 'supplejack_api/users', action: 'show', format: 'json', id: '1', version: nil)
+      expect(get: '/users/1.json')
+        .to route_to(controller: 'supplejack_api/users', action: 'show', format: 'json', id: '1', version: nil)
     end
   end
 end

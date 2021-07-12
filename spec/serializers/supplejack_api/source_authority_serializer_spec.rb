@@ -1,4 +1,4 @@
-
+# frozen_string_literal: true
 
 require 'spec_helper'
 
@@ -12,7 +12,7 @@ module SupplejackApi
         expect(serialized_source_authority).to have_key '@type'
       end
 
-      ConceptSchema.fields.keys.each do |field|
+      ConceptSchema.fields.each_key do |field|
         it "includes the #{field} field" do
           expect(serialized_source_authority).to have_key field
         end

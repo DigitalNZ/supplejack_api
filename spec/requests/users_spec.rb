@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe 'Users Endpoints', type: :request do
@@ -10,7 +12,7 @@ RSpec.describe 'Users Endpoints', type: :request do
     it 'returns user info' do
       response_attributes = JSON.parse(response.body)['user']
 
-      expect(response_attributes).to eq (
+      expect(response_attributes).to eq(
         {
           'id' => user.id.to_s,
           'name' => user.name,
@@ -34,7 +36,7 @@ RSpec.describe 'Users Endpoints', type: :request do
 
       user = SupplejackApi::User.last
 
-      expect(response_attributes).to eq (
+      expect(response_attributes).to eq(
         {
           'id' => user.id.to_s,
           'name' => 'New api user',
@@ -52,7 +54,7 @@ RSpec.describe 'Users Endpoints', type: :request do
     it 'returns user info of updated user' do
       response_attributes = JSON.parse(response.body)['user']
 
-      expect(response_attributes).to eq (
+      expect(response_attributes).to eq(
         {
           'id' => user.id.to_s,
           'name' => 'NewName',
@@ -70,7 +72,7 @@ RSpec.describe 'Users Endpoints', type: :request do
     it 'returns user info' do
       response_attributes = JSON.parse(response.body)['user']
 
-      expect(response_attributes).to eq (
+      expect(response_attributes).to eq(
         {
           'id' => user.id.to_s,
           'name' => user.name,
@@ -82,4 +84,3 @@ RSpec.describe 'Users Endpoints', type: :request do
     end
   end
 end
-

@@ -30,6 +30,10 @@ Lint/UselessAssignment:
     - 'app/models/supplejack_api/support/concept/searchable.rb'
     - 'app/models/supplejack_api/user.rb'
 
+Layout/LineLength:
+  Exclude:
+    - 'spec/requests/*'
+
 # Offense count: 64
 # Configuration parameters: IgnoredMethods, CountRepeatedAttributes.
 Metrics/AbcSize:

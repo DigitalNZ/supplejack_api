@@ -1,10 +1,9 @@
-
+# frozen_string_literal: true
 
 require 'spec_helper'
 
 module SupplejackApi
   describe FlushOldRecordsWorker do
-
     describe '#perform' do
       it 'calls flush_records' do
         flush_old_records_worker = FlushOldRecordsWorker.new
@@ -16,9 +15,8 @@ module SupplejackApi
       end
 
       it 'calls BatchRemoveRecordsFromIndex service for all deleted records for a given source_id' do
-        FactoryBot.create_list(:record, 10, status: 'active', fragments:
-                               FactoryBot.build_list(:record_fragment, 1, priority: 0, job_id: '999', source_id: 'source')
-                              )
+        fragments = FactoryBot.build_list(:record_fragment, 1, priority: 0, job_id: '999', source_id: 'source')
+        FactoryBot.create_list(:record, 10, status: 'active', fragments: fragments)
 
         mongo_criteria = SupplejackApi::Record.deleted.where('fragments.source_id': 'source').limit(500).skip(0)
 
@@ -33,11 +31,33 @@ module SupplejackApi
       old_job_id = '999'
       source_id = 'a-source-id'
 
-      let!(:active_record) { FactoryBot.create(:record, status: 'active', fragments: FactoryBot.build_list(:record_fragment, 1, priority: 0, job_id: old_job_id, source_id: source_id)) }
-      let!(:supressed_record) { FactoryBot.create(:record, status: 'supressed', fragments: FactoryBot.build_list(:record_fragment, 1, priority: 0, job_id: old_job_id, source_id: source_id)) }
-      let!(:deleted_record) { FactoryBot.create(:record, status: 'deleted', fragments: FactoryBot.build_list(:record_fragment, 1, priority: 0, job_id: old_job_id, source_id: source_id)) }
+      let!(:active_record) do
+        fragments = FactoryBot.build_list(:record_fragment, 1,
+                                          priority: 0,
+                                          job_id: old_job_id,
+                                          source_id: source_id)
+        FactoryBot.create(:record, status: 'active', fragments: fragments)
+      end
 
-      let!(:active_record_other_job) { FactoryBot.create(:record, status: 'active', fragments: FactoryBot.build_list(:record_fragment, 1, priority: 0, job_id: current_job_id, source_id: source_id, title: 'other')) }
+      let!(:supressed_record) do
+        fragments = FactoryBot.build_list(:record_fragment, 1, priority: 0, job_id: old_job_id, source_id: source_id)
+        FactoryBot.create(:record, status: 'supressed', fragments: fragments)
+      end
+
+      let!(:deleted_record) do
+        fragments = FactoryBot.build_list(:record_fragment, 1, priority: 0, job_id: old_job_id, source_id: source_id)
+        FactoryBot.create(:record, status: 'deleted', fragments: fragments)
+      end
+
+      let!(:active_record_other_job) do
+        fragments = FactoryBot.build_list(:record_fragment, 1,
+                                          priority: 0,
+                                          job_id: current_job_id,
+                                          source_id: source_id,
+                                          title: 'other')
+
+        FactoryBot.create(:record, status: 'active', fragments: fragments)
+      end
 
       it 'should delete all active/supressed records that were not harvest by a specific job' do
         FlushOldRecordsWorker.new.flush_records(source_id, current_job_id)

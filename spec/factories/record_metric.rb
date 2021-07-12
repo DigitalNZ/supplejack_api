@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SupplejackApi
   FactoryBot.define do
     factory :record_metric, class: SupplejackApi::RecordMetric do

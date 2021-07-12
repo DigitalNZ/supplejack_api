@@ -1,4 +1,6 @@
-require "spec_helper"
+# frozen_string_literal: true
+
+require 'spec_helper'
 
 module SupplejackApi
   describe Harvester::PreviewRecordsController, type: :controller do
@@ -14,12 +16,14 @@ module SupplejackApi
         let!(:preview_record) { FactoryBot.create(:preview_record, fragments: [fragment]) }
 
         it 'returns array of records based on search params' do
-          expect(SupplejackApi.config.preview_record_class).to receive(:where).with({'fragments.job_id': '54'})
+          expect(SupplejackApi.config.preview_record_class).to receive(:where).with({ 'fragments.job_id': '54' })
+
           get :index, params: { search:  { 'fragments.job_id': '54' }, api_key: api_key }
         end
 
         it 'responds with a json object of record ids and the fragments fragments' do
           get :index, params: { search:  { 'fragments.job_id': '54' }, api_key: api_key }
+
           records = JSON.parse(response.body)
           records.each do |rec|
             expect(rec).to have_key 'id'

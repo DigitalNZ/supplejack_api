@@ -130,10 +130,12 @@ module SupplejackApi
     #
     def text
       @text = options[:text]
+
       if @text.present? && !@text.match(/:"/)
-        @text.downcase!
+        @text = @text.downcase
         @text.gsub!(/ and | or | not /, &:upcase)
       end
+
       @text
     end
 

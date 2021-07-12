@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 module MetricsApi
@@ -5,12 +7,12 @@ module MetricsApi
     module Endpoints
       describe Root do
         let(:extended) do
-          Root.new({
-            facets: @facets,
-            start_date: @start_date,
-            end_date: @end_date,
-            metrics: @metrics
-          })
+          Root.new(
+            { facets: @facets,
+              start_date: @start_date,
+              end_date: @end_date,
+              metrics: @metrics }
+          )
         end
 
         context 'Metrics' do
@@ -22,8 +24,12 @@ module MetricsApi
 
             create(:faceted_metrics, name: 'dc1')
             create(:faceted_metrics, name: 'dc2')
-            create(:collection_metric, display_collection: 'dc1', created_at: Time.now.utc.to_date.midday, date: Time.now.utc.to_date)
-            create(:collection_metric, display_collection: 'dc2', created_at: Time.now.utc.to_date.midday, date: Time.now.utc.to_date)
+            create(:collection_metric, display_collection: 'dc1',
+                                       created_at: Time.now.utc.to_date.midday,
+                                       date: Time.now.utc.to_date)
+            create(:collection_metric, display_collection: 'dc2',
+                                       created_at: Time.now.utc.to_date.midday,
+                                       date: Time.now.utc.to_date)
           end
 
           describe '#call' do

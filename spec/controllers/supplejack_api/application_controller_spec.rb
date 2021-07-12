@@ -1,4 +1,4 @@
-
+# frozen_string_literal: true
 
 require 'spec_helper'
 
@@ -49,7 +49,12 @@ module SupplejackApi
       context 'user over daily requests limit' do
         it 'returns a error message' do
           allow(@user).to receive(:over_limit?) { true }
-          expect(@controller).to receive(:render).with({ json: { errors: 'You have reached your maximum number of api requests today' }, status: :forbidden })
+          expect(@controller).to receive(:render).with(
+            {
+              json: { errors: 'You have reached your maximum number of api requests today' },
+              status: :forbidden
+            }
+          )
           @controller.authenticate_user!
         end
       end
@@ -57,15 +62,23 @@ module SupplejackApi
       context 'api_key not found' do
         it 'returns a error message' do
           allow(@controller).to receive(:current_user) {  nil }
-          expect(@controller).to receive(:render).with({ json: { errors: 'Invalid API Key' }, status: :forbidden})
+
+          expect(@controller).to receive(:render).with(
+            { json: { errors: 'Invalid API Key' }, status: :forbidden }
+          )
+
           @controller.authenticate_user!
         end
       end
 
       context 'api key not provided' do
         it 'returns a error message' do
-          allow(@controller).to receive(:params) {  { api_key: ''} }
-          expect(@controller).to receive(:render).with({ json: { errors: 'Please provide a API Key' }, status: :forbidden })
+          allow(@controller).to receive(:params) {  { api_key: '' } }
+
+          expect(@controller).to receive(:render).with(
+            { json: { errors: 'Please provide a API Key' }, status: :forbidden }
+          )
+
           @controller.authenticate_user!
         end
       end
@@ -74,38 +87,42 @@ module SupplejackApi
         it 'returns a error message in the default format' do
           allow(@controller).to receive(:params) { {} }
           allow(@controller).to receive(:request) { double(:request, format: :css).as_null_object }
-          expect(@controller).to receive(:render).with({ json: { errors: 'Please provide a API Key' }, status: :forbidden })
+
+          expect(@controller).to receive(:render).with(
+            { json: { errors: 'Please provide a API Key' }, status: :forbidden }
+          )
+
           @controller.authenticate_user!
         end
       end
     end
 
-    describe "#authenticate_admin!" do
-      before {
-        allow(@controller).to receive(:request) { double(:request, :ip => "1.1.1.1", :format => :json)}
-      }
+    describe '#authenticate_admin!' do
+      before do
+        allow(@controller).to receive(:request) { double(:request, ip: '1.1.1.1', format: :json) }
+      end
 
-      it "returns true when the admin authentication was successful" do
+      it 'returns true when the admin authentication was successful' do
         allow(@controller).to receive(:current_user) { double(:user, admin?: true, role: 'admin') }
         expect(@controller.authenticate_admin!).to be_truthy
       end
 
-      it "returns false when the admin authentication was not successful" do
+      it 'returns false when the admin authentication was not successful' do
         allow(@controller).to receive(:current_user) { double(:user, admin?: false, role: 'developer') }
         expect(@controller.authenticate_admin!).to be_falsey
       end
     end
 
-    describe "#find_user_set" do
-      context "current_user is a admin" do
+    describe '#find_user_set' do
+      context 'current_user is a admin' do
         before :each do
           @user_set = double(:set).as_null_object
           allow(@controller).to receive(:current_user) { double(:user, admin?: true, role: 'admin').as_null_object }
-          allow(@controller).to receive(:params) { {:id => "12345"} }
+          allow(@controller).to receive(:params) { { id: '12345' } }
         end
 
-        it "finds the set even if it's not owned by the current_user" do
-          expect(UserSet).to receive(:custom_find).with("12345") { @user_set }
+        it 'finds the set even if its not owned by the current_user' do
+          expect(UserSet).to receive(:custom_find).with('12345') { @user_set }
           @controller.find_user_set
         end
       end

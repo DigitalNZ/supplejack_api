@@ -16,10 +16,17 @@ module SupplejackApi
             birth_date: double(:field, name: :birth_date, type: :datetime, search_as: [:filter]).as_null_object,
             nz_citizen: double(:field, name: :nz_citizen, type: :boolean, search_as: [:filter]).as_null_object,
             email: double(:field, name: :email, type: :string, multi_value: true, search_as: [:filter]).as_null_object,
-            address: double(:field, name: :address, type: :string, search_as: [:filter], solr_name: :new_address).as_null_object,
+            address: double(:field, name: :address, type: :string, search_as: [:filter], solr_name: :new_address)
+              .as_null_object,
             occupation: double(:field, name: :occupation, type: :string, search_as: [:fulltext]).as_null_object,
-            birth_place: double(:field, name: :birth_place, type: :string, search_as: [:fulltext], search_boost: 10).as_null_object,
-            short_description: double(:field, name: :short_description, multi_value: true, type: :string, search_as: [:fulltext, :filter], search_boost: 2).as_null_object,
+            birth_place: double(:field, name: :birth_place, type: :string, search_as: [:fulltext], search_boost: 10)
+              .as_null_object,
+            short_description: double(:field,
+                                      name: :short_description,
+                                      multi_value: true,
+                                      type: :string,
+                                      search_as: %i[fulltext filter],
+                                      search_boost: 2).as_null_object,
             subject: double(:field, name: :subject, multi_value: true, type: :string, search_as: [:mlt]).as_null_object
           }
         end

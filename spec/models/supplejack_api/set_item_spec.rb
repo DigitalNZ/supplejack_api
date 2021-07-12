@@ -1,12 +1,18 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 module SupplejackApi
   describe SetItem do
-  	let(:user_set) { FactoryBot.build(:user_set) }
-    let(:set_item) { user_set.set_items.build(record_id: 10, position: 1, type: 'embed', sub_type: 'record', content: { id: 10 }) }
+    let(:user_set) { FactoryBot.build(:user_set) }
+    let(:set_item) do
+      user_set.set_items.build(record_id: 10, position: 1,
+                               type: 'embed', sub_type: 'record',
+                               content: { id: 10 })
+    end
 
     before(:each) do
-      allow(user_set).to receive(:record) {double(:record, record_id: 4321, touch: true)}
+      allow(user_set).to receive(:record) { double(:record, record_id: 4321, touch: true) }
       allow(user_set).to receive(:update_record)
     end
 
@@ -41,7 +47,11 @@ module SupplejackApi
 
       it 'should allow set_item to be added to user_set without an associated Record' do
         allow(user_set).to receive(:record)
-        set_item = user_set.set_items.build(record_id: 1234, position: 1, type: 'embed', sub_type: 'record', content: { id: 1234 })
+        set_item = user_set.set_items.build(record_id: 1234,
+                                            position: 1,
+                                            type: 'embed',
+                                            sub_type: 'record',
+                                            content: { id: 1234 })
 
         expect(set_item).to be_valid
       end
@@ -63,14 +73,22 @@ module SupplejackApi
 
         it 'is valid with record id in content id' do
           allow(user_set).to receive(:record)
-          set_item = user_set.set_items.build(record_id: 1234, position: 1, type: 'embed', sub_type: 'record', content: { id: 1234 })
-
+          set_item = user_set.set_items.build(record_id: 1234,
+                                              position: 1,
+                                              type: 'embed',
+                                              sub_type: 'record',
+                                              content: { id: 1234 })
           expect(set_item).to be_valid
         end
 
         it 'is not valid with meta alignment value not in left, center or right' do
           allow(user_set).to receive(:record)
-          set_item = user_set.set_items.build(record_id: 1234, position: 1, type: 'embed', sub_type: 'record', content: { id: 1234 }, meta: { alignment: 'top' })
+          set_item = user_set.set_items.build(record_id: 1234,
+                                              position: 1,
+                                              type: 'embed',
+                                              sub_type: 'record',
+                                              content: { id: 1234 },
+                                              meta: { alignment: 'top' })
 
           expect(set_item).to be_invalid
         end
@@ -78,7 +96,12 @@ module SupplejackApi
         %w[left center right].each do |alignment|
           it "is valid with meta alignment value #{alignment}" do
             allow(user_set).to receive(:record)
-            set_item = user_set.set_items.build(record_id: 1234, position: 1, type: 'embed', sub_type: 'record', content: { id: 1234 }, meta: { alignment: alignment })
+            set_item = user_set.set_items.build(record_id: 1234,
+                                                position: 1,
+                                                type: 'embed',
+                                                sub_type: 'record',
+                                                content: { id: 1234 },
+                                                meta: { alignment: alignment })
 
             expect(set_item).to be_valid
           end
@@ -94,39 +117,50 @@ module SupplejackApi
 
         context 'when sub_type is heading' do
           it 'is not valid without content value' do
-            set_item = user_set.set_items.build(position: 1, type: 'text', sub_type: 'heading', content: { not_value: 1 })
+            set_item = user_set.set_items.build(position: 1,
+                                                type: 'text',
+                                                sub_type: 'heading',
+                                                content: { not_value: 1 })
 
             expect(set_item).to be_invalid
           end
 
           it 'is valid with content value' do
-            set_item = user_set.set_items.build(position: 1, type: 'text', sub_type: 'heading', content: { value: 'Heading' })
+            set_item = user_set.set_items.build(position: 1, type: 'text',
+                                                sub_type: 'heading', content: { value: 'Heading' })
 
             expect(set_item).to be_valid
           end
 
           it 'is not valid with meta size not in 1 to 6' do
-            set_item = user_set.set_items.build(position: 1, type: 'text', sub_type: 'heading', meta: { size: 12 }, content: { value: 'Heading' })
+            set_item = user_set.set_items.build(position: 1, type: 'text',
+                                                sub_type: 'heading', meta: { size: 12 },
+                                                content: { value: 'Heading' })
 
             expect(set_item).to be_invalid
           end
 
           it 'is valid with meta size from 1 to 6' do
-            set_item = user_set.set_items.build(position: 1, type: 'text', sub_type: 'heading', meta: { size: 1 }, content: { value: 'Heading' })
-
+            set_item = user_set.set_items.build(position: 1, type: 'text',
+                                                sub_type: 'heading', meta: { size: 1 },
+                                                content: { value: 'Heading' })
             expect(set_item).to be_valid
           end
         end
 
         context 'when sub_type is rich-text' do
           it 'is not valid without content value' do
-            set_item = user_set.set_items.build(position: 1, type: 'text', sub_type: 'heading', content: { not_value: 1 })
+            set_item = user_set.set_items.build(position: 1, type: 'text',
+                                                sub_type: 'heading', content: { not_value: 1 })
 
             expect(set_item).to be_invalid
           end
 
           it 'is valid with content value' do
-            set_item = user_set.set_items.build(position: 1, type: 'text', sub_type: 'heading', content: { value: '<p>Text</p>' })
+            set_item = user_set.set_items.build(position: 1,
+                                                type: 'text',
+                                                sub_type: 'heading',
+                                                content: { value: '<p>Text</p>' })
 
             expect(set_item).to be_valid
           end
@@ -142,7 +176,7 @@ module SupplejackApi
         set_item.save
       end
 
-       it 'updates the user_set updated at field when an item is updated and saved' do
+      it 'updates the user_set updated at field when an item is updated and saved' do
         old_time = user_set.updated_at
         set_item.position = 2
         set_item.save!
@@ -160,7 +194,7 @@ module SupplejackApi
     end
 
     it "returns nil for any record field if the record doesn't exist" do
-      [:name, :address].each do |attr|
+      %i[name address].each do |attr|
         expect(set_item.send(attr)).to be_nil
       end
     end
@@ -198,10 +232,10 @@ module SupplejackApi
     end
 
     describe '#reindex_record' do
-      let(:record) {double(:record)}
+      let(:record) { double(:record) }
 
       it 'finds the record and calls index' do
-        expect(Record).to receive(:custom_find).with(set_item.record_id) {record}
+        expect(Record).to receive(:custom_find).with(set_item.record_id) { record }
         expect(record).to receive(:index)
 
         set_item.reindex_record

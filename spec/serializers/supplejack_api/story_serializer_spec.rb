@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 module SupplejackApi
@@ -10,47 +12,47 @@ module SupplejackApi
       it 'has id' do
         expect(response[:id]).to eq story.id
       end
-      
+
       it 'has name' do
         expect(response[:name]).to eq story.name
       end
-      
+
       it 'has description' do
         expect(response[:description]).to eq story.description
       end
-      
+
       it 'has privacy' do
         expect(response[:privacy]).to eq story.privacy
       end
-      
+
       it 'has copyright' do
         expect(response[:copyright]).to eq story.copyright
       end
-      
+
       it 'has featured' do
         expect(response[:featured]).to eq story.featured
       end
-      
+
       it 'has featured_at' do
         expect(response[:featured_at]).to eq story.featured_at
       end
-      
+
       it 'has approved' do
         expect(response[:approved]).to eq story.approved
       end
-      
+
       it 'has tags' do
         expect(response[:tags]).to eq story.tags
       end
-      
+
       it 'has subjects' do
         expect(response[:subjects]).to eq story.subjects
       end
-      
+
       it 'has updated_at' do
         expect(response[:updated_at]).to eq story.updated_at
       end
-      
+
       it 'has cover_thumbnail' do
         expect(response[:cover_thumbnail]).to eq story.cover_thumbnail
       end

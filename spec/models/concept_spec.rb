@@ -1,4 +1,4 @@
-
+# frozen_string_literal: true
 
 require 'spec_helper'
 
@@ -11,7 +11,7 @@ module SupplejackApi
 
     describe 'fields' do
       context '.model fields' do
-        %w(concept_type concept_id).each do |field|
+        %w[concept_type concept_id].each do |field|
           it "responds to #{field} field" do
             expect(concept.respond_to?(field)).to be_truthy
           end
@@ -46,27 +46,28 @@ module SupplejackApi
     # end
 
     describe '#build_context' do
-      let(:fields) { [:name, :prefLabel, :dateOfBirth] }
+      let(:fields) { %i[name prefLabel dateOfBirth] }
 
       it 'builds inline context' do
         context = {
-                    :skos => "http://www.w3.org/2004/02/skos/core#",
-                    :foaf => "http://xmlns.com/foaf/0.1/",
-                    :rdaGr2 => "http://rdvocab.info/ElementsGr2/",
-                    :dcterms => "http://purl.org/dc/terms/",
-                    :concept_id => {
-                      "@id" => "dcterms:identifier"
-                    },
-                    :name => {
-                      "@id" => "foaf:name"
-                    },
-                    :prefLabel => {
-                      "@id" => "skos:prefLabel"
-                    },
-                    :dateOfBirth => {
-                      "@id" => "rdaGr2:dateOfBirth"
-                    }
-                }
+          skos: 'http://www.w3.org/2004/02/skos/core#',
+          foaf: 'http://xmlns.com/foaf/0.1/',
+          rdaGr2: 'http://rdvocab.info/ElementsGr2/',
+          dcterms: 'http://purl.org/dc/terms/',
+          concept_id: {
+            '@id' => 'dcterms:identifier'
+          },
+          name: {
+            '@id' => 'foaf:name'
+          },
+          prefLabel: {
+            '@id' => 'skos:prefLabel'
+          },
+          dateOfBirth: {
+            '@id' => 'rdaGr2:dateOfBirth'
+          }
+        }
+
         expect(Concept.build_context(fields)).to eq context
       end
     end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SupplejackApi
   FactoryBot.define do
     factory :user_set, class: SupplejackApi::UserSet do
@@ -9,14 +11,13 @@ module SupplejackApi
       copyright        { 0 }
       url              { Faker::Internet.url }
       priority         { 0 }
-      count_updated_at { Date.today }
+      count_updated_at { Time.zone.today }
       subjects         { [Faker::Verb.base] }
       approved         { false }
       featured         { false }
-      featured_at      { Date.today }
+      featured_at      { Time.zone.today }
       cover_thumbnail  { Faker::Internet.url }
       username         { nil }
-
 
       factory :user_set_with_set_item do
         after(:create) do |user_set|
@@ -24,7 +25,11 @@ module SupplejackApi
           # @records that has been set in user_set
           # Without it you will not have set_items
           user_set.instance_variable_set(:@records, nil)
-          create :set_item, user_set: user_set
+          create(:set_item,
+                 type: 'embed',
+                 sub_type: 'record',
+                 content: { id: user_set.record.record_id },
+                 user_set: user_set)
         end
       end
     end

@@ -1,19 +1,20 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 module SupplejackApi
   module ApiRecord
     describe RecordFragment do
-
-  		let!(:record) { FactoryBot.build(:record, record_id: 1234) }
+      let!(:record) { FactoryBot.build(:record, record_id: 1234) }
       let!(:fragment) { record.fragments.build(priority: 0) }
       let(:fragment_class) { RecordFragment }
 
       before { record.save }
 
       describe 'schema_class' do
-      	it 'should return RecordSchema' do
-      		expect(RecordFragment.schema_class).to eq RecordSchema
-      	end
+        it 'should return RecordSchema' do
+          expect(RecordFragment.schema_class).to eq RecordSchema
+        end
       end
 
       describe 'build_mongoid_schema' do
@@ -25,14 +26,17 @@ module SupplejackApi
               date: double(:field, name: :date, type: :datetime).as_null_object,
               is_active: double(:field, name: :is_active, type: :boolean).as_null_object,
               subject: double(:field, name: :subject, type: :string, multi_value: true).as_null_object,
-              sort_date: double(:field, name: :sort_date, type: :string, store: false).as_null_object,
+              sort_date: double(:field, name: :sort_date, type: :string, store: false).as_null_object
             }
           end
           allow(fragment_class).to receive(:field)
 
           allow(RecordSchema).to receive(:mongo_indexes) do
             {
-              count_date: double(:mongo_index, name: :count_date, fields: [{ count: 1, date: 1 }], index_options: {background: true}).as_null_object
+              count_date: double(:mongo_index,
+                                 name: :count_date,
+                                 fields: [{ count: 1, date: 1 }],
+                                 index_options: { background: true }).as_null_object
             }
           end
           allow(fragment_class).to receive(:mongo_indexes)
@@ -70,14 +74,14 @@ module SupplejackApi
 
         context 'creating indexes' do
           it 'should create a single field index' do
-            expect(fragment_class).to receive(:index).with({:count=>1, :date=>1}, {:background=>true})
+            expect(fragment_class).to receive(:index).with({ count: 1, date: 1 }, { background: true })
           end
         end
       end
 
       describe '.mutable_fields' do
-        {name: String, email: Array, nz_citizen: Mongoid::Boolean}.each do |name, type|
-          it 'should return a hash that includes the key #{name} and value #{type}' do
+        { name: String, email: Array, nz_citizen: Mongoid::Boolean }.each do |name, type|
+          it "should return a hash that includes the key #{name} and value #{type}" do
             expect(fragment_class.mutable_fields[name.to_s]).to eq type
           end
         end
@@ -86,6 +90,7 @@ module SupplejackApi
           expect(fragment_class.mutable_fields).to_not have_key('source_id')
         end
 
+        # rubocop:disable Style/ClassVars
         it 'should memoize the mutable_fields' do
           fragment_class.class_variable_set('@@mutable_fields', nil)
           allow(fragment_class).to receive(:fields).once.and_return({})
@@ -93,14 +98,16 @@ module SupplejackApi
           fragment_class.mutable_fields
           fragment_class.class_variable_set('@@mutable_fields', nil)
         end
+        # rubocop:enable Style/ClassVars
       end
 
       context 'default scope' do
         it 'should order the fragments from lower to higher priority' do
-          fragment3 = record.fragments.create(priority: 3)
-          fragment1 = record.fragments.create(priority: 1)
-          fragment_1 = record.fragments.create(priority: -1)
+          record.fragments.create(priority: 3)
+          record.fragments.create(priority: 1)
+          record.fragments.create(priority: -1)
           record.reload
+
           expect(record.fragments.map(&:priority)).to eq [-1, 0, 1, 3]
         end
       end

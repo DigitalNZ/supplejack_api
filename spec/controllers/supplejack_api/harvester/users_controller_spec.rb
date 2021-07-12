@@ -17,8 +17,9 @@ RSpec.describe SupplejackApi::Harvester::UsersController do
 
     it 'renders the @users as JSON' do
       get :index, params: { api_key: harvester_api_key }, format: :json
-      u = SupplejackApi::User.all
-      expect(JSON.parse(response.body)['users']).to eq u.map { |x| SupplejackApi::Harvester::UserSerializer.new(x).as_json.as_json }
+      userss = SupplejackApi::User.all.map { |x| SupplejackApi::Harvester::UserSerializer.new(x).as_json.as_json }
+
+      expect(JSON.parse(response.body)['users']).to eq userss
     end
 
     it 'requires an API key' do

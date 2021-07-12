@@ -7,9 +7,9 @@ module SupplejackApi
 
     rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
-    before_action :authenticate_admin!, :story_user_id_check!, only: [:admin_index]
-    before_action :story_user_check!, except: %i[admin_index show]
-    before_action :find_story, only: %i[show update destroy]
+    before_action :authenticate_admin!, :story_user_id_check, only: [:admin_index]
+    before_action :story_user_check, except: %i[admin_index show]
+    before_action :find_story, only: %i[show update destroy reposition_items]
     after_action :create_story_record_views, only: :show
 
     def index
@@ -61,6 +61,19 @@ module SupplejackApi
       head :no_content
     end
 
+    def reposition_items
+      params[:items].each do |item|
+        story_item = @story.set_items.find_by_id(item[:id])
+
+        next unless story_item
+
+        story_item.position = item[:position]
+        story_item.save(validate: false)
+      end
+
+      head :ok
+    end
+
     private
 
     def story_params
@@ -69,14 +82,14 @@ module SupplejackApi
       params.require(:story).permit(fields)
     end
 
-    def story_user_id_check!
+    def story_user_id_check
       @story_user = User.find_by_api_key(params[:user_id])
 
       render_error_with(I18n.t('errors.user_with_id_not_found', id: params[:user_id]), :not_found) unless @story_user
     end
 
     def find_story
-      @story = SupplejackApi::UserSet.custom_find(params[:id])
+      @story = SupplejackApi::UserSet.custom_find(params[:id] || params[:story_id])
 
       render_error_with(I18n.t('errors.story_not_found', id: params[:id]), :not_found) unless @story
     end

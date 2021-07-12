@@ -1,24 +1,35 @@
+# frozen_string_literal: true
 
-
-require "spec_helper"
+require 'spec_helper'
 
 module SupplejackApi
   describe DailyMetricsWorker, search: true, slow: true do
-
-    before :each do
-      Sunspot.session = Sunspot.session.original_session
-    end
+    before { Sunspot.session = Sunspot.session.original_session }
 
     after :each do
       Sunspot.remove_all
     end
 
-    describe "#call" do
+    describe '#call' do
       def build_records
         10.times do
-          create(:record_with_fragment, display_collection: 'pc1', copyright: ['0'],      category: ['0'], created_at: Time.now.utc.to_date.midday)
-          create(:record_with_fragment, display_collection: 'pc2', copyright: ['1'],      category: ['1'], created_at: Time.now.utc.to_date.midday)
-          create(:record_with_fragment, display_collection: 'pc1', copyright: ['0', '1'], category: ['0', '1'], created_at: Time.now.utc.yesterday.to_date.midday)
+          create(:record_with_fragment,
+                 display_collection: 'pc1',
+                 copyright: ['0'],
+                 category: ['0'],
+                 created_at: Time.now.utc.to_date.midday)
+
+          create(:record_with_fragment,
+                 display_collection: 'pc2',
+                 copyright: ['1'],
+                 category: ['1'],
+                 created_at: Time.now.utc.to_date.midday)
+
+          create(:record_with_fragment,
+                 display_collection: 'pc1',
+                 copyright: %w[0 1],
+                 category: %w[0 1],
+                 created_at: Time.now.utc.yesterday.to_date.midday)
         end
 
         Sunspot.commit
@@ -30,9 +41,10 @@ module SupplejackApi
         end
       end
 
-      it "handles records with missing categories/copyrights" do
+      it 'handles records with missing categories/copyrights' do
         10.times do |n|
-          c = n % 2 == 0 ? nil : ['0']
+          c = n.even? ? nil : ['0']
+
           create(:record_with_fragment, created_at: Time.now.utc.to_date.midday, copyright: c)
         end
         Sunspot.commit
@@ -43,15 +55,15 @@ module SupplejackApi
         expect(facet.total_active_records).to eq(10)
       end
 
-      it "handles copyrights with periods in the name" do
+      it 'handles copyrights with periods in the name' do
         create(:record_with_fragment, copyright: ['1.0'], display_collection: 'test')
         Sunspot.commit
 
         DailyMetricsWorker.new.call
-        expect(FacetedMetrics.created_on(Time.now.utc.to_date).first.copyright_counts.first.first).to eq("1.0")
+        expect(FacetedMetrics.created_on(Time.now.utc.to_date).first.copyright_counts.first.first).to eq('1.0')
       end
 
-      it "correctly paginates the facet list when there are more than 150 facets" do
+      it 'correctly paginates the facet list when there are more than 150 facets' do
         200.times do |n|
           create(:record_with_fragment, display_collection: n.to_s)
         end
@@ -62,36 +74,37 @@ module SupplejackApi
         expect(FacetedMetrics.count).to eq(201)
       end
 
-      context "faceted metrics" do
+      context 'faceted metrics' do
         before do
-          create(:record_with_fragment, status: "deleted") # inactive, should never show in counts
+          create(:record_with_fragment, status: 'deleted') # inactive, should never show in counts
           build_records
 
           DailyMetricsWorker.new.call
         end
-        let(:faceted_metrics)  {SupplejackApi::FacetedMetrics.all.where(:name.ne => 'all').to_a}
 
-        it "has metrics for each facet" do
+        let(:faceted_metrics)  { SupplejackApi::FacetedMetrics.all.where(:name.ne => 'all').to_a }
+
+        it 'has metrics for each facet' do
           expect(faceted_metrics.length).to eq(2)
         end
 
-        it "has active record counts for each facet" do
-          facet_metrics_query(faceted_metrics, [20, 10]) {|facet| facet.total_active_records}
+        it 'has active record counts for each facet' do
+          facet_metrics_query(faceted_metrics, [20, 10]).map(&:total_active_records)
         end
 
-        it "has new record counts for each display_collection" do
-          facet_metrics_query(faceted_metrics, [10, 10]) {|facet| facet.total_new_records}
+        it 'has new record counts for each display_collection' do
+          facet_metrics_query(faceted_metrics, [10, 10]).map(&:total_new_records)
         end
 
-        it "has a count of records per category in each display_collection" do
-          facet_metrics_query(faceted_metrics, [20, 10]) {|facet, index| facet.category_counts[index.to_s]}
+        it 'has a count of records per category in each display_collection' do
+          facet_metrics_query(faceted_metrics, [20, 10]) { |facet, index| facet.category_counts[index.to_s] }
         end
 
-        it "has a count of records per usage type in each display_collection" do
-          facet_metrics_query(faceted_metrics, [20, 10]) {|facet, index| facet.copyright_counts[index.to_s]}
+        it 'has a count of records per usage type in each display_collection' do
+          facet_metrics_query(faceted_metrics, [20, 10]) { |facet, index| facet.copyright_counts[index.to_s] }
         end
 
-        it "creates an All facet that contains the summed metrics of for all the individual facets" do
+        it 'creates an All facet that contains the summed metrics of for all the individual facets' do
           all_metric = SupplejackApi::FacetedMetrics.where(name: 'all').first
 
           expect(all_metric.total_active_records).to eq(30)
@@ -100,7 +113,7 @@ module SupplejackApi
         end
       end
 
-      context "daily metrics" do
+      context 'daily metrics' do
         let(:metric) do
           # Lazy generate metrics
           DailyMetricsWorker.new.call
@@ -116,7 +129,7 @@ module SupplejackApi
           expect(metric.date).to eq(Time.now.utc.to_date)
         end
 
-        context "set metrics" do
+        context 'set metrics' do
           it 'counts the number of sets in the system' do
             create(:user_set)
 

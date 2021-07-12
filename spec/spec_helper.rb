@@ -1,14 +1,11 @@
-
+# frozen_string_literal: true
 
 # This file is copied to spec/ when you run 'rails generate rspec:install'
 ENV['RAILS_ENV'] ||= 'test'
 
-begin
-  require 'pry'
-rescue LoadError
-end
+require 'pry'
 
-require File.expand_path("../dummy/config/environment.rb", __FILE__)
+require File.expand_path('dummy/config/environment.rb', __dir__)
 require 'rails/application'
 require 'rails/mongoid'
 require 'rspec/rails'
@@ -24,7 +21,9 @@ Rails::Controller::Testing.install
 Rails.backtrace_cleaner.remove_silencers!
 
 # Load support files
+# rubocop:disable Lint/NonDeterministicRequireOrder
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
+# rubocop:enable Lint/NonDeterministicRequireOrder
 
 RSpec.configure do |config|
   config.formatter = :documentation
@@ -51,7 +50,7 @@ RSpec.configure do |config|
     DatabaseCleaner.clean
     Timecop.return
 
-    %w(record concept).each do |model|
+    %w[record concept].each do |model|
       klass = "#{model.capitalize}Schema".constantize
 
       allow(klass).to receive(:default_role) { double(:role, name: :developer) }

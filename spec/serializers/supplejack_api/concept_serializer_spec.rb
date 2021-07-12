@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-
-
 require 'spec_helper'
 
 module SupplejackApi
@@ -52,7 +50,7 @@ module SupplejackApi
       end
 
       it 'includes the :name' do
-        expect(serialized_concept_with_inline_context['@context'][:name]).to eq  '@id' => 'foaf:name'
+        expect(serialized_concept_with_inline_context['@context'][:name]).to eq '@id' => 'foaf:name'
       end
 
       it 'includes the :type' do
@@ -68,18 +66,19 @@ module SupplejackApi
       end
 
       it 'includes the :agents' do
-        expect(serialized_concept_with_inline_context['@context'][:agents]).to eq '@id'=>'edm:agents'
+        expect(serialized_concept_with_inline_context['@context'][:agents]).to eq '@id' => 'edm:agents'
       end
 
       it 'includes the :source_authority' do
-        expect(serialized_concept_with_inline_context['@context'][:source_authority]).to eq '@id' => 'foaf:source_authority'
+        expect(serialized_concept_with_inline_context['@context'][:source_authority])
+          .to eq '@id' => 'foaf:source_authority'
       end
-
     end
 
     describe 'it renders attributes based on your schema' do
       ConceptSchema.model_fields.each do |name, definition|
         next if definition.store == false
+
         it "renders the #{name} field" do
           expect(serialized_concept).to have_key name
         end

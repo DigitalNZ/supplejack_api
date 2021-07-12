@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe 'Metrics Endpoints', type: :request do
@@ -10,7 +12,7 @@ RSpec.describe 'Metrics Endpoints', type: :request do
       it 'returns user info' do
         response_attributes = JSON.parse(response.body)
 
-        expect(response_attributes).to eq ({ 'errors' => 'facets parameter is required' })
+        expect(response_attributes).to eq({ 'errors' => 'facets parameter is required' })
       end
     end
   end

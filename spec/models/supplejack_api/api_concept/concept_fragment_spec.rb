@@ -1,11 +1,10 @@
-
+# frozen_string_literal: true
 
 require 'spec_helper'
 
 module SupplejackApi
   module ApiConcept
     describe ConceptFragment do
-
       # let!(:concept) { FactoryBot.build(:concept, concept_id: 1234) }
       # let!(:fragment) { concept.fragments.build(priority: 0) }
       # let(:fragment_class) { ConceptFragment }
@@ -34,7 +33,8 @@ module SupplejackApi
 
       #     allow(ConceptSchema).to receive(:mongo_indexes) do
       #       {
-      #         count_date: double(:mongo_index, name: :count_date, fields: [{ count: 1, date: 1 }], index_options: {background: true}).as_null_object
+      #         count_date: double(:mongo_index, name: :count_date, fields: [{ count: 1, date: 1 }],
+      #         index_options: {background: true}).as_null_object
       #       }
       #     end
       #     allow(fragment_class).to receive(:mongo_indexes)
@@ -177,8 +177,6 @@ module SupplejackApi
       #     expect(fragment.source_id).to eq 'census'
       #   end
       # end
-
-
     end
   end
 end

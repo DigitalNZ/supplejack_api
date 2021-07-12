@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 RSpec.describe BatchRemoveRecordsFromIndex do
   describe '#initialize' do
     let!(:active_record) { FactoryBot.create_list(:record_with_fragment, 10) }

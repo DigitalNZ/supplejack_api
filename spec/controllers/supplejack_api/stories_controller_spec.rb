@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 module SupplejackApi
   RSpec.describe StoriesController do
     routes { SupplejackApi::Engine.routes }
@@ -7,16 +8,13 @@ module SupplejackApi
     let(:api_key) { user.api_key }
 
     describe 'GET index' do
-
       context 'successful request' do
         let(:response_body) { JSON.parse(response.body).map(&:deep_symbolize_keys) }
 
         before do
-          2.times do
-            create(:story, user: user)
-          end
+          2.times { create(:story, user: user) }
 
-          get :index, params: {api_key: api_key, user_key: api_key, slim: 'false'}
+          get :index, params: { api_key: api_key, user_key: api_key, slim: 'false' }
         end
 
         it 'returns a 200 http code' do
@@ -28,7 +26,9 @@ module SupplejackApi
         end
 
         it 'returns valid stories' do
-          expect(response_body.all? {|story| ::StoriesApi::V3::Schemas::Story.call(story).success?}).to eq(true)
+          UserSet.all.each do |story|
+            expect(response_body).to include(StorySerializer.new(story, scope: { slim: false }).as_json)
+          end
         end
       end
     end
@@ -41,7 +41,7 @@ module SupplejackApi
       end
 
       context 'unsuccessful request - provided user id does not exist' do
-        before { get :admin_index, params: { api_key: api_key, user_id: '1231231231' }}
+        before { get :admin_index, params: { api_key: api_key, user_id: '1231231231' } }
 
         it 'returns 404' do
           expect(response).to have_http_status(:not_found)
@@ -53,7 +53,7 @@ module SupplejackApi
       end
 
       context 'unsuccesful request - not admin' do
-        before { get :admin_index, params: { api_key: user.api_key, user_id: user.api_key }}
+        before { get :admin_index, params: { api_key: user.api_key, user_id: user.api_key } }
 
         it 'returns 403' do
           expect(response).to have_http_status(:forbidden)
@@ -68,11 +68,9 @@ module SupplejackApi
         let(:response_body) { JSON.parse(response.body).map(&:deep_symbolize_keys) }
 
         before do
-          2.times do
-            create(:story, user: user)
-          end
+          2.times { create(:story, user: user) }
 
-          get :admin_index, params: { api_key: api_key, user_id: user.api_key}
+          get :admin_index, params: { api_key: api_key, user_id: user.api_key }
         end
 
         it 'returns a 200 http code' do
@@ -87,7 +85,7 @@ module SupplejackApi
 
     describe 'GET show' do
       context 'when provided story id does not exist' do
-        before { get :show, params: { api_key: api_key, id: '1231231231' }}
+        before { get :show, params: { api_key: api_key, id: '1231231231' } }
 
         it 'returns 404' do
           expect(response).to have_http_status(:not_found)
@@ -106,7 +104,7 @@ module SupplejackApi
         before do
           2.times { create(:story, user: user) }
 
-          get :show, params: { api_key: api_key, id: story_id}
+          get :show, params: { api_key: api_key, id: story_id }
         end
 
         it 'returns a 200 http code' do
@@ -118,13 +116,17 @@ module SupplejackApi
         end
 
         it 'returns a valid story' do
-          expect(::StoriesApi::V3::Schemas::Story.call(response_body).success?).to eq(true)
+          expect(response.body).to eq(StorySerializer.new(story, scope: { slim: false }).to_json)
         end
 
         it 'creates a user_story_views entry for RequestMetric' do
           expect(SupplejackApi::RequestMetric.count).to eq 1
-          expect(SupplejackApi::RequestMetric.first.records.map { |x| x[:record_id] }).to eq story.set_items.map(&:record_id)
-          expect(SupplejackApi::RequestMetric.first.records.map { |x| x[:display_collection] }).to eq story.set_items.map { |x| x[:content][:display_collection] }
+          expect(SupplejackApi::RequestMetric.first.records.map { |x| x[:record_id] })
+            .to eq(story.set_items.map(&:record_id))
+
+          expect(SupplejackApi::RequestMetric.first.records.map { |x| x[:display_collection] })
+            .to eq(story.set_items.map { |x| x[:content][:display_collection] })
+
           expect(SupplejackApi::RequestMetric.first.metric).to eq 'user_story_views'
         end
       end
@@ -132,7 +134,7 @@ module SupplejackApi
 
     describe 'POST create' do
       context 'unsuccessful request - malformed post body' do
-        before { post :create, params: {user_key: api_key, api_key: api_key, story: {nope: '1231231231'} }}
+        before { post :create, params: { user_key: api_key, api_key: api_key, story: { nope: '1231231231' } } }
 
         it 'returns 400' do
           expect(response).to have_http_status(:bad_request)
@@ -147,9 +149,7 @@ module SupplejackApi
         let(:response_body) { JSON.parse(response.body).deep_symbolize_keys }
         let(:story_name) { 'StoryNameGoesHere' }
 
-        before do
-          post :create, params: {user_key: api_key, api_key: api_key, story: { name: story_name }}
-        end
+        before { post :create, params: { user_key: api_key, api_key: api_key, story: { name: story_name } } }
 
         it 'returns a 201 http code' do
           expect(response).to have_http_status(:created)
@@ -163,14 +163,50 @@ module SupplejackApi
         end
 
         it 'returns a valid story' do
-          expect(::StoriesApi::V3::Schemas::Story.call(response_body).success?).to eq(true)
+          new_story = SupplejackApi::UserSet.find response_body[:id]
+
+          expect(response.body).to eq(StorySerializer.new(new_story, scope: { slim: false }).to_json)
         end
+      end
+    end
+
+    describe 'POST reposition_items' do
+      let(:story) do
+        create(:story,
+               set_items: [create(:embed_dnz_item, title: 'first', position: 1),
+                           create(:embed_dnz_item, title: 'middle', position: 2),
+                           create(:embed_dnz_item, title: 'last', position: 3)])
+      end
+
+      before do
+        items = story.set_items
+        reposition_params = [
+          { id: items[0].id, position: 2 },
+          { id: items[1].id, position: 1 },
+          { id: items[2].id, position: 3 }
+        ]
+
+        post :reposition_items,
+             params: { story_id: story.id.to_s, api_key: api_key, user_key: api_key, items: reposition_params }
+      end
+
+      it 'returns status ok' do
+        expect(response).to have_http_status :ok
+      end
+
+      it 'repositions story items' do
+        story.reload
+        items = story.set_items
+
+        expect(items[0].position).to eq 2
+        expect(items[1].position).to eq 1
+        expect(items[2].position).to eq 3
       end
     end
 
     describe 'DELETE create' do
       context 'unsuccessful request - story not found' do
-        before { delete :destroy, params: {api_key: api_key, user_key: api_key, id: '1231231231' }}
+        before { delete :destroy, params: { api_key: api_key, user_key: api_key, id: '1231231231' } }
 
         it 'returns 404' do
           expect(response).to have_http_status(:not_found)
@@ -185,7 +221,7 @@ module SupplejackApi
         before do
           story = create(:story, user: user)
 
-          delete :destroy, params: {api_key: api_key, user_key: api_key, id: story.id}
+          delete :destroy, params: { api_key: api_key, user_key: api_key, id: story.id }
         end
 
         it 'returns a 204 http code' do
@@ -203,7 +239,7 @@ module SupplejackApi
 
     describe 'PATCH update' do
       context 'unsuccessful request - story not found' do
-        before { patch :update, params: {api_key: api_key, user_key: api_key, id: '1231231231' }}
+        before { patch :update, params: { api_key: api_key, user_key: api_key, id: '1231231231' } }
 
         it 'returns 404' do
           expect(response).to have_http_status(:not_found)
@@ -218,16 +254,16 @@ module SupplejackApi
         let(:response_body) { JSON.parse(response.body).deep_symbolize_keys }
         let(:name) { 'InsertANameHere' }
         let(:description) { 'InsertADescriptionHere' }
-        let(:story) {user.user_sets.create(attributes_for(:story)) }
-        let(:story_patch) do
-          {
-            name: name,
-            description: description
-          }
-        end
+        let(:story) { user.user_sets.create(attributes_for(:story)) }
 
         before do
-          patch :update, params: {api_key: api_key, user_key: api_key, id: story.id, story: story_patch}
+          patch :update,
+                params: {
+                  api_key: api_key,
+                  user_key: api_key,
+                  id: story.id,
+                  story: { name: name, description: description }
+                }
         end
 
         it 'returns a 200 http code' do
@@ -241,8 +277,8 @@ module SupplejackApi
           expect(updated_story.description).to eq(description)
         end
 
-        it 'returns a valid story shape' do
-          expect(::StoriesApi::V3::Schemas::Story.call(response_body).success?).to eq(true)
+        it 'returns a valid story' do
+          expect(response.body).to eq(StorySerializer.new(story.reload, scope: { slim: false }).to_json)
         end
       end
     end

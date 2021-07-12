@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe SupplejackApi::RecordMetric do
@@ -72,24 +74,36 @@ RSpec.describe SupplejackApi::RecordMetric do
   end
 
   describe '::spawn' do
-    let!(:record_metric) { create(:record_metric, record_id: 1, page_views: 1, display_collection: 'NDHA', date: Time.now.yesterday) }
+    let!(:record_metric) do
+      create(:record_metric, record_id: 1,
+                             page_views: 1,
+                             display_collection: 'NDHA',
+                             date: Time.current.yesterday)
+    end
 
     it 'creates a new RecordMetric when there is not one for the provided day and record_id' do
-      expect { SupplejackApi::RecordMetric.spawn(2, { 'appeared_in_searches' => 1 }, 'NDHA') }.to change(SupplejackApi::RecordMetric, :count).by(1)
+      expect { SupplejackApi::RecordMetric.spawn(2, { appeared_in_searches: 1 }, 'NDHA') }
+        .to change(SupplejackApi::RecordMetric, :count).by(1)
     end
 
     it 'does not create a RecordMetric when the provided day and record_id allready exist' do
-      expect { SupplejackApi::RecordMetric.spawn(record_metric.record_id, { 'appeared_in_searches' => 1 }, 'NDHA') }.to change(SupplejackApi::RecordMetric, :count).by(0)
+      expect { SupplejackApi::RecordMetric.spawn(record_metric.record_id, { appeared_in_searches: 1 }, 'NDHA') }
+        .to change(SupplejackApi::RecordMetric, :count).by(0)
     end
 
     it 'increments an existing Record Metric' do
-      SupplejackApi::RecordMetric.spawn(record_metric.record_id, { 'page_views' => 1 }, 'NDHA')
+      SupplejackApi::RecordMetric.spawn(record_metric.record_id, { page_views: 1 }, 'NDHA')
       record_metric.reload
       expect(record_metric.page_views).to eq 2
     end
 
     it 'increments an existing Record Metric by a given hash of metrics' do
-      SupplejackApi::RecordMetric.spawn(record_metric.record_id, { 'page_views' => 7, 'appeared_in_searches' => 6, 'user_set_views' => 10 }, 'NDHA')
+      SupplejackApi::RecordMetric.spawn(record_metric.record_id,
+                                        { page_views: 7,
+                                          appeared_in_searches: 6,
+                                          user_set_views: 10 },
+                                        'NDHA')
+
       record_metric.reload
 
       expect(record_metric.page_views).to eq 8

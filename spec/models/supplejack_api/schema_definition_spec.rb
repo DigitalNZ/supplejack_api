@@ -1,16 +1,16 @@
-
+# frozen_string_literal: true
 
 require 'spec_helper'
 
 module SupplejackApi
   describe SchemaDefinition do
-
+    # rubocop:disable Lint/ConstantDefinitionInBlock
     class ExampleSchema
       include SchemaDefinition
 
       namespace :dc, url: 'http://purl.org/dc/elements/1.1/'
 
-      string :title,                  search_boost: 10, search_as: [:fulltext], namespace: :dc, namespace_field: :creator
+      string :title, search_boost: 10, search_as: [:fulltext], namespace: :dc, namespace_field: :creator
       string :display_collection
       string :primary_collection,     multi_value: true,  search_as: [:filter]
       boolean :is_natlib_record,                          search_as: [:filter]
@@ -19,7 +19,7 @@ module SupplejackApi
         store false
         search_as [:filter]
         search_value do |record|
-          record.date.map { |date| Date.parse(date).year rescue nil}.compact if record.date
+          record.date.map { |date| Date.parse(date).year rescue nil }.compact if record.date
         end
       end
       datetime :syndication_date,                         search_as: [:filter]
@@ -32,30 +32,29 @@ module SupplejackApi
         multi_value true
         search_value do |record|
           record.locations.keep_if do |l|
-            (l.lat.present? and l.lng.present?) ? Sunspot::Util::Coordinates.new(l.lat, l.lng) : Sunspot::Util::Coordinates.new(0, 0)
+            if l.lat.present? && l.lng.present
+              Sunspot::Util::Coordinates.new(l.lat, l.lng)
+            else
+              Sunspot::Util::Coordinates.new(0, 0)
+            end
           end
         end
       end
 
-      mongo_index :year, fields: [{year: 1}], index_options: [{background:true}]
-      mongo_index :title_is_natlib_record, fields: [{title: 1, is_natlib_record: 1}]
+      mongo_index :year, fields: [{ year: 1 }], index_options: [{ background: true }]
+      mongo_index :title_is_natlib_record, fields: [{ title: 1, is_natlib_record: 1 }]
 
       group :default do
-        fields [
-          :title,
-          :year
-        ]
+        fields %i[title year]
       end
 
       group :verbose do
         includes [:default]
-        fields [
-          :locations
-        ]
+        fields [:locations]
       end
 
       group :everything do
-        includes [:default, :verbose]
+        includes %i[default verbose]
         fields [
           :id
         ]
@@ -66,25 +65,29 @@ module SupplejackApi
 
       role :developer do
         default true
-        field_restrictions (
+        field_restrictions(
           {
-            creator: { 'John Smith' => ['attachments', 'location'] },
-            thumbnail_url: { /^http:\/\/secret/ => ['thumbnail_url'] }
+            creator: { 'John Smith' => %w[attachments location] },
+            thumbnail_url: { %r{^http://secret} => ['thumbnail_url'] }
           }
         )
-        record_restrictions (
+        record_restrictions(
           {
             is_catalog_record: true
           }
         )
       end
 
-      model_field :name, field_options: { type: String }, validation: { presence: true }, index_fields: { name: 1, address: 1 }, index_options: { background: true }, store: false
+      model_field :name,
+                  field_options: { type: String },
+                  validation: { presence: true },
+                  index_fields: { name: 1, address: 1 },
+                  index_options: { background: true },
+                  store: false
     end
-
+    # rubocop:enable Lint/ConstantDefinitionInBlock
 
     describe '#fields' do
-
       it 'describes title' do
         expect(ExampleSchema.fields[:title].name).to eq :title
         expect(ExampleSchema.fields[:title].type).to eq :string
@@ -147,7 +150,7 @@ module SupplejackApi
         expect(ExampleSchema.fields[:lat_lng].type).to eq :latlon
         expect(ExampleSchema.fields[:lat_lng].search_as).to eq [:filter]
         expect(ExampleSchema.fields[:lat_lng].multi_value).to be_truthy
-      end      
+      end
 
       context 'namespace field' do
         it 'returns the namespace field' do
@@ -162,40 +165,40 @@ module SupplejackApi
 
     describe '#groups' do
       it 'returns all the groups defined' do
-        expect(ExampleSchema.groups.keys).to eq([:default, :verbose, :everything])
+        expect(ExampleSchema.groups.keys).to eq(%i[default verbose everything])
       end
 
       describe '#fields' do
         it 'returns a list of fields in a group' do
-          expect(ExampleSchema.groups[:default].fields).to eq([:title, :year])
+          expect(ExampleSchema.groups[:default].fields).to eq(%i[title year])
         end
       end
 
       context 'includes groups' do
         it 'includes another group of fields' do
-          expect(ExampleSchema.groups[:verbose].fields).to eq([:title, :year, :locations])
+          expect(ExampleSchema.groups[:verbose].fields).to eq(%i[title year locations])
         end
 
         it 'includes multiple groups of fields' do
-          expect(ExampleSchema.groups[:everything].fields).to eq([:title, :year, :locations, :id])
+          expect(ExampleSchema.groups[:everything].fields).to eq(%i[title year locations id])
         end
       end
     end
 
     describe '#roles' do
       it 'should all the roles defined' do
-        expect(ExampleSchema.roles.keys).to eq([:admin, :user, :developer])
+        expect(ExampleSchema.roles.keys).to eq(%i[admin user developer])
       end
 
       context 'field_restrictions' do
         let(:restrictions) { ExampleSchema.roles[:developer].field_restrictions }
 
         it 'should create a restriction on the attachments and location fields if the creator is John Smith' do
-          expect(restrictions[:creator]).to eq( {'John Smith' => ['attachments', 'location']} )
+          expect(restrictions[:creator]).to eq({ 'John Smith' => %w[attachments location] })
         end
 
         it 'should create a restriction on the thumbnail_url field if contains a value (matches regex)' do
-          expect(restrictions[:thumbnail_url]).to eq( {/^http:\/\/secret/ => ['thumbnail_url']} )
+          expect(restrictions[:thumbnail_url]).to eq({ %r{^http://secret} => ['thumbnail_url'] })
         end
       end
 
@@ -230,21 +233,21 @@ module SupplejackApi
 
     describe '#mongo_indexes' do
       it 'returns all the mongo indexes that are defined' do
-        expect(ExampleSchema.mongo_indexes.keys).to eq [:year, :title_is_natlib_record]
+        expect(ExampleSchema.mongo_indexes.keys).to eq %i[year title_is_natlib_record]
       end
 
       it 'returns the fields for a given index' do
-        expect(ExampleSchema.mongo_indexes[:year].fields).to eq [{year: 1}]
+        expect(ExampleSchema.mongo_indexes[:year].fields).to eq [{ year: 1 }]
       end
 
       it 'returns the index_options for an index' do
-        expect(ExampleSchema.mongo_indexes[:year].index_options).to eq [{background:true}]
+        expect(ExampleSchema.mongo_indexes[:year].index_options).to eq [{ background: true }]
       end
     end
 
     describe '#model_field' do
       it 'returns all the model fields that are defined' do
-        expect(ExampleSchema.model_fields.keys).to eq [:name]  
+        expect(ExampleSchema.model_fields.keys).to eq [:name]
       end
 
       it 'returns the field_options for a model' do

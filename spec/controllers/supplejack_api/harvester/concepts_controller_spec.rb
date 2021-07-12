@@ -1,6 +1,6 @@
+# frozen_string_literal: true
 
-
-require "spec_helper"
+require 'spec_helper'
 
 module SupplejackApi
   describe Harvester::ConceptsController, type: :controller do
@@ -15,7 +15,8 @@ module SupplejackApi
 
     #   context "preview is false" do
     #     it "finds or initializes a concept by identifier" do
-    #       expect(Concept).to receive(:find_or_initialize_by_identifier).with("internal_identifier" => "1234") { concept }
+    #       expect(Concept).to receive(:find_or_initialize_by_identifier)
+    #         .with("internal_identifier" => "1234") { concept }
     #       post :create, concept: {internal_identifier: "1234"}
     #       expect(assigns(:concept)).to eq concept
     #     end
@@ -23,7 +24,8 @@ module SupplejackApi
 
     #   context "preview is true" do
     #     it "finds or initializes a preview record by identifier" do
-    #       expect(PreviewRecord).to receive(:find_or_initialize_by_identifier).with("internal_identifier" => "1234") { concept }
+    #       expect(PreviewRecord).to receive(:find_or_initialize_by_identifier)
+    #         .with("internal_identifier" => "1234") { concept }
     #       post :create, concept: {internal_identifier: "1234"}, preview: true
     #       expect(assigns(:concept)).to eq concept
     #     end

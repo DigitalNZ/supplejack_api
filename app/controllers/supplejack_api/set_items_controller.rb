@@ -9,7 +9,6 @@ module SupplejackApi
     respond_to :json
 
     def create
-      # This ugly fix should be removed when digitalnz.org is decommissioned
       @set_item = @user_set.set_items.build(record_params)
       @user_set.save
       respond_with @user_set, @set_item

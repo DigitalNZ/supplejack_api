@@ -19,13 +19,65 @@ module SupplejackApi
     field :content,     type: Hash,  default: {}
     field :meta,        type: Hash,  default: {}
 
-    # validates :record_id,   presence: true, uniqueness: true, numericality: { greater_than: 0 }
-    validates :record_id,   allow_blank: true, uniqueness: true, numericality: { greater_than: 0 }
-    validates :position,    presence: true, uniqueness: true
-    validate  :not_adding_set_to_itself
+    validates :record_id, allow_blank: true, uniqueness: true, numericality: { greater_than: 0 }
+
+    validates :position, presence: true, uniqueness: true
+    validates :type,     presence: { message: 'Mandatory Parameters Missing: type is missing' }
+    validates :sub_type, presence: { message: 'Mandatory Parameters Missing: sub_type is missing' }
+
+    validate :valid_type_sub_type,    if: -> { type && sub_type }
+    validate :validate_content
+    validate :validate_content_value, if: -> { type == 'text' }
+    validate :validate_meta_size,     if: -> { sub_type == 'heading' }
+    validate :validate_record_id,     if: -> { sub_type == 'record' }
+
+    validate :not_adding_set_to_itself
 
     before_validation :set_position
     after_destroy :reindex_record
+
+    def valid_type_sub_type
+      if %w[text embed].include? type
+        if type == 'text'
+          return if %w[heading rich-text].include? sub_type
+
+          errors.add(:type, 'Unsupported Value: sub_type must be one of: heading or rich-text')
+        else
+          return if sub_type == 'record'
+
+          errors.add(:type, 'Unsupported Value: sub_type must record')
+        end
+      else
+        errors.add(:type, 'Unsupported Value: type must be one of: text or embed')
+      end
+    end
+
+    def validate_content
+      errors.add(:content, 'Content is missing') unless content
+    end
+
+    def validate_content_value
+      errors.add(:content, 'Content value is missing: content must contain value field') unless content[:value]
+    end
+
+    def validate_record_id
+      if content[:id].blank?
+        errors.add(:content, 'Content id is missing: content must contain integer field id')
+      elsif content[:id] && !(content[:id].is_a?(Integer) || content[:id] =~ /^\d+$/)
+        errors.add(:content, 'Unsupported Value: content must contain integer field id')
+      end
+
+      return unless meta && meta[:alignment]
+      return if %w[left center right].include?(meta[:alignment])
+
+      errors.add(:meta, 'Unsupported Values: alignment must be one of: left center or right in meta')
+    end
+
+    def validate_meta_size
+      return unless meta[:size] && [1, 2, 3, 4, 5, 6].exclude?(meta[:size])
+
+      errors.add(:meta, 'Unsupported Values: size must be one of: 1, 2, 3, 4, 5, 6 in meta')
+    end
 
     # The Schema validations for meta and content require the keys to be symbols
     def meta

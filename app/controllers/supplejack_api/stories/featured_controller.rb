@@ -3,10 +3,10 @@
 module SupplejackApi
   module Stories
     class FeaturedController < SupplejackApplicationController
-      include Concerns::Stories
-
       def index
-        render_response(:featured)
+        render json: SupplejackApi::UserSet.featured_sets(4),
+               each_serializer: StorySerializer,
+               root: false, scope: { slim: true }
       end
     end
   end

@@ -10,8 +10,8 @@ AllCops:
     - 'vendor/**/*'
     - 'db/**/*'
     - 'config/**/*'
-    - 'spec/**/*'
     - 'script/**/*'
+    - 'spec/dummy/**/*'
     - 'features/**/*'
     - 'lib/generators/**/*'
   DisplayStyleGuide: true
@@ -44,6 +44,11 @@ Rails/SkipsModelValidations:
 
 Style/RegexpLiteral:
   EnforcedStyle: slashes
+
+Metrics/ModuleLength:
+  Enabled: false
+  Exclude:
+    - 'spec/**/*'
 
 # Currently broken due to a bug when autocorrecting
 # https://github.com/bbatsov/rubocop/issues/3510

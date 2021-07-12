@@ -1,11 +1,11 @@
-
+# frozen_string_literal: true
 
 require 'spec_helper'
 
 module SupplejackApi
   describe RecordSerializer do
     let(:record) { FactoryBot.create(:record_with_fragment) }
-    let(:serialized_record) { described_class.new(record).as_json}
+    let(:serialized_record) { described_class.new(record).as_json }
 
     it 'renders the id' do
       expect(serialized_record).to have_key :id
@@ -14,6 +14,7 @@ module SupplejackApi
     describe 'it renders attributes based on your schema' do
       RecordSchema.fields.each do |name, definition|
         next if definition.store == false
+
         it "renders the #{name} field" do
           expect(serialized_record).to have_key name
         end
@@ -29,7 +30,7 @@ module SupplejackApi
     end
 
     it 'uses a provided date format' do
-      expect(serialized_record[:created_at]).to eq record.created_at.strftime("%y/%d/%m")
+      expect(serialized_record[:created_at]).to eq record.created_at.strftime('%y/%d/%m')
     end
 
     it 'returns a value from the record' do

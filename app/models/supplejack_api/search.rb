@@ -246,14 +246,16 @@ module SupplejackApi
             params['q.alt'] = options[:solr_query]
             params[:defType] = 'dismax'
           end
+
           if options[:facet_pivots].present?
             params['facet.pivot'] = facet_pivot_list
             params['facet'] = 'on'
           end
+
           params['q.op'] = 'AND'
           params['df'] = 'text'
           params['sow'] = 'true'
-          params['facet.threads'] = ENV['SOLR_FACET_THREADS'] || 4
+          params['facet.threads'] = ENV['SOLR_FACET_THREADS']&.to_i || 4
         end
 
         # Facet Queries

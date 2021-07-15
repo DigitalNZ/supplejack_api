@@ -36,7 +36,7 @@ bundle exec rails server
 ```
 cd spec/dummy/
 bundle exec rake app:sunspot:solr:start
-``` 
+```
 
 This will start the server based on the configuration in `config/sunspot.yml`
 
@@ -49,7 +49,7 @@ bundle exec rake app:sunspot:solr:stop
 
 ### Rspec Specs
 
-From the root of the engine, run 
+From the root of the engine, run
 
 ```
 bundle exec rspec spec/
@@ -57,24 +57,13 @@ bundle exec rspec spec/
 
 This uses `spec/dummy` to mount the engine into and then runs the specs.
 
-### Cucumber Features
+## COPYRIGHT AND LICENSING
 
-From the root of the engine, run
-
-```
-bundle exec cucumber features/
-```
-
-This uses a test Solr instance from `spec/dummy/solr` in order to test searching.
-
-
-## COPYRIGHT AND LICENSING  
-
-### MAJORITY OF SUPPLEJACK CODE - GNU GENERAL PUBLIC LICENCE, VERSION 3  
+### MAJORITY OF SUPPLEJACK CODE - GNU GENERAL PUBLIC LICENCE, VERSION 3
 
 Supplejack is a tool for aggregating, searching and sharing metadata records. Supplejack API is a component of Supplejack. Except as indicated below, the Supplejack API code is Crown copyright (C) 2014, New Zealand Government. Supplejack was created by DigitalNZ at the National Library of NZ and the Department of Internal Affairs. http://digitalnz.org/supplejack
 
-Except as indicated below, this program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. 
+Except as indicated below, this program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
 

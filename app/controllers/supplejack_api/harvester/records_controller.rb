@@ -55,11 +55,8 @@ module SupplejackApi
         @record = SupplejackApi.config.record_class.where(record_id: params[:id]).first
 
         if @record.present?
-          render json: {
-            record_id: @record.record_id,
-            title: @record.title,
-            status: @record.status
-          }.to_json
+          render json: @record,
+                 serializer: self.class.record_serializer_class
         else
           head :no_content
         end

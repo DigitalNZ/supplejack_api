@@ -78,7 +78,7 @@ RSpec.describe SupplejackApi::RecordMetric do
       create(:record_metric, record_id: 1,
                              page_views: 1,
                              display_collection: 'NDHA',
-                             date: Time.current.yesterday)
+                             date: Time.now.utc.yesterday)
     end
 
     it 'creates a new RecordMetric when there is not one for the provided day and record_id' do

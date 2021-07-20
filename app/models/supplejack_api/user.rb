@@ -66,9 +66,9 @@ module SupplejackApi
     end
 
     def update_user_sets
-      return unless username_changed?
+      return unless username_changed? || email_changed?
 
-      user_sets.update_all(username: username)
+      user_sets.update_all(username: username, email: email)
     end
 
     def sets=(attrs_array)

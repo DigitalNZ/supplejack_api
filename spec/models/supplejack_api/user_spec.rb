@@ -364,12 +364,27 @@ module SupplejackApi
       let(:user) { user_set.user }
 
       context 'when username of the user updated' do
-        before do
+        it 'updates the username of the user set' do
           user.username = 'newusername'
           user.save!
+          expect(user_set.username).to eq 'newusername'
         end
+      end
 
-        it 'updates the username of the user set' do
+      context 'when email of the user updated' do
+        it 'updates the email of the user set' do
+          user.email = 'newemail'
+          user.save!
+          expect(user_set.email).to eq 'newemail'
+        end
+      end
+
+      context 'when email and username of the user updated' do
+        it 'updates the email and the username of the user set' do
+          user.email = 'newemail'
+          user.username = 'newusername'
+          user.save!
+          expect(user_set.email).to eq 'newemail'
           expect(user_set.username).to eq 'newusername'
         end
       end

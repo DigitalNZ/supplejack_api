@@ -18,6 +18,7 @@ module SupplejackApi
       featured_at      { Time.zone.today }
       cover_thumbnail  { Faker::Internet.url }
       username         { nil }
+      email            { Faker::Internet.email }
 
       factory :user_set_with_set_item do
         after(:create) do |user_set|

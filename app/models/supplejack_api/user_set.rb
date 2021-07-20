@@ -26,6 +26,7 @@ module SupplejackApi
     field :featured_at,      type: DateTime
     field :cover_thumbnail,  type: String
     field :username,         type: String
+    field :email,            type: String
 
     validates :copyright, inclusion: { in: [0, 1, 2] }
 
@@ -45,10 +46,11 @@ module SupplejackApi
 
     index({ 'set_items.record_id' => 1 }, background: true)
     index({ featured: 1, username: 1 }, background: true)
+    index({ email: 1 }, background: true)
 
     validates :name, presence: true
 
-    before_create :set_username
+    before_create :set_user
     before_save :strip_html_tags!, :update_record
     before_destroy :delete_record
     after_save :reindex_items, :reindex_if_changed
@@ -123,7 +125,8 @@ module SupplejackApi
         { name: /#{search_term}/i },
         { username: /#{search_term}/i },
         { user_id: search_term },
-        { id: search_term }
+        { id: search_term },
+        { email: search_term }
       ]
     end
 
@@ -238,8 +241,9 @@ module SupplejackApi
       record.save!
     end
 
-    def set_username
+    def set_user
       self.username = user.username
+      self.email = user.email
     end
 
     def delete_record

@@ -36,8 +36,12 @@ module SupplejackApi
         expect(serialized_user_set[:updated_at]).to eq user_set.updated_at
       end
 
-      it 'has updated_at field' do
+      it 'has username field' do
         expect(serialized_user_set[:username]).to eq user_set.username
+      end
+
+      it 'has email field' do
+        expect(serialized_user_set[:email]).to eq user_set.email
       end
     end
   end

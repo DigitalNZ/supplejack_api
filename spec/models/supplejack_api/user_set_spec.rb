@@ -47,6 +47,14 @@ module SupplejackApi
     end
 
     context 'callbacks' do
+      it 'strips empty strings from subjects' do
+        user_set.subjects = ['cat and mouse', '', 'dogs']
+        user_set.save
+        user_set.reload
+
+        expect(user_set.subjects).to eq ['cat and mouse', 'dogs']
+      end
+
       it 'sets the privacy to public if not set' do
         user_set.privacy = ''
         user_set.save

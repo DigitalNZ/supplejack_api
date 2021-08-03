@@ -51,7 +51,7 @@ module SupplejackApi
     validates :name, presence: true
 
     before_create :set_user
-    before_save :strip_html_tags!, :update_record
+    before_save :strip_html_tags!, :strip_empty_subjects!, :update_record
     before_destroy :delete_record
     after_save :reindex_items, :reindex_if_changed
     after_create :create_record_representation
@@ -225,6 +225,10 @@ module SupplejackApi
 
       self[:tags] = [] unless self[:tags]
       self.tags = self[:tags].map { |tag| strip_tags(tag) }
+    end
+
+    def strip_empty_subjects!
+      self.subjects = subjects.reject(&:blank?)
     end
 
     def update_record

@@ -4,9 +4,7 @@ module SupplejackApi
   class MetricsApiController < SupplejackApplicationController
     skip_before_action :authenticate_user!, raise: false
 
-    API_VERSIONS = {
-      'v3' => MetricsApi::V3::Api
-    }.freeze
+    API_VERSIONS = { 'v3' => MetricsApi::V3::Api }.freeze
 
     def root
       render_response(:root)

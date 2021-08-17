@@ -41,6 +41,7 @@ module MetricsApi
               }
             }
           end
+
           if facets.size > MAX_FACETS
             return {
               exception: {
@@ -61,7 +62,6 @@ module MetricsApi
 
         def metric_to_model_bundle(metric)
           model = METRICS_TO_MODEL[metric]
-
           models_in_range = model.created_between(start_date, end_date).to_a
 
           { metric: metric, models: models_in_range.flatten }

@@ -8,7 +8,7 @@ RSpec.describe 'Featured Endpoints', type: :request do
 
   describe '#index' do
     context 'when featured stories dosent exist' do
-      before { get "/v3//stories/featured.json?api_key=#{admin.authentication_token}" }
+      before { get "/v3/stories/featured.json?api_key=#{admin.authentication_token}" }
 
       it 'returns stories for the user key' do
         response_attributes = JSON.parse(response.body)
@@ -21,7 +21,7 @@ RSpec.describe 'Featured Endpoints', type: :request do
       before do
         story.update_attribute(:featured, true)
 
-        get "/v3//stories/featured.json?api_key=#{admin.authentication_token}"
+        get "/v3/stories/featured.json?api_key=#{admin.authentication_token}"
       end
 
       it 'returns stories for the user key' do

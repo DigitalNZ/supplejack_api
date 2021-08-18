@@ -28,6 +28,8 @@ module MetricsApi
           @facets = parse_csv_param(params[:facets])
           @start_date = parse_date_param(params[:start_date]) || Time.now.utc.yesterday.to_date
           @end_date = parse_date_param(params[:end_date]) || Time.now.utc.yesterday.to_date
+
+          # Do we need to pass these vales. We only collect metrics for record and view?
           @metrics = parse_csv_param(params[:metrics]) || %w[record view]
         end
 

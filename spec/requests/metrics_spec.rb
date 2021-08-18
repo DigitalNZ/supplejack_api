@@ -201,5 +201,33 @@ RSpec.describe 'Metrics Endpoints', type: :request do
         )
       end
     end
+
+    context 'when top_records metrics data for facets is requested' do
+      let(:top_record) do
+        create(:top_collection_metric,
+               m: 'appeared_in_searches', r: { '44167341': 3 },
+               c: 'flikr', d: Time.zone.yesterday.to_date,
+               created_at: Time.now.utc.to_date.midday)
+      end
+
+      before do
+        params = { facets: top_record.c, metrics: 'top_records',
+                   start_date: Time.zone.yesterday.to_date.strftime,
+                   end_date: Time.now.utc.to_date.strftime }.to_query
+
+        get "/v3/metrics.json?&#{params}"
+      end
+
+      it 'returns metrics for top_records' do
+        response_attributes = JSON.parse(response.body)
+
+        expect(response_attributes.first.deep_symbolize_keys).to eq(
+          {
+            'date' => Time.zone.yesterday.to_date.strftime,
+            'top_records' => { top_record.m.to_sym => top_record.r }
+          }.symbolize_keys
+        )
+      end
+    end
   end
 end

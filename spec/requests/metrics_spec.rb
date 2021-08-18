@@ -230,4 +230,33 @@ RSpec.describe 'Metrics Endpoints', type: :request do
       end
     end
   end
+
+  describe '#facets' do
+    before do
+      # This mocks the results for querying with page sequentially
+      allow(SupplejackApi::RecordSearch)
+        .to receive(:new)
+        .with(facets: 'display_collection', facets_per_page: 150, facets_page: 1)
+        .and_return(
+          double('SupplejackApi::RecordSearch',
+                 facets_hash: { primary_collection: { 'National Library of New Zealand' => 100, 'Radio New Zealand' => 200 } })
+        )
+
+      # We have to return an empty facets_hash as the helper runs an infinite loop till it encounters an empty facets_hash
+      allow(SupplejackApi::RecordSearch)
+        .to receive(:new)
+        .with(facets: 'display_collection', facets_per_page: 150, facets_page: 2)
+        .and_return(
+          double('SupplejackApi::RecordSearch', facets_hash: { primary_collection: {} })
+        )
+
+      get '/v3/metrics/facets.json?'
+    end
+
+    it 'returns facets' do
+      response_attributes = JSON.parse(response.body)
+
+      expect(response_attributes).to eq(['National Library of New Zealand', 'Radio New Zealand'])
+    end
+  end
 end

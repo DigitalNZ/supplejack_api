@@ -13,7 +13,7 @@ module SupplejackApi
     end
 
     def facets
-      api_response = MetricsApi::V3::Endpoints::Facets.new(params.dup).call
+      api_response = FacetsHelper.get_list_of_facet_values('display_collection')
 
       render json: api_response.to_json(include_root: false) unless performed?
     end
@@ -22,7 +22,7 @@ module SupplejackApi
       start_date = parse_date_param(params[:start_date]) || Time.now.utc.yesterday
       end_date = parse_date_param(params[:end_date]) || Time.now.utc.to_date
 
-      render json: SupplejackApi::DailyMetrics.created_between(start_date, end_date),
+      render json: DailyMetrics.created_between(start_date, end_date),
              each_serializer: DailyMetricsSerializer,
              root: false
     end

@@ -28,6 +28,8 @@ module MetricsApi
           @facets = parse_csv_param(params[:facets])
           @start_date = parse_date_param(params[:start_date]) || Time.now.utc.yesterday.to_date
           @end_date = parse_date_param(params[:end_date]) || Time.now.utc.yesterday.to_date
+
+          # Do we need to pass these vales. We only collect metrics for record and view?
           @metrics = parse_csv_param(params[:metrics]) || %w[record view]
         end
 
@@ -41,6 +43,7 @@ module MetricsApi
               }
             }
           end
+
           if facets.size > MAX_FACETS
             return {
               exception: {
@@ -61,7 +64,6 @@ module MetricsApi
 
         def metric_to_model_bundle(metric)
           model = METRICS_TO_MODEL[metric]
-
           models_in_range = model.created_between(start_date, end_date).to_a
 
           { metric: metric, models: models_in_range.flatten }

@@ -17,9 +17,11 @@ module MetricsApi
 
         # TODO: Better way of collecting display_collection names
         def call
-          metrics = SupplejackApi::DailyMetrics.created_between(start_date, end_date)
+          # metrics = SupplejackApi::DailyMetrics.created_between(start_date, end_date)
 
-          metrics.map(&MetricsApi::V3::Presenters::DailyMetric)
+          # metrics.map(&MetricsApi::V3::Presenters::DailyMetric)
+
+          SupplejackApi::DailyMetrics.created_between(start_date, end_date)
         end
       end
     end

@@ -19,9 +19,9 @@ module SupplejackApi
     end
 
     def global
-      api_response = MetricsApi::V3::Endpoints::Global.new(params.dup).call
-
-      render json: api_response.to_json(include_root: false) unless performed?
+      render json: MetricsApi::V3::Endpoints::Global.new(params.dup).call,
+             each_serializer: DailyMetricsSerializer,
+             root: false
     end
 
     private

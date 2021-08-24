@@ -19,7 +19,10 @@ module SupplejackApi
     end
 
     def global
-      render json: MetricsApi::V3::Endpoints::Global.new(params.dup).call,
+      start_date = parse_date_param(params[:start_date]) || Time.now.utc.yesterday
+      end_date = parse_date_param(params[:end_date]) || Time.now.utc.to_date
+
+      render json: SupplejackApi::DailyMetrics.created_between(start_date, end_date),
              each_serializer: DailyMetricsSerializer,
              root: false
     end
@@ -32,6 +35,12 @@ module SupplejackApi
       ex = api_response[:exception]
 
       render json: { errors: ex[:message] }, status: ex[:status]
+    end
+
+    def parse_date_param(date_param)
+      return nil if date_param.blank?
+
+      Date.parse(date_param)
     end
   end
 end

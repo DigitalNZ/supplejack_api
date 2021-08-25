@@ -285,7 +285,7 @@ RSpec.describe 'Metrics Endpoints', type: :request do
 
     context 'when start and end date param is provided' do
       let(:start_metric) { create(:daily_metrics, created_at: Time.zone.yesterday.to_date.midday, date: Time.zone.yesterday.to_date, total_public_sets: 1) }
-      let(:end_metric) { create(:daily_metrics, date: Time.now.utc.to_date, total_public_sets: 2) }
+      let(:end_metric)   { create(:daily_metrics, date: Time.now.utc.to_date, total_public_sets: 2) }
 
       before { get "/v3/metrics/global.json?start_date=#{start_metric.created_at.to_date}&end_date=#{end_metric.created_at.to_date}" }
 

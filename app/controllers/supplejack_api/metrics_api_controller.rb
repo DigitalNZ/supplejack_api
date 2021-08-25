@@ -4,40 +4,29 @@ module SupplejackApi
   class MetricsApiController < SupplejackApplicationController
     skip_before_action :authenticate_user!, raise: false
 
-    API_VERSIONS = { 'v3' => MetricsApi::V3::Api }.freeze
-
     def root
-      render_response(:root)
+      api_response = MetricsApi::Root.new(params.dup).call
+
+      if api_response.is_a? Hash
+        render json: { errors: api_response[:exception][:message] }, status: api_response[:exception][:status]
+      else
+        render json: api_response.to_json(include_root: false) unless performed?
+      end
     end
 
     def facets
-      render_response(:facets)
+      render json: FacetsHelper
+        .get_list_of_facet_values('display_collection')
+        .to_json(include_root: false) unless performed?
     end
 
     def global
-      render_response(:global)
-    end
+      start_date = MetricsHelper.start_date_with(params[:start_date])
+      end_date = MetricsHelper.end_date_with(params[:end_date])
 
-    private
-
-    def render_response(endpoint)
-      api_version = params[:version]
-      api = API_VERSIONS[api_version].new(params.dup, endpoint)
-
-      api_response = api.call
-
-      handle_errors(api_response)
-
-      # don't double render if we've already rendered an exception
-      render json: api_response.to_json(include_root: false) unless performed?
-    end
-
-    def handle_errors(api_response)
-      return unless api_response.is_a? Hash
-
-      ex = api_response[:exception]
-
-      render json: { errors: ex[:message] }, status: ex[:status]
+      render json: DailyMetrics.created_between(start_date, end_date),
+             each_serializer: DailyMetricsSerializer,
+             root: false
     end
   end
 end

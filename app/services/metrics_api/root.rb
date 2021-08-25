@@ -92,11 +92,5 @@ module MetricsApi
 
       param.split(',').map(&:strip)
     end
-
-    # def parse_date_param(date_param)
-    #   return nil if date_param.blank?
-
-    #   Date.parse(date_param)
-    # end
   end
 end

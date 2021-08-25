@@ -22,8 +22,8 @@ module MetricsApi
 
     def initialize(params)
       @facets = parse_csv_param(params[:facets])
-      @start_date = parse_date_param(params[:start_date]) || Time.now.utc.yesterday.to_date
-      @end_date = parse_date_param(params[:end_date]) || Time.now.utc.yesterday.to_date
+      @start_date = SupplejackApi::MetricsHelper.start_date_with(params[:start_date])
+      @end_date = SupplejackApi::MetricsHelper.end_date_with(params[:end_date])
 
       # Do we need to pass these vales. We only collect metrics for record and view?
       @metrics = parse_csv_param(params[:metrics]) || %w[record view]
@@ -93,10 +93,10 @@ module MetricsApi
       param.split(',').map(&:strip)
     end
 
-    def parse_date_param(date_param)
-      return nil if date_param.blank?
+    # def parse_date_param(date_param)
+    #   return nil if date_param.blank?
 
-      Date.parse(date_param)
-    end
+    #   Date.parse(date_param)
+    # end
   end
 end

@@ -21,20 +21,12 @@ module SupplejackApi
     end
 
     def global
-      start_date = parse_date_param(params[:start_date]) || Time.now.utc.yesterday
-      end_date = parse_date_param(params[:end_date]) || Time.now.utc.to_date
+      start_date = MetricsHelper.start_date_with(params[:start_date])
+      end_date = MetricsHelper.end_date_with(params[:end_date])
 
       render json: DailyMetrics.created_between(start_date, end_date),
              each_serializer: DailyMetricsSerializer,
              root: false
-    end
-
-    private
-
-    def parse_date_param(date_param)
-      return nil if date_param.blank?
-
-      Date.parse(date_param)
     end
   end
 end

@@ -5,7 +5,7 @@ module SupplejackApi
     skip_before_action :authenticate_user!, raise: false
 
     def root
-      api_response = MetricsApi::V3::Endpoints::Root.new(params.dup).call
+      api_response = MetricsApi::Root.new(params.dup).call
 
       if api_response.is_a? Hash
         render json: { errors: api_response[:exception][:message] }, status: api_response[:exception][:status]

@@ -4,8 +4,6 @@ module MetricsApi
   module V3
     module Endpoints
       class Root
-        include Helpers
-
         attr_accessor :facets, :start_date, :end_date, :metrics
 
         # Mapping of metric names to the model that represents that metric
@@ -95,6 +93,12 @@ module MetricsApi
           return nil if param.blank?
 
           param.split(',').map(&:strip)
+        end
+
+        def parse_date_param(date_param)
+          return nil if date_param.blank?
+
+          Date.parse(date_param)
         end
       end
     end

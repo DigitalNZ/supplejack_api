@@ -17,7 +17,6 @@ require 'rest_client'
 require 'lazy_high_charts'
 require 'sidekiq'
 require 'json/ld'
-require 'dry-validation'
 require 'voight_kampff'
 
 module SupplejackApi

@@ -531,4 +531,42 @@ RSpec.describe 'Stories Endpoints', type: :request do
       end
     end
   end
+
+  describe '#reposition_items' do
+    let(:story_with_items) do
+      create(:story,
+             set_items: [create(:embed_dnz_item, title: 'first', position: 1),
+                         create(:embed_dnz_item, title: 'middle', position: 2)])
+    end
+
+    context 'when all items are repositioned' do
+      before do
+        items = story_with_items.set_items
+
+        params = {
+          items: [{ id: items[0].id, position: 2 }, { id: items[1].id, position: 1 }]
+        }.to_query
+
+        post "/v3/stories/#{story_with_items.id}/reposition_items.json?api_key=#{api_key}&user_key=#{story.user.api_key}&#{params}"
+      end
+
+      it 'returns status ok' do
+        expect(response).to have_http_status :ok
+      end
+    end
+
+    context 'when not all items are repositioned' do
+      before do
+        params = { items: [{ id: story_with_items.set_items.first.id, position: 2 }] }.to_query
+
+        post "/v3/stories/#{story_with_items.id}/reposition_items.json?api_key=#{api_key}&user_key=#{story.user.api_key}&#{params}"
+      end
+
+      it 'returns status ok' do
+        response_attributes = JSON.parse(response.body)
+
+        expect(response_attributes).to eq({ 'errors' => I18n.t('errors.reposition_error') })
+      end
+    end
+  end
 end

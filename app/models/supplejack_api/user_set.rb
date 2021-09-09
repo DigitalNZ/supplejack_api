@@ -331,6 +331,28 @@ module SupplejackApi
     def contents
       set_items
     end
+
+    # Repositioning is possible by sending all items ids OR all items ids + temporary item ids
+    # This is so that a new position space can be created for a future item
+    def can_reposition?(items)
+      set_item_ids = set_items.map { |item| item.id.to_s }
+      item_ids = items.map { |item| item[:id].to_s }
+
+      (set_item_ids - item_ids).empty?
+    end
+
+    def reposition_items(items)
+      return false unless can_reposition?(items)
+
+      items.each do |item|
+        story_item = set_items.find_by_id(item[:id])
+
+        next unless story_item
+
+        story_item.position = item[:position]
+        story_item.save(validate: false)
+      end
+    end
   end
 end
 # rubocop:enable Metrics/ClassLength

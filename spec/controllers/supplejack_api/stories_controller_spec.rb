@@ -205,6 +205,34 @@ module SupplejackApi
         end
       end
 
+      context 'when an extra items is added to reposition list' do
+        before do
+          items = story.set_items
+          reposition_params = [
+            { id: items[0].id, position: 1 },
+            { id: items[1].id, position: 2 },
+            { id: 'temp:id', position: 3 },
+            { id: items[2].id, position: 4 }
+          ]
+
+          post :reposition_items,
+               params: { story_id: story.id.to_s, api_key: api_key, user_key: api_key, items: reposition_params }
+        end
+
+        it 'returns status ok' do
+          expect(response).to have_http_status :ok
+        end
+
+        it 'repositions story items' do
+          story.reload
+          items = story.set_items
+
+          expect(items[0].position).to eq 1
+          expect(items[1].position).to eq 2
+          expect(items[2].position).to eq 4
+        end
+      end
+
       context 'when not all items are repositioned' do
         before do
           items = story.set_items

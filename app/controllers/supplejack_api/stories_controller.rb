@@ -62,16 +62,7 @@ module SupplejackApi
     end
 
     def reposition_items
-      if params[:items].count == @story.set_items.count
-        params[:items].each do |item|
-          story_item = @story.set_items.find_by_id(item[:id])
-
-          next unless story_item
-
-          story_item.position = item[:position]
-          story_item.save(validate: false)
-        end
-
+      if @story.reposition_items(params[:items])
         head :ok
       else
         render json: { errors: I18n.t('errors.reposition_error') }, status: :bad_request

@@ -834,5 +834,108 @@ module SupplejackApi
         user_set.reindex_items
       end
     end
+
+    describe 'reposition_items items' do
+      let(:set) do
+        create(:story,
+               set_items: [create(:embed_dnz_item, title: 'first', position: 1),
+                           create(:embed_dnz_item, title: 'middle', position: 2),
+                           create(:embed_dnz_item, title: 'last', position: 3)])
+      end
+
+      context 'when all items are repositioned' do
+        before do
+          items = set.set_items
+
+          reposition_params = [
+            { id: items[0].id, position: 2 },
+            { id: items[1].id, position: 1 },
+            { id: items[2].id, position: 3 }
+          ]
+
+          set.reposition_items(reposition_params)
+        end
+
+        it 'repositions all items' do
+          set.reload
+          items = set.set_items
+
+          expect(items[0].position).to eq 2
+          expect(items[1].position).to eq 1
+          expect(items[2].position).to eq 3
+        end
+      end
+
+      context 'when not all items are repositioned' do
+        it 'returns false' do
+          items = set.set_items
+
+          reposition_params = [
+            { id: items[0].id, position: 2 },
+            { id: items[2].id, position: 3 }
+          ]
+
+          expect(set.reposition_items(reposition_params)).to be false
+        end
+      end
+
+      context 'when items + temporary items are send for repositioning' do
+        before do
+          items = set.set_items
+
+          reposition_params = [
+            { id: items[0].id, position: 1 },
+            { id: items[1].id, position: 2 },
+            { id: 'temporary-text-block', position: 3 },
+            { id: items[2].id, position: 4 }
+          ]
+
+          set.reposition_items(reposition_params)
+        end
+
+        it 'repositions all items with position 3 absent' do
+          set.reload
+          items = set.set_items
+
+          expect(items[0].position).to eq 1
+          expect(items[1].position).to eq 2
+          expect(items[2].position).to eq 4
+        end
+      end
+    end
+
+    describe 'can_reposition? items' do
+      let(:set) do
+        create(:story,
+               set_items: [create(:embed_dnz_item, title: 'first', position: 1),
+                           create(:embed_dnz_item, title: 'middle', position: 2),
+                           create(:embed_dnz_item, title: 'last', position: 3)])
+      end
+
+      context 'when all items are repositioned' do
+        it 'returns true' do
+          items = set.set_items.map { |item| { id: item.id, position: item.position } }
+
+          expect(set.can_reposition?(items)).to be true
+        end
+      end
+
+      context 'when not all items are repositioned' do
+        it 'returns false' do
+          items = [{ id: set.set_items.first.id, position: set.set_items.first.position }]
+
+          expect(set.can_reposition?(items)).to be false
+        end
+      end
+
+      context 'when items + temporary items are send for repositioning' do
+        it 'returns true' do
+          items = set.set_items.map { |item| { id: item.id, position: item.position } }
+          items << { id: 'temporary-text-block', position: 4 }
+
+          expect(set.can_reposition?(items)).to be true
+        end
+      end
+    end
   end
 end

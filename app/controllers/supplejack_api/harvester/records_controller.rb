@@ -104,7 +104,7 @@ module SupplejackApi
       end
 
       def search_params
-        params.require(:search).permit(['record_id', 'fragments.source_id', 'fragments.job_id'])
+        params.require(:search).permit(['record_id', 'fragments.source_id', 'fragments.job_id', 'status'])
       end
 
       def hints

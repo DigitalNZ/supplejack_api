@@ -110,7 +110,7 @@ module SupplejackApi
       def hints
         indexes = SupplejackApi.config.record_class.collection.indexes.as_json.map { |index| index['key'].keys }.flatten
         search_params.keys.each_with_object({}) do |search_key, object|
-          next if search_key == 'record_id'
+          next if %w[record_id status].include? search_key
           next unless indexes.include? search_key
 
           object[search_key] = 1

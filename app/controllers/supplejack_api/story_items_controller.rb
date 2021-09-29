@@ -54,14 +54,43 @@ module SupplejackApi
 
     private
 
+    def content_keys
+      [
+        :id,
+        :record_id,
+        :title,
+        :display_collection,
+        :image_url,
+        :description,
+        :value,
+        :content_partner,
+        { category: [], tags: [] }
+      ]
+    end
+
+    def meta_keys
+      [
+        :align_mode,
+        :is_cover,
+        :caption,
+        :title,
+        :category,
+        :alignment,
+        :size,
+        :metadata,
+        { tags: [] }
+      ]
+    end
+
     def item_params
-      content_fields = [:id, :record_id, :description, :content_partner, :title,
-                        :display_collection, :value, :image_url,
-                        { category: [], tags: [] }]
-
-      meta_fields = %i[alignment align_mode is_cover caption title size metadata]
-
-      params.require(:item).permit(:position, :type, :sub_type, :record_id, content: content_fields, meta: meta_fields)
+      params.require(:item).permit(
+        :position,
+        :type,
+        :sub_type,
+        :record_id,
+        content: content_keys,
+        meta: meta_keys
+      )
     end
 
     def find_story

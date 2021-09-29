@@ -276,7 +276,7 @@ RSpec.describe 'Stories Endpoints', type: :request do
         it 'returns mandatory param error' do
           response_attributes = JSON.parse(response.body)
 
-          expect(response_attributes).to eq({ 'errors' => {"name"=>["Name field can't be blank."]} })
+          expect(response_attributes).to eq({ 'errors' => { 'name' => ["Name field can't be blank."] } })
         end
       end
     end

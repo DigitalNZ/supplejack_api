@@ -17,7 +17,8 @@ module SupplejackApi
         end
 
         def created_between(start_date, end_date)
-          where(:date.gte => start_date, :date.lte => end_date)
+          where(:date.gte => start_date.beginning_of_day.getutc,
+                :date.lte => end_date.end_of_day.getutc)
         end
       end
     end

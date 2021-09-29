@@ -141,7 +141,7 @@ module SupplejackApi
         end
 
         it 'includes the error message' do
-          expect(response.body).to include("Name field can't be blank.")
+          expect(JSON.parse(response.body)['errors']).to include 'name'
         end
       end
 
@@ -330,6 +330,38 @@ module SupplejackApi
 
         it 'returns a valid story' do
           expect(response.body).to eq(StorySerializer.new(story.reload, scope: { slim: false }).to_json)
+        end
+      end
+
+      context 'unsuccessful request' do
+        let(:response_body) { JSON.parse(response.body).deep_symbolize_keys }
+        let(:name) { '' }
+        let(:description) { '' }
+        let(:story) { user.user_sets.create(attributes_for(:story)) }
+
+        before do
+          patch :update,
+                params: {
+                  api_key: api_key,
+                  user_key: api_key,
+                  id: story.id,
+                  story: { name: name, description: description }
+                }
+        end
+
+        it 'returns a 400 http code' do
+          expect(response).to have_http_status(400)
+        end
+
+        it 'does not update the given story' do
+          updated_story = SupplejackApi::UserSet.find(story.id)
+
+          expect(updated_story.name).not_to eq(name)
+          expect(updated_story.description).not_to eq(description)
+        end
+
+        it 'returns the error messages associated with the failed update' do
+          expect(JSON.parse(response.body)['errors']).to include 'name'
         end
       end
     end

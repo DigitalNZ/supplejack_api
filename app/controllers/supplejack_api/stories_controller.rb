@@ -41,7 +41,7 @@ module SupplejackApi
         story.save!
         render json: StorySerializer.new(story, scope: { slim: false }).to_json(include_root: false), status: :created
       else
-        render_error_with(story.errors[:name], :bad_request)
+        render_error_with(story.errors.messages, :bad_request)
       end
     end
 
@@ -51,7 +51,7 @@ module SupplejackApi
       if @story.update(story_params)
         render json: StorySerializer.new(@story, scope: { slim: false }).to_json(include_root: false), status: :ok
       else
-        render_error_with('Failed to update', :bad_request)
+        render_error_with(@story.errors.messages, :bad_request)
       end
     end
 

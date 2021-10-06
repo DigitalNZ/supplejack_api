@@ -60,6 +60,12 @@ module MetricsApi
 
     def metric_to_model_bundle(metric)
       model = METRICS_TO_MODEL[metric]
+
+      Rails.logger.info "METRICS TEST model: #{model}"
+      Rails.logger.info "METRICS TEST dates: #{start_date} | #{end_date}"
+      Rails.logger.info "METRICS TEST @dates: #{@start_date} | #{@end_date}"
+      Rails.logger.info "METRICS TEST date classes: #{start_date.to_date} | #{end_date.to_date}"
+
       models_in_range = model.created_between(start_date, end_date).to_a
 
       { metric: metric, models: models_in_range.flatten }

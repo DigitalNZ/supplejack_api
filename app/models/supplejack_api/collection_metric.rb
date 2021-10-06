@@ -31,12 +31,26 @@ module SupplejackApi
       )
     end
 
+                                # 1970-01-01 00:00:00 UTC..2021-10-05 00:00:00 UTC
     def self.spawn(date_range = (Time.at(0).utc..Time.now.yesterday.utc.beginning_of_day))
+      # could be date_range = (Date.today - 30..Date.today)
       return unless SupplejackApi.config.log_metrics == true
 
+      # Slow query - about 2 mins
       dates = SupplejackApi::RecordMetric.where(date: date_range).map(&:date).uniq
+
+      # dates cosists of RecordMetric entries with no display_collection so it will be an unnecessary iterations below
+      # ie 1970-01-01 00:00:00 UTC..2021-10-05 00:00:00 UTC range has 666 entries in SupplejackApi::RecordMetricdates
+      # from Tue, 10 Dec 2019 to Tue, 05 Oct 2021
+
+      # if the above is replaced with dates = SupplejackApi::RecordMetric.where(date: date_range).filter { |i| i.display_collection.present? }.map(&:date).uniq
+      # the result is just a single item ie 1 iteration
+
+      # Or use :processed_by_collection_metrics.in => [nil, '', false] here
+
       dates.each do |date|
         Rails.logger.info("COLLECTION METRICS: Processing date: #{date}")
+        # SupplejackApi::RecordMetric has entries with nil display_collection
         collections = SupplejackApi::RecordMetric.where(date: date).map(&:display_collection).uniq
 
         collections.each do |collection|
@@ -89,3 +103,25 @@ module SupplejackApi
     end
   end
 end
+
+# SupplejackApi::Concerns::RecordsControllerMetrics
+# Skip spawning SupplejackApi::RequestMetric when record.record_id & record.display_collection
+
+# SupplejackApi::RecordMetric.count => 729165 investigate why these were deleted
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

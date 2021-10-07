@@ -70,8 +70,8 @@ module SupplejackApi
         page = search_options_params[:page].to_i
 
         @records = SupplejackApi::Record
-                                .where(search_params.to_hash)
-                                .page(page).per(20).hint(hints)
+                   .where(search_params.to_hash)
+                   .page(page).per(20).hint(hints)
 
         if @records.present?
           render json: @records,

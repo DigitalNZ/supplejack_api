@@ -25,7 +25,7 @@ module SupplejackApi
 
       def destroy
         record = SupplejackApi::Record.where("fragments.source_id": params[:id])
-                              .update_all('$pull' => { fragments: { source_id: params[:id] } })
+                                      .update_all('$pull' => { fragments: { source_id: params[:id] } })
 
         render json: { status: :success, record_id: params[:id] }
       rescue StandardError => e

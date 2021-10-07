@@ -23,17 +23,17 @@ describe ApplicationController, type: :controller do
     include SupplejackApi::Concerns::RecordsControllerMetrics
 
     def index
-      @search = DummySearch.new(SupplejackApi.config.record_class.all.to_a)
+      @search = DummySearch.new(SupplejackApi::Record.all.to_a)
       head :ok
     end
 
     def show
-      @record = SupplejackApi.config.record_class.first
+      @record = SupplejackApi::Record.first
       head :ok
     end
 
     def source
-      @record = SupplejackApi.config.record_class.first
+      @record = SupplejackApi::Record.first
       head :ok
     end
   end
@@ -51,8 +51,8 @@ describe ApplicationController, type: :controller do
     it 'creates an appeared_in_searches ::RequestMetric for each @record in a @search when ignore_metrics is not set' do
       get :index
 
-      record_ids = SupplejackApi.config.record_class.all.map(&:record_id)
-      collections = SupplejackApi.config.record_class.all.map(&:display_collection)
+      record_ids = SupplejackApi::Record.all.map(&:record_id)
+      collections = SupplejackApi::Record.all.map(&:display_collection)
 
       expect(SupplejackApi::RequestMetric.count).to eq 1
       expect(SupplejackApi::RequestMetric.first.metric).to eq 'appeared_in_searches'

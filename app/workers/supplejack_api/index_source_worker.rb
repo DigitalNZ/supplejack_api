@@ -15,10 +15,10 @@ module SupplejackApi
     def perform(source_id, date = nil)
       Rails.logger.info "IndexSourceWorker - REINDEXING: #{source_id}, date: #{date}"
       cursor = if date.present?
-                 SupplejackApi.config.record_class.where(:'fragments.source_id' => source_id,
+                 SupplejackApi::Record.where(:'fragments.source_id' => source_id,
                                                          :updated_at.gt => Time.parse(date).utc)
                else
-                 SupplejackApi.config.record_class.where('fragments.source_id': source_id)
+                 SupplejackApi::Record.where('fragments.source_id': source_id)
                end
 
       index_records(cursor.where(status: 'active'))

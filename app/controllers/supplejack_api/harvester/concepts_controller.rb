@@ -8,7 +8,7 @@ module SupplejackApi
 
       def create
         if params[:preview]
-          klass = SupplejackApi.config.preview_record_class
+          klass = SupplejackApi::PreviewRecord
           attribute = :record_id
         else
           klass = Concept

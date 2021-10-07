@@ -33,7 +33,7 @@ describe ApplicationController, type: :controller do
     context 'deleted record' do
       before do
         deleted_user_set = create(:user_set_with_set_item)
-        SupplejackApi.config.record_class
+        SupplejackApi::Record
                      .custom_find(deleted_user_set.set_items.first.record_id)
                      .update(status: 'deleted')
       end
@@ -62,7 +62,7 @@ describe ApplicationController, type: :controller do
     context 'deleted record' do
       before do
         deleted_user_set = create(:user_set_with_set_item)
-        SupplejackApi.config.record_class
+        SupplejackApi::Record
                      .custom_find(deleted_user_set.set_items.first.record_id)
                      .update(status: 'deleted')
       end

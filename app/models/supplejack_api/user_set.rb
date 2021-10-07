@@ -12,7 +12,7 @@ module SupplejackApi
     store_in collection: 'user_sets', client: 'strong'
 
     belongs_to :user, class_name: 'SupplejackApi::User'
-    belongs_to :record, class_name: SupplejackApi.config.record_class.to_s, inverse_of: nil, touch: true, optional: true
+    belongs_to :record, class_name: SupplejackApi::Record.to_s, inverse_of: nil, touch: true, optional: true
 
     field :name,             type: String
     field :description,      type: String,   default: ''
@@ -65,7 +65,7 @@ module SupplejackApi
     def create_record_representation
       return unless record.nil?
 
-      self.record = SupplejackApi.config.record_class.new
+      self.record = SupplejackApi::Record.new
 
       record.status = record_status
       record.internal_identifier = "digitalnz_user_set_#{id}"
@@ -234,7 +234,7 @@ module SupplejackApi
     def update_record
       suppress_record if set_items.empty?
 
-      self.record = SupplejackApi.config.record_class.new if record.nil?
+      self.record = SupplejackApi::Record.new if record.nil?
 
       record.status = record_status
       record.internal_identifier = "user_set_#{id}"
@@ -273,7 +273,7 @@ module SupplejackApi
     def records(amount = nil)
       @records ||= begin
         ids_to_fetch = record_ids || []
-        records = SupplejackApi.config.record_class.find_multiple(ids_to_fetch)
+        records = SupplejackApi::Record.find_multiple(ids_to_fetch)
         records = records[0..amount.to_i - 1] if amount
         records
       end
@@ -297,7 +297,7 @@ module SupplejackApi
 
     def reindex_items
       set_items.each do |i|
-        SupplejackApi.config.record_class.custom_find(i.record_id).index rescue nil
+        SupplejackApi::Record.custom_find(i.record_id).index rescue nil
       end
     end
 

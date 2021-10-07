@@ -80,7 +80,7 @@ module SupplejackApi
           string << "4. Start the rails console via `bundle exec rails console`. Perform the next commands in the rails console"
           string << "5. Use a local Solr session so updates are immediate via `Sunspot.session = Sunspot::Rails.build_session`"
           string << "6. Create a user via `user = SupplejackApi::User.create(email: 'test@example.com', name: 'Test User')`"
-          string << "7. Create a record via `record = SupplejackApi.config.record_class.create(internal_identifier: 'abc123', status: 'active', source_url: 'http://boost.co.nz/')`"
+          string << "7. Create a record via `record = SupplejackApi::Record.create(internal_identifier: 'abc123', status: 'active', source_url: 'http://boost.co.nz/')`"
           string << "8. Add your custom data (from schema.rb) to the record's primary fragment via `record.primary_fragment.<field_name>=<value>`. Then `record.save!`"
           string << "9. Start the rails server via `bundle exec rails server -p 3000`"
           string << "10. Retrieve a specific record by going to http://localhost:3000/records/<record.record_id>.json?api_key=<user.api_key>"

@@ -46,9 +46,9 @@ class UpdateRecordFromHarvest
   end
 
   def klass
-    return SupplejackApi.config.preview_record_class if preview
+    return SupplejackApi::PreviewRecord if preview
 
-    SupplejackApi.config.record_class
+    SupplejackApi::Record
   end
 
   def new_fragment_attributes(fragment)

@@ -17,7 +17,7 @@ module SupplejackApi
             next if item.record_id.nil?
 
             begin
-              record = SupplejackApi.config.record_class.custom_find(item.record_id)
+              record = SupplejackApi::Record.custom_find(item.record_id)
             rescue Mongoid::Errors::DocumentNotFound
               next
             end
@@ -33,7 +33,7 @@ module SupplejackApi
           return if @user_set.set_items.empty?
 
           begin
-            record = SupplejackApi.config.record_class.custom_find(@user_set.set_items.first.record_id)
+            record = SupplejackApi::Record.custom_find(@user_set.set_items.first.record_id)
           rescue Mongoid::Errors::DocumentNotFound
             return
           end
@@ -42,7 +42,7 @@ module SupplejackApi
             next if item.record_id.nil?
 
             begin
-              record = SupplejackApi.config.record_class.custom_find(item.record_id)
+              record = SupplejackApi::Record.custom_find(item.record_id)
             rescue Mongoid::Errors::DocumentNotFound
               next
             end

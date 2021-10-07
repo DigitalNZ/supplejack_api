@@ -33,14 +33,14 @@ module SupplejackApi
 
     # Fetches records to be indexed
     def records_to_index
-      records = SupplejackApi.config.record_class.where(:id.in => pop_record_ids(:index)).to_a
+      records = SupplejackApi::Record.where(:id.in => pop_record_ids(:index)).to_a
       records.keep_if(&:should_index?)
       records
     end
 
     # Fetches records to be unindexed
     def records_to_remove
-      records = SupplejackApi.config.record_class.where(:id.in => pop_record_ids(:remove)).to_a
+      records = SupplejackApi::Record.where(:id.in => pop_record_ids(:remove)).to_a
       records.delete_if(&:should_index?)
       records
     end

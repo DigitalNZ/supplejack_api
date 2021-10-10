@@ -36,7 +36,7 @@ module SupplejackApi
     def query_solr(direction)
       sort = SOLR_SORT_QUERY_BASE.dup << " #{direction}"
 
-      Sunspot.new_search(SupplejackApi.config.record_class) do
+      Sunspot.new_search(SupplejackApi::Record) do
         adjust_solr_params do |params|
           params[:q] = build_query
           params[:sort] = sort

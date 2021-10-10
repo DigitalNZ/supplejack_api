@@ -7,7 +7,7 @@ module SupplejackApi
       before_action :authenticate_harvester!
 
       def index
-        @records = SupplejackApi.config.preview_record_class.where(search_params)
+        @records = SupplejackApi::PreviewRecord.where(search_params)
 
         if @records.present?
           render json: @records, each_serializer: ::SupplejackApi::PreviewRecordSerializer, include: :fragments

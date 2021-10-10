@@ -16,7 +16,7 @@ module SupplejackApi
         let!(:preview_record) { FactoryBot.create(:preview_record, fragments: [fragment]) }
 
         it 'returns array of records based on search params' do
-          expect(SupplejackApi.config.preview_record_class).to receive(:where).with({ 'fragments.job_id': '54' })
+          expect(SupplejackApi::PreviewRecord).to receive(:where).with({ 'fragments.job_id': '54' })
 
           get :index, params: { search:  { 'fragments.job_id': '54' }, api_key: api_key }
         end

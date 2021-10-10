@@ -233,7 +233,7 @@ module SupplejackApi
 
     describe 'relationships' do
       it 'should have a single record' do
-        user_set.record = SupplejackApi.config.record_class.new
+        user_set.record = SupplejackApi::Record.new
         expect(user_set.record).to_not be_nil
       end
     end
@@ -635,7 +635,7 @@ module SupplejackApi
 
       before do
         allow(user_set).to receive(:update_record).and_call_original
-        allow(SupplejackApi.config.record_class).to receive(:custom_find) { double(:record).as_null_object }
+        allow(SupplejackApi::Record).to receive(:custom_find) { double(:record).as_null_object }
       end
 
       context 'user set attributes' do
@@ -643,7 +643,7 @@ module SupplejackApi
 
         it 'should not create a new record if already linked' do
           allow(user_set).to receive(:record) { double(:record).as_null_object }
-          expect(SupplejackApi.config.record_class).to_not receive(:new)
+          expect(SupplejackApi::Record).to_not receive(:new)
           user_set.update_record
         end
 
@@ -827,8 +827,8 @@ module SupplejackApi
       it 'finds each record can calls index' do
         user_set.set_items.build(record_id: 5, position: 1)
         user_set.set_items.build(record_id: 6, position: 2)
-        expect(SupplejackApi.config.record_class).to receive(:custom_find).with(5) { record5 }
-        expect(SupplejackApi.config.record_class).to receive(:custom_find).with(6) { record6 }
+        expect(SupplejackApi::Record).to receive(:custom_find).with(5) { record5 }
+        expect(SupplejackApi::Record).to receive(:custom_find).with(6) { record6 }
         expect(record5).to receive(:index)
         expect(record6).to receive(:index)
         user_set.reindex_items

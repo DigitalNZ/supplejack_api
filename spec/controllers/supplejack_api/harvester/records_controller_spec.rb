@@ -235,7 +235,7 @@ module SupplejackApi
             'ns' => 'dnz_api_development.records'
           }]
 
-          expect(SupplejackApi.config.record_class).to receive_message_chain(:collection, :indexes, :as_json)
+          expect(SupplejackApi::Record).to receive_message_chain(:collection, :indexes, :as_json)
             .and_return(indexes)
 
           expect_any_instance_of(Mongoid::Criteria).to receive(:hint).with({ 'fragments.source_id' => 1 })

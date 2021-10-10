@@ -33,7 +33,7 @@ module SupplejackApi
 
           def records
             # Limit the number of records by 50
-            SupplejackApi.config.record_class.where(concept_ids: id).limit(50).to_a
+            SupplejackApi::Record.where(concept_ids: id).limit(50).to_a
           end
         end
 

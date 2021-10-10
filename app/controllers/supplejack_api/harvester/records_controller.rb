@@ -26,7 +26,7 @@ module SupplejackApi
 
       def delete
         # FIXME: This removes record even if it's a preview
-        @record = SupplejackApi.config.record_class.where(internal_identifier: params[:id]).first
+        @record = SupplejackApi::Record.where(internal_identifier: params[:id]).first
         @record.update_attribute(:status, 'deleted') if @record.present?
 
         render json: { status: :success, record_id: params[:id] }
@@ -44,7 +44,7 @@ module SupplejackApi
       end
 
       def update
-        @record = SupplejackApi.config.record_class.custom_find(params[:id], nil, status: :all)
+        @record = SupplejackApi::Record.custom_find(params[:id], nil, status: :all)
         if params[:record].present? && params[:record][:status].present?
           @record.update(status: params[:record][:status])
         end
@@ -52,7 +52,7 @@ module SupplejackApi
       end
 
       def show
-        @record = SupplejackApi.config.record_class.where(record_id: params[:id]).first
+        @record = SupplejackApi::Record.where(record_id: params[:id]).first
 
         if @record.present?
           render json: @record,
@@ -69,9 +69,9 @@ module SupplejackApi
 
         page = search_options_params[:page].to_i
 
-        @records = SupplejackApi.config.record_class
-                                .where(search_params.to_hash)
-                                .page(page).per(20).hint(hints)
+        @records = SupplejackApi::Record
+                   .where(search_params.to_hash)
+                   .page(page).per(20).hint(hints)
 
         if @records.present?
           render json: @records,
@@ -108,7 +108,7 @@ module SupplejackApi
       end
 
       def hints
-        indexes = SupplejackApi.config.record_class.collection.indexes.as_json.map { |index| index['key'].keys }.flatten
+        indexes = SupplejackApi::Record.collection.indexes.as_json.map { |index| index['key'].keys }.flatten
         search_params.keys.each_with_object({}) do |search_key, object|
           next if %w[record_id status].include? search_key
           next unless indexes.include? search_key

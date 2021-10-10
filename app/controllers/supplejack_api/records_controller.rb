@@ -46,7 +46,7 @@ module SupplejackApi
     end
 
     def show
-      @record = SupplejackApi.config.record_class.custom_find(params[:id], current_user, search_params)
+      @record = SupplejackApi::Record.custom_find(params[:id], current_user, search_params)
 
       respond_to do |format|
         format.json do
@@ -65,12 +65,12 @@ module SupplejackApi
     end
 
     def multiple
-      @records = SupplejackApi.config.record_class.find_multiple(params[:record_ids])
+      @records = SupplejackApi::Record.find_multiple(params[:record_ids])
       respond_with @records, each_serializer: self.class.record_serializer_class, root: 'records', adapter: :json
     end
 
     def more_like_this
-      record = SupplejackApi.config.record_class.custom_find(params[:record_id])
+      record = SupplejackApi::Record.custom_find(params[:record_id])
 
       mlt = record.more_like_this do
         fields(*mlt_fields)

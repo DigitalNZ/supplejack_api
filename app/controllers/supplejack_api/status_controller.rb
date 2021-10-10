@@ -52,7 +52,7 @@ module SupplejackApi
     end
 
     def mongod_up?
-      session = SupplejackApi.config.record_class.collection.database.client
+      session = SupplejackApi::Record.collection.database.client
       success = session.command(ping: 1).ok?
       unless success
         Support::StatusLogger.logger.error("MongoDB ping command not successful. Ping output: #{session.command(ping: 1)}")

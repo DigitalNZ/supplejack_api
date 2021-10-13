@@ -24,7 +24,7 @@ module SupplejackApi
           before :each do
             allow(controller).to receive(:authenticate_admin!) { true }
             @normal_user = double(User, user_sets: []).as_null_object
-            allow(User).to receive(:find_by_api_key).with('nonadminkey') { @normal_user }
+            allow(User).to receive(:find_by_auth_token).with('nonadminkey') { @normal_user }
           end
 
           it 'finds all public sets' do

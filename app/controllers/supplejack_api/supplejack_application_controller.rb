@@ -25,7 +25,7 @@ module SupplejackApi
     def authenticate_user!
       error_message = nil
 
-      if params[:api_key].blank?
+      if current_auth_token.blank?
         error_message = I18n.t('users.blank_token')
       elsif current_user
         if current_user.over_limit?
@@ -46,12 +46,16 @@ module SupplejackApi
       render(format => { errors: error_message }, status: :forbidden) if error_message
     end
 
+    def current_auth_token
+      @current_auth_token = request.headers['auth_token'] || params[:api_key]
+    end
+
     def current_user
-      @current_user ||= User.find_by_api_key(params[:api_key])
+      @current_user ||= User.find_by_auth_token(current_auth_token)
     end
 
     def current_story_user
-      @current_story_user ||= User.find_by_api_key(params[:user_key])
+      @current_story_user ||= User.find_by_auth_token(current_auth_token)
     end
 
     def authenticate_admin!

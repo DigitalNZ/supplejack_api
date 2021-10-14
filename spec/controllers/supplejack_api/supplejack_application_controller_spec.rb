@@ -53,6 +53,29 @@ module SupplejackApi
       end
     end
 
+    describe '#current_story_user' do
+      context 'when authenticated with api_key' do
+        before { allow(controller).to receive(:params) { { user_key: user.authentication_token } } }
+
+        it 'returns current_story_user' do
+          expect(controller.current_story_user).to eq user
+        end
+      end
+
+      context 'when authenticated with auth_token' do
+        before do
+          allow(controller).to receive(:params) { { user_key: nil } }
+          allow(controller).to receive(:request) {
+            double(:request, headers: { 'user_auth_token' => user.authentication_token })
+          }
+        end
+
+        it 'returns current_user' do
+          expect(controller.current_story_user).to eq user
+        end
+      end
+    end
+
     describe '#authenticate_user!' do
       context 'when api_key & auth_token is nil' do
         before do

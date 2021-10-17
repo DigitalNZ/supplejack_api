@@ -47,7 +47,7 @@ module SupplejackApi
     end
 
     def current_auth_token
-      @current_auth_token = request.headers['auth_token'] || params[:api_key]
+      @current_auth_token = request.headers['Auth-Token'] || params[:api_key]
     end
 
     def current_user
@@ -55,7 +55,7 @@ module SupplejackApi
     end
 
     def current_story_user
-      user_auth_token = request.headers['user_auth_token'] || params[:user_key]
+      user_auth_token = request.headers['User-Auth-Token'] || params[:user_key]
       @current_story_user ||= User.find_by_auth_token(user_auth_token)
     end
 

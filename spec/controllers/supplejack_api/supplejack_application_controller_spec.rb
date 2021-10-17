@@ -20,7 +20,7 @@ module SupplejackApi
         before do
           allow(controller).to receive(:params) { { api_key: nil } }
           allow(controller).to receive(:request) {
-            double(:request, headers: { 'Auth-Token' => user.authentication_token })
+            double(:request, headers: { 'Authentication-Token' => user.authentication_token })
           }
         end
 
@@ -43,7 +43,7 @@ module SupplejackApi
         before do
           allow(controller).to receive(:params) { { api_key: nil } }
           allow(controller).to receive(:request) {
-            double(:request, headers: { 'Auth-Token' => user.authentication_token })
+            double(:request, headers: { 'Authentication-Token' => user.authentication_token })
           }
         end
 
@@ -66,7 +66,7 @@ module SupplejackApi
         before do
           allow(controller).to receive(:params) { { user_key: nil } }
           allow(controller).to receive(:request) {
-            double(:request, headers: { 'User-Auth-Token' => user.authentication_token })
+            double(:request, headers: { 'User-Authentication-Token' => user.authentication_token })
           }
         end
 
@@ -85,7 +85,7 @@ module SupplejackApi
                    ip: '1.1.1.1',
                    format: :json,
                    params: { controller: 'supplejack_api/users' },
-                   headers: { 'Auth-Token' => nil })
+                   headers: { 'Authentication-Token' => nil })
           }
         end
 
@@ -136,7 +136,7 @@ module SupplejackApi
                    ip: '1.1.1.1',
                    format: :json,
                    params: { controller: 'supplejack_api/stories', action: 'show' },
-                   headers: { 'Auth-Token' => nil })
+                   headers: { 'Authentication-Token' => nil })
           }
 
           controller.authenticate_user!
@@ -224,7 +224,7 @@ module SupplejackApi
                    ip: '1.1.1.1',
                    format: :json,
                    params: { controller: 'supplejack_api/stories', action: 'show' },
-                   headers: { 'Auth-Token' => create(:admin_user).authentication_token })
+                   headers: { 'Authentication-Token' => create(:admin_user).authentication_token })
           }
         end
 
@@ -240,7 +240,7 @@ module SupplejackApi
                    ip: '1.1.1.1',
                    format: :json,
                    params: { controller: 'supplejack_api/stories', action: 'show' },
-                   headers: { 'Auth-Token' => user.authentication_token })
+                   headers: { 'Authentication-Token' => user.authentication_token })
           }
         end
 

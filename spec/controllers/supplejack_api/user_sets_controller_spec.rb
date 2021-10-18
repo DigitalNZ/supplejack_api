@@ -28,7 +28,7 @@ module SupplejackApi
         before :each do
           allow(controller).to receive(:authenticate_admin!) { true }
           @normal_user = double(User, user_sets: []).as_null_object
-          allow(User).to receive(:find_by_api_key).with('nonadminkey') { @normal_user }
+          allow(User).to receive(:find_by_auth_token).with('nonadminkey') { @normal_user }
         end
 
         it 'authenticates the user as an admin' do
@@ -37,7 +37,7 @@ module SupplejackApi
         end
 
         it 'finds the user from the :user_id' do
-          expect(User).to receive(:find_by_api_key).with('nonadminkey')
+          expect(User).to receive(:find_by_auth_token).with('nonadminkey')
           get :admin_index, params: { user_id: 'nonadminkey' }
         end
 
@@ -48,7 +48,7 @@ module SupplejackApi
         end
 
         it 'renders a error when the user is not found' do
-          allow(User).to receive(:find_by_api_key) { nil }
+          allow(User).to receive(:find_by_auth_token) { nil }
           get :admin_index, params: { user_id: 'whatever' }
 
           expect(response.code).to eq '404'

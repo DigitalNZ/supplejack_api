@@ -78,7 +78,7 @@ module SupplejackApi
     end
 
     def story_user_id_check
-      @story_user = User.find_by_api_key(params[:user_id])
+      @story_user = User.find_by_auth_token(params[:user_id])
 
       render_error_with(I18n.t('errors.user_with_id_not_found', id: params[:user_id]), :not_found) unless @story_user
     end

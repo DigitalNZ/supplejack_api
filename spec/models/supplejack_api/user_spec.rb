@@ -306,15 +306,15 @@ module SupplejackApi
       end
     end
 
-    describe '#find_by_api_key' do
+    describe '#find_by_auth_token' do
       it 'searches for a user by its api key' do
         expect(User).to receive(:where).with(authentication_token: '1234').and_return([double(:record)])
-        User.find_by_api_key('1234')
+        User.find_by_auth_token('1234')
       end
 
       it 'returns nil when user not found' do
         allow(User).to receive(:where).and_return([])
-        expect(User.find_by_api_key('1234')).to be_nil
+        expect(User.find_by_auth_token('1234')).to be_nil
       end
     end
 

@@ -17,7 +17,7 @@ module SupplejackApi
     # Endpoint for the administrator to get a list of sets for any user.
     #
     def admin_index
-      @user = User.find_by_api_key(params[:user_id])
+      @user = User.find_by_auth_token(params[:user_id])
 
       if @user
         @user_sets = @user.user_sets

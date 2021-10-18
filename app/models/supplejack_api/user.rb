@@ -187,15 +187,15 @@ module SupplejackApi
       end
     end
 
-    def self.find_by_api_key(api_key)
-      where(authentication_token: api_key).first
+    def self.find_by_auth_token(token)
+      where(authentication_token: token).first
     end
 
     def self.custom_find(id)
       user = if id.to_s.length == 24
                find(id)
              else
-               find_by_api_key(id)
+               find_by_auth_token(id)
              end
 
       raise Mongoid::Errors::DocumentNotFound.new(self, id, id) unless user

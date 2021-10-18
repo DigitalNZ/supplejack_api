@@ -56,8 +56,7 @@ module SupplejackApi
     end
 
     def current_story_user
-      user_auth_token = request.headers['User-Authentication-Token'] || params[:user_key]
-      @current_story_user ||= User.find_by_auth_token(user_auth_token)
+      @current_story_user ||= User.find_by_auth_token(params[:user_key])
     end
 
     def authenticate_admin!

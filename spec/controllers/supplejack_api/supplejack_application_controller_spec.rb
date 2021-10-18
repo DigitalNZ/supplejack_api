@@ -16,7 +16,7 @@ module SupplejackApi
         end
       end
 
-      context 'when authentication_token is passed as auth_token in request headers' do
+      context 'when authentication_token is passed as Authentication-Token in request headers' do
         before do
           allow(controller).to receive(:params) { { api_key: nil } }
           allow(controller).to receive(:request) {
@@ -39,7 +39,7 @@ module SupplejackApi
         end
       end
 
-      context 'when authenticated with auth_token' do
+      context 'when authenticated with Authentication-Token' do
         before do
           allow(controller).to receive(:params) { { api_key: nil } }
           allow(controller).to receive(:request) {
@@ -61,23 +61,10 @@ module SupplejackApi
           expect(controller.current_story_user).to eq user
         end
       end
-
-      context 'when authenticated with auth_token' do
-        before do
-          allow(controller).to receive(:params) { { user_key: nil } }
-          allow(controller).to receive(:request) {
-            double(:request, headers: { 'User-Authentication-Token' => user.authentication_token })
-          }
-        end
-
-        it 'returns current_user' do
-          expect(controller.current_story_user).to eq user
-        end
-      end
     end
 
     describe '#authenticate_user!' do
-      context 'when api_key & auth_token is nil' do
+      context 'when api_key & Authentication-Token is nil' do
         before do
           allow(controller).to receive(:params) { { api_key: nil } }
           allow(controller).to receive(:request) {

@@ -20,5 +20,6 @@ module SupplejackApi
     end
 
     alias update? admin_or_owner?
+    alias add_to_stories? admin_or_owner?
   end
 end

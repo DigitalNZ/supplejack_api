@@ -367,7 +367,8 @@ module SupplejackApi
     end
 
     describe 'POST add_to_stories' do
-      let(:user) { create(:user) }
+      let(:user)       { create(:user) }
+      let(:user_two)   { create(:user) }
       let!(:story_one) { create(:user_set, user_id: user.id, privacy: 'public') }
       let!(:story_two) { create(:user_set, user_id: user.id, privacy: 'hidden') }
 
@@ -448,11 +449,54 @@ module SupplejackApi
         end
 
         it 'returns an error when given an invalid item' do
+          post :add_to_stories,
+          params: {
+            api_key: user.api_key,
+            user_key: user.api_key,
+            stories: [
+              {
+                id: story_one.id,
+                items: [
+                  story_item_one,
+                  {
+                    type: 'text',
+                    sub_type: 'heading'
+                  }
+                ]
+              }
+            ]
+          } 
 
+          expect(response.status).to eq 400
+          expect(JSON.parse(response.body)['errors']).to eq 'Content value is missing: content must contain value field'
         end
 
         it 'returns an error when trying to update stories that you do not have access too' do
+          post :add_to_stories,
+                params: {
+                  api_key: user_two.api_key,
+                  user_key: user_two.api_key,
+                  stories: [
+                    {
+                      id: story_one.id,
+                      items: [
+                        story_item_one,
+                        story_item_two
+                      ]
+                    },
+                    {
+                      id: story_two.id,
+                      items: [
+                        story_item_three,
+                        story_item_four,
+                        story_item_five
+                      ]
+                    }
+                  ]
+                }
 
+          expect(response.status).to eq 401
+          expect(JSON.parse(response.body)['errors']).to eq 'Provided user key is not authorized to access this story'
         end
       end
     end

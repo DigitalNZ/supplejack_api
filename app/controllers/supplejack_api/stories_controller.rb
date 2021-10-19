@@ -65,7 +65,7 @@ module SupplejackApi
       if @story.reposition_items(params[:items])
         head :ok
       else
-        render json: { errors: I18n.t('errors.reposition_error') }, status: :bad_request
+        render json: { errors: { reposition: I18n.t('errors.reposition_error') } }, status: :bad_request
       end
     end
 

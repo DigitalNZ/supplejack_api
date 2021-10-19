@@ -365,5 +365,96 @@ module SupplejackApi
         end
       end
     end
+
+    describe 'POST add_to_stories' do
+      let(:user) { create(:user) }
+      let!(:story_one) { create(:user_set, user_id: user.id, privacy: 'public') }
+      let!(:story_two) { create(:user_set, user_id: user.id, privacy: 'hidden') }
+
+      let(:story_item_one)   { attributes_for(:story_item) }
+      let(:story_item_two)   { attributes_for(:story_item) }
+      let(:story_item_three) { attributes_for(:story_item) }
+      let(:story_item_four)  { attributes_for(:story_item) }
+      let(:story_item_five)  { attributes_for(:story_item) }
+
+      context 'valid' do 
+        before do
+          post :add_to_stories,
+                params: {
+                  api_key: user.api_key,
+                  user_key: user.api_key,
+                  stories: [
+                    {
+                      id: story_one.id,
+                      items: [
+                        story_item_one,
+                        story_item_two
+                      ]
+                    },
+                    {
+                      id: story_two.id,
+                      items: [
+                        story_item_three,
+                        story_item_four,
+                        story_item_five
+                      ]
+                    }
+                  ]
+                }
+        end
+
+        it 'adds multiple story items to multiple stories' do
+          expect(story_one.reload.set_items.count).to eq 2
+          expect(story_two.reload.set_items.count).to eq 3
+        end
+
+        it 'returns a serialized response with the stories and new items' do
+          expect(JSON.parse(response.body).count).to eq 2
+
+          expect(JSON.parse(response.body).first).to have_key 'story_id'
+          expect(JSON.parse(response.body).first).to have_key 'item_ids'
+
+          expect(JSON.parse(response.body).last).to have_key 'story_id'
+          expect(JSON.parse(response.body).last).to have_key 'item_ids'
+        end
+      end
+
+      context 'invalid' do
+        it 'returns an error when given an invalid story id' do
+          post :add_to_stories,
+            params: {
+              api_key: user.api_key,
+              user_key: user.api_key,
+              stories: [
+                {
+                  id: 'a',
+                  items: [
+                    story_item_one,
+                    story_item_two
+                  ]
+                },
+                {
+                  id: story_two.id,
+                  items: [
+                    story_item_three,
+                    story_item_four,
+                    story_item_five
+                  ]
+                }
+              ]
+            } 
+
+          expect(response.status).to eq 404
+        end
+
+        it 'returns an error when given an invalid item' do
+
+        end
+
+        it 'returns an error when trying to update stories that you do not have access too' do
+
+        end
+      end
+    end
   end
 end

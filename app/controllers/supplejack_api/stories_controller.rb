@@ -69,7 +69,38 @@ module SupplejackApi
       end
     end
 
+    def add_to_stories
+      changes = add_to_stories_params["stories"].each_with_object([]) do |story, changes|
+
+        set = SupplejackApi::UserSet.custom_find(story['id'])
+
+        return render_error_with(I18n.t('errors.story_not_found', id: story['id']), :not_found) unless set
+
+        item_ids = story['items'].each_with_object([]) do |item, ids|
+          item = set.set_items.build(item)
+
+          if item.valid?
+            ids.push(item.id)
+          end
+        end
+
+        set.save!
+
+        changes.push({
+          story_id: story['id'],
+          item_ids: item_ids
+        })
+      end
+
+      render json: changes
+    end
+
     private
+
+    def add_to_stories_params
+      # TODO confirm all fields 
+      params.permit(:api_key, stories: [:id, items: [:position, :type, :sub_type, :image_url, :display_collection, :category, :meta, :record_id, content: [:value, :image_url, :display_collection, :category]]])
+    end
 
     def story_params
       fields = [:name, :description, :privacy, :copyright, :cover_thumbnail, { tags: [], subjects: [] }]
@@ -107,5 +138,7 @@ module SupplejackApi
 
       SupplejackApi::RequestMetric.spawn(log, 'user_story_views') if log
     end
+
+
   end
 end

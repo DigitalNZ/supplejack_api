@@ -37,7 +37,7 @@ SupplejackApi::Engine.routes.draw do
     # Stories
     namespace 'stories' do
       resources :featured, only: [:index]
-      post :add_to_stories
+      post :multiple_add
     end
 
     resources :stories, except: [:new, :edit] do

@@ -366,7 +366,7 @@ module SupplejackApi
       end
     end
 
-    describe 'POST add_to_stories' do
+    describe 'POST multiple_add' do
       let(:user)       { create(:user) }
       let(:user_two)   { create(:user) }
       let!(:story_one) { create(:user_set, user_id: user.id, privacy: 'public') }
@@ -380,7 +380,7 @@ module SupplejackApi
 
       context 'valid' do 
         before do
-          post :add_to_stories,
+          post :multiple_add,
                 params: {
                   api_key: user.api_key,
                   user_key: user.api_key,
@@ -422,7 +422,7 @@ module SupplejackApi
 
       context 'invalid' do
         it 'returns an error when given an invalid story id' do
-          post :add_to_stories,
+          post :multiple_add,
             params: {
               api_key: user.api_key,
               user_key: user.api_key,
@@ -449,7 +449,7 @@ module SupplejackApi
         end
 
         it 'returns an error when given an invalid item' do
-          post :add_to_stories,
+          post :multiple_add,
           params: {
             api_key: user.api_key,
             user_key: user.api_key,
@@ -472,7 +472,7 @@ module SupplejackApi
         end
 
         it 'returns an error when trying to update stories that you do not have access too' do
-          post :add_to_stories,
+          post :multiple_add,
                 params: {
                   api_key: user_two.api_key,
                   user_key: user_two.api_key,

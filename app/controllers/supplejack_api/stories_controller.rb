@@ -69,7 +69,7 @@ module SupplejackApi
       end
     end
 
-    def add_to_stories
+    def multiple_add
       stories = add_to_stories_params['stories'].each_with_object([]) do |story, stories|
         set = SupplejackApi::UserSet.custom_find(story['id'])
         return render_error_with(I18n.t('errors.story_not_found', id: story['id']), :not_found) unless set

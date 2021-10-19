@@ -70,7 +70,7 @@ module SupplejackApi
     end
 
     def multiple_add
-      stories = add_to_stories_params['stories'].each_with_object([]) do |story, stories|
+      stories = multiple_stories_params['stories'].each_with_object([]) do |story, stories|
         set = SupplejackApi::UserSet.custom_find(story['id'])
         return render_error_with(I18n.t('errors.story_not_found', id: story['id']), :not_found) unless set
 
@@ -78,7 +78,7 @@ module SupplejackApi
         stories.push(set)
       end
 
-      changes = add_to_stories_params['stories'].each_with_object([]) do |story_params, changes|
+      changes = multiple_stories_params['stories'].each_with_object([]) do |story_params, changes|
         set = stories.find { |s| s.id.to_s == story_params['id'] }
 
         item_ids = story_params['items'].each_with_object([]) do |item, ids|
@@ -102,8 +102,37 @@ module SupplejackApi
       render json: changes
     end
 
-    def add_to_stories_params
-      params.permit(:api_key, stories: [:id, items: [:position, :type, :sub_type, :image_url, :display_collection, :category, :meta, :record_id, content: [:value, :image_url, :display_collection, :category]]])
+    def multiple_remove
+
+      stories = multiple_stories_params['stories'].each_with_object([]) do |story, stories|
+        set = SupplejackApi::UserSet.custom_find(story['id'])
+        return render_error_with(I18n.t('errors.story_not_found', id: story['id']), :not_found) unless set
+
+        authorize(set)
+        stories.push(set)
+      end
+
+      multiple_stories_params['stories'].each do |story_params|
+        set = stories.find { |s| s.id.to_s == story_params['id'] }
+
+        story_params['items'].each do |item|
+          set_item = set.set_items.find_by_id(item[:id])
+
+          if set_item
+            set_item.destroy!
+          else
+            return render json: { errors: I18n.t('errors.record_not_found', id: item[:id]) }, status: :not_found
+          end
+        end
+
+        set.save!
+      end
+
+      head :no_content
+    end
+
+    def multiple_stories_params
+      params.permit(:api_key, stories: [:id, items: [:id, :position, :type, :sub_type, :image_url, :display_collection, :category, :meta, :record_id, content: [:value, :image_url, :display_collection, :category]]])
     end
 
     def story_params

@@ -21,5 +21,6 @@ module SupplejackApi
 
     alias update? admin_or_owner?
     alias multiple_add? admin_or_owner?
+    alias multiple_remove? admin_or_owner?
   end
 end

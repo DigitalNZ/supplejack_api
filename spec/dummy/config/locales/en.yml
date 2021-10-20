@@ -45,7 +45,7 @@ en:
 
   errors:
     param_missing: "Mandatory Parameter %{param} missing in request"
-    reposition_error: "Reposition failed: All items have to be repositioned"
+    reposition_error: "failed: all items have to be repositioned"
     record_not_found: "Record with ID %{id} was not found"
     requires_admin_privileges: "You need Administrator privileges to perform this request"
     requires_harvest_privileges: "You need Harvester privileges to perform this request.\

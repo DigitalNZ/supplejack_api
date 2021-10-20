@@ -565,7 +565,7 @@ RSpec.describe 'Stories Endpoints', type: :request do
       it 'returns status ok' do
         response_attributes = JSON.parse(response.body)
 
-        expect(response_attributes).to eq({ 'errors' => I18n.t('errors.reposition_error') })
+        expect(response_attributes).to eq({ 'errors' => { 'reposition' => I18n.t('errors.reposition_error') } })
       end
     end
   end

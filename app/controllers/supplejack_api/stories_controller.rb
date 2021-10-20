@@ -70,14 +70,6 @@ module SupplejackApi
       end
     end
 
-    def multiple_stories_params
-      params.permit(:api_key,
-                    stories: [:id,
-                              { items: [:id, :position, :type, :sub_type, :image_url,
-                                        :display_collection, :category, :meta, :record_id,
-                                        { content: %i[value image_url display_collection category] }] }])
-    end
-
     def story_params
       fields = [:name, :description, :privacy, :copyright, :cover_thumbnail, { tags: [], subjects: [] }]
 

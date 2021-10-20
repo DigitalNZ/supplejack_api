@@ -5,7 +5,7 @@ module SupplejackApi
     module Stories
       module Multiple
         def multiple_add
-          stories = multiple_stories_params['stories'].each_with_object([]) do |story, stories_array|
+          stories = multiple_params['stories'].each_with_object([]) do |story, stories_array|
             set = SupplejackApi::UserSet.custom_find(story['id'])
             return render_error_with(I18n.t('errors.story_not_found', id: story['id']), :not_found) unless set
 
@@ -13,7 +13,7 @@ module SupplejackApi
             stories_array.push(set)
           end
 
-          changes = multiple_stories_params['stories'].each_with_object([]) do |story_params, changes_array|
+          changes = multiple_params['stories'].each_with_object([]) do |story_params, changes_array|
             set = stories.find { |s| s.id.to_s == story_params['id'] }
 
             item_ids = story_params['items'].each_with_object([]) do |item, ids|
@@ -36,7 +36,7 @@ module SupplejackApi
         end
 
         def multiple_remove
-          stories = multiple_stories_params['stories'].each_with_object([]) do |story, stories_array|
+          stories = multiple_params['stories'].each_with_object([]) do |story, stories_array|
             set = SupplejackApi::UserSet.custom_find(story['id'])
             return render_error_with(I18n.t('errors.story_not_found', id: story['id']), :not_found) unless set
 
@@ -44,7 +44,7 @@ module SupplejackApi
             stories_array.push(set)
           end
 
-          multiple_stories_params['stories'].each do |story_params|
+          multiple_params['stories'].each do |story_params|
             set = stories.find { |s| s.id.to_s == story_params['id'] }
 
             story_params['items'].each do |item|
@@ -60,6 +60,16 @@ module SupplejackApi
           end
 
           head :no_content
+        end
+
+        private
+
+        def multiple_params
+          params.permit(:api_key,
+                        stories: [:id,
+                                  { items: [:id, :position, :type, :sub_type, :image_url,
+                                            :display_collection, :category, :meta, :record_id,
+                                            { content: %i[value image_url display_collection category] }] }])
         end
       end
     end

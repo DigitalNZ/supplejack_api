@@ -64,6 +64,8 @@ module SupplejackApi
     end
 
     describe '#authenticate_user!' do
+      let!(:user) { create(:user, name: 'anonymous') }
+
       context 'when api_key & Authentication-Token is nil' do
         before do
           allow(controller).to receive(:params) { { api_key: nil } }
@@ -76,12 +78,9 @@ module SupplejackApi
           }
         end
 
-        it 'renders blank_token error' do
-          expect(controller).to receive(:render).with(
-            { json: { errors: I18n.t('users.blank_token') }, status: :forbidden }
-          )
-
+        it 'assigns the anonymous user as the current_user' do
           controller.authenticate_user!
+          expect(assigns(:current_user).name).to eq 'anonymous'
         end
       end
 

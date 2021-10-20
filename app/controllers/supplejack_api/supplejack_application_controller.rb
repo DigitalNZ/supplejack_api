@@ -25,9 +25,7 @@ module SupplejackApi
     def authenticate_user!
       error_message = nil
 
-      if current_auth_token.blank?
-        error_message = I18n.t('users.blank_token')
-      elsif current_user
+      if current_user
         if current_user.over_limit?
           error_message = I18n.t('users.reached_limit')
         else
@@ -47,8 +45,13 @@ module SupplejackApi
     end
 
     def current_auth_token
-      Rails.logger.info "Authentication-Token : #{request.headers}"
-      @current_auth_token = request.headers['Authentication-Token'] || params[:api_key]
+      if request.headers['Authentication-Token'] || params[:api_key] 
+        Rails.logger.info "Authentication-Token : #{request.headers}"
+        return @current_auth_token = request.headers['Authentication-Token'] || params[:api_key]
+      end
+
+      Rails.logger.info "Assigning anonymous user"
+      @current_auth_token = SupplejackApi::User.find_by(name: 'anonymous').authentication_token
     end
 
     def current_user

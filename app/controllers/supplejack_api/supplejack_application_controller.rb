@@ -49,9 +49,14 @@ module SupplejackApi
         Rails.logger.info "Authentication-Token : #{request.headers}"
         return @current_auth_token = request.headers['Authentication-Token'] || params[:api_key]
       end
+      @current_auth_token = begin
+                              SupplejackApi::User.find_by(name: 'anonymous').authentication_token
+                            rescue Mongoid::Errors::DocumentNotFound => e
+                              SupplejackApi::User.create!(name: 'anonymous').authentication_token
+                            end
 
-      Rails.logger.info "Assigning anonymous user"
-      @current_auth_token = SupplejackApi::User.find_by(name: 'anonymous').authentication_token
+      Rails.logger.info "Assigning anonymous user #{@current_auth_token}"
+      @current_auth_token
     end
 
     def current_user

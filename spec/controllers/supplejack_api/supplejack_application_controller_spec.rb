@@ -64,8 +64,6 @@ module SupplejackApi
     end
 
     describe '#authenticate_user!' do
-      let!(:user) { create(:user, name: 'anonymous') }
-
       context 'when api_key & Authentication-Token is nil' do
         before do
           allow(controller).to receive(:params) { { api_key: nil } }
@@ -79,7 +77,15 @@ module SupplejackApi
         end
 
         it 'assigns the anonymous user as the current_user' do
+          create(:user, name: 'anonymous') 
           controller.authenticate_user!
+          expect(assigns(:current_user).name).to eq 'anonymous'
+        end
+
+        it 'creates the anonymous user when it does not exist' do
+          expect(SupplejackApi::User.count).to eq 0
+          controller.authenticate_user!
+          expect(SupplejackApi::User.count).to eq 1
           expect(assigns(:current_user).name).to eq 'anonymous'
         end
       end

@@ -37,10 +37,13 @@ SupplejackApi::Engine.routes.draw do
     # Stories
     namespace 'stories' do
       resources :featured, only: [:index]
+      post :multiple_add
+      post :multiple_remove
     end
 
     resources :stories, except: [:new, :edit] do
       post :reposition_items
+
 
       resources :items, controller: :story_items, except: [:new, :edit]
     end

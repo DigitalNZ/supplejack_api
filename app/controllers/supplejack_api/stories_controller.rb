@@ -4,6 +4,7 @@ module SupplejackApi
   class StoriesController < SupplejackApplicationController
     include Pundit
     include Concerns::IgnoreMetrics
+    include Concerns::Stories::Multiple
 
     rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 
@@ -68,8 +69,6 @@ module SupplejackApi
         render json: { errors: { reposition: I18n.t('errors.reposition_error') } }, status: :bad_request
       end
     end
-
-    private
 
     def story_params
       fields = [:name, :description, :privacy, :copyright, :cover_thumbnail, { tags: [], subjects: [] }]

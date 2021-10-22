@@ -74,4 +74,56 @@ RSpec.describe SupplejackApi::UserSetPolicy, type: :policy do
       end
     end
   end
+
+  permissions :multiple_add? do
+    context 'when user is the owner of the story' do
+      let(:user) { story.user }
+
+      it 'grants access' do
+        expect(policy).to permit(user, story)
+      end
+    end
+
+    context 'when user is an admin' do
+      let(:admin) { create(:admin_user) }
+
+      it 'grants access' do
+        expect(policy).to permit(admin, story)
+      end
+    end
+
+    context 'when user is not and admin or owner of story' do
+      let(:user) { create(:user) }
+
+      it 'denies access' do
+        expect(policy).not_to permit(user, story)
+      end
+    end
+  end
+
+  permissions :multiple_remove? do
+    context 'when user is the owner of the story' do
+      let(:user) { story.user }
+
+      it 'grants access' do
+        expect(policy).to permit(user, story)
+      end
+    end
+
+    context 'when user is an admin' do
+      let(:admin) { create(:admin_user) }
+
+      it 'grants access' do
+        expect(policy).to permit(admin, story)
+      end
+    end
+
+    context 'when user is not and admin or owner of story' do
+      let(:user) { create(:user) }
+
+      it 'denies access' do
+        expect(policy).not_to permit(user, story)
+      end
+    end
+  end
 end

@@ -365,5 +365,272 @@ module SupplejackApi
         end
       end
     end
+
+    describe 'POST multiple_add' do
+      let(:user)       { create(:user) }
+      let(:user_two)   { create(:user) }
+      let!(:story_one) { create(:user_set, user_id: user.id, privacy: 'public') }
+      let!(:story_two) { create(:user_set, user_id: user.id, privacy: 'hidden') }
+
+      let(:story_item_one)   { attributes_for(:story_item) }
+      let(:story_item_two)   { attributes_for(:story_item) }
+      let(:story_item_three) { attributes_for(:story_item) }
+      let(:story_item_four)  { attributes_for(:story_item) }
+      let(:story_item_five)  { attributes_for(:story_item) }
+
+      context 'valid' do
+        before do
+          post :multiple_add,
+               params: {
+                 api_key: user.api_key,
+                 user_key: user.api_key,
+                 stories: [
+                   {
+                     id: story_one.id,
+                     items: [
+                       story_item_one,
+                       story_item_two
+                     ]
+                   },
+                   {
+                     id: story_two.id,
+                     items: [
+                       story_item_three,
+                       story_item_four,
+                       story_item_five
+                     ]
+                   }
+                 ]
+               }
+        end
+
+        it 'adds multiple story items to multiple stories' do
+          expect(story_one.reload.set_items.count).to eq 2
+          expect(story_two.reload.set_items.count).to eq 3
+        end
+
+        it 'returns a serialized response with the stories and new items' do
+          expect(JSON.parse(response.body).count).to eq 2
+
+          expect(JSON.parse(response.body).first).to have_key 'story_id'
+          expect(JSON.parse(response.body).first).to have_key 'item_ids'
+
+          expect(JSON.parse(response.body).last).to have_key 'story_id'
+          expect(JSON.parse(response.body).last).to have_key 'item_ids'
+        end
+      end
+
+      context 'invalid' do
+        it 'returns an error when given an invalid story id' do
+          post :multiple_add,
+               params: {
+                 api_key: user.api_key,
+                 user_key: user.api_key,
+                 stories: [
+                   {
+                     id: 'a',
+                     items: [
+                       story_item_one,
+                       story_item_two
+                     ]
+                   },
+                   {
+                     id: story_two.id,
+                     items: [
+                       story_item_three,
+                       story_item_four,
+                       story_item_five
+                     ]
+                   }
+                 ]
+               }
+
+          expect(response.status).to eq 404
+        end
+
+        it 'returns an error when given an invalid item' do
+          post :multiple_add,
+               params: {
+                 api_key: user.api_key,
+                 user_key: user.api_key,
+                 stories: [
+                   {
+                     id: story_one.id,
+                     items: [
+                       story_item_one,
+                       {
+                         type: 'text',
+                         sub_type: 'heading'
+                       }
+                     ]
+                   }
+                 ]
+               }
+
+          expect(response.status).to eq 400
+          expect(JSON.parse(response.body)['errors']).to eq 'Content value is missing: content must contain value field'
+        end
+
+        it 'returns an error when trying to update stories that you do not have access too' do
+          post :multiple_add,
+               params: {
+                 api_key: user_two.api_key,
+                 user_key: user_two.api_key,
+                 stories: [
+                   {
+                     id: story_one.id,
+                     items: [
+                       story_item_one,
+                       story_item_two
+                     ]
+                   },
+                   {
+                     id: story_two.id,
+                     items: [
+                       story_item_three,
+                       story_item_four,
+                       story_item_five
+                     ]
+                   }
+                 ]
+               }
+
+          expect(response.status).to eq 401
+          expect(JSON.parse(response.body)['errors']).to eq 'Provided user key is not authorized to access this story'
+        end
+      end
+    end
+
+    describe 'POST multiple_delete' do
+      let(:user)       { create(:user) }
+      let(:user_two)   { create(:user) }
+
+      let!(:story_one) { create(:story_with_dnz_story_items, user_id: user.id) }
+      let!(:story_two) { create(:story_with_dnz_story_items, user_id: user.id) }
+
+      context 'valid' do
+        it 'deletes multiple story items from multiple stories' do
+          expect(story_one.reload.set_items.count).to eq 4
+          expect(story_two.reload.set_items.count).to eq 4
+
+          post :multiple_remove,
+               params: {
+                 api_key: user.api_key,
+                 user_key: user.api_key,
+                 stories: [
+                   {
+                     id: story_one.id,
+                     items: [
+                       { id: story_one.set_items.first.id.to_s },
+                       { id: story_one.set_items.last.id.to_s }
+                     ]
+                   },
+                   {
+                     id: story_two.id,
+                     items: [
+                       { id: story_two.set_items.first.id.to_s },
+                       { id: story_two.set_items.last.id.to_s }
+                     ]
+                   }
+                 ]
+               }
+
+          expect(story_one.reload.set_items.count).to eq 2
+          expect(story_two.reload.set_items.count).to eq 2
+        end
+
+        it 'returns a success response' do
+          post :multiple_remove,
+               params: {
+                 api_key: user.api_key,
+                 user_key: user.api_key,
+                 stories: [
+                   {
+                     id: story_one.id,
+                     items: [
+                       { id: story_one.set_items.first.id.to_s },
+                       { id: story_one.set_items.last.id.to_s }
+                     ]
+                   },
+                   {
+                     id: story_two.id,
+                     items: [
+                       { id: story_two.set_items.first.id.to_s },
+                       { id: story_two.set_items.last.id.to_s }
+                     ]
+                   }
+                 ]
+               }
+
+          expect(response.status).to eq 204
+        end
+      end
+
+      context 'invalid' do
+        it 'returns an error for stories that do not belong to the user' do
+          expect(story_one.reload.set_items.count).to eq 4
+          expect(story_two.reload.set_items.count).to eq 4
+
+          post :multiple_remove,
+               params: {
+                 api_key: user_two.api_key,
+                 user_key: user_two.api_key,
+                 stories: [
+                   {
+                     id: story_one.id,
+                     items: [
+                       { id: story_one.set_items.first.id.to_s },
+                       { id: story_one.set_items.last.id.to_s }
+                     ]
+                   },
+                   {
+                     id: story_two.id,
+                     items: [
+                       { id: story_two.set_items.first.id.to_s },
+                       { id: story_two.set_items.last.id.to_s }
+                     ]
+                   }
+                 ]
+               }
+
+          expect(response.status).to eq 401
+          expect(JSON.parse(response.body)['errors']).to eq 'Provided user key is not authorized to access this story'
+          expect(story_one.reload.set_items.count).to eq 4
+          expect(story_two.reload.set_items.count).to eq 4
+        end
+
+        it 'returns an error for invalid story items' do
+          expect(story_one.reload.set_items.count).to eq 4
+          expect(story_two.reload.set_items.count).to eq 4
+
+          post :multiple_remove,
+               params: {
+                 api_key: user.api_key,
+                 user_key: user.api_key,
+                 stories: [
+                   {
+                     id: story_one.id,
+                     items: [
+                       { id: story_one.set_items.first.id.to_s },
+                       { id: 'a' }
+                     ]
+                   },
+                   {
+                     id: story_two.id,
+                     items: [
+                       { id: story_two.set_items.first.id.to_s },
+                       { id: story_two.set_items.last.id.to_s }
+                     ]
+                   }
+                 ]
+               }
+
+          expect(response.status).to eq 404
+          expect(JSON.parse(response.body)['errors']).to eq 'Record with ID a was not found'
+          expect(story_one.reload.set_items.count).to eq 3
+          expect(story_two.reload.set_items.count).to eq 4
+        end
+      end
+    end
   end
 end

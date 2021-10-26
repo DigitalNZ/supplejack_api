@@ -46,7 +46,6 @@ module SupplejackApi
 
     def current_auth_token
       if request.headers['Authentication-Token'] || params[:api_key]
-        Rails.logger.info "Authentication-Token : #{request.headers}"
         return request.headers['Authentication-Token'] || params[:api_key]
       end
 

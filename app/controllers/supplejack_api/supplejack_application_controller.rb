@@ -47,13 +47,10 @@ module SupplejackApi
     def current_auth_token
       if request.headers['Authentication-Token'] || params[:api_key] 
         Rails.logger.info "Authentication-Token : #{request.headers}"
-        return @current_auth_token = request.headers['Authentication-Token'] || params[:api_key]
+        return request.headers['Authentication-Token'] || params[:api_key]
       end
 
-      @current_auth_token = SupplejackApi::User.find_or_create_by(name: 'anonymous').authentication_token
-
-      Rails.logger.info "Assigning anonymous user #{@current_auth_token}"
-      @current_auth_token
+      SupplejackApi::User.find_or_create_by(name: 'anonymous').authentication_token
     end
 
     def current_user

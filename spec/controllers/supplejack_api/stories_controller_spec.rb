@@ -168,6 +168,21 @@ module SupplejackApi
           expect(response.body).to eq(StorySerializer.new(new_story, scope: { slim: false }).to_json)
         end
       end
+
+      context 'anonymous user' do
+        let(:anonymous_user) { create(:user, role: 'anonymous') }         
+        let(:story_name) { 'StoryNameGoesHere' }
+
+        before { post :create, params: { user_key: anonymous_user.api_key, api_key: anonymous_user.api_key, story: { name: story_name } } }
+
+        it 'returns a 403 http code' do
+          expect(response.status).to eq 403
+        end
+
+        it 'returns an appropriate message' do
+          expect(JSON.parse(response.body)['errors']).to include 'Anonymous request is not allowed'
+        end
+      end
     end
 
     describe 'POST reposition_items' do
@@ -251,6 +266,37 @@ module SupplejackApi
 
         it 'return error' do
           expect(response.body).to include(I18n.t('errors.reposition_error'))
+        end
+      end
+
+      context 'anonymous user' do
+        let(:anonymous_user) { create(:user, role: 'anonymous') } 
+        let(:story) do
+          create(:story,
+                 user: anonymous_user,
+                 set_items: [create(:embed_dnz_item, title: 'first', position: 1),
+                             create(:embed_dnz_item, title: 'middle', position: 2),
+                             create(:embed_dnz_item, title: 'last', position: 3)])
+        end
+
+        before do
+          items = story.set_items
+          reposition_params = [
+            { id: items[0].id, position: 2 },
+            { id: items[1].id, position: 1 },
+            { id: items[2].id, position: 3 }
+        ]
+
+          post :reposition_items,
+               params: { story_id: story.id.to_s, api_key: anonymous_user.api_key, user_key: anonymous_user.api_key, items: reposition_params }
+        end
+
+        it 'returns a 403 http code' do
+          expect(response.status).to eq 403
+        end
+
+        it 'returns an appropriate message' do
+          expect(JSON.parse(response.body)['errors']).to include 'Anonymous request is not allowed'
         end
       end
     end

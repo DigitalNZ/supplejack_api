@@ -32,6 +32,20 @@ module SupplejackApi
           end
         end
       end
+
+      context 'anonymous user' do
+        before do
+          get :index, params: { api_key: anonymous_user.api_key, user_key: anonymous_user.api_key, slim: 'false' }
+        end
+
+        it 'returns a 403 http code' do
+          expect(response.status).to eq 403
+        end
+
+        it 'returns an appropriate message' do
+          expect(JSON.parse(response.body)['errors']).to include(I18n.t('errors.prevent_anonymous'))
+        end
+      end
     end
 
     describe 'GET admin_index' do
@@ -129,6 +143,20 @@ module SupplejackApi
             .to eq(story.set_items.map { |x| x[:content][:display_collection] })
 
           expect(SupplejackApi::RequestMetric.first.metric).to eq 'user_story_views'
+        end
+      end
+
+      context 'anonymous user' do
+        before do
+          get :show, params: { api_key: anonymous_user.api_key, id: 1 }
+        end
+
+        it 'returns a 403 http code' do
+          expect(response.status).to eq 403
+        end
+
+        it 'returns an appropriate message' do
+          expect(JSON.parse(response.body)['errors']).to include(I18n.t('errors.prevent_anonymous'))
         end
       end
     end

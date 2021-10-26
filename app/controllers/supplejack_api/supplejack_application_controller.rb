@@ -50,7 +50,7 @@ module SupplejackApi
         return request.headers['Authentication-Token'] || params[:api_key]
       end
 
-      SupplejackApi::User.find_or_create_by(name: 'anonymous').authentication_token
+      SupplejackApi::User.find_or_create_by(name: 'anonymous', role: 'anonymous').authentication_token
     end
 
     def current_user

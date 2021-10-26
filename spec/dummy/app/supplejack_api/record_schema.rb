@@ -82,6 +82,7 @@ class RecordSchema
   end
 
    # Roles
+  role :anonymous, anonymous: true
   role :developer, default: true
   role :admin, admin: true
   role :harvester, harvester: true

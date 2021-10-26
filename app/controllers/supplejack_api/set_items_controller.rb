@@ -4,6 +4,7 @@ module SupplejackApi
   class SetItemsController < SupplejackApplicationController
     include SupplejackApi::Concerns::UserSetsControllerMetrics
 
+    before_action :prevent_anonymous!
     before_action :find_user_set
 
     respond_to :json

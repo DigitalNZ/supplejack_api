@@ -78,11 +78,10 @@ module SupplejackApi
     end
 
     def prevent_anonymous!
-      if RecordSchema.roles[current_user.role.to_sym].try(:anonymous)
-        render json: {
-          errors: I18n.t('errors.prevent_anonymous')
-        }, status: :forbidden
-      end
+      return unless RecordSchema.roles[current_user.role.to_sym].try(:anonymous)
+      render json: {
+        errors: I18n.t('errors.prevent_anonymous')
+      }, status: :forbidden
     end
 
     def story_user_check

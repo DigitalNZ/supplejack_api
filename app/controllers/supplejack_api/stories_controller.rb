@@ -13,7 +13,6 @@ module SupplejackApi
     before_action :find_story, only: %i[show update destroy reposition_items]
     after_action :create_story_record_views, only: :show
 
-
     def index
       render json: current_story_user.user_sets.order_by(updated_at: 'desc'),
              each_serializer: StorySerializer,

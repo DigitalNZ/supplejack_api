@@ -5,7 +5,7 @@ module SupplejackApi
     routes { SupplejackApi::Engine.routes }
 
     let(:user) { create(:user) }
-    let(:anonymous_user) { create(:user, role: 'anonymous') } 
+    let(:anonymous_user) { create(:user, role: 'anonymous') }
     let(:api_key) { user.api_key }
 
     describe 'GET index' do
@@ -201,7 +201,11 @@ module SupplejackApi
       context 'anonymous user' do
         let(:story_name) { 'StoryNameGoesHere' }
 
-        before { post :create, params: { user_key: anonymous_user.api_key, api_key: anonymous_user.api_key, story: { name: story_name } } }
+        before do
+          post :create,
+               params: { user_key: anonymous_user.api_key, api_key: anonymous_user.api_key,
+                         story: { name: story_name } }
+        end
 
         it 'returns a 403 http code' do
           expect(response.status).to eq 403
@@ -312,10 +316,11 @@ module SupplejackApi
             { id: items[0].id, position: 2 },
             { id: items[1].id, position: 1 },
             { id: items[2].id, position: 3 }
-        ]
+          ]
 
           post :reposition_items,
-               params: { story_id: story.id.to_s, api_key: anonymous_user.api_key, user_key: anonymous_user.api_key, items: reposition_params }
+               params: { story_id: story.id.to_s, api_key: anonymous_user.api_key, user_key: anonymous_user.api_key,
+                         items: reposition_params }
         end
 
         it 'returns a 403 http code' do

@@ -77,7 +77,7 @@ module SupplejackApi
         end
 
         it 'assigns the anonymous user as the current_user' do
-          create(:user, name: 'anonymous') 
+          create(:user, name: 'anonymous')
           controller.authenticate_user!
           expect(assigns(:current_user).name).to eq 'anonymous'
         end

@@ -464,7 +464,7 @@ RSpec.describe 'Stories Endpoints', type: :request do
       it 'returns an error' do
         response_attributes = JSON.parse(response.body)
 
-        expect(response_attributes).to eq({ 'errors' => 'Please provide a API Key' })
+        expect(response_attributes).to eq({ 'errors' => 'You need Administrator privileges to perform this request' })
       end
     end
 

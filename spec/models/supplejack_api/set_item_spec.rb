@@ -271,5 +271,17 @@ module SupplejackApi
         expect(set_item.content).to have_key :value
       end
     end
+
+    describe 'timestamps' do
+      let!(:user_set) { create(:user_set_with_set_item) }
+
+      it 'has the created_at field' do
+        expect(user_set.set_items.first.created_at).not_to be_nil
+      end
+
+      it 'has the updated_at field' do
+        expect(user_set.set_items.first.updated_at).not_to be_nil
+      end
+    end
   end
 end

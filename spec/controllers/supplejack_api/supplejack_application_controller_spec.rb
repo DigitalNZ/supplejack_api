@@ -266,5 +266,30 @@ module SupplejackApi
         end
       end
     end
+
+    describe '#prevent_anonymous' do
+      context 'when user is anonymous' do
+        before do
+          allow(controller).to receive(:request) {
+            double(:request,
+                   ip: '1.1.1.1',
+                   format: :json,
+                   params: { controller: 'supplejack_api/stories', action: 'show' },
+                   headers: { 'Authentication-Token' => create(:user, role: 'anonymous').authentication_token })
+          }
+        end
+
+        it 'renders prevent_anonymous error' do
+          expect(controller).to receive(:render).with(
+            {
+              json: { errors: I18n.t('errors.prevent_anonymous') },
+              status: :forbidden
+            }
+          )
+
+          controller.prevent_anonymous!
+        end
+      end
+    end
   end
 end

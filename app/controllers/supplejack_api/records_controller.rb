@@ -35,12 +35,6 @@ module SupplejackApi
             render xml: serializable_resource.as_json.as_json.to_xml(root: 'search')
           end
           format.rss { respond_with @search }
-          format.html do
-            # fall back to prevent the page from crashing if the user goes to /
-            render json: @search, serializer: self.class.search_serializer_class, record_fields: available_fields,
-                   record_includes: available_fields, root: 'search', adapter: :json,
-                   callback: params['jsonp']
-          end
         end
       else
         render request.format.to_sym => { errors: @search.errors }, status: :bad_request

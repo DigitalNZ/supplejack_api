@@ -2,7 +2,7 @@ require 'sidekiq/web'
 Sidekiq::Web.set :session_secret, Rails.application.secrets[:secret_key_base]
 
 SupplejackApi::Engine.routes.draw do
-  root to: 'records#index'
+  root to: 'records#index', defaults: {format: 'json'}
 
   namespace :stories do
     resources :moderations, only: [:index]
@@ -21,7 +21,7 @@ SupplejackApi::Engine.routes.draw do
     end
 
     # Records
-    resources :records, only: [:index, :show] do
+    resources :records, only: [:index, :show], defaults: {format: 'json'} do
       get :multiple, on: :collection
       get :more_like_this
     end

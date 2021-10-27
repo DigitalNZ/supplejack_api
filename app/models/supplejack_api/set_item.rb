@@ -3,6 +3,7 @@
 module SupplejackApi
   class SetItem
     include Mongoid::Document
+    include Mongoid::Timestamps
 
     ATTRIBUTES = RecordSchema.groups[:valid_set_fields].fields
 

@@ -8,7 +8,7 @@ module SupplejackApi
 
     before_action :prevent_anonymous!
 
-    prepend_before_action :find_user_set, only: %i[update destroy]
+    before_action :find_user_set, only: %i[update destroy]
     before_action :authenticate_admin!, only: %i[admin_index public_index]
 
     def index

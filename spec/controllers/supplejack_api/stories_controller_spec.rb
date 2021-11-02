@@ -109,6 +109,10 @@ module SupplejackApi
         it 'includes the error message' do
           expect(response.body).to include(I18n.t('errors.story_not_found', id: '1231231231'))
         end
+
+        it 'does not create a user_story_views entry for RequestMetric' do
+          expect(SupplejackApi::RequestMetric.count).to eq 0
+        end
       end
 
       context 'when successful' do

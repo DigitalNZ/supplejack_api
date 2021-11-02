@@ -10,7 +10,14 @@ module SupplejackApi
     field :metric,  type: String
 
     validates :records, presence: true
+    validate :records_integrity
     validates :metric,  presence: true
+
+    def records_integrity
+      return unless records.any? { |record| record[:record_id].nil? || record[:display_collection].nil? }
+
+      errors.add(:records, 'must contain each a record_id and a display_collection')
+    end
 
     def self.spawn(records, metric, date = Time.now.utc.beginning_of_day)
       return unless SupplejackApi.config.log_metrics == true

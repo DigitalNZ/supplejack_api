@@ -25,7 +25,9 @@ module SupplejackApi
     def authenticate_user!
       error_message = nil
 
-      if current_user
+      if current_auth_token.blank? && Rails.env.production?
+        error_message = I18n.t('users.blank_token')
+      elsif current_user
         if current_user.over_limit?
           error_message = I18n.t('users.reached_limit')
         else
@@ -45,6 +47,8 @@ module SupplejackApi
     end
 
     def current_auth_token
+      return request.headers['Authentication-Token'] || params[:api_key] if Rails.env.production?
+
       if request.headers['Authentication-Token'] || params[:api_key]
         return request.headers['Authentication-Token'] || params[:api_key]
       end

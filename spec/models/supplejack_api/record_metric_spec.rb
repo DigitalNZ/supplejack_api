@@ -75,12 +75,14 @@ RSpec.describe SupplejackApi::RecordMetric do
 
   describe '::spawn' do
     let!(:record_metric) do
-      create(:record_metric, {
-        record_id: 1,
-        page_views: 1,
-        display_collection: 'NDHA',
-        date: Time.now.utc.yesterday
-      })
+      create(
+        :record_metric, {
+          record_id: 1,
+          page_views: 1,
+          display_collection: 'NDHA',
+          date: Time.now.utc.yesterday
+        }
+      )
     end
 
     it 'creates a new RecordMetric when there is not one for the provided day and record_id' do

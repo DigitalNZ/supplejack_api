@@ -25,6 +25,36 @@ RSpec.describe SupplejackApi::RequestMetric do
     end
   end
 
+  describe 'validations' do
+    it 'must have an array in records' do
+      rm = create(:request_metric)
+      rm.records = []
+      rm.save
+      expect(rm.errors.full_messages).to eq ["Records Records field can't be blank."]
+    end
+
+    it 'must have a metric set' do
+      rm = create(:request_metric)
+      rm.metric = nil
+      rm.save
+      expect(rm.errors.full_messages).to eq ["Metric Metric field can't be blank."]
+    end
+
+    it 'must not have a record with a nil record_id' do
+      rm = create(:request_metric)
+      rm.records = [{ record_id: nil, display_collection: 'test' }]
+      rm.save
+      expect(rm.errors.full_messages).to eq ['Records must contain each a record_id and a display_collection']
+    end
+
+    it 'must not have a record with a nil display_collection' do
+      rm = create(:request_metric)
+      rm.records = [{ record_id: 1, display_collection: nil }]
+      rm.save
+      expect(rm.errors.full_messages).to eq ['Records must contain each a record_id and a display_collection']
+    end
+  end
+
   describe '#summarize' do
     let!(:appeared_in_searches_yesterday) { create_list(:request_metric, 5, date: 1.day.ago.utc.to_date) }
     let!(:user_set_views_yesterday) do

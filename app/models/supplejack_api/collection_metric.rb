@@ -31,13 +31,13 @@ module SupplejackApi
       )
     end
 
-    def self.spawn(date_range = (Time.at(0).utc..Time.now.yesterday.utc.beginning_of_day))
+    def self.spawn(date_range = (30.days.ago.utc..Time.now.yesterday.utc.beginning_of_day))
       return unless SupplejackApi.config.log_metrics == true
 
       dates = SupplejackApi::RecordMetric.where(date: date_range).map(&:date).uniq
       dates.each do |date|
         Rails.logger.info("COLLECTION METRICS: Processing date: #{date}")
-        collections = SupplejackApi::RecordMetric.where(date: date).map(&:display_collection).uniq
+        collections = SupplejackApi::RecordMetric.where(date: date).pluck(:display_collection).uniq
 
         collections.each do |collection|
           Rails.logger.info("COLLECTION METRICS: Processing collection: #{collection}")

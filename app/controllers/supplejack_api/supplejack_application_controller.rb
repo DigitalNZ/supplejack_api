@@ -25,7 +25,7 @@ module SupplejackApi
     def authenticate_user!
       error_message = nil
 
-      if current_auth_token.blank?
+      if current_auth_token.blank? && Rails.env.production?
         error_message = I18n.t('users.blank_token')
       elsif current_user
         if current_user.over_limit?
@@ -47,8 +47,13 @@ module SupplejackApi
     end
 
     def current_auth_token
-      Rails.logger.info "Authentication-Token : #{request.headers}"
-      @current_auth_token = request.headers['Authentication-Token'] || params[:api_key]
+      return request.headers['Authentication-Token'] || params[:api_key] if Rails.env.production?
+
+      if request.headers['Authentication-Token'] || params[:api_key]
+        return request.headers['Authentication-Token'] || params[:api_key]
+      end
+
+      SupplejackApi::User.find_or_create_by(name: 'anonymous', role: 'anonymous').authentication_token
     end
 
     def current_user
@@ -73,6 +78,14 @@ module SupplejackApi
 
       render format => {
         errors: I18n.t('errors.requires_harvest_privileges')
+      }, status: :forbidden
+    end
+
+    def prevent_anonymous!
+      return unless RecordSchema.roles[current_user.role.to_sym].try(:anonymous)
+
+      render json: {
+        errors: I18n.t('errors.prevent_anonymous')
       }, status: :forbidden
     end
 

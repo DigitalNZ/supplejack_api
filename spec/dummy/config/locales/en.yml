@@ -60,6 +60,7 @@ en:
     user_key_missing: 'Mandatory parameter user_key missing'
     user_set_not_found: "UserSet with id: %{id} was not found."
     user_not_authorized_for_story: "Provided user key is not authorized to access this story"
+    prevent_anonymous: "Anonymous request is not allowed"
 
   time:
     formats:

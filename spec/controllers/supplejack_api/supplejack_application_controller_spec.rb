@@ -76,12 +76,19 @@ module SupplejackApi
           }
         end
 
-        it 'renders blank_token error' do
-          expect(controller).to receive(:render).with(
-            { json: { errors: I18n.t('users.blank_token') }, status: :forbidden }
-          )
-
+        it 'assigns the anonymous user as the current_user' do
+          create(:user, name: 'anonymous', role: 'anonymous')
           controller.authenticate_user!
+          expect(assigns(:current_user).name).to eq 'anonymous'
+          expect(assigns(:current_user).role).to eq 'anonymous'
+        end
+
+        it 'creates the anonymous user when it does not exist' do
+          expect(SupplejackApi::User.count).to eq 0
+          controller.authenticate_user!
+          expect(SupplejackApi::User.count).to eq 1
+          expect(assigns(:current_user).name).to eq 'anonymous'
+          expect(assigns(:current_user).role).to eq 'anonymous'
         end
       end
 
@@ -256,6 +263,31 @@ module SupplejackApi
           expect(UserSet).to receive(:custom_find).with('12345') { @user_set }
 
           controller.find_user_set
+        end
+      end
+    end
+
+    describe '#prevent_anonymous' do
+      context 'when user is anonymous' do
+        before do
+          allow(controller).to receive(:request) {
+            double(:request,
+                   ip: '1.1.1.1',
+                   format: :json,
+                   params: { controller: 'supplejack_api/stories', action: 'show' },
+                   headers: { 'Authentication-Token' => create(:user, role: 'anonymous').authentication_token })
+          }
+        end
+
+        it 'renders prevent_anonymous error' do
+          expect(controller).to receive(:render).with(
+            {
+              json: { errors: I18n.t('errors.prevent_anonymous') },
+              status: :forbidden
+            }
+          )
+
+          controller.prevent_anonymous!
         end
       end
     end

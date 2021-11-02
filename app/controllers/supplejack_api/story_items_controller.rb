@@ -4,6 +4,8 @@ module SupplejackApi
   class StoryItemsController < SupplejackApplicationController
     include Concerns::StoryItemsControllerMetrics
 
+    before_action :prevent_anonymous!
+
     before_action :find_story
     before_action :find_story_item, only: %i[show update destroy]
     before_action :story_user_check, except: %i[create update destroy]

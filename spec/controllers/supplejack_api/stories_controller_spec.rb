@@ -5,6 +5,7 @@ module SupplejackApi
     routes { SupplejackApi::Engine.routes }
 
     let(:user) { create(:user) }
+    let(:anonymous_user) { create(:user, role: 'anonymous') }
     let(:api_key) { user.api_key }
 
     describe 'GET index' do
@@ -29,6 +30,20 @@ module SupplejackApi
           UserSet.all.each do |story|
             expect(response_body).to include(StorySerializer.new(story, scope: { slim: false }).as_json)
           end
+        end
+      end
+
+      context 'anonymous user' do
+        before do
+          get :index, params: { api_key: anonymous_user.api_key, user_key: anonymous_user.api_key, slim: 'false' }
+        end
+
+        it 'returns a 403 http code' do
+          expect(response.status).to eq 403
+        end
+
+        it 'returns an appropriate message' do
+          expect(JSON.parse(response.body)['errors']).to include(I18n.t('errors.prevent_anonymous'))
         end
       end
     end
@@ -130,6 +145,20 @@ module SupplejackApi
           expect(SupplejackApi::RequestMetric.first.metric).to eq 'user_story_views'
         end
       end
+
+      context 'anonymous user' do
+        before do
+          get :show, params: { api_key: anonymous_user.api_key, id: 1 }
+        end
+
+        it 'returns a 403 http code' do
+          expect(response.status).to eq 403
+        end
+
+        it 'returns an appropriate message' do
+          expect(JSON.parse(response.body)['errors']).to include(I18n.t('errors.prevent_anonymous'))
+        end
+      end
     end
 
     describe 'POST create' do
@@ -166,6 +195,24 @@ module SupplejackApi
           new_story = SupplejackApi::UserSet.find response_body[:id]
 
           expect(response.body).to eq(StorySerializer.new(new_story, scope: { slim: false }).to_json)
+        end
+      end
+
+      context 'anonymous user' do
+        let(:story_name) { 'StoryNameGoesHere' }
+
+        before do
+          post :create,
+               params: { user_key: anonymous_user.api_key, api_key: anonymous_user.api_key,
+                         story: { name: story_name } }
+        end
+
+        it 'returns a 403 http code' do
+          expect(response.status).to eq 403
+        end
+
+        it 'returns an appropriate message' do
+          expect(JSON.parse(response.body)['errors']).to include(I18n.t('errors.prevent_anonymous'))
         end
       end
     end
@@ -253,6 +300,37 @@ module SupplejackApi
           expect(response.body).to include(I18n.t('errors.reposition_error'))
         end
       end
+
+      context 'anonymous user' do
+        let(:story) do
+          create(:story,
+                 user: anonymous_user,
+                 set_items: [create(:embed_dnz_item, title: 'first', position: 1),
+                             create(:embed_dnz_item, title: 'middle', position: 2),
+                             create(:embed_dnz_item, title: 'last', position: 3)])
+        end
+
+        before do
+          items = story.set_items
+          reposition_params = [
+            { id: items[0].id, position: 2 },
+            { id: items[1].id, position: 1 },
+            { id: items[2].id, position: 3 }
+          ]
+
+          post :reposition_items,
+               params: { story_id: story.id.to_s, api_key: anonymous_user.api_key, user_key: anonymous_user.api_key,
+                         items: reposition_params }
+        end
+
+        it 'returns a 403 http code' do
+          expect(response.status).to eq 403
+        end
+
+        it 'returns an appropriate message' do
+          expect(JSON.parse(response.body)['errors']).to include(I18n.t('errors.prevent_anonymous'))
+        end
+      end
     end
 
     describe 'DELETE create' do
@@ -284,6 +362,22 @@ module SupplejackApi
 
           expect(user.user_sets.count).to eq(0)
           expect(SupplejackApi::UserSet.count).to eq(0)
+        end
+      end
+
+      context 'anonymous user' do
+        before do
+          story = create(:story, user: anonymous_user)
+
+          delete :destroy, params: { api_key: anonymous_user.api_key, user_key: anonymous_user.api_key, id: story.id }
+        end
+
+        it 'returns a 403 http code' do
+          expect(response.status).to eq 403
+        end
+
+        it 'returns an appropriate message' do
+          expect(JSON.parse(response.body)['errors']).to include(I18n.t('errors.prevent_anonymous'))
         end
       end
     end
@@ -362,6 +456,30 @@ module SupplejackApi
 
         it 'returns the error messages associated with the failed update' do
           expect(JSON.parse(response.body)['errors']).to include 'name'
+        end
+      end
+
+      context 'anonymous user' do
+        let(:name) { 'InsertANameHere' }
+        let(:description) { 'InsertADescriptionHere' }
+        let(:story) { anonymous_user.user_sets.create(attributes_for(:story)) }
+
+        before do
+          patch :update,
+                params: {
+                  api_key: anonymous_user.api_key,
+                  user_key: anonymous_user.api_key,
+                  id: story.id,
+                  story: { name: name, description: description }
+                }
+        end
+
+        it 'returns a 403 http code' do
+          expect(response.status).to eq 403
+        end
+
+        it 'returns an appropriate message' do
+          expect(JSON.parse(response.body)['errors']).to include(I18n.t('errors.prevent_anonymous'))
         end
       end
     end

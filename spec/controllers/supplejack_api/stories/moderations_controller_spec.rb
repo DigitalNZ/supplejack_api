@@ -143,7 +143,7 @@ module SupplejackApi
       describe 'without an admin account' do
         it 'renders the appropriate message' do
           get :index, format: 'json'
-          expect(response.body).to eq '{"errors":"Please provide a API Key"}'
+          expect(response.body).to eq '{"errors":"You need Administrator privileges to perform this request"}'
         end
       end
     end

@@ -6,6 +6,7 @@ module SupplejackApi
     include Concerns::IgnoreMetrics
 
     rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+    before_action :prevent_anonymous!
 
     before_action :authenticate_admin!, :story_user_id_check, only: [:admin_index]
     before_action :story_user_check, except: %i[admin_index show]

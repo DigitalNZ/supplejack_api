@@ -63,7 +63,7 @@ RSpec.describe SupplejackApi::RecordMetric do
       expect(invalid.errors[:record_id]).to include 'Record field can\'t be blank.'
     end
 
-    it 'does not create a record metric when one allready exists for given id and date' do
+    it 'does not create a record metric when one already exists for given id and date' do
       record_metric_two.valid?
       expect(record_metric_two.errors[:record_id]).to include 'is already taken'
     end
@@ -75,10 +75,12 @@ RSpec.describe SupplejackApi::RecordMetric do
 
   describe '::spawn' do
     let!(:record_metric) do
-      create(:record_metric, record_id: 1,
-                             page_views: 1,
-                             display_collection: 'NDHA',
-                             date: Time.now.utc.yesterday)
+      create(:record_metric, {
+        record_id: 1,
+        page_views: 1,
+        display_collection: 'NDHA',
+        date: Time.now.utc.yesterday
+      })
     end
 
     it 'creates a new RecordMetric when there is not one for the provided day and record_id' do
@@ -86,8 +88,16 @@ RSpec.describe SupplejackApi::RecordMetric do
         .to change(SupplejackApi::RecordMetric, :count).by(1)
     end
 
-    it 'does not create a RecordMetric when the provided day and record_id allready exist' do
+    it 'does not create a RecordMetric when the provided day and record_id already exist' do
       expect { SupplejackApi::RecordMetric.spawn(record_metric.record_id, { appeared_in_searches: 1 }, 'NDHA') }
+        .to change(SupplejackApi::RecordMetric, :count).by(0)
+    end
+
+    it 'does not create a RecordMetric if the validation fails' do
+      expect { SupplejackApi::RecordMetric.spawn(nil, { appeared_in_searches: 1 }, 'NDHA') }
+        .to change(SupplejackApi::RecordMetric, :count).by(0)
+
+      expect { SupplejackApi::RecordMetric.spawn(record_metric.record_id, { appeared_in_searches: 1 }, nil) }
         .to change(SupplejackApi::RecordMetric, :count).by(0)
     end
 
@@ -98,11 +108,14 @@ RSpec.describe SupplejackApi::RecordMetric do
     end
 
     it 'increments an existing Record Metric by a given hash of metrics' do
-      SupplejackApi::RecordMetric.spawn(record_metric.record_id,
-                                        { page_views: 7,
-                                          appeared_in_searches: 6,
-                                          user_set_views: 10 },
-                                        'NDHA')
+      SupplejackApi::RecordMetric.spawn(
+        record_metric.record_id, {
+          page_views: 7,
+          appeared_in_searches: 6,
+          user_set_views: 10
+        },
+        'NDHA'
+      )
 
       record_metric.reload
 

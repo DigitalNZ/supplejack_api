@@ -47,11 +47,10 @@ module SupplejackApi
     def self.spawn(record_id, metrics, display_collection, date = Time.now.utc.beginning_of_day.yesterday)
       return unless SupplejackApi.config.log_metrics == true
 
-      collection.update_one(
-        { record_id: record_id, date: date.to_date, display_collection: display_collection },
-        { '$inc' => metrics },
-        upsert: true
-      )
+      record = where(record_id: record_id, date: date).first
+      record = new(record_id: record_id, date: date, display_collection: display_collection) if record.nil?
+      record.inc(metrics)
+      record.save
     end
   end
 end

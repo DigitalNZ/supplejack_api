@@ -116,7 +116,7 @@ module SupplejackApi
       end
 
       context 'when successful' do
-        let(:response_body) { JSON.parse(response.body).deep_symbolize_keys }
+        let(:response_body) { JSON.parse(response.body, symbolize_names: true) }
         let(:story)         { user.user_sets.first }
         let(:story_id)      { story.id.to_s }
 

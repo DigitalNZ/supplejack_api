@@ -101,15 +101,16 @@ module SupplejackApi
     def create_story_record_views
       return unless log_request_for_metrics?
 
-      payload = JSON.parse(response.body)
-      return if payload['contents'].blank?
+      payload = JSON.parse(response.body, symbolize_names: true)
+      return if payload[:contents].blank?
 
-      # contains a bug: some story items have an empty record_id because they're just user inputs as text
-      records = payload['contents'].map do |record|
-        { record_id: record['record_id'], display_collection: record['content']['display_collection'] }
+      records = payload[:contents].map do |record|
+        { record_id: record[:record_id], display_collection: record[:content][:display_collection] }
       end
+      # remove invalid story items for the metrics, eg: user inputed text
+      records.select! { |record| record[:record_id].present? && record[:display_collection].present? }
 
-      SupplejackApi::RequestMetric.spawn(records, 'user_story_views') if records
+      SupplejackApi::RequestMetric.spawn(records, 'user_story_views') if records.any?
     end
   end
 end

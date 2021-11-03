@@ -16,6 +16,7 @@ module SupplejackApi
     def records_integrity
       return unless records.any? { |record| record[:record_id].nil? || record[:display_collection].nil? }
 
+      Rails.logger.info('RequestMetric failed the records_integrity check')
       errors.add(:records, 'must contain each a record_id and a display_collection')
     end
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SupplejackApi
-  class StoryItemSerializer < ActiveModel::Serializer
+  class StoryItemSerializer < SupplejackApi::BaseSerializer
     attributes :id, :position, :type, :sub_type, :record_id
 
     attribute :content do

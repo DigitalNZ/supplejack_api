@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SupplejackApi
-  class StorySerializer < ActiveModel::Serializer
+  class StorySerializer < SupplejackApi::BaseSerializer
     attributes :id, :name, :description, :privacy, :copyright,
                :featured, :featured_at, :approved, :tags,
                :subjects, :updated_at, :cover_thumbnail

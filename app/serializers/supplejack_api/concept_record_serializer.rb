@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SupplejackApi
-  class ConceptRecordSerializer < ActiveModel::Serializer
+  class ConceptRecordSerializer < SupplejackApi::BaseSerializer
     attribute '@id' do
       "http://#{ENV['WWW_DOMAIN']}/records/#{object.record_id}"
     end

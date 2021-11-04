@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SupplejackApi
-  class RecordSerializer < ActiveModel::Serializer
+  class RecordSerializer < SupplejackApi::BaseSerializer
     attribute :id
     attribute :next_page,       if: -> { object.next_page.present? }
     attribute :next_record,     if: -> { object.next_record.present? }

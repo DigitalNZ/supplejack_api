@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SupplejackApi
-  class MltSerializer < ActiveModel::Serializer
+  class MltSerializer < SupplejackApi::BaseSerializer
     attribute :id
 
     RecordSchema.fields.each do |name, definition|

@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 module SupplejackApi
-  class UserSetSerializer < ActiveModel::Serializer
-    attributes :id, :name, :count, :priority, :featured, :approved
-    attributes :created_at, :updated_at, :tags, :privacy, :subjects, :description
+  class UserSetSerializer < SupplejackApi::BaseSerializer
+    attributes :id, :name, :count, :priority, :featured,
+               :approved, :created_at, :updated_at, :tags,
+               :privacy, :subjects, :description
 
     has_one :record
     has_many :items_with_records, key: :records do |serializer|

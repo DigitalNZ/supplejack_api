@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SupplejackApi
-  class ConceptSerializer < ActiveModel::Serializer
+  class ConceptSerializer < SupplejackApi::BaseSerializer
     has_many :source_authorities
     has_many :records, serializer: ConceptRecordSerializer
 

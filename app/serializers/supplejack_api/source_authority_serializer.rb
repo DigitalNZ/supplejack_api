@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module SupplejackApi
-  class SourceAuthoritySerializer < ActiveModel::Serializer
+  class SourceAuthoritySerializer < SupplejackApi::BaseSerializer
     attribute '@type' do
       object.concept_type
     end

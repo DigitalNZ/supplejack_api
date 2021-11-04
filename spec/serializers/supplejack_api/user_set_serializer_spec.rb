@@ -61,7 +61,10 @@ module SupplejackApi
       end
 
       it 'has set items' do
-        expect(serialized_user_set[:records]).to eq [{ 'record_id' => user_set.set_items.first.record_id, 'position' => user_set.set_items.first.position }]
+        expect(serialized_user_set[:records]).to eq [
+          { 'record_id' => user_set.set_items.first.record_id,
+            'position' => user_set.set_items.first.position }
+        ]
       end
 
       it 'has the :record_id for nested records' do
@@ -73,7 +76,7 @@ module SupplejackApi
       end
     end
 
-    context 'featured records' do
+    context 'when record is featured' do
       let(:serialized_feature_set) { described_class.new(user_set, featured: true).as_json }
 
       it 'has the *featured* record' do
@@ -109,16 +112,16 @@ module SupplejackApi
           end
         end
 
-        it 'includes the user hash' do
+        it 'has user hash' do
           expect(serialized_user_details_set[:user][:name]).to eq user_set.user.name
         end
 
-        it 'does not include the users api key' do
+        it 'does not have users api key' do
           expect(serialized_user_details_set[:user][:api]).not_to eq user_set.user.api_key
         end
       end
 
-      context 'as an admin user' do
+      context 'when admin user' do
         before do
           described_class.class_eval do
             define_method :current_user do
@@ -126,7 +129,7 @@ module SupplejackApi
             end
           end
 
-          it 'includes the user api key' do
+          it 'has user api key' do
             expect(serialized_user_details_set[:user]).to eq user_set.api_key
           end
         end

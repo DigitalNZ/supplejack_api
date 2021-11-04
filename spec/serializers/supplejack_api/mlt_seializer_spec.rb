@@ -7,15 +7,15 @@ module SupplejackApi
     let(:record) { create(:record_with_fragment) }
     let(:serialized_record) { described_class.new(record).as_json }
 
-    it 'renders the id' do
+    it 'has id' do
       expect(serialized_record).to have_key :id
     end
 
-    describe 'it renders attributes based on your schema' do
+    describe 'schema attributes' do
       RecordSchema.fields.each do |name, definition|
         next if definition.store == false
 
-        it "renders the #{name} field" do
+        it "has #{name} field" do
           expect(serialized_record).to have_key name
         end
       end

@@ -8,27 +8,27 @@ module SupplejackApi
     let(:search)  { SupplejackApi::RecordSearch.new }
     let(:serialized_search) { described_class.new(search).as_json }
 
-    it 'renders the :result_count' do
+    it 'has :result_count' do
       expect(serialized_search[:result_count]).to eq search.total
     end
 
-    it 'renders the :results' do
+    it 'has :results' do
       expect(serialized_search).to have_key :results
     end
 
-    it 'renders :per_page' do
+    it 'has :per_page' do
       expect(serialized_search[:per_page]).to eq search.per_page
     end
 
-    it 'renders :page' do
+    it 'has :page' do
       expect(serialized_search[:page]).to eq search.page
     end
 
-    it 'renders :request_url' do
+    it 'has :request_url' do
       expect(serialized_search[:request_url]).to eq search.request_url
     end
 
-    it 'renders the facets' do
+    it 'has facets' do
       expect(serialized_search).to have_key :facets
     end
 

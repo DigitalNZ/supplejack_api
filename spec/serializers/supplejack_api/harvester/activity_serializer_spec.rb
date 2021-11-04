@@ -7,36 +7,36 @@ RSpec.describe SupplejackApi::Harvester::ActivitySerializer do
   let(:serializer) { described_class.new(activity).as_json }
 
   describe '#attributes' do
-    it 'renders :created_at' do
-      expect(serializer).to have_key :created_at
+    it 'has :created_at' do
+      expect(serializer[:created_at]).to eq activity.created_at
     end
 
-    it 'renders :updated_at' do
-      expect(serializer).to have_key :updated_at
+    it 'has :updated_at' do
+      expect(serializer[:updated_at]).to eq activity.updated_at
     end
 
-    it 'renders :date' do
-      expect(serializer).to have_key :date
+    it 'has :date' do
+      expect(serializer[:date]).to eq activity.date
     end
 
-    it 'renders :user_sets' do
-      expect(serializer).to have_key :user_sets
+    it 'has :user_sets' do
+      expect(serializer[:user_sets]).to eq activity.user_sets
     end
 
-    it 'renders :search' do
-      expect(serializer).to have_key :search
+    it 'has :search' do
+      expect(serializer[:search]).to eq activity.search
     end
 
-    it 'renders :records' do
-      expect(serializer).to have_key :records
+    it 'has :records' do
+      expect(serializer[:records]).to eq activity.records
     end
 
-    it 'renders :source_clicks' do
-      expect(serializer).to have_key :source_clicks
+    it 'has :source_clicks' do
+      expect(serializer[:source_clicks]).to eq activity.source_clicks
     end
 
-    it 'renders :total' do
-      expect(serializer).to have_key :total
+    it 'has :total' do
+      expect(serializer[:total]).to eq activity.total
     end
   end
 end

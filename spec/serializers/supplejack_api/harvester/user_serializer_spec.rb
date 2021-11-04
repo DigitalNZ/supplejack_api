@@ -7,40 +7,40 @@ RSpec.describe SupplejackApi::Harvester::UserSerializer do
   let(:serializer) { described_class.new(user).as_json }
 
   describe '#attributes' do
-    it 'renders the :id' do
-      expect(serializer).to have_key :id
+    it 'has :id' do
+      expect(serializer[:id]).to eq user.id
     end
 
-    it 'renders the :username' do
-      expect(serializer).to have_key :username
+    it 'has :username' do
+      expect(serializer[:username]).to eq user.username
     end
 
-    it 'renders the :name' do
-      expect(serializer).to have_key :name
+    it 'has :name' do
+      expect(serializer[:name]).to eq user.name
     end
 
-    it 'renders the :authentication_token' do
-      expect(serializer).to have_key :authentication_token
+    it 'has :authentication_token' do
+      expect(serializer[:authentication_token]).to eq user.authentication_token
     end
 
-    it 'renders the :email' do
-      expect(serializer).to have_key :email
+    it 'has :email' do
+      expect(serializer[:email]).to eq user.email
     end
 
-    it 'renders the :role' do
-      expect(serializer).to have_key :role
+    it 'has :role' do
+      expect(serializer[:role]).to eq user.role
     end
 
-    it 'renders the :daily_requests' do
-      expect(serializer).to have_key :daily_requests
+    it 'has :daily_requests' do
+      expect(serializer[:daily_requests]).to eq user.daily_requests
     end
 
-    it 'renders the :monthly_requests' do
-      expect(serializer).to have_key :monthly_requests
+    it 'has :monthly_requests' do
+      expect(serializer[:monthly_requests]).to eq user.monthly_requests
     end
 
-    it 'renders the :max_requests' do
-      expect(serializer).to have_key :max_requests
+    it 'has :max_requests' do
+      expect(serializer[:max_requests]).to eq user.max_requests
     end
   end
 end

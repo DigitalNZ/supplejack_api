@@ -8,35 +8,35 @@ module SupplejackApi
     let(:serialized_concept_record) { ConceptRecordSerializer.new(record).as_json }
 
     describe 'attributes' do
-      it 'includes the @id' do
+      it 'has @id' do
         expect(serialized_concept_record).to have_key '@id'
       end
 
-      it 'includes the @type' do
+      it 'has @type' do
         expect(serialized_concept_record).to have_key '@type'
       end
 
-      it 'includes the :title' do
+      it 'has :title' do
         expect(serialized_concept_record[:title]).to eq record.title
       end
 
-      it 'includes the :description' do
+      it 'has :description' do
         expect(serialized_concept_record[:description]).to eq record.description
       end
 
-      it 'includes the :date' do
+      it 'has :date' do
         expect(serialized_concept_record[:date]).to eq record.date
       end
 
-      it 'includes the :display_content_partner' do
+      it 'has :display_content_partner' do
         expect(serialized_concept_record[:display_content_partner]).to eq record.display_content_partner
       end
 
-      it 'includes the :display_collection' do
+      it 'has :display_collection' do
         expect(serialized_concept_record[:display_collection]).to eq record.display_collection
       end
 
-      it 'includes the :thumbnail_url' do
+      it 'has :thumbnail_url' do
         expect(serialized_concept_record[:thumbnail_url]).to eq record.thumbnail_url
       end
     end

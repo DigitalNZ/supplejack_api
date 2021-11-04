@@ -108,7 +108,7 @@ module SupplejackApi
         { record_id: record[:record_id], display_collection: record[:content][:display_collection] }
       end
       # remove invalid story items for the metrics, eg: user inputed text
-      records.select! { |record| record[:record_id].present? && record[:display_collection].present? }
+      records.reject! { |record| record[:record_id].nil? || record[:display_collection].nil? }
 
       SupplejackApi::RequestMetric.spawn(records, 'user_story_views') if records.any?
     end

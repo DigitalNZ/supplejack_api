@@ -4,12 +4,12 @@ require 'spec_helper'
 
 module SupplejackApi
   describe SearchSerializer do
-    let!(:record) { FactoryBot.create(:record) }
+    let!(:record) { create(:record) }
     let(:search)  { SupplejackApi::RecordSearch.new }
     let(:serialized_search) { described_class.new(search).as_json }
 
     it 'renders the :result_count' do
-      expect(serialized_search).to have_key :result_count
+      expect(serialized_search[:result_count]).to eq search.total
     end
 
     it 'renders the :results' do
@@ -17,15 +17,15 @@ module SupplejackApi
     end
 
     it 'renders :per_page' do
-      expect(serialized_search).to have_key :per_page
+      expect(serialized_search[:per_page]).to eq search.per_page
     end
 
     it 'renders :page' do
-      expect(serialized_search).to have_key :page
+      expect(serialized_search[:page]).to eq search.page
     end
 
     it 'renders :request_url' do
-      expect(serialized_search).to have_key :request_url
+      expect(serialized_search[:request_url]).to eq search.request_url
     end
 
     it 'renders the facets' do

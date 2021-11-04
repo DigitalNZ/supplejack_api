@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module SupplejackApi
   describe ConceptRecordSerializer do
-    let(:record) { FactoryBot.create(:record) }
+    let(:record) { create(:record) }
     let(:serialized_concept_record) { ConceptRecordSerializer.new(record).as_json }
 
     describe 'attributes' do
@@ -17,27 +17,27 @@ module SupplejackApi
       end
 
       it 'includes the :title' do
-        expect(serialized_concept_record).to have_key :title
+        expect(serialized_concept_record[:title]).to eq record.title
       end
 
       it 'includes the :description' do
-        expect(serialized_concept_record).to have_key :description
+        expect(serialized_concept_record[:description]).to eq record.description
       end
 
       it 'includes the :date' do
-        expect(serialized_concept_record).to have_key :date
+        expect(serialized_concept_record[:date]).to eq record.date
       end
 
       it 'includes the :display_content_partner' do
-        expect(serialized_concept_record).to have_key :display_content_partner
+        expect(serialized_concept_record[:display_content_partner]).to eq record.display_content_partner
       end
 
       it 'includes the :display_collection' do
-        expect(serialized_concept_record).to have_key :display_collection
+        expect(serialized_concept_record[:display_collection]).to eq record.display_collection
       end
 
       it 'includes the :thumbnail_url' do
-        expect(serialized_concept_record).to have_key :thumbnail_url
+        expect(serialized_concept_record[:thumbnail_url]).to eq record.thumbnail_url
       end
     end
   end

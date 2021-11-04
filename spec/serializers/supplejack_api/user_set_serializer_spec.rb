@@ -4,94 +4,93 @@ require 'spec_helper'
 
 module SupplejackApi
   describe UserSetSerializer do
-    let(:user_set) { FactoryBot.create(:user_set_with_set_item) }
+    let(:user_set) { create(:user_set_with_set_item) }
     let(:serialized_user_set) { described_class.new(user_set).as_json }
 
     context 'without passing any options' do
-      it 'returns the :id' do
-        expect(serialized_user_set).to have_key :id
+      it 'has :id' do
+        expect(serialized_user_set[:id]).to eq user_set.id
       end
 
-      it 'returns the :name' do
-        expect(serialized_user_set).to have_key :name
+      it 'has :name' do
+        expect(serialized_user_set[:name]).to eq user_set.name
       end
 
-      it 'returns the :count' do
-        expect(serialized_user_set).to have_key :count
+      it 'has :count' do
+        expect(serialized_user_set[:count]).to eq user_set.count
       end
 
-      it 'returns the :priority' do
-        expect(serialized_user_set).to have_key :priority
+      it 'has :priority' do
+        expect(serialized_user_set[:priority]).to eq user_set.priority
       end
 
-      it 'returns :featured' do
-        expect(serialized_user_set).to have_key :featured
+      it 'has :featured' do
+        expect(serialized_user_set[:featured]).to eq user_set.featured
       end
 
-      it 'returns :approved' do
-        expect(serialized_user_set).to have_key :approved
+      it 'has :approved' do
+        expect(serialized_user_set[:approved]).to eq user_set.approved
       end
 
-      it 'returns :created_at' do
-        expect(serialized_user_set).to have_key :created_at
+      it 'has :created_at' do
+        expect(serialized_user_set[:created_at]).to eq user_set.created_at
       end
 
-      it 'returns :updated_at' do
-        expect(serialized_user_set).to have_key :updated_at
+      it 'has :updated_at' do
+        expect(serialized_user_set[:updated_at]).to eq user_set.updated_at
       end
 
-      it 'returns :tags' do
-        expect(serialized_user_set).to have_key :tags
+      it 'has :tags' do
+        expect(serialized_user_set[:tags]).to eq user_set.tags
       end
 
-      it 'returns :privacy' do
-        expect(serialized_user_set).to have_key :privacy
+      it 'has :privacy' do
+        expect(serialized_user_set[:privacy]).to eq user_set.privacy
       end
 
-      it 'returns :subjects' do
-        expect(serialized_user_set).to have_key :subjects
+      it 'has :subjects' do
+        expect(serialized_user_set[:subjects]).to eq user_set.subjects
       end
 
-      it 'returns :description' do
-        expect(serialized_user_set).to have_key :description
+      it 'has :description' do
+        expect(serialized_user_set[:description]).to eq user_set.description
       end
 
-      it 'returns the record' do
-        expect(serialized_user_set[:record]).to have_key :record_id
+      it 'has record with record_id' do
+        expect(serialized_user_set[:record][:record_id]).to eq user_set.record.record_id
       end
 
-      it 'returns the set items' do
-        expect(serialized_user_set).to have_key :records
+      it 'has set items' do
+        expect(serialized_user_set[:records]).to eq [{ 'record_id' => user_set.set_items.first.record_id, 'position' => user_set.set_items.first.position }]
       end
 
-      it 'returns the :record_id for nested records' do
+      it 'has the :record_id for nested records' do
         expect(serialized_user_set[:records].first).to have_key 'record_id'
       end
 
-      it 'returns the :position for nested_records' do
+      it 'has the :position for nested_records' do
         expect(serialized_user_set[:records].first).to have_key 'position'
       end
     end
 
     context 'featured records' do
-      let(:current_user) { U }
       let(:serialized_feature_set) { described_class.new(user_set, featured: true).as_json }
 
-      it 'returns the *featured* record' do
+      it 'has the *featured* record' do
         expect(serialized_feature_set[:records]).not_to be_a(Array)
       end
 
-      it 'it returns the record_id for the record' do
+      it 'has the record_id for the record' do
         expect(serialized_feature_set[:records]).to have_key :record_id
       end
 
-      it 'returns the position for the record' do
+      it 'has the position for the record' do
         expect(serialized_feature_set[:records]).to have_key :position
       end
 
       describe 'it renders attributes based on your schema :sets group'
       RecordSchema.groups[:sets].fields.each do |field|
-        it "renders the #{field} field" do
+        it "has the #{field} field" do
           expect(serialized_feature_set[:records]).to have_key field
         end
       end
@@ -111,15 +110,11 @@ module SupplejackApi
         end
 
         it 'includes the user hash' do
-          expect(serialized_user_details_set).to have_key :user
-        end
-
-        it 'includes the user name' do
-          expect(serialized_user_details_set[:user]).to have_key :name
+          expect(serialized_user_details_set[:user][:name]).to eq user_set.user.name
         end
 
         it 'does not include the users api key' do
-          expect(serialized_user_details_set[:user]).not_to have_key :api_key
+          expect(serialized_user_details_set[:user][:api]).not_to eq user_set.user.api_key
         end
       end
 
@@ -132,7 +127,7 @@ module SupplejackApi
           end
 
           it 'includes the user api key' do
-            expect(serialized_user_details_set[:user]).to have_key :api_key
+            expect(serialized_user_details_set[:user]).to eq user_set.api_key
           end
         end
       end

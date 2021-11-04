@@ -4,27 +4,27 @@ require 'spec_helper'
 
 module SupplejackApi
   describe UserSerializer do
-    let(:user) { FactoryBot.create(:user) }
+    let(:user) { create(:user) }
     let(:serialized_user) { described_class.new(user).as_json }
 
-    it 'renders the :id' do
-      expect(serialized_user).to have_key :id
+    it 'has :id' do
+      expect(serialized_user[:id]).to eq user.id
     end
 
-    it 'renders the :name' do
-      expect(serialized_user).to have_key :name
+    it 'has :name' do
+      expect(serialized_user[:name]).to eq user.name
     end
 
-    it 'renders the :email' do
-      expect(serialized_user).to have_key :email
+    it 'has :email' do
+      expect(serialized_user[:email]).to eq user.email
     end
 
-    it 'renders the :username' do
-      expect(serialized_user).to have_key :username
+    it 'has :username' do
+      expect(serialized_user[:username]).to eq user.username
     end
 
-    it 'renders the :api_key' do
-      expect(serialized_user).to have_key :api_key
+    it 'has :api_key' do
+      expect(serialized_user[:api_key]).to eq user.api_key
     end
   end
 end

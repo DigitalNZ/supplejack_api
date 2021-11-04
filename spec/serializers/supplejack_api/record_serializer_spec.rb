@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module SupplejackApi
   describe RecordSerializer do
-    let(:record) { FactoryBot.create(:record_with_fragment) }
+    let(:record) { create(:record_with_fragment) }
     let(:serialized_record) { described_class.new(record).as_json }
 
     it 'renders the id' do

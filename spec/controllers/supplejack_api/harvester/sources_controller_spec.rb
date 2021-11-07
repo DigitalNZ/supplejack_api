@@ -199,50 +199,50 @@ module SupplejackApi
       end
 
       describe 'GET link_check_records' do
-        it 'returns forbidden' do
+        it 'returns unauthorized' do
           get :link_check_records, params: { id: 1, api_key: api_key }
 
-          expect(response).to be_forbidden
+          expect(response).to be_unauthorized
         end
       end
 
       describe 'GET reindex' do
-        it 'returns forbidden' do
+        it 'returns unauthorized' do
           get :reindex, params: { id: 1, date: Time.now.utc, api_key: api_key }
 
-          expect(response).to be_forbidden
+          expect(response).to be_unauthorized
         end
       end
 
       describe 'PUT update' do
-        it 'returns forbidden' do
+        it 'returns unauthorized' do
           put :update, params: { id: 1, source: { status: 'suppressed' }, api_key: api_key }
 
-          expect(response).to be_forbidden
+          expect(response).to be_unauthorized
         end
       end
 
       describe 'GET index' do
-        it 'returns forbidden' do
+        it 'returns unauthorized' do
           get :index, params: { api_key: api_key }
 
-          expect(response).to be_forbidden
+          expect(response).to be_unauthorized
         end
       end
 
       describe 'GET "show"' do
-        it 'returns forbidden' do
+        it 'returns unauthorized' do
           get :show, params: { id: 1, api_key: api_key }
 
-          expect(response).to be_forbidden
+          expect(response).to be_unauthorized
         end
       end
 
       describe 'POST "create"' do
-        it 'returns forbidden' do
+        it 'returns unauthorized' do
           post :create, params: { partner_id: 1, source: FactoryBot.attributes_for(:source), api_key: api_key }
 
-          expect(response).to be_forbidden
+          expect(response).to be_unauthorized
         end
       end
     end

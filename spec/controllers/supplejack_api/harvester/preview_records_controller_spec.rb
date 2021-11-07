@@ -40,10 +40,10 @@ module SupplejackApi
         allow(RecordSchema).to receive(:roles) { { harvester: double(:harvester, harvester: nil) } }
       end
 
-      it 'responds with 403 and no content' do
+      it 'responds with 401 and no content' do
         get :index, params: { search:  { 'fragments.job_id': '54' }, api_key: admin_key }
 
-        expect(response.status).to eq 403
+        expect(response.status).to eq 401
         expect(response.body).to include 'You need Harvester privileges to perform this request.'
       end
     end

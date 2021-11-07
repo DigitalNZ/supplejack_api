@@ -2,10 +2,7 @@
 
 module SupplejackApi
   module Harvester
-    class PartnersController < SupplejackApplicationController
-      respond_to :json
-      before_action :authenticate_harvester!
-
+    class PartnersController < BaseController
       def create
         if partner_params[:_id].present?
           @partner = Partner.find_or_initialize_by(_id: partner_params[:_id])

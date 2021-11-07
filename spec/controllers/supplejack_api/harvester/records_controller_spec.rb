@@ -257,32 +257,42 @@ module SupplejackApi
       end
 
       describe 'PUT update' do
-        it 'returns forbidden' do
+        it 'returns unauthorized' do
           put :update, params: { id: 'abc123', record: { status: 'supressed' }, api_key: api_key }, format: :json
+
+          expect(response).to be_unauthorized
         end
       end
 
       describe 'GET #show' do
-        it 'returns forbidden' do
+        it 'returns unauthorized' do
           get :show, params: { id: 'abc123', api_key: api_key }
+
+          expect(response).to be_unauthorized
         end
       end
 
       describe 'DELETE flush' do
-        it 'returns forbidden' do
+        it 'returns unauthorized' do
           put :flush, params: { id: 'abc123', api_key: api_key }
+
+          expect(response).to be_unauthorized
         end
       end
 
       describe 'PUT delete' do
-        it 'returns forbidden' do
+        it 'returns unauthorized' do
           put :delete, params: { id: 'abc123', api_key: api_key }
+
+          expect(response).to be_unauthorized
         end
       end
 
       describe 'POST create' do
-        it 'returns forbidden' do
+        it 'returns unauthorized' do
           post :create, params: { record: { internal_identifier: '1234' }, api_key: api_key }
+
+          expect(response).to be_unauthorized
         end
       end
     end

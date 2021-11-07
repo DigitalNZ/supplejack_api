@@ -24,12 +24,12 @@ RSpec.describe SupplejackApi::Harvester::UsersController do
 
     it 'requires an API key' do
       get :index, format: :json
-      expect(response.status).to eq 403
+      expect(response.status).to eq 401
     end
 
     it 'requires an API key with harvester privilages' do
       get :index, format: :json, params: { api_key: developer_api_key }
-      expect(response.status).to eq 403
+      expect(response.status).to eq 401
     end
   end
 
@@ -44,7 +44,7 @@ RSpec.describe SupplejackApi::Harvester::UsersController do
 
     it 'requires an API key' do
       patch :update, params: { id: user, api_key: developer_api_key, user: { max_requests: 10 } }
-      expect(response.status).to eq 403
+      expect(response.status).to eq 401
     end
   end
 

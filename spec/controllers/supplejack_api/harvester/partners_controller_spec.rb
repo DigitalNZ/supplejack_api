@@ -88,28 +88,28 @@ module SupplejackApi
       describe "POST 'create'" do
         it 'returns forbidden' do
           post :create, params: { partner: FactoryBot.attributes_for(:partner), api_key: api_key }
-          expect(response).to be_forbidden
+          expect(response).to be_unauthorized
         end
       end
 
       describe "PUT 'update'" do
         it 'returns forbidden' do
           put :update, params: { id: 1, partner: { name: 'Down to the wire' }, api_key: api_key }
-          expect(response).to be_forbidden
+          expect(response).to be_unauthorized
         end
       end
 
       describe "GET 'index'" do
         it 'returns forbidden' do
           get :index, params: { api_key: api_key }
-          expect(response).to be_forbidden
+          expect(response).to be_unauthorized
         end
       end
 
       describe "GET 'show'" do
         it 'returns forbidden' do
           get :show, params: { id: 1, api_key: api_key }
-          expect(response).to be_forbidden
+          expect(response).to be_unauthorized
         end
       end
     end

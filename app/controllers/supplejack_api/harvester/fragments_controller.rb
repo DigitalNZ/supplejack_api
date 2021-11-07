@@ -2,10 +2,7 @@
 
 module SupplejackApi
   module Harvester
-    class FragmentsController < SupplejackApplicationController
-      respond_to :json
-      before_action :authenticate_harvester!
-
+    class FragmentsController < BaseController
       def create
         @record = UpdateRecordFromHarvest.new(fragment_params, params[:preview], params[:record_id]).call
 

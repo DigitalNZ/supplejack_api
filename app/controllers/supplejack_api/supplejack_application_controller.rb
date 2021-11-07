@@ -72,15 +72,6 @@ module SupplejackApi
       }, status: :forbidden
     end
 
-    def authenticate_harvester!
-      format = request.format.to_sym || :json
-      return true if RecordSchema.roles[current_user.role.to_sym].try(:harvester)
-
-      render format => {
-        errors: I18n.t('errors.requires_harvest_privileges')
-      }, status: :forbidden
-    end
-
     def prevent_anonymous!
       return unless RecordSchema.roles[current_user.role.to_sym].try(:anonymous)
 

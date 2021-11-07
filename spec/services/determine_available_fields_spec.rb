@@ -27,5 +27,17 @@ RSpec.describe DetermineAvailableFields do
                                       previous_page previous_record]
       end
     end
+
+    context 'when global_attributes configured' do
+      before do
+        allow(SupplejackApi::BaseSerializer).to receive(:global_attributes).and_return(%i[copyright])
+      end
+
+      it 'returns copyright' do
+        service = described_class.new({ groups: [:default] })
+
+        expect(service.call).to include :copyright
+      end
+    end
   end
 end

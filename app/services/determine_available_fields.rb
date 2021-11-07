@@ -20,6 +20,8 @@ class DetermineAvailableFields
 
     fields += %i[updated_at created_at] if options[:fields].blank?
 
+    # fields += SupplejackApi::BaseSerializer.global_attributes
+
     fields
   end
 end

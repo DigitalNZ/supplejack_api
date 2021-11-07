@@ -23,8 +23,11 @@ module SupplejackApi
         respond_to do |format|
           format.json do
             render json: @search, serializer: self.class.search_serializer_class, record_fields: available_fields,
-                   record_includes: available_fields, root: 'search', adapter: :json,
+                   record_includes: available_fields, meta: { terms: '101' }, root: 'search', adapter: :json,
                    callback: params['jsonp']
+
+          # FOR MONDAY CHECK WITH JAMES IF META is fine
+          # OR ITS GOING TO SHOW UP ON ALL THE RECORDS IN SEARCH
           end
           format.xml do
             options = { serializer: self.class.search_serializer_class, record_includes: available_fields,

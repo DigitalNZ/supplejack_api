@@ -6,6 +6,8 @@ RSpec.describe SupplejackApi::UserSetPolicy, type: :policy do
   subject(:policy) { described_class }
 
   let(:story) { create(:story) }
+  let(:admin) { create(:admin_user) }
+  let(:user) { create(:user) }
 
   permissions :show? do
     context 'when the story is private' do
@@ -20,16 +22,12 @@ RSpec.describe SupplejackApi::UserSetPolicy, type: :policy do
       end
 
       context 'when user is an admin' do
-        let(:admin) { create(:admin_user) }
-
         it 'grants access' do
           expect(policy).to permit(admin, story)
         end
       end
 
       context 'when user is not and admin or owner of story' do
-        let(:user) { create(:user) }
-
         it 'denies access' do
           expect(policy).not_to permit(user, story)
         end
@@ -40,8 +38,6 @@ RSpec.describe SupplejackApi::UserSetPolicy, type: :policy do
       let(:story) { create(:story, privacy: 'public') }
 
       context 'when user is not and admin or owner of story' do
-        let(:user) { create(:user) }
-
         it 'grants access' do
           expect(policy).to permit(user, story)
         end
@@ -59,18 +55,28 @@ RSpec.describe SupplejackApi::UserSetPolicy, type: :policy do
     end
 
     context 'when user is an admin' do
-      let(:admin) { create(:admin_user) }
-
       it 'grants access' do
         expect(policy).to permit(admin, story)
       end
     end
 
     context 'when user is not and admin or owner of story' do
-      let(:user) { create(:user) }
-
       it 'denies access' do
         expect(policy).not_to permit(user, story)
+      end
+    end
+  end
+
+  permissions :admin_index? do
+    context 'when user is a admin' do
+      it 'grants access' do
+        expect(policy).to permit(admin)
+      end
+    end
+
+    context 'when user is not admin' do
+      it 'denies access' do
+        expect(policy).not_to permit(user)
       end
     end
   end

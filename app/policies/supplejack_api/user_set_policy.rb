@@ -19,6 +19,10 @@ module SupplejackApi
       @story.user == @user || @user&.admin?
     end
 
+    def admin_index?
+      @user.admin?
+    end
+
     alias update? admin_or_owner?
   end
 end

@@ -70,8 +70,8 @@ module SupplejackApi
       context 'unsuccesful request - not admin' do
         before { get :admin_index, params: { api_key: user.api_key, user_id: user.api_key } }
 
-        it 'returns 403' do
-          expect(response).to have_http_status(:forbidden)
+        it 'returns 401' do
+          expect(response).to have_http_status(:unauthorized)
         end
 
         it 'includes the error message' do

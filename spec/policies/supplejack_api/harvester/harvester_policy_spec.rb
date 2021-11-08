@@ -5,8 +5,6 @@ require 'spec_helper'
 RSpec.describe SupplejackApi::Harvester::HarvesterPolicy, type: :policy do
   subject(:policy) { described_class }
 
-  let(:story) { create(:story) }
-
   let(:harvester) { create(:user, role: 'harvester') }
   let(:developer) { create(:user, role: 'developer') }
 

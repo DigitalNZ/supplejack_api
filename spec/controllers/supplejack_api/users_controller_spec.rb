@@ -6,12 +6,12 @@ module SupplejackApi
   describe UsersController, type: :controller do
     routes { SupplejackApi::Engine.routes }
 
-    context 'admin user' do
-      let(:user) { create(:admin_user, authentication_token: 'abc123') }
+    context 'when user is admin' do
+      let(:user) { create(:admin_user) }
 
       describe 'GET show' do
         it 'should assign @user' do
-          get :show, params:  { id: user.id, api_key: 'abc123' }, format: :json
+          get :show, params:  { id: user.id, api_key: user.authentication_token }, format: :json
           expect(assigns(:user)).to eq(user)
         end
       end
@@ -21,7 +21,7 @@ module SupplejackApi
           allow(RecordSchema).to receive(:roles) { { admin: double(:admin, admin: true) } }
           expect(User).to receive(:create).with({ 'name' => 'Ben' }).and_return(user)
 
-          post :create, params: { api_key: 'abc123', user: { name: 'Ben' } }, format: 'json'
+          post :create, params: { api_key: user.authentication_token, user: { name: 'Ben' } }, format: 'json'
         end
       end
 
@@ -45,39 +45,43 @@ module SupplejackApi
       end
     end
 
-    context 'not an admin user' do
-      let(:user) { create(:user, authentication_token: 'abc123') }
+    context 'when user is not admin' do
+      let(:user) { create(:user) }
 
       describe 'GET show' do
-        it 'returns status forbidden' do
-          get :show, params:  { id: user.id, api_key: 'abc123' }, format: :json
+        it 'returns status unauthorized' do
+          get :show, params:  { id: user.id, api_key: user.authentication_token }, format: :json
 
-          expect(response).to have_http_status(:forbidden)
+          expect(response).to have_http_status(:unauthorized)
+          expect(JSON.parse(response.body)['errors']).to eq I18n.t('errors.requires_admin_privileges')
         end
       end
 
       describe 'POST create' do
-        it 'returns status forbidden' do
-          post :create, params: { api_key: 'abc123', user: { name: 'Ben' } }, format: 'json'
+        it 'returns status unauthorized' do
+          post :create, params: { api_key: user.authentication_token, user: { name: 'Ben' } }, format: 'json'
 
-          expect(response).to have_http_status(:forbidden)
+          expect(response).to have_http_status(:unauthorized)
+          expect(JSON.parse(response.body)['errors']).to eq I18n.t('errors.requires_admin_privileges')
         end
       end
 
       describe 'PUT update' do
-        it 'returns status forbidden' do
+        it 'returns status unauthorized' do
           user_params = attributes_for(:user, name: 'Richard')
           patch :update, params: { id: user.api_key, api_key: user.authentication_token, user: user_params }
 
-          expect(response).to have_http_status(:forbidden)
+          expect(response).to have_http_status(:unauthorized)
+          expect(JSON.parse(response.body)['errors']).to eq I18n.t('errors.requires_admin_privileges')
         end
       end
 
       describe 'DELETE destroy' do
-        it 'returns status forbidden' do
+        it 'returns status unauthorized' do
           delete :destroy, params: { id: user.id, api_key: user.authentication_token }
 
-          expect(response).to have_http_status(:forbidden)
+          expect(response).to have_http_status(:unauthorized)
+          expect(JSON.parse(response.body)['errors']).to eq I18n.t('errors.requires_admin_privileges')
         end
       end
     end

@@ -214,7 +214,7 @@ RSpec.describe 'Story Items Endpoints', type: :request do
 
         response_attributes = JSON.parse(response.body)
 
-        expect(response).to have_http_status(200)
+        expect(response).to be_successful
         expect(response_attributes).to include('type' => 'text', 'sub_type' => 'heading', 'content' => { 'value' => 'Heading text' }, 'meta' => { 'align_mode' => '0', 'is_cover' => false })
       end
     end
@@ -226,7 +226,7 @@ RSpec.describe 'Story Items Endpoints', type: :request do
 
         response_attributes = JSON.parse(response.body)
 
-        expect(response).to have_http_status(200)
+        expect(response).to be_successful
         expect(response_attributes).to include({ 'type' => 'text', 'sub_type' => 'rich-text', 'content' => { 'value' => '<p>Some block content here</p>' } })
       end
     end
@@ -239,7 +239,7 @@ RSpec.describe 'Story Items Endpoints', type: :request do
         post "/v3/stories/#{story.id}/items.json?api_key=#{api_key}&user_key=#{story.user.api_key}&#{params}"
         response_attributes = JSON.parse(response.body)
 
-        expect(response).to have_http_status(200)
+        expect(response).to be_successful
         expect(response_attributes).to include(
           { 'type' => 'embed',
             'sub_type' => 'record',

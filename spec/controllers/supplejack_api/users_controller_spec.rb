@@ -52,7 +52,7 @@ module SupplejackApi
         it 'returns status unauthorized' do
           get :show, params:  { id: user.id, api_key: user.authentication_token }, format: :json
 
-          expect(response).to have_http_status(:unauthorized)
+          expect(response).to be_unauthorized
           expect(JSON.parse(response.body)['errors']).to eq I18n.t('errors.requires_admin_privileges')
         end
       end
@@ -61,7 +61,7 @@ module SupplejackApi
         it 'returns status unauthorized' do
           post :create, params: { api_key: user.authentication_token, user: { name: 'Ben' } }, format: 'json'
 
-          expect(response).to have_http_status(:unauthorized)
+          expect(response).to be_unauthorized
           expect(JSON.parse(response.body)['errors']).to eq I18n.t('errors.requires_admin_privileges')
         end
       end
@@ -71,7 +71,7 @@ module SupplejackApi
           user_params = attributes_for(:user, name: 'Richard')
           patch :update, params: { id: user.api_key, api_key: user.authentication_token, user: user_params }
 
-          expect(response).to have_http_status(:unauthorized)
+          expect(response).to be_unauthorized
           expect(JSON.parse(response.body)['errors']).to eq I18n.t('errors.requires_admin_privileges')
         end
       end
@@ -80,7 +80,7 @@ module SupplejackApi
         it 'returns status unauthorized' do
           delete :destroy, params: { id: user.id, api_key: user.authentication_token }
 
-          expect(response).to have_http_status(:unauthorized)
+          expect(response).to be_unauthorized
           expect(JSON.parse(response.body)['errors']).to eq I18n.t('errors.requires_admin_privileges')
         end
       end

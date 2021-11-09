@@ -9,7 +9,7 @@ module SupplejackApi
     let(:record) { build(:record) }
 
     context 'with a api_key with harvester role' do
-      let(:harvester) { create(:user, role: 'harvester') }
+      let(:harvester) { create(:harvest_user) }
 
       describe 'POST create' do
         before { allow(Record).to receive(:find_or_initialize_by_identifier) { record } }

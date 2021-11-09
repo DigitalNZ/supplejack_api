@@ -5,8 +5,8 @@ require 'spec_helper'
 RSpec.describe SupplejackApi::Harvester::ActivitiesController do
   routes { SupplejackApi::Engine.routes }
 
-  let(:harvester) { create(:user, role: 'harvester') }
-  let(:developer) { create(:user, role: 'developer') }
+  let(:harvester) { create(:harvest_user) }
+  let(:developer) { create(:user) }
 
   let!(:activites) { create_list(:activity, 5) }
 

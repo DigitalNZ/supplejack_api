@@ -9,7 +9,7 @@ module SupplejackApi
     let(:partner) { create(:partner) }
 
     context 'with a api_key with harvester role' do
-      let(:harvester) { create(:user, role: 'harvester') }
+      let(:harvester) { create(:harvest_user) }
 
       describe 'POST create' do
         it 'creates a new source' do

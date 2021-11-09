@@ -49,7 +49,7 @@ module SupplejackApi
     end
 
     describe 'GET admin_index' do
-      let(:api_key) { create(:user, role: 'admin').api_key }
+      let(:api_key) { create(:admin_user).api_key }
 
       before do
         allow(RecordSchema).to receive(:roles) { { admin: double(:admin, admin: true) } }

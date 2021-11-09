@@ -499,7 +499,7 @@ module SupplejackApi
       end
 
       it 'regular users should not be able to change the :featured attribute' do
-        regular_user = create(:user, role: 'developer')
+        regular_user = create(:user)
         user_set = create(:user_set, user_id: regular_user.id, featured: false)
         user_set.update_attributes_and_embedded({ featured: true }, regular_user)
         user_set.reload
@@ -508,7 +508,7 @@ module SupplejackApi
       end
 
       it 'should allow admins to change the :featured attribute' do
-        admin_user = create(:user, role: 'admin')
+        admin_user = create(:admin_user)
         user_set = create(:user_set, user_id: admin_user.id)
         user_set.update_attributes_and_embedded({ featured: true }, admin_user)
 
@@ -517,7 +517,7 @@ module SupplejackApi
       end
 
       it 'should update the featured_at when the featured attribute is updated' do
-        admin_user = create(:user, role: 'admin')
+        admin_user = create(:admin_user)
         user_set = create(:user_set, user_id: admin_user.id)
         Timecop.freeze(Time.now.utc) do
           user_set.update_attributes_and_embedded({ featured: true }, admin_user)
@@ -527,7 +527,7 @@ module SupplejackApi
       end
 
       it "should not update the featured_at if the featured hasn't changed" do
-        admin_user = create(:user, role: 'admin')
+        admin_user = create(:admin_user)
         time = Time.now.utc - 1.day
 
         user_set = create(:user_set, user_id: admin_user.id, featured: true, featured_at: time)
@@ -540,7 +540,7 @@ module SupplejackApi
       end
 
       it 'removes the set from the featured' do
-        admin_user = create(:user, role: 'admin')
+        admin_user = create(:admin_user)
         time = Time.now.utc - 1.day
         user_set = create(:user_set, user_id: admin_user.id, featured: true, featured_at: time)
         user_set.update_attributes_and_embedded({ featured: false }, admin_user)

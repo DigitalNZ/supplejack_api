@@ -7,7 +7,7 @@ module SupplejackApi
     routes { SupplejackApi::Engine.routes }
 
     context 'with a api_key with harvester role' do
-      let(:harvester) { create(:user, role: 'harvester') }
+      let(:harvester) { create(:harvest_user) }
 
       describe 'POST create' do
         it 'creates a new partner' do
@@ -77,7 +77,7 @@ module SupplejackApi
     end
 
     context 'with api_key without harvester role' do
-      let(:user) { create(:user, role: 'admin') }
+      let(:user) { create(:admin_user) }
 
       describe "POST 'create'" do
         it 'returns forbidden' do

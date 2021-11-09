@@ -67,7 +67,7 @@ RSpec.describe SupplejackApi::UserSetPolicy, type: :policy do
     end
   end
 
-  permissions :admin_index? do
+  permissions :index?, :admin_index? do
     context 'when user is a admin' do
       it 'grants access' do
         expect(policy).to permit(admin)

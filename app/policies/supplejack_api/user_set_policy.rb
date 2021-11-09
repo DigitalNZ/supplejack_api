@@ -13,16 +13,18 @@ module SupplejackApi
       @story.user == @user || @user&.admin?
     end
 
+    def admin?
+      @user.admin?
+    end
+
     def show?
       return true unless @story.private?
 
       @story.user == @user || @user&.admin?
     end
 
-    def admin_index?
-      @user.admin?
-    end
-
-    alias update? admin_or_owner?
+    alias index?        admin?
+    alias update?       admin_or_owner?
+    alias admin_index?  admin?
   end
 end

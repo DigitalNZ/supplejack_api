@@ -6,7 +6,7 @@ module SupplejackApi
 
     before_action :find_and_authorize_user, only: %i[show update destroy]
     respond_to :xml, :json
-    rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+    rescue_from Pundit::NotAuthorizedError, with: :user_requires_admin_privileges
 
     def show
       respond_to do |format|
@@ -44,10 +44,6 @@ module SupplejackApi
     def find_and_authorize_user
       @user = User.custom_find(params[:id])
       authorize(@user)
-    end
-
-    def user_not_authorized
-      render_error_with(I18n.t('errors.requires_admin_privileges'), :unauthorized)
     end
 
     def user_params

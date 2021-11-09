@@ -58,10 +58,6 @@ module SupplejackApi
 
     private
 
-    def user_not_authorized
-      render_error_with(I18n.t('errors.requires_admin_privileges'), :unauthorized)
-    end
-
     rescue_from UserSet::WrongRecordsFormat do |_exception|
       render json: {
         errors: { records: ['The records array is not in a valid format.'] }

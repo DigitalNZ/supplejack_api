@@ -5,7 +5,7 @@ module SupplejackApi
     class ModerationsController < SupplejackApplicationController
       include Pundit
 
-      rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+      rescue_from Pundit::NotAuthorizedError, with: :user_requires_admin_privileges
       respond_to :json
 
       def index
@@ -26,10 +26,6 @@ module SupplejackApi
 
       def index_params
         params.permit(%i[page per_page order_by direction search])
-      end
-
-      def user_not_authorized
-        render_error_with(I18n.t('errors.requires_admin_privileges'), :unauthorized)
       end
     end
   end

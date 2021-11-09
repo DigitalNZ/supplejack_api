@@ -103,5 +103,9 @@ module SupplejackApi
     def render_error_with(message, code)
       render(json: { errors: message }, status: code)
     end
+
+    def user_requires_admin_privileges
+      render_error_with(I18n.t('errors.requires_admin_privileges'), :unauthorized)
+    end
   end
 end

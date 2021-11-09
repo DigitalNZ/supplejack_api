@@ -4,7 +4,7 @@ module SupplejackApi
   module Harvester
     class BaseController < SupplejackApplicationController
       include Pundit
-      rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
+      rescue_from Pundit::NotAuthorizedError, with: :user_requires_harvest_privileges
 
       respond_to :json
 
@@ -14,7 +14,7 @@ module SupplejackApi
         authorize(current_user, policy_class: SupplejackApi::Harvester::HarvesterPolicy)
       end
 
-      def user_not_authorized
+      def user_requires_harvest_privileges
         render_error_with(I18n.t('errors.requires_harvest_privileges'), :unauthorized)
       end
     end

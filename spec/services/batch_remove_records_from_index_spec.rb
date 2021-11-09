@@ -2,7 +2,7 @@
 
 RSpec.describe BatchRemoveRecordsFromIndex do
   describe '#initialize' do
-    let!(:active_record) { FactoryBot.create_list(:record_with_fragment, 10) }
+    let!(:active_record) { create_list(:record_with_fragment, 10) }
 
     it 'Set Sunspot.session to post directly to solr' do
       BatchRemoveRecordsFromIndex.new(SupplejackApi::Record.all)
@@ -12,7 +12,7 @@ RSpec.describe BatchRemoveRecordsFromIndex do
   end
 
   describe '#call' do
-    let!(:active_record) { FactoryBot.create_list(:record_with_fragment, 10, :ready_for_indexing) }
+    let!(:active_record) { create_list(:record_with_fragment, 10, :ready_for_indexing) }
 
     it 'calls Sunspot.remove with the array of records passed via args' do
       expect(Sunspot).to receive(:remove).with(SupplejackApi::Record.all)

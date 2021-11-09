@@ -6,7 +6,7 @@ module SupplejackApi
   describe IndexSourceWorker do
     # rubocop:disable Style/HashSyntax
     describe '.perform' do
-      let(:records) { [FactoryBot.create(:record_with_fragment), FactoryBot.create(:record_with_fragment)] }
+      let(:records) { [create(:record_with_fragment), create(:record_with_fragment)] }
 
       before do
         records.each do |r|

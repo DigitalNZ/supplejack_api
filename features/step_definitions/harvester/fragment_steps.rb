@@ -1,7 +1,7 @@
 
 
 Given /^a record with the id "(.*?)"$/ do |record_id|
-  @record = FactoryBot.create(:record_with_fragment, record_id: record_id)
+  @record = create(:record_with_fragment, record_id: record_id)
 end
 
 When /^I post a request to (?:create|update) a fragment with the JSON:$/ do |json|

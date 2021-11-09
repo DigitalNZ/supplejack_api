@@ -5,7 +5,7 @@ require 'spec_helper'
 module SupplejackApi
   module Support
     describe Harvestable do
-      let(:record) { FactoryBot.build(:record) }
+      let(:record) { build(:record) }
 
       describe '#set_status' do
         before { record.fragments.build(source_id: 'nz_census', name: 'John Smith') }
@@ -38,7 +38,7 @@ module SupplejackApi
 
       describe '#unset_null_fields' do
         it 'unsets null fields Mongo' do
-          record = FactoryBot.create(:record, name: 'John Smith')
+          record = create(:record, name: 'John Smith')
           record.update(name: nil)
           record.unset_null_fields
           raw_record = record.reload.raw_attributes
@@ -47,7 +47,7 @@ module SupplejackApi
         end
 
         it 'should unset null fields inside fragments' do
-          record = FactoryBot.build(:record_with_fragment)
+          record = build(:record_with_fragment)
           record.primary_fragment.update(address: nil)
           record.reload
           record.unset_null_fields
@@ -57,14 +57,14 @@ module SupplejackApi
         end
 
         it 'should handle null fragments' do
-          record = FactoryBot.create(:record_with_fragment, record_id: 1234)
+          record = create(:record_with_fragment, record_id: 1234)
           allow(record).to receive(:raw_attributes) { { 'fragments' => [nil] } }
 
           expect { record.unset_null_fields }.to_not raise_exception
         end
 
         it 'should handle false fields inside fragments' do
-          record = FactoryBot.create(:record_with_fragment, record_id: 1234)
+          record = create(:record_with_fragment, record_id: 1234)
           record.primary_fragment.update(nz_citizen: false)
           record.unset_null_fields
           raw_record = record.reload.raw_attributes
@@ -73,7 +73,7 @@ module SupplejackApi
         end
 
         it 'doesn\'t unset any field with values' do
-          record = FactoryBot.create(:record_with_fragment)
+          record = create(:record_with_fragment)
           record.unset_null_fields
           raw_record = record.reload.raw_attributes
           expect(raw_record).to include({ 'record_id' => record.record_id })
@@ -82,7 +82,7 @@ module SupplejackApi
         end
 
         it 'should not trigger a db query if there is nothing to unset' do
-          record = FactoryBot.create(:record)
+          record = create(:record)
 
           expect(record.collection).to_not receive(:find)
 

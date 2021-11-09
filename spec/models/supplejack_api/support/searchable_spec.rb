@@ -5,7 +5,7 @@ require 'spec_helper'
 module SupplejackApi
   module Support
     describe Searchable do
-      let(:record) { FactoryBot.create(:record, record_id: 1234) }
+      let(:record) { create(:record, record_id: 1234) }
       let(:fragment) { record.fragments.create({ nz_citizen: false }) }
 
       before do

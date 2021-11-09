@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module SupplejackApi
   describe SetItem do
-    let(:user_set) { FactoryBot.build(:user_set) }
+    let(:user_set) { build(:user_set) }
     let(:set_item) do
       user_set.set_items.build(record_id: 10, position: 1,
                                type: 'embed', sub_type: 'record',
@@ -186,7 +186,7 @@ module SupplejackApi
     end
 
     it 'delegates record fields to the :record object' do
-      record = FactoryBot.create(:record_with_fragment)
+      record = create(:record_with_fragment)
       set_item.record = record
 
       expect(set_item.name).to eq record.name

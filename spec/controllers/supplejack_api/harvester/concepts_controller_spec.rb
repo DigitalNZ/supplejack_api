@@ -6,7 +6,7 @@ module SupplejackApi
   describe Harvester::ConceptsController, type: :controller do
     # routes { SupplejackApi::Engine.routes }
 
-    # let(:concept) { FactoryBot.build(:concept) }
+    # let(:concept) { build(:concept) }
 
     # describe "POST create" do
     #   before(:each) do

@@ -1,7 +1,7 @@
 
 
 Given(/^an admin user$/) do
-  @user = FactoryBot.create(:admin_user, authentication_token: '12345', daily_requests: 0, username: 'Admin User')
+  @user = create(:admin_user, authentication_token: '12345', daily_requests: 0, username: 'Admin User')
 end
 
 When(/^I enter my admin credentials$/) do

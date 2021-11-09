@@ -6,7 +6,7 @@ module SupplejackApi
   describe Harvester::RecordsController, type: :controller do
     routes { SupplejackApi::Engine.routes }
 
-    let(:record) { FactoryBot.build(:record) }
+    let(:record) { build(:record) }
 
     context 'with a api_key with harvester role' do
       let(:harvester) { create(:user, role: 'harvester') }
@@ -152,7 +152,7 @@ module SupplejackApi
       end
 
       describe 'GET index' do
-        let!(:records) { FactoryBot.create_list(:record_with_fragment, 25) }
+        let!(:records) { create_list(:record_with_fragment, 25) }
         let(:where_params) { ActionController::Parameters.new('fragments.job_id': records.first.job_id).permit! }
 
         it 'returns object with records based on search params' do

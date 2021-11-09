@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module SupplejackApi
   describe UserSetSerializer do
-    let(:user_set) { FactoryBot.create(:user_set_with_set_item) }
+    let(:user_set) { create(:user_set_with_set_item) }
     let(:serialized_user_set) { described_class.new(user_set).as_json }
 
     context 'without passing any options' do

@@ -5,7 +5,7 @@ require 'spec_helper'
 module SupplejackApi
   module Support
     describe FragmentHelpers do
-      let(:record) { FactoryBot.build(:record_with_fragment, record_id: 1234) }
+      let(:record) { build(:record_with_fragment, record_id: 1234) }
 
       describe '#before_save' do
         it 'should call merge_fragments' do
@@ -21,7 +21,7 @@ module SupplejackApi
 
         context 'duplicate source_ids' do
           before do
-            record.fragments << FactoryBot.build(:record_fragment, source_id: 'source_name')
+            record.fragments << build(:record_fragment, source_id: 'source_name')
           end
 
           it 'should not be valid' do
@@ -37,7 +37,7 @@ module SupplejackApi
 
         context 'multiple fragments' do
           before do
-            record.fragments << FactoryBot.build(:record_fragment, source_id: 'another_source')
+            record.fragments << build(:record_fragment, source_id: 'another_source')
           end
 
           it 'should return an array with the source_ids' do
@@ -53,7 +53,7 @@ module SupplejackApi
 
         context 'duplicate source_ids' do
           before do
-            record.fragments << FactoryBot.build(:record_fragment, source_id: 'source_name')
+            record.fragments << build(:record_fragment, source_id: 'source_name')
           end
 
           it 'should return true' do
@@ -63,7 +63,7 @@ module SupplejackApi
       end
 
       describe '#primary_fragment' do
-        let(:record) { FactoryBot.build(:record) }
+        let(:record) { build(:record) }
         before { record.save }
 
         it 'returns the fragment with priority 0' do
@@ -83,12 +83,12 @@ module SupplejackApi
       end
 
       describe 'merge_fragments' do
-        let(:record) { FactoryBot.build(:record_with_fragment) }
+        let(:record) { build(:record_with_fragment) }
         let(:primary) { record.fragments.where(priority: 0).first }
         let(:secondary) { record.fragments.where(priority: -1).first }
 
         it 'should delete any existing merged fragment' do
-          record.merged_fragment = FactoryBot.build(:record_fragment)
+          record.merged_fragment = build(:record_fragment)
           record.save
           expect(record.merged_fragment).to be_nil
         end
@@ -102,11 +102,11 @@ module SupplejackApi
 
         context 'multiple fragments' do
           before(:each) do
-            fragment = FactoryBot.build(:record_fragment,
-                                        name: 'James Smith',
-                                        email: ['jamessmith@example.com'],
-                                        source_id: 'another_source',
-                                        priority: -1)
+            fragment = build(:record_fragment,
+                             name: 'James Smith',
+                             email: ['jamessmith@example.com'],
+                             source_id: 'another_source',
+                             priority: -1)
 
             record.fragments << fragment
             record.reload.save!
@@ -146,10 +146,10 @@ module SupplejackApi
       end
 
       describe '#method_missing' do
-        let(:record) { FactoryBot.create(:record_with_fragment) }
+        let(:record) { create(:record_with_fragment) }
 
         context 'no fragments' do
-          let(:record) { FactoryBot.create(:record) }
+          let(:record) { create(:record) }
 
           it 'should return nil' do
             expect(record.nz_citizen).to be_nil
@@ -168,9 +168,9 @@ module SupplejackApi
 
         context 'multiple fragments' do
           before(:each) do
-            fragment = FactoryBot.build(:record_fragment,
-                                        email: ['jamessmith@example.com'],
-                                        source_id: 'another_source')
+            fragment = build(:record_fragment,
+                             email: ['jamessmith@example.com'],
+                             source_id: 'another_source')
             record.fragments << fragment
             record.reload.save!
           end

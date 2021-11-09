@@ -2,7 +2,7 @@
 
 RSpec.describe BatchIndexRecords do
   describe '#initialize' do
-    let!(:active_record) { FactoryBot.create_list(:record_with_fragment, 10, :ready_for_indexing) }
+    let!(:active_record) { create_list(:record_with_fragment, 10, :ready_for_indexing) }
 
     it 'Set Sunspot.session to post directly to solr' do
       BatchIndexRecords.new(SupplejackApi::Record.all)
@@ -12,7 +12,7 @@ RSpec.describe BatchIndexRecords do
   end
 
   describe '#call' do
-    let!(:active_record) { FactoryBot.create_list(:record_with_fragment, 10, :ready_for_indexing) }
+    let!(:active_record) { create_list(:record_with_fragment, 10, :ready_for_indexing) }
 
     it 'calls Sunspot.index with the array of records passed via args' do
       expect(Sunspot).to receive(:index).with(SupplejackApi::Record.all)

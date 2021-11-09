@@ -5,7 +5,7 @@ require 'spec_helper'
 module SupplejackApi
   module ApiRecord
     describe RecordFragment do
-      let!(:record) { FactoryBot.build(:record, record_id: 1234) }
+      let!(:record) { build(:record, record_id: 1234) }
       let!(:fragment) { record.fragments.build(priority: 0) }
       let(:fragment_class) { RecordFragment }
 

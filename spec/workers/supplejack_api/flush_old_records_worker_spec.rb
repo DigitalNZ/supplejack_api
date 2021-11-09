@@ -15,8 +15,8 @@ module SupplejackApi
       end
 
       it 'calls BatchRemoveRecordsFromIndex service for all deleted records for a given source_id' do
-        fragments = FactoryBot.build_list(:record_fragment, 1, priority: 0, job_id: '999', source_id: 'source')
-        FactoryBot.create_list(:record, 10, status: 'active', fragments: fragments)
+        fragments = build_list(:record_fragment, 1, priority: 0, job_id: '999', source_id: 'source')
+        create_list(:record, 10, status: 'active', fragments: fragments)
 
         mongo_criteria = SupplejackApi::Record.deleted.where('fragments.source_id': 'source').limit(500).skip(0)
 
@@ -32,31 +32,31 @@ module SupplejackApi
       source_id = 'a-source-id'
 
       let!(:active_record) do
-        fragments = FactoryBot.build_list(:record_fragment, 1,
-                                          priority: 0,
-                                          job_id: old_job_id,
-                                          source_id: source_id)
-        FactoryBot.create(:record, status: 'active', fragments: fragments)
+        fragments = build_list(:record_fragment, 1,
+                               priority: 0,
+                               job_id: old_job_id,
+                               source_id: source_id)
+        create(:record, status: 'active', fragments: fragments)
       end
 
       let!(:supressed_record) do
-        fragments = FactoryBot.build_list(:record_fragment, 1, priority: 0, job_id: old_job_id, source_id: source_id)
-        FactoryBot.create(:record, status: 'supressed', fragments: fragments)
+        fragments = build_list(:record_fragment, 1, priority: 0, job_id: old_job_id, source_id: source_id)
+        create(:record, status: 'supressed', fragments: fragments)
       end
 
       let!(:deleted_record) do
-        fragments = FactoryBot.build_list(:record_fragment, 1, priority: 0, job_id: old_job_id, source_id: source_id)
-        FactoryBot.create(:record, status: 'deleted', fragments: fragments)
+        fragments = build_list(:record_fragment, 1, priority: 0, job_id: old_job_id, source_id: source_id)
+        create(:record, status: 'deleted', fragments: fragments)
       end
 
       let!(:active_record_other_job) do
-        fragments = FactoryBot.build_list(:record_fragment, 1,
-                                          priority: 0,
-                                          job_id: current_job_id,
-                                          source_id: source_id,
-                                          title: 'other')
+        fragments = build_list(:record_fragment, 1,
+                               priority: 0,
+                               job_id: current_job_id,
+                               source_id: source_id,
+                               title: 'other')
 
-        FactoryBot.create(:record, status: 'active', fragments: fragments)
+        create(:record, status: 'active', fragments: fragments)
       end
 
       it 'should delete all active/supressed records that were not harvest by a specific job' do

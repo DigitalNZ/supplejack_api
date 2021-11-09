@@ -8,7 +8,7 @@ module SupplejackApi
     let!(:record) { create(:record) }
     let!(:user)   { create(:user) }
 
-    before { @user = FactoryBot.create(:user, authentication_token: 'apikey', role: 'developer') }
+    before { @user = create(:user, authentication_token: 'apikey', role: 'developer') }
 
     describe 'GET index' do
       before do

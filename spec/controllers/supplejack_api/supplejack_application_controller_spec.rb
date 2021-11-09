@@ -210,47 +210,6 @@ module SupplejackApi
       end
     end
 
-    describe '#authenticate_admin!' do
-      context 'when user is admin' do
-        before do
-          allow(controller).to receive(:request) {
-            double(:request,
-                   ip: '1.1.1.1',
-                   format: :json,
-                   params: { controller: 'supplejack_api/stories', action: 'show' },
-                   headers: { 'Authentication-Token' => create(:admin_user).authentication_token })
-          }
-        end
-
-        it 'returns true' do
-          expect(controller.authenticate_admin!).to be true
-        end
-      end
-
-      context 'when user is not admin' do
-        before do
-          allow(controller).to receive(:request) {
-            double(:request,
-                   ip: '1.1.1.1',
-                   format: :json,
-                   params: { controller: 'supplejack_api/stories', action: 'show' },
-                   headers: { 'Authentication-Token' => user.authentication_token })
-          }
-        end
-
-        it 'renders requires_admin_privileges error' do
-          expect(controller).to receive(:render).with(
-            {
-              json: { errors: I18n.t('errors.requires_admin_privileges') },
-              status: :forbidden
-            }
-          )
-
-          controller.authenticate_admin!
-        end
-      end
-    end
-
     describe '#find_user_set' do
       context 'current_user is a admin' do
         before :each do

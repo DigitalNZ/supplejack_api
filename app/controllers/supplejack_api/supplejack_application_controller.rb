@@ -64,14 +64,6 @@ module SupplejackApi
       @current_story_user ||= User.find_by_auth_token(params[:user_key])
     end
 
-    def authenticate_admin!
-      return true if RecordSchema.roles[current_user.role.to_sym].try(:admin)
-
-      render request.format.to_sym => {
-        errors: I18n.t('errors.requires_admin_privileges')
-      }, status: :forbidden
-    end
-
     def prevent_anonymous!
       return unless RecordSchema.roles[current_user.role.to_sym].try(:anonymous)
 

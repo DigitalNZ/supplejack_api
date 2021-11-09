@@ -5,7 +5,7 @@ module SupplejackApi
     class HarvesterPolicy
       attr_reader :user
 
-      def initialize(user, _foo)
+      def initialize(user, _policy_class)
         @user = user
       end
 

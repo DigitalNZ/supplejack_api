@@ -7,7 +7,6 @@ module SupplejackApi
     before_action :find_and_authorize_user, only: %i[show update destroy]
     rescue_from Pundit::NotAuthorizedError, with: :user_requires_admin_privileges
     respond_to :json
-    before_action :authenticate_admin!
 
     def show
       render json: @user, root: 'user', adapter: :json

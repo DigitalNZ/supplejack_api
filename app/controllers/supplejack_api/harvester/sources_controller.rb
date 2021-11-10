@@ -2,10 +2,7 @@
 
 module SupplejackApi
   module Harvester
-    class SourcesController < SupplejackApplicationController
-      respond_to :json
-      before_action :authenticate_harvester!
-
+    class SourcesController < BaseController
       def create
         if source_params[:_id].present?
           @source = Source.find_or_initialize_by(_id: source_params[:_id])

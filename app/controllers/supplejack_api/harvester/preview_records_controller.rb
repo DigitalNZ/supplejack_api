@@ -2,10 +2,7 @@
 
 module SupplejackApi
   module Harvester
-    class PreviewRecordsController < SupplejackApplicationController
-      respond_to :json
-      before_action :authenticate_harvester!
-
+    class PreviewRecordsController < BaseController
       def index
         @records = SupplejackApi::PreviewRecord.where(search_params)
 

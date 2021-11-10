@@ -64,23 +64,6 @@ module SupplejackApi
       @current_story_user ||= User.find_by_auth_token(params[:user_key])
     end
 
-    def authenticate_admin!
-      return true if RecordSchema.roles[current_user.role.to_sym].try(:admin)
-
-      render request.format.to_sym => {
-        errors: I18n.t('errors.requires_admin_privileges')
-      }, status: :forbidden
-    end
-
-    def authenticate_harvester!
-      format = request.format.to_sym || :json
-      return true if RecordSchema.roles[current_user.role.to_sym].try(:harvester)
-
-      render format => {
-        errors: I18n.t('errors.requires_harvest_privileges')
-      }, status: :forbidden
-    end
-
     def prevent_anonymous!
       return unless RecordSchema.roles[current_user.role.to_sym].try(:anonymous)
 
@@ -111,6 +94,10 @@ module SupplejackApi
 
     def render_error_with(message, code)
       render(json: { errors: message }, status: code)
+    end
+
+    def user_requires_admin_privileges
+      render_error_with(I18n.t('errors.requires_admin_privileges'), :unauthorized)
     end
   end
 end

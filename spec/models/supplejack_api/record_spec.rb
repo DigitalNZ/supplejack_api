@@ -4,13 +4,13 @@ require 'spec_helper'
 
 module SupplejackApi
   describe Record do
-    let(:record) { FactoryBot.build(:record) }
+    let(:record) { build(:record) }
 
     subject { record }
 
     describe '#custom_find' do
       before(:each) do
-        @record = FactoryBot.create(:record)
+        @record = create(:record)
         allow(@record).to receive(:find_next_and_previous_records).and_return(nil)
       end
 
@@ -79,26 +79,26 @@ module SupplejackApi
 
     describe '#find_multiple' do
       before(:each) do
-        @record = FactoryBot.create(:record)
+        @record = create(:record)
       end
 
       it 'should find multiple records by numeric id' do
-        r1 = FactoryBot.create(:record)
-        r2 = FactoryBot.create(:record)
+        r1 = create(:record)
+        r2 = create(:record)
         expect(Record.find_multiple([r1.record_id, r2.record_id])).to include(r1, r2)
         expect(Record.find_multiple([r1.record_id, r2.record_id]).length).to eq(2)
       end
 
       it 'should find multiple records by ObjectId' do
-        r1 = FactoryBot.create(:record)
-        r2 = FactoryBot.create(:record)
+        r1 = create(:record)
+        r2 = create(:record)
         expect(Record.find_multiple([r1.id, r2.id])).to include(r1, r2)
         expect(Record.find_multiple([r1.id, r2.id]).length).to eq(2)
       end
 
       it "should find multiple records with ObjectId's and numeric id's" do
-        r1 = FactoryBot.create(:record, record_id: 997)
-        r2 = FactoryBot.create(:record)
+        r1 = create(:record, record_id: 997)
+        r2 = create(:record)
         expect(Record.find_multiple([r1.record_id, r2.id])).to include(r1, r2)
         expect(Record.find_multiple([r1.record_id, r2.id]).length).to eq(2)
       end
@@ -108,16 +108,16 @@ module SupplejackApi
       end
 
       it 'should not return inactive records' do
-        r1 = FactoryBot.create(:record, status: 'deleted')
-        r2 = FactoryBot.create(:record, status: 'active')
+        r1 = create(:record, status: 'deleted')
+        r2 = create(:record, status: 'active')
         records = Record.find_multiple([r1.record_id, r2.record_id]).to_a
         expect(records).to_not include(r1)
         expect(records).to include(r2)
       end
 
       it 'returns the records in the same order as requested' do
-        r1 = FactoryBot.create(:record, created_at: Time.now.utc - 10.days)
-        r2 = FactoryBot.create(:record, created_at: Time.now.utc)
+        r1 = create(:record, created_at: Time.now.utc - 10.days)
+        r2 = create(:record, created_at: Time.now.utc)
         records = Record.find_multiple([r2.record_id, r1.record_id]).to_a
         expect(records.first).to eq r2
       end
@@ -126,11 +126,11 @@ module SupplejackApi
     describe '#find_next_and_previous_records' do
       pending 'Implement record search'
       # before(:each) do
-      #   @record = FactoryBot.create(:record, :record_id => 123)
+      #   @record = create(:record, :record_id => 123)
       #   @search = Search.new
       #   @search.stub(:total).and_return(3)
       #   Search.stub(:new).and_return(@search)
-      #   @user = FactoryBot.build(:user)
+      #   @user = build(:user)
       # end
 
       # it 'should not do anything when options are empty' do
@@ -226,7 +226,7 @@ module SupplejackApi
 
     # describe 'harvest_job_id=()' do
     #   it 'finds a harvest job and assigns it to harvest_job' do
-    #     harvest_job = FactoryBot.create(:harvest_job, harvest_job_id: 13)
+    #     harvest_job = create(:harvest_job, harvest_job_id: 13)
     #     record = Record.new(harvest_job_id: 13)
     #     record.harvest_job).to eq(harvest_job)
     #   end
@@ -239,7 +239,7 @@ module SupplejackApi
 
     describe '#active?' do
       before(:each) do
-        @record = FactoryBot.build(:record)
+        @record = build(:record)
       end
 
       it 'returns true when state is active' do
@@ -255,7 +255,7 @@ module SupplejackApi
 
     describe '#should_index?' do
       before(:each) do
-        @record = FactoryBot.build(:record)
+        @record = build(:record)
       end
 
       it 'returns false when active? is false' do

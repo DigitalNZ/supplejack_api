@@ -6,23 +6,23 @@ module SupplejackApi
   describe Harvester::PreviewRecordsController, type: :controller do
     routes { SupplejackApi::Engine.routes }
 
-    let(:record) { FactoryBot.build(:record) }
+    let(:record) { build(:record) }
 
     context 'with a api_key with harvester role' do
-      let(:api_key) { create(:user, role: 'harvester').api_key }
+      let(:harvester) { create(:harvest_user) }
 
       describe 'GET index' do
-        let(:fragment) { FactoryBot.build(:record_fragment, job_id: 54) }
-        let!(:preview_record) { FactoryBot.create(:preview_record, fragments: [fragment]) }
+        let(:fragment) { build(:record_fragment, job_id: 54) }
+        let!(:preview_record) { create(:preview_record, fragments: [fragment]) }
 
         it 'returns array of records based on search params' do
           expect(SupplejackApi::PreviewRecord).to receive(:where).with({ 'fragments.job_id': '54' })
 
-          get :index, params: { search:  { 'fragments.job_id': '54' }, api_key: api_key }
+          get :index, params: { search:  { 'fragments.job_id': '54' }, api_key: harvester.api_key }
         end
 
         it 'responds with a json object of record ids and the fragments fragments' do
-          get :index, params: { search:  { 'fragments.job_id': '54' }, api_key: api_key }
+          get :index, params: { search:  { 'fragments.job_id': '54' }, api_key: harvester.api_key }
 
           records = JSON.parse(response.body)
           records.each do |rec|
@@ -34,16 +34,12 @@ module SupplejackApi
     end
 
     context 'with api_key without harvester role' do
-      let(:admin_key) { create(:user, role: 'admin').api_key }
+      let(:admin) { create(:admin_user) }
 
-      before do
-        allow(RecordSchema).to receive(:roles) { { harvester: double(:harvester, harvester: nil) } }
-      end
+      it 'responds with 401 and no content' do
+        get :index, params: { search:  { 'fragments.job_id': '54' }, api_key: admin.api_key }
 
-      it 'responds with 403 and no content' do
-        get :index, params: { search:  { 'fragments.job_id': '54' }, api_key: admin_key }
-
-        expect(response.status).to eq 403
+        expect(response).to be_unauthorized
         expect(response.body).to include 'You need Harvester privileges to perform this request.'
       end
     end

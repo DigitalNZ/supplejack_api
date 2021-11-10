@@ -2,10 +2,7 @@
 
 module SupplejackApi
   module Harvester
-    class ConceptsController < SupplejackApplicationController
-      respond_to :json
-      before_action :authenticate_harvester!
-
+    class ConceptsController < BaseController
       def create
         if params[:preview]
           klass = SupplejackApi::PreviewRecord

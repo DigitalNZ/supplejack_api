@@ -19,7 +19,7 @@ module SupplejackApi
         end
 
         it 'returns 200' do
-          expect(response).to have_http_status(:ok)
+          expect(response).to be_successful
         end
 
         it 'returns the correct cache headers' do

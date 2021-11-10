@@ -6,11 +6,11 @@ module SupplejackApi
   describe ConceptsController, type: :controller do
     routes { SupplejackApi::Engine.routes }
 
-    before { @user = FactoryBot.create(:user, authentication_token: 'apikey', role: 'developer') }
+    before { @user = create(:user, authentication_token: 'apikey', role: 'developer') }
 
     describe 'GET show' do
       before do
-        @concept = FactoryBot.create(:concept)
+        @concept = create(:concept)
         allow(controller).to receive(:current_user) { @user }
       end
 

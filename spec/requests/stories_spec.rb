@@ -551,7 +551,7 @@ RSpec.describe 'Stories Endpoints', type: :request do
       end
 
       it 'returns status ok' do
-        expect(response).to have_http_status :ok
+        expect(response).to be_successful
       end
     end
 

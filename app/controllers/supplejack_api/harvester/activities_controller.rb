@@ -2,10 +2,7 @@
 
 module SupplejackApi
   module Harvester
-    class ActivitiesController < SupplejackApplicationController
-      respond_to :json
-      before_action :authenticate_harvester!
-
+    class ActivitiesController < BaseController
       def index
         render json: SupplejackApi::SiteActivity.order_by(date: :desc),
                root: 'site_activities', each_serializer: ActivitySerializer, adapter: :json

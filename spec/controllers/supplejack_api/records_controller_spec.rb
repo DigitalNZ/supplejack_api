@@ -8,7 +8,7 @@ module SupplejackApi
     let!(:record) { create(:record) }
     let!(:user)   { create(:user) }
 
-    before { @user = FactoryBot.create(:user, authentication_token: 'apikey', role: 'developer') }
+    before { @user = create(:user, authentication_token: 'apikey', role: 'developer') }
 
     describe 'GET index' do
       before do
@@ -51,7 +51,7 @@ module SupplejackApi
 
         expect(response.body).to eq({ errors: ['The page parameter can not exceed 100,000'] }.to_json)
 
-        expect(response).to have_http_status(:bad_request)
+        expect(response).to be_a_bad_request
       end
 
       it 'should return timeout 408 error if error is solr unavailable' do
@@ -70,7 +70,7 @@ module SupplejackApi
 
         get :index, params: { api_key: 'apikey', text: 'dogs' }, format: :json
 
-        expect(response).to have_http_status(:bad_request)
+        expect(response).to be_a_bad_request
       end
 
       context 'json' do
@@ -156,7 +156,7 @@ module SupplejackApi
         end
 
         it 'has a succesful response code' do
-          expect(response).to have_http_status(:ok)
+          expect(response).to be_successful
         end
 
         it 'sets the correct Content-Type' do
@@ -174,7 +174,7 @@ module SupplejackApi
         end
 
         it 'has a succesful response code' do
-          expect(response).to have_http_status(:ok)
+          expect(response).to be_successful
         end
 
         it 'sets the correct Content-Type' do

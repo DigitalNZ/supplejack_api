@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module SupplejackApi
   describe ConceptSerializer do
-    let(:concept) { FactoryBot.create(:concept) }
+    let(:concept) { create(:concept) }
     let(:serialized_concept) { ConceptSerializer.new(concept).as_json }
     let(:serialized_concept_with_inline_context) { ConceptSerializer.new(concept, inline_context: true).as_json }
 

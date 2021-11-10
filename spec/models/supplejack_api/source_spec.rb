@@ -4,10 +4,10 @@ require 'spec_helper'
 
 module SupplejackApi
   describe Source do
-    let!(:source) { FactoryBot.create(:source, status: 'active') }
+    let!(:source) { create(:source, status: 'active') }
 
     describe '#suppressed' do
-      let!(:suppressed_source) { FactoryBot.create(:source, status: 'suppressed') }
+      let!(:suppressed_source) { create(:source, status: 'suppressed') }
 
       it 'should return all the suppressed sources' do
         expect(Source.suppressed.to_a).to eq [suppressed_source]

@@ -6,23 +6,17 @@ module SupplejackApi
   describe Harvester::RecordsController, type: :controller do
     routes { SupplejackApi::Engine.routes }
 
-    let(:record) { FactoryBot.build(:record) }
+    let(:record) { build(:record) }
 
     context 'with a api_key with harvester role' do
-      let(:api_key) { create(:user, role: 'harvester').api_key }
-
-      before do
-        allow(RecordSchema).to receive(:roles) { { harvester: double(:harvester, harvester: true) } }
-      end
+      let(:harvester) { create(:harvest_user) }
 
       describe 'POST create' do
-        before(:each) do
-          allow(Record).to receive(:find_or_initialize_by_identifier) { record }
-        end
+        before { allow(Record).to receive(:find_or_initialize_by_identifier) { record } }
 
         context 'preview is false' do
           it 'finds or initializes a record by identifier' do
-            post :create, params: { record: { internal_identifier: '1234' }, api_key: api_key }
+            post :create, params: { record: { internal_identifier: '1234' }, api_key: harvester.api_key }
 
             expect(assigns(:record)).to be_a(SupplejackApi::Record)
           end
@@ -30,7 +24,7 @@ module SupplejackApi
 
         context 'preview is true' do
           it 'finds or initializes a preview record by identifier' do
-            post :create, params: { record: { internal_identifier: '1234' }, preview: true, api_key: api_key }
+            post :create, params: { record: { internal_identifier: '1234' }, preview: true, api_key: harvester.api_key }
 
             expect(assigns(:record)).to be_a(SupplejackApi::PreviewRecord)
           end
@@ -40,7 +34,7 @@ module SupplejackApi
           post :create, params: {
             record: { internal_identifier: '1234' },
             required_fragments: ['ndha_rights'],
-            api_key: api_key
+            api_key: harvester.api_key
           }
 
           expect(assigns(:record).status).to eq 'partial'
@@ -48,12 +42,12 @@ module SupplejackApi
 
         it 'saves the record' do
           expect do
-            post :create, params: { record: { internal_identifier: '1234' }, api_key: api_key }
+            post :create, params: { record: { internal_identifier: '1234' }, api_key: harvester.api_key }
           end.to change { Record.count }.by(1)
         end
 
         it 'returns status success and record_id if no exception is raised' do
-          post :create, params: { record: { internal_identifier: '1234' }, api_key: api_key }
+          post :create, params: { record: { internal_identifier: '1234' }, api_key: harvester.api_key }
 
           data = JSON.parse(response.body)
 
@@ -65,24 +59,24 @@ module SupplejackApi
       describe 'PUT delete' do
         it 'should find the record by internal_identifier' do
           expect(Record).to receive(:where).with({ internal_identifier: 'abc123' }) { [record] }
-          put :delete, params: { id: 'abc123', api_key: api_key }
+          put :delete, params: { id: 'abc123', api_key: harvester.api_key }
           expect(assigns(:record)).to eq record
         end
 
         it 'should update the records status attribute to deleted' do
           allow(Record).to receive(:where) { [record] }
           expect(record).to receive(:update_attribute).with(:status, 'deleted')
-          put :delete, params: { id: 'abc123', api_key: api_key }
+          put :delete, params: { id: 'abc123', api_key: harvester.api_key }
         end
 
         it 'handles a nil record' do
           allow(Record).to receive(:where) { [] }
-          expect { put :delete, params: { id: 'abc123', api_key: api_key } }.to_not raise_exception
+          expect { put :delete, params: { id: 'abc123', api_key: harvester.api_key } }.to_not raise_exception
         end
 
         it 'returns status success if no exception is raised' do
           allow(Record).to receive(:where) { [record] }
-          put :delete, params: { id: 'abc123', api_key: api_key }
+          put :delete, params: { id: 'abc123', api_key: harvester.api_key }
 
           data = JSON.parse(response.body)
           expect(data['status']).to eq 'success'
@@ -91,7 +85,7 @@ module SupplejackApi
 
         it 'returns status failed and backtrace metadata when an exception is raised' do
           allow(Record).to receive(:where).and_raise(StandardError.new('bang'))
-          put :delete, params: { id: 'abc123', api_key: api_key }
+          put :delete, params: { id: 'abc123', api_key: harvester.api_key }
 
           data = JSON.parse(response.body)
           expect(data['status']).to eq 'failed'
@@ -109,11 +103,11 @@ module SupplejackApi
         end
 
         it 'calls flush_old_records' do
-          delete :flush, params: { source_id: 'source_id', job_id: 'abc123', api_key: api_key }
+          delete :flush, params: { source_id: 'source_id', job_id: 'abc123', api_key: harvester.api_key }
         end
 
         it 'returns a 204' do
-          delete :flush, params: { source_id: 'source_id', job_id: 'abc123', api_key: api_key }
+          delete :flush, params: { source_id: 'source_id', job_id: 'abc123', api_key: harvester.api_key }
 
           expect(response.code).to eq '204'
         end
@@ -122,18 +116,18 @@ module SupplejackApi
       describe 'GET #show' do
         it 'should find the record by internal_identifier' do
           expect(Record).to receive(:where).with({ record_id: 'abc123' }) { [record] }
-          get :show, params: { id: 'abc123', api_key: api_key }
+          get :show, params: { id: 'abc123', api_key: harvester.api_key }
         end
 
         it 'should assign the record to @record' do
           allow(Record).to receive(:where) { [record] }
-          get :show, params: { id: 'abc123', api_key: api_key }
+          get :show, params: { id: 'abc123', api_key: harvester.api_key }
           expect(assigns(:record)).to eq record
         end
 
         it 'should handle a nil record' do
           allow(Record).to receive(:where) { [] }
-          expect { get :show, params: { id: 'abc123', api_key: api_key } }.to_not raise_exception
+          expect { get :show, params: { id: 'abc123', api_key: harvester.api_key } }.to_not raise_exception
         end
       end
 
@@ -147,18 +141,18 @@ module SupplejackApi
 
         it 'finds the record and asigns it' do
           expect(Record).to receive(:custom_find).with('123', nil, { status: :all }) { record }
-          put :update, params: { id: 123, record: { status: 'supressed' }, api_key: api_key }, format: :json
+          put :update, params: { id: 123, record: { status: 'supressed' }, api_key: harvester.api_key }, format: :json
           expect(assigns(:record)).to eq(record)
         end
 
         it 'updates the status of the record and marks it for indexing' do
           expect(record).to receive(:update).with(status: 'supressed')
-          put :update, params: { id: 123, record: { status: 'supressed' }, api_key: api_key }, format: :json
+          put :update, params: { id: 123, record: { status: 'supressed' }, api_key: harvester.api_key }, format: :json
         end
       end
 
       describe 'GET index' do
-        let!(:records) { FactoryBot.create_list(:record_with_fragment, 25) }
+        let!(:records) { create_list(:record_with_fragment, 25) }
         let(:where_params) { ActionController::Parameters.new('fragments.job_id': records.first.job_id).permit! }
 
         it 'returns object with records based on search params' do
@@ -167,7 +161,7 @@ module SupplejackApi
           get :index, params: {
             search: { 'fragments.job_id': records.first.job_id },
             search_options: { page: 1 },
-            api_key: api_key
+            api_key: harvester.api_key
           }
         end
 
@@ -175,7 +169,7 @@ module SupplejackApi
           get :index, params: {
             search: { 'fragments.hello': records.first.job_id },
             search_options: { page: 1 },
-            api_key: api_key
+            api_key: harvester.api_key
           }
 
           expect(response.status).to be 400
@@ -185,7 +179,7 @@ module SupplejackApi
           get :index, params: {
             search: { 'fragments.job_id': records.first.job_id },
             search_options: { page: 1 },
-            api_key: api_key
+            api_key: harvester.api_key
           }
 
           expect(JSON.parse(response.body)['records'].count).to eq 20
@@ -195,7 +189,7 @@ module SupplejackApi
           get :index, params: {
             search: { 'fragments.job_id': records.first.job_id },
             search_options: { page: 1 },
-            api_key: api_key
+            api_key: harvester.api_key
           }
 
           expect(JSON.parse(response.body)['records'].map { |r| r['id'] }).to include records.first.id
@@ -205,7 +199,7 @@ module SupplejackApi
           get :index, params: {
             search: { 'fragments.job_id': records.first.job_id },
             search_options: { page: 2 },
-            api_key: api_key
+            api_key: harvester.api_key
           }
 
           expect(JSON.parse(response.body)['records'].map { |r| r['id'] }).not_to include records.first.id
@@ -215,7 +209,7 @@ module SupplejackApi
           get :index, params: {
             search: { 'fragments.job_id': records.first.job_id },
             search_options: { page: 1 },
-            api_key: api_key
+            api_key: harvester.api_key
           }
 
           res = JSON.parse(response.body)
@@ -243,46 +237,52 @@ module SupplejackApi
           get :index, params: {
             search: { 'fragments.source_id': records.first.source_id },
             search_options: { page: 1 },
-            api_key: api_key
+            api_key: harvester.api_key
           }
         end
       end
     end
 
     context 'with api_key without harvester role' do
-      let(:api_key) { create(:user, role: 'admin').api_key }
-
-      before do
-        allow(RecordSchema).to receive(:roles) { { harvester: double(:harvester, harvester: nil) } }
-      end
+      let(:user) { create(:user) }
 
       describe 'PUT update' do
-        it 'returns forbidden' do
-          put :update, params: { id: 'abc123', record: { status: 'supressed' }, api_key: api_key }, format: :json
+        it 'returns unauthorized' do
+          put :update, params: { id: 'abc123', record: { status: 'supressed' }, api_key: user.api_key }, format: :json
+
+          expect(response).to be_unauthorized
         end
       end
 
       describe 'GET #show' do
-        it 'returns forbidden' do
-          get :show, params: { id: 'abc123', api_key: api_key }
+        it 'returns unauthorized' do
+          get :show, params: { id: 'abc123', api_key: user.api_key }
+
+          expect(response).to be_unauthorized
         end
       end
 
       describe 'DELETE flush' do
-        it 'returns forbidden' do
-          put :flush, params: { id: 'abc123', api_key: api_key }
+        it 'returns unauthorized' do
+          put :flush, params: { id: 'abc123', api_key: user.api_key }
+
+          expect(response).to be_unauthorized
         end
       end
 
       describe 'PUT delete' do
-        it 'returns forbidden' do
-          put :delete, params: { id: 'abc123', api_key: api_key }
+        it 'returns unauthorized' do
+          put :delete, params: { id: 'abc123', api_key: user.api_key }
+
+          expect(response).to be_unauthorized
         end
       end
 
       describe 'POST create' do
-        it 'returns forbidden' do
-          post :create, params: { record: { internal_identifier: '1234' }, api_key: api_key }
+        it 'returns unauthorized' do
+          post :create, params: { record: { internal_identifier: '1234' }, api_key: user.api_key }
+
+          expect(response).to be_unauthorized
         end
       end
     end

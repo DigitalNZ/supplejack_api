@@ -19,7 +19,7 @@ module SupplejackApi
         end
 
         it 'returns a 200 http code' do
-          expect(response).to have_http_status(:ok)
+          expect(response).to be_successful
         end
 
         it 'returns all their stories' do
@@ -49,7 +49,7 @@ module SupplejackApi
     end
 
     describe 'GET admin_index' do
-      let(:api_key) { create(:user, role: 'admin').api_key }
+      let(:api_key) { create(:admin_user).api_key }
 
       before do
         allow(RecordSchema).to receive(:roles) { { admin: double(:admin, admin: true) } }
@@ -59,7 +59,7 @@ module SupplejackApi
         before { get :admin_index, params: { api_key: api_key, user_id: '1231231231' } }
 
         it 'returns 404' do
-          expect(response).to have_http_status(:not_found)
+          expect(response).to be_not_found
         end
 
         it 'includes the error message' do
@@ -70,8 +70,8 @@ module SupplejackApi
       context 'unsuccesful request - not admin' do
         before { get :admin_index, params: { api_key: user.api_key, user_id: user.api_key } }
 
-        it 'returns 403' do
-          expect(response).to have_http_status(:forbidden)
+        it 'returns 401' do
+          expect(response).to be_unauthorized
         end
 
         it 'includes the error message' do
@@ -89,7 +89,7 @@ module SupplejackApi
         end
 
         it 'returns a 200 http code' do
-          expect(response).to have_http_status(:ok)
+          expect(response).to be_successful
         end
 
         it 'returns all their stories' do
@@ -103,7 +103,7 @@ module SupplejackApi
         before { get :show, params: { api_key: api_key, id: '1231231231' } }
 
         it 'returns 404' do
-          expect(response).to have_http_status(:not_found)
+          expect(response).to be_not_found
         end
 
         it 'includes the error message' do
@@ -127,7 +127,7 @@ module SupplejackApi
         end
 
         it 'returns a 200 http code' do
-          expect(response).to have_http_status(:ok)
+          expect(response).to be_successful
         end
 
         it 'returns the correct story' do
@@ -156,7 +156,7 @@ module SupplejackApi
         end
 
         it 'returns a 403 http code' do
-          expect(response.status).to eq 403
+          expect(response).to be_forbidden
         end
 
         it 'returns an appropriate message' do
@@ -170,7 +170,7 @@ module SupplejackApi
         before { post :create, params: { user_key: api_key, api_key: api_key, story: { nope: '1231231231' } } }
 
         it 'returns 400' do
-          expect(response).to have_http_status(:bad_request)
+          expect(response).to be_a_bad_request
         end
 
         it 'includes the error message' do
@@ -185,7 +185,7 @@ module SupplejackApi
         before { post :create, params: { user_key: api_key, api_key: api_key, story: { name: story_name } } }
 
         it 'returns a 201 http code' do
-          expect(response).to have_http_status(:created)
+          expect(response).to be_created
         end
 
         it 'creates the story' do
@@ -243,7 +243,7 @@ module SupplejackApi
         end
 
         it 'returns status ok' do
-          expect(response).to have_http_status :ok
+          expect(response).to be_successful
         end
 
         it 'repositions story items' do
@@ -271,7 +271,7 @@ module SupplejackApi
         end
 
         it 'returns status ok' do
-          expect(response).to have_http_status :ok
+          expect(response).to be_successful
         end
 
         it 'repositions story items' do
@@ -297,7 +297,7 @@ module SupplejackApi
         end
 
         it 'returns status bad request' do
-          expect(response).to have_http_status :bad_request
+          expect(response).to be_a_bad_request
         end
 
         it 'return error' do
@@ -342,7 +342,7 @@ module SupplejackApi
         before { delete :destroy, params: { api_key: api_key, user_key: api_key, id: '1231231231' } }
 
         it 'returns 404' do
-          expect(response).to have_http_status(:not_found)
+          expect(response).to be_not_found
         end
 
         it 'includes the error message' do
@@ -358,7 +358,7 @@ module SupplejackApi
         end
 
         it 'returns a 204 http code' do
-          expect(response).to have_http_status(:no_content)
+          expect(response).to be_no_content
         end
 
         it 'deletes the story' do
@@ -391,7 +391,7 @@ module SupplejackApi
         before { patch :update, params: { api_key: api_key, user_key: api_key, id: '1231231231' } }
 
         it 'returns 404' do
-          expect(response).to have_http_status(:not_found)
+          expect(response).to be_not_found
         end
 
         it 'includes the error message' do
@@ -416,7 +416,7 @@ module SupplejackApi
         end
 
         it 'returns a 200 http code' do
-          expect(response).to have_http_status(:ok)
+          expect(response).to be_successful
         end
 
         it 'updates the given Story' do
@@ -448,7 +448,7 @@ module SupplejackApi
         end
 
         it 'returns a 400 http code' do
-          expect(response).to have_http_status(400)
+          expect(response).to be_a_bad_request
         end
 
         it 'does not update the given story' do

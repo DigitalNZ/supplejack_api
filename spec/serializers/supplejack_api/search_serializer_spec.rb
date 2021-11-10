@@ -4,7 +4,7 @@ require 'spec_helper'
 
 module SupplejackApi
   describe SearchSerializer do
-    let!(:record) { FactoryBot.create(:record) }
+    let!(:record) { create(:record) }
     let(:search)  { SupplejackApi::RecordSearch.new }
     let(:serialized_search) { described_class.new(search).as_json }
 

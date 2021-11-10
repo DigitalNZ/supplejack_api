@@ -245,16 +245,16 @@ module SupplejackApi
     end
 
     describe '#calculate_last_30_days_requests' do
-      let!(:user) { FactoryBot.create(:user) }
-      let!(:user_activity) { FactoryBot.create(:user_activity, user_id: user.id, total: 5, created_at: Time.now.utc) }
+      let!(:user) { create(:user) }
+      let!(:user_activity) { create(:user_activity, user_id: user.id, total: 5, created_at: Time.now.utc) }
 
       it 'adds up the totals of the last 30 days' do
-        FactoryBot.create(:user_activity, user_id: user.id, total: 2, created_at: Time.now.utc - 5.days)
+        create(:user_activity, user_id: user.id, total: 2, created_at: Time.now.utc - 5.days)
         expect(user.calculate_last_30_days_requests).to eq 7
       end
 
       it 'ignores requests older than 30 days' do
-        FactoryBot.create(:user_activity, user_id: user.id, total: 2, created_at: Time.now.utc - 31.days)
+        create(:user_activity, user_id: user.id, total: 2, created_at: Time.now.utc - 31.days)
         expect(user.calculate_last_30_days_requests).to eq 5
       end
 
@@ -265,11 +265,11 @@ module SupplejackApi
     end
 
     describe '#requests_per_day' do
-      let!(:user) { FactoryBot.create(:user) }
+      let!(:user) { create(:user) }
 
       before do
-        FactoryBot.create(:user_activity, user_id: user.id, total: 5, created_at: Time.now.utc - 1.day)
-        FactoryBot.create(:user_activity, user_id: user.id, total: 2, created_at: Time.now.utc)
+        create(:user_activity, user_id: user.id, total: 5, created_at: Time.now.utc - 1.day)
+        create(:user_activity, user_id: user.id, total: 2, created_at: Time.now.utc)
       end
 
       it 'returns an array with the total requests per day' do
@@ -277,7 +277,7 @@ module SupplejackApi
       end
 
       it 'returns 0 for days when there isnt any activity' do
-        FactoryBot.create(:user_activity, user_id: user.id, total: 1, created_at: Time.now.utc - 3.days)
+        create(:user_activity, user_id: user.id, total: 1, created_at: Time.now.utc - 3.days)
         expect(user.requests_per_day(4)).to eq [1, 0, 5, 2]
       end
     end
@@ -319,7 +319,7 @@ module SupplejackApi
     end
 
     describe '#custom_find' do
-      let(:user) { FactoryBot.create(:user) }
+      let(:user) { create(:user) }
 
       it 'finds the user by the api_key' do
         expect(User.custom_find(user.api_key)).to eq user
@@ -360,7 +360,7 @@ module SupplejackApi
     end
 
     describe '#update_user_sets' do
-      let(:user_set) { FactoryBot.build(:user_set) }
+      let(:user_set) { build(:user_set) }
       let(:user) { user_set.user }
 
       context 'when username of the user updated' do

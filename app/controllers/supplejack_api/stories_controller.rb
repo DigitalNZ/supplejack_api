@@ -8,7 +8,7 @@ module SupplejackApi
     rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
     before_action :prevent_anonymous!
 
-    before_action :authenticate_admin!, :story_user_id_check, only: [:admin_index]
+    before_action :story_user_id_check, only: [:admin_index]
     before_action :story_user_check, except: %i[admin_index show]
     before_action :find_story, only: %i[show update destroy reposition_items]
     after_action :create_story_record_views, only: :show
@@ -24,6 +24,8 @@ module SupplejackApi
     # Application dont know about the user id but has the api_key for a user.
     # So in this nested route the user api_key is passed as the id.
     def admin_index
+      authorize(UserSet)
+
       render json: @story_user.user_sets.order_by(updated_at: 'desc'),
              each_serializer: StorySerializer,
              root: false, scope: { slim: true }
@@ -91,11 +93,15 @@ module SupplejackApi
     end
 
     def pundit_user
+      return current_user if action_name == 'admin_index'
+
       current_story_user
     end
 
     def user_not_authorized
-      render_error_with(I18n.t('errors.user_not_authorized_for_story'), :unauthorized)
+      error = action_name == 'admin_index' ? 'errors.requires_admin_privileges' : 'errors.user_not_authorized_for_story'
+
+      render_error_with(I18n.t(error), :unauthorized)
     end
 
     def create_story_record_views

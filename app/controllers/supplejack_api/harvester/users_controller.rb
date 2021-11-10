@@ -4,10 +4,7 @@
 
 module SupplejackApi
   module Harvester
-    class UsersController < SupplejackApplicationController
-      respond_to :json
-      before_action :authenticate_harvester!
-
+    class UsersController < BaseController
       def index
         render json: User.all, each_serializer: UserSerializer, root: 'users', adapter: :json
       end

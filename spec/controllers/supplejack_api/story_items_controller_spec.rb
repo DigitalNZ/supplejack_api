@@ -14,7 +14,7 @@ module SupplejackApi
         before { get :index, params: { story_id: story.id.to_s, api_key: api_key, user_key: api_key } }
 
         it 'returns a 200 http code' do
-          expect(response).to have_http_status(:ok)
+          expect(response).to be_successful
         end
 
         it 'should return an Array of Story Items' do
@@ -28,13 +28,13 @@ module SupplejackApi
         it 'returns 400 if user_key not passed' do
           get :index, params: { story_id: 'madeupkey', api_key: api_key }
 
-          expect(response).to have_http_status(:not_found)
+          expect(response).to be_not_found
         end
 
         it 'returns a 404 if story dosent exist' do
           get :index, params: { story_id: 'madeupkey', api_key: api_key, user_key: api_key }
 
-          expect(response).to have_http_status(:not_found)
+          expect(response).to be_not_found
           expect(JSON.parse(response.body)['errors']).to eq('Story with provided Id madeupkey not found')
         end
 
@@ -60,7 +60,7 @@ module SupplejackApi
         end
 
         it 'returns a 200 http code' do
-          expect(response).to have_http_status(:ok)
+          expect(response).to be_successful
         end
 
         it 'should return a Story Items' do
@@ -98,7 +98,7 @@ module SupplejackApi
                },
                format: :json
 
-          expect(response).to have_http_status(:bad_request)
+          expect(response).to be_a_bad_request
           expect(JSON.parse(response.body)['errors']).to eq 'Mandatory Parameter item missing in request'
         end
 
@@ -107,7 +107,7 @@ module SupplejackApi
                params: { story_id: story.id.to_s, api_key: api_key, user_key: api_key, item: { type: 'foo' } },
                format: :json
 
-          expect(response).to have_http_status(:bad_request)
+          expect(response).to be_a_bad_request
           expect(JSON.parse(response.body)['errors']).to eq 'Mandatory Parameters Missing: sub_type is missing'
         end
 
@@ -121,7 +121,7 @@ module SupplejackApi
                },
                format: :json
 
-          expect(response).to have_http_status(:bad_request)
+          expect(response).to be_a_bad_request
           expect(JSON.parse(response.body)['errors'])
             .to eq 'Unsupported Value: sub_type must be one of: heading or rich-text'
         end
@@ -134,7 +134,7 @@ module SupplejackApi
                  user_key: api_key, item: { type: 'text', sub_type: 'heading' }
                }
 
-          expect(response).to have_http_status(:bad_request)
+          expect(response).to be_a_bad_request
           expect(JSON.parse(response.body)['errors']).to eq 'Content value is missing: content must contain value field'
         end
       end
@@ -201,7 +201,7 @@ module SupplejackApi
         end
 
         it 'returns a 200 http code' do
-          expect(response).to have_http_status(:ok)
+          expect(response).to be_successful
         end
 
         it 'should return updated Story Items' do

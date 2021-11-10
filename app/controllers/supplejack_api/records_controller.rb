@@ -22,9 +22,9 @@ module SupplejackApi
       if @search.valid?
         respond_to do |format|
           format.json do
-            render json: @search, serializer: self.class.search_serializer_class, record_fields: available_fields,
-                   record_includes: available_fields, root: 'search', adapter: :json,
-                   callback: params['jsonp']
+            render_json_with json: @search, serializer: self.class.search_serializer_class,
+                             record_fields: available_fields, record_includes: available_fields,
+                             root: 'search', adapter: :json, callback: params['jsonp']
           end
           format.xml do
             options = { serializer: self.class.search_serializer_class, record_includes: available_fields,
@@ -50,9 +50,9 @@ module SupplejackApi
 
       respond_to do |format|
         format.json do
-          render json: @record, serializer: self.class.record_serializer_class,
-                 fields: available_fields, root: 'record',
-                 include: available_fields, adapter: :json, callback: params['jsonp']
+          render_json_with json: @record, serializer: self.class.record_serializer_class,
+                           fields: available_fields, root: 'record',
+                           include: available_fields, adapter: :json, callback: params['jsonp']
         end
         format.xml do
           options = { serializer: self.class.record_serializer_class,

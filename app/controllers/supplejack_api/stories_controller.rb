@@ -14,10 +14,9 @@ module SupplejackApi
     after_action :create_story_record_views, only: :show
 
     def index
-      render json: current_story_user.user_sets.order_by(updated_at: 'desc'),
-             each_serializer: StorySerializer,
-             scope: { slim: params[:slim] != 'false' },
-             root: false
+      render_json_with json: current_story_user.user_sets.order_by(updated_at: 'desc'),
+                       each_serializer: StorySerializer, root: false,
+                       scope: { slim: params[:slim] != 'false' }
     end
 
     # This route is created for front end application to get all stories for a user.
@@ -26,15 +25,15 @@ module SupplejackApi
     def admin_index
       authorize(UserSet)
 
-      render json: @story_user.user_sets.order_by(updated_at: 'desc'),
-             each_serializer: StorySerializer,
-             root: false, scope: { slim: true }
+      render_json_with json: @story_user.user_sets.order_by(updated_at: 'desc'),
+                       each_serializer: StorySerializer,
+                       root: false, scope: { slim: true }
     end
 
     def show
       authorize(@story)
 
-      render json: StorySerializer.new(@story, scope: { slim: false }).to_json(include_root: false), status: :ok
+      render_json_with json: @story, serializer: StorySerializer
     end
 
     def create
@@ -42,7 +41,8 @@ module SupplejackApi
 
       if story.valid?
         story.save!
-        render json: StorySerializer.new(story, scope: { slim: false }).to_json(include_root: false), status: :created
+        render_json_with json: story, serializer: StorySerializer,
+                         scope: { slim: false }, status: :created
       else
         render_error_with(story.errors.messages, :bad_request)
       end
@@ -52,7 +52,8 @@ module SupplejackApi
       authorize(@story)
 
       if @story.update(story_params)
-        render json: StorySerializer.new(@story, scope: { slim: false }).to_json(include_root: false), status: :ok
+        render_json_with json: @story, serializer: StorySerializer,
+                         scope: { slim: false }
       else
         render_error_with(@story.errors.messages, :bad_request)
       end

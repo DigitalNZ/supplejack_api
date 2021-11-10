@@ -99,5 +99,11 @@ module SupplejackApi
     def user_requires_admin_privileges
       render_error_with(I18n.t('errors.requires_admin_privileges'), :unauthorized)
     end
+
+    def render_json_with(attributes)
+      attributes.merge!(meta: SupplejackApi.config.meta_response_field) if SupplejackApi.config.meta_response_field
+
+      render attributes
+    end
   end
 end

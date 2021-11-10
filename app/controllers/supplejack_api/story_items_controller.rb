@@ -12,12 +12,11 @@ module SupplejackApi
 
     def index
       render json: @story.set_items,
-             each_serializer: StoryItemSerializer,
-             root: false
+             each_serializer: StoryItemSerializer
     end
 
     def show
-      render json: StoryItemSerializer.new(@item).to_json(include_root: false), status: :ok
+      render_json_with json: @item, serializer: StoryItemSerializer
     end
 
     def create
@@ -27,7 +26,7 @@ module SupplejackApi
         @story.cover_thumbnail = item.content[:image_url] unless @story.cover_thumbnail
         @story.save!
 
-        render json: StoryItemSerializer.new(item).to_json(include_root: false), status: :ok
+        render_json_with json: item, serializer: StoryItemSerializer
       else
         render_error_with(item.errors.messages.values.join(', '), :bad_request)
       end
@@ -41,7 +40,7 @@ module SupplejackApi
           @story.update_attribute(:cover_thumbnail, nil)
         end
 
-        render json: StoryItemSerializer.new(@item).to_json(include_root: false), status: :ok
+        render_json_with json: @item, serializer: StoryItemSerializer
       else
         render_error_with('Failed to update', :bad_request)
       end

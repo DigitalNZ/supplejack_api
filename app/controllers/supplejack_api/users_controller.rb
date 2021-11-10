@@ -11,12 +11,7 @@ module SupplejackApi
     def show
       respond_to do |format|
         format.json { render json: @user, root: 'user', adapter: :json }
-        format.xml  do
-          options = { serializer: UserSerializer }
-          serializable_resource = ActiveModelSerializers::SerializableResource.new(@user, options)
-
-          render xml: serializable_resource.as_json.to_xml(root: 'user')
-        end
+        format.xml  { render_xml_with(@user, { serializer: UserSerializer }, 'user') }
       end
     end
 

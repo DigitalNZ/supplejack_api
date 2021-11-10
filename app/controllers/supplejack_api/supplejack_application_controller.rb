@@ -105,5 +105,16 @@ module SupplejackApi
 
       render attributes
     end
+
+    def render_xml_with(resource, options, root)
+      serializable_resource = ActiveModelSerializers::SerializableResource.new(resource, options).as_json
+
+      if SupplejackApi.config.meta_response_field
+        serializable_resource.merge!(meta: SupplejackApi.config.meta_response_field)
+      end
+
+      # The double as_json is required to render the inner json object as json as well as the exterior object
+      render xml: serializable_resource.as_json.to_xml(root: root)
+    end
   end
 end

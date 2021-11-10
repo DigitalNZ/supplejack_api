@@ -10,8 +10,6 @@ module SupplejackApi
     before_action :authenticate_admin!
 
     def show
-      @user = User.custom_find(params[:id])
-
       render json: @user, root: 'user', adapter: :json
     end
 

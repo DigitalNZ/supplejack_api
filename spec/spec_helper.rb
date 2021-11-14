@@ -21,9 +21,7 @@ Rails::Controller::Testing.install
 Rails.backtrace_cleaner.remove_silencers!
 
 # Load support files
-# rubocop:disable Lint/NonDeterministicRequireOrder
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
-# rubocop:enable Lint/NonDeterministicRequireOrder
 
 RSpec.configure do |config|
   config.formatter = :documentation

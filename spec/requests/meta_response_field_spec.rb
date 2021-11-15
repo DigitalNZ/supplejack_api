@@ -7,7 +7,7 @@ RSpec.describe 'Meta field test', type: :request do
   let(:record) { create(:record) }
 
   describe '#show' do
-    context 'when meta_response_field is not configured' do
+    context 'when global_response_field is not configured' do
       context 'when format is xml' do
         before { get "/v3/records/#{record.record_id}.xml?api_key=#{user.authentication_token}" }
 
@@ -37,15 +37,15 @@ RSpec.describe 'Meta field test', type: :request do
       end
     end
 
-    context 'when meta_response_field is configured' do
-      before { SupplejackApi.config.meta_response_field = { terms_of_use: 'terms_of_use' } }
-      after  { SupplejackApi.config.meta_response_field = nil }
+    context 'when global_response_field is configured' do
+      before { SupplejackApi.config.global_response_field = { key_name: 'terms_of_use', value: 'terms of use' } }
+      after  { SupplejackApi.config.global_response_field = nil }
 
       context 'when format is xml' do
         before { get "/v3/records/#{record.record_id}.xml?api_key=#{user.authentication_token}" }
 
         it 'returns record with meta' do
-          expect(response.body).to include('<terms-of-use>terms_of_use</terms-of-use>')
+          expect(response.body).to include('<terms-of-use>terms of use</terms-of-use>')
         end
       end
 
@@ -57,7 +57,7 @@ RSpec.describe 'Meta field test', type: :request do
 
           expect(response_attributes).to eq(
             {
-              'meta' => { 'terms_of_use' => 'terms_of_use' },
+              'terms_of_use' => 'terms of use',
               'record' => {
                 'address' => record.address,
                 'created_at' => record.created_at.strftime('%y/%d/%m'),

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module SupplejackApi
-  # rubocop:disable Metrics/ClassLength
   class RecordsController < SupplejackApplicationController
     include SupplejackApi::Concerns::RecordsControllerMetrics
     include ActionController::RequestForgeryProtection
@@ -22,17 +21,15 @@ module SupplejackApi
       if @search.valid?
         respond_to do |format|
           format.json do
-            render json: @search, serializer: self.class.search_serializer_class, record_fields: available_fields,
-                   record_includes: available_fields, root: 'search', adapter: :json,
-                   callback: params['jsonp']
+            render_json_with json: @search, serializer: self.class.search_serializer_class,
+                             record_fields: available_fields, record_includes: available_fields,
+                             root: 'search', adapter: :json, callback: params['jsonp']
           end
           format.xml do
             options = { serializer: self.class.search_serializer_class, record_includes: available_fields,
                         record_fields: available_fields, request_format: 'xml', root: 'search' }
-            serializable_resource = ActiveModelSerializers::SerializableResource.new(@search, options)
-            # The double as_json is required to render the inner json object as json as well as the exterior object
 
-            render xml: serializable_resource.as_json.as_json.to_xml(root: 'search')
+            render_xml_with(@search, options, 'search')
           end
           format.rss { respond_with @search }
         end
@@ -50,15 +47,15 @@ module SupplejackApi
 
       respond_to do |format|
         format.json do
-          render json: @record, serializer: self.class.record_serializer_class,
-                 fields: available_fields, root: 'record',
-                 include: available_fields, adapter: :json, callback: params['jsonp']
+          render_json_with json: @record, serializer: self.class.record_serializer_class,
+                           fields: available_fields, root: 'record',
+                           include: available_fields, adapter: :json, callback: params['jsonp']
         end
         format.xml do
-          options = { serializer: self.class.record_serializer_class,
-                      fields: available_fields, include: available_fields, root: 'record' }
-          serializable_resource = ActiveModelSerializers::SerializableResource.new(@record, options)
-          render xml: serializable_resource.as_json.to_xml(root: 'record')
+          options = { serializer: self.class.record_serializer_class, root: 'record',
+                      fields: available_fields, include: available_fields }
+
+          render_xml_with(@record, options, 'record')
         end
         format.rss { respond_with @record }
       end
@@ -141,5 +138,4 @@ module SupplejackApi
       _render_to_body_with_renderer(options) || super
     end
   end
-  # rubocop:enable Metrics/ClassLength
 end

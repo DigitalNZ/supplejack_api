@@ -99,5 +99,26 @@ module SupplejackApi
     def user_requires_admin_privileges
       render_error_with(I18n.t('errors.requires_admin_privileges'), :unauthorized)
     end
+
+    def render_json_with(attributes)
+      if SupplejackApi.config.global_response_field
+        field = SupplejackApi.config.global_response_field
+        attributes.merge!(meta: field[:value], meta_key: field[:key_name])
+      end
+
+      render attributes
+    end
+
+    def render_xml_with(resource, options, root)
+      serializable_resource = ActiveModelSerializers::SerializableResource.new(resource, options).as_json
+
+      if SupplejackApi.config.global_response_field
+        field = SupplejackApi.config.global_response_field
+        serializable_resource.merge!(field[:key_name] => field[:value])
+      end
+
+      # The double as_json is required to render the inner json object as json as well as the exterior object
+      render xml: serializable_resource.as_json.to_xml(root: root)
+    end
   end
 end

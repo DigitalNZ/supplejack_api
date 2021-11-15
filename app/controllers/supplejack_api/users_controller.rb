@@ -5,19 +5,11 @@ module SupplejackApi
     include Pundit
 
     before_action :find_and_authorize_user, only: %i[show update destroy]
-    respond_to :xml, :json
     rescue_from Pundit::NotAuthorizedError, with: :user_requires_admin_privileges
+    respond_to :json
 
     def show
-      respond_to do |format|
-        format.json { render json: @user, root: 'user', adapter: :json }
-        format.xml  do
-          options = { serializer: UserSerializer }
-          serializable_resource = ActiveModelSerializers::SerializableResource.new(@user, options)
-
-          render xml: serializable_resource.as_json.to_xml(root: 'user')
-        end
-      end
+      render json: @user, root: 'user', adapter: :json
     end
 
     def create

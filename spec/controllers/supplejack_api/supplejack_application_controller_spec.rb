@@ -28,6 +28,14 @@ module SupplejackApi
           expect(controller.current_auth_token).to eq user.authentication_token
         end
       end
+
+      context 'when authentication_token is not passed' do
+        it 'returns authentication_token of anynymous user' do
+          anonymous_user = SupplejackApi::User.find_by(authentication_token: controller.current_auth_token)
+
+          expect(anonymous_user.role).to eq 'anonymous'
+        end
+      end
     end
 
     describe '#current_user' do
@@ -49,6 +57,12 @@ module SupplejackApi
 
         it 'returns current_user' do
           expect(controller.current_user).to eq user
+        end
+      end
+
+      context 'when authentication_token is not passed' do
+        it 'returns anynymous user' do
+          expect(controller.current_user.role).to eq 'anonymous'
         end
       end
     end

@@ -10,7 +10,7 @@
 module SupplejackApi
   # app/workers/supplejack_api/flush_old_records_worker.rb
   class FlushOldRecordsWorker
-    include Sidekiq::Worker
+    include Sidekiq::Job
     sidekiq_options queue: 'default', retry: false
 
     def perform(source_id, job_id)

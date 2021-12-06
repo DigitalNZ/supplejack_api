@@ -9,7 +9,7 @@
 
 module SupplejackApi
   class IndexSourceWorker
-    include Sidekiq::Worker
+    include Sidekiq::Job
     sidekiq_options queue: 'default', retry: false
 
     def perform(source_id, date = nil)

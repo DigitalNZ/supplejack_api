@@ -2,7 +2,7 @@
 
 module SupplejackApi
   class StoreUserActivityWorker
-    include Sidekiq::Worker
+    include Sidekiq::Job
     sidekiq_options queue: 'critical', retry: 3
 
     # rubocop:disable Layout/LineLength

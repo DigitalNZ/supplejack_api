@@ -2,7 +2,7 @@
 
 module SupplejackApi
   class DailyMetricsWorker
-    include Sidekiq::Worker
+    include Sidekiq::Job
     sidekiq_options queue: 'critical', retry: 5
 
     attr_reader :primary_key, :secondary_keys

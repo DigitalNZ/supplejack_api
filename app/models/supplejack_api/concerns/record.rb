@@ -42,13 +42,15 @@ module SupplejackApi::Concerns::Record
       return [] unless ids.try(:any?)
 
       string_ids = ids.find_all { |id| id.to_s.length > 10 }
-      integer_ids = ids.find_all { |id| id.to_s.length <= 10 }.map(&:to_i)
+      integer_ids = ids.find_all { |id| id.to_s.length <= 10 }
 
       records = []
       records += active.find(string_ids) if string_ids.present?
       records += active.where(:record_id.in => integer_ids)
 
-      records.sort_by { |r| integer_ids.find_index(r.record_id) || 100 }
+      records.sort_by do |record|
+        ids.find_index(record.record_id) || ids.find_index(record.record_id.to_s) || 100
+      end
     end
 
     # rubocop:disable Metrics/MethodLength

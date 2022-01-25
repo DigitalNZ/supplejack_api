@@ -121,6 +121,15 @@ module SupplejackApi
         records = Record.find_multiple([r2.record_id, r1.record_id]).to_a
         expect(records.first).to eq r2
       end
+
+      context 'when record ids are passed as strings' do
+        it 'returns the records in the same order as requested' do
+          r1 = create(:record, created_at: Time.now.utc - 10.days)
+          r2 = create(:record, created_at: Time.now.utc)
+          records = Record.find_multiple([r2.record_id.to_s, r1.record_id.to_s]).to_a
+          expect(records.first).to eq r2
+        end
+      end
     end
 
     describe '#find_next_and_previous_records' do

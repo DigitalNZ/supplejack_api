@@ -63,6 +63,7 @@ module SupplejackApi
 
     def multiple
       @records = SupplejackApi::Record.find_multiple(params[:record_ids])
+
       respond_with @records, each_serializer: self.class.record_serializer_class, root: 'records', adapter: :json
     end
 

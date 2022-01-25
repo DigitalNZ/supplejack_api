@@ -31,7 +31,7 @@ module SupplejackApi
       )
     end
 
-    def self.spawn(date_range = (30.days.ago.utc..Time.now.yesterday.utc.beginning_of_day))
+    def self.spawn(date_range = (30.days.ago.utc..Time.zone.now.yesterday.beginning_of_day))
       return unless SupplejackApi.config.log_metrics == true
 
       dates = SupplejackApi::RecordMetric.where(date: date_range).map(&:date).uniq

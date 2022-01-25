@@ -78,29 +78,19 @@ module SupplejackApi
     end
 
     describe '#find_multiple' do
-      before(:each) do
-        @record = create(:record)
-      end
+      let(:r1) { create(:record, created_at: Time.now.utc - 10.days) }
+      let(:r2) { create(:record, created_at: Time.now.utc) }
 
       it 'should find multiple records by numeric id' do
-        r1 = create(:record)
-        r2 = create(:record)
         expect(Record.find_multiple([r1.record_id, r2.record_id])).to include(r1, r2)
-        expect(Record.find_multiple([r1.record_id, r2.record_id]).length).to eq(2)
       end
 
       it 'should find multiple records by ObjectId' do
-        r1 = create(:record)
-        r2 = create(:record)
         expect(Record.find_multiple([r1.id, r2.id])).to include(r1, r2)
-        expect(Record.find_multiple([r1.id, r2.id]).length).to eq(2)
       end
 
       it "should find multiple records with ObjectId's and numeric id's" do
-        r1 = create(:record, record_id: 997)
-        r2 = create(:record)
         expect(Record.find_multiple([r1.record_id, r2.id])).to include(r1, r2)
-        expect(Record.find_multiple([r1.record_id, r2.id]).length).to eq(2)
       end
 
       it 'returns an empty array when ids is nil' do
@@ -108,18 +98,33 @@ module SupplejackApi
       end
 
       it 'should not return inactive records' do
-        r1 = create(:record, status: 'deleted')
-        r2 = create(:record, status: 'active')
-        records = Record.find_multiple([r1.record_id, r2.record_id]).to_a
-        expect(records).to_not include(r1)
+        inactive = create(:record, status: 'deleted')
+        records = Record.find_multiple([inactive.record_id, r2.record_id]).to_a
+
+        expect(records).to_not include(inactive)
         expect(records).to include(r2)
       end
 
       it 'returns the records in the same order as requested' do
-        r1 = create(:record, created_at: Time.now.utc - 10.days)
-        r2 = create(:record, created_at: Time.now.utc)
         records = Record.find_multiple([r2.record_id, r1.record_id]).to_a
+
         expect(records.first).to eq r2
+      end
+
+      context 'when record ids are passed as strings' do
+        it 'returns the records in the same order as requested' do
+          records = Record.find_multiple([r2.record_id.to_s, r1.record_id.to_s]).to_a
+
+          expect(records.first).to eq r2
+        end
+      end
+
+      context 'when record ids are passed as strings & integers' do
+        it 'returns the records in the same order as requested' do
+          records = Record.find_multiple([r2.record_id, r1.record_id.to_s]).to_a
+
+          expect(records.first).to eq r2
+        end
       end
     end
 

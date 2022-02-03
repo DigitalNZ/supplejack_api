@@ -17,7 +17,7 @@ module SupplejackApi
     end
 
     attribute :record_ids, if: -> { scope[:slim] } do
-      items.sort_by(&:position).map do |item|
+      items.sort_by { |i| i.position.to_i }.map do |item|
         { record_id: item.record_id, story_item_id: item._id.to_s }
       end
     end

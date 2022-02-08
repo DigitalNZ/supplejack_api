@@ -83,7 +83,7 @@ module SupplejackApi
     end
 
     def item_params
-      params.require(:item).permit(
+      params.require(:story_item).permit(
         :position,
         :type,
         :sub_type,

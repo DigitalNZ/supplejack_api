@@ -122,12 +122,12 @@ RSpec.describe 'Story Items Endpoints', type: :request do
 
           response_attributes = JSON.parse(response.body)
 
-          expect(response_attributes).to eq({ 'errors' => 'Mandatory Parameter item missing in request' })
+          expect(response_attributes).to eq({ 'errors' => 'Mandatory Parameter story_item missing in request' })
         end
 
         context 'when item is text' do
           it 'returns error for missing type & sub_type' do
-            params = { item: { name: 'text' } }.to_query
+            params = { story_item: { name: 'text' } }.to_query
             post "/v3/stories/#{story.id}/items.json?api_key=#{api_key}&user_key=#{story.user.api_key}&#{params}"
 
             response_attributes = JSON.parse(response.body)
@@ -136,7 +136,7 @@ RSpec.describe 'Story Items Endpoints', type: :request do
           end
 
           it 'returns error for missing content value' do
-            params = { item: { type: 'text', sub_type: 'heading' } }.to_query
+            params = { story_item: { type: 'text', sub_type: 'heading' } }.to_query
             post "/v3/stories/#{story.id}/items.json?api_key=#{api_key}&user_key=#{story.user.api_key}&#{params}"
 
             response_attributes = JSON.parse(response.body)
@@ -145,7 +145,7 @@ RSpec.describe 'Story Items Endpoints', type: :request do
           end
 
           it 'returns error for size is not valid' do
-            params = { item: { type: 'text', sub_type: 'heading', content: { value: 'Heading text' }, meta: { size: 45 } } }.to_query
+            params = { story_item: { type: 'text', sub_type: 'heading', content: { value: 'Heading text' }, meta: { size: 45 } } }.to_query
             post "/v3/stories/#{story.id}/items.json?api_key=#{api_key}&user_key=#{story.user.api_key}&#{params}"
 
             response_attributes = JSON.parse(response.body)
@@ -159,7 +159,7 @@ RSpec.describe 'Story Items Endpoints', type: :request do
             let(:record) { create(:record) }
 
             it 'returns success' do
-              params = { item: { type: 'embed', sub_type: 'record', record_id: record.record_id, content: { id: record.record_id }, meta: { alignment: 'left' } } }.to_query
+              params = { story_item: { type: 'embed', sub_type: 'record', record_id: record.record_id, content: { id: record.record_id }, meta: { alignment: 'left' } } }.to_query
               post "/v3/stories/#{story.id}/items.json?api_key=#{api_key}&user_key=#{story.user.api_key}&#{params}"
 
               response_attributes = JSON.parse(response.body)
@@ -184,7 +184,7 @@ RSpec.describe 'Story Items Endpoints', type: :request do
 
           context 'when record id is passed wrongly' do
             it 'returns error for missing record id in content' do
-              params = { item: { type: 'embed', sub_type: 'record', content: { id: nil }, meta: { alignment: 'left' } } }.to_query
+              params = { story_item: { type: 'embed', sub_type: 'record', content: { id: nil }, meta: { alignment: 'left' } } }.to_query
               post "/v3/stories/#{story.id}/items.json?api_key=#{api_key}&user_key=#{story.user.api_key}&#{params}"
 
               response_attributes = JSON.parse(response.body)
@@ -193,7 +193,7 @@ RSpec.describe 'Story Items Endpoints', type: :request do
             end
 
             it 'returns error for invalid id type' do
-              params = { item: { type: 'embed', sub_type: 'record', content: { id: 'i100' }, meta: { alignment: 'left' } } }.to_query
+              params = { story_item: { type: 'embed', sub_type: 'record', content: { id: 'i100' }, meta: { alignment: 'left' } } }.to_query
               post "/v3/stories/#{story.id}/items.json?api_key=#{api_key}&user_key=#{story.user.api_key}&#{params}"
 
               response_attributes = JSON.parse(response.body)
@@ -209,7 +209,7 @@ RSpec.describe 'Story Items Endpoints', type: :request do
       let(:item) { story.set_items.first }
 
       it 'returns success' do
-        params = { item: { type: 'text', sub_type: 'heading', content: { value: 'Heading text' }, meta: { align_mode: 0 } } }.to_query
+        params = { story_item: { type: 'text', sub_type: 'heading', content: { value: 'Heading text' }, meta: { align_mode: 0 } } }.to_query
         post "/v3/stories/#{story.id}/items.json?api_key=#{api_key}&user_key=#{story.user.api_key}&#{params}"
 
         response_attributes = JSON.parse(response.body)
@@ -221,7 +221,7 @@ RSpec.describe 'Story Items Endpoints', type: :request do
 
     context 'when adding rich text to story' do
       it 'returns success' do
-        params = { item: { type: 'text', sub_type: 'rich-text', content: { value: '<p>Some block content here</p>' }, meta: { align_mode: 0 } } }.to_query
+        params = { story_item: { type: 'text', sub_type: 'rich-text', content: { value: '<p>Some block content here</p>' }, meta: { align_mode: 0 } } }.to_query
         post "/v3/stories/#{story.id}/items.json?api_key=#{api_key}&user_key=#{story.user.api_key}&#{params}"
 
         response_attributes = JSON.parse(response.body)
@@ -235,7 +235,7 @@ RSpec.describe 'Story Items Endpoints', type: :request do
       let(:record) { create(:record) }
 
       it 'returns success' do
-        params = { item: { type: 'embed', sub_type: 'record', record_id: record.record_id, content: { id: record.record_id }, meta: { align_mode: 0 } } }.to_query
+        params = { story_item: { type: 'embed', sub_type: 'record', record_id: record.record_id, content: { id: record.record_id }, meta: { align_mode: 0 } } }.to_query
         post "/v3/stories/#{story.id}/items.json?api_key=#{api_key}&user_key=#{story.user.api_key}&#{params}"
         response_attributes = JSON.parse(response.body)
 

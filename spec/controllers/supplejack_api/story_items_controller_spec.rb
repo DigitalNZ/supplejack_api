@@ -99,12 +99,12 @@ module SupplejackApi
                format: :json
 
           expect(response).to be_a_bad_request
-          expect(JSON.parse(response.body)['errors']).to eq 'Mandatory Parameter item missing in request'
+          expect(JSON.parse(response.body)['errors']).to eq 'Mandatory Parameter story_item missing in request'
         end
 
         it 'should return error for unknow values for type' do
           post :create,
-               params: { story_id: story.id.to_s, api_key: api_key, user_key: api_key, item: { type: 'foo' } },
+               params: { story_id: story.id.to_s, api_key: api_key, user_key: api_key, story_item: { type: 'foo' } },
                format: :json
 
           expect(response).to be_a_bad_request
@@ -117,7 +117,7 @@ module SupplejackApi
                  story_id: story.id.to_s,
                  api_key: api_key,
                  user_key: api_key,
-                 item: { type: 'text', sub_type: 'foo', content: { value: 'foo' } }
+                 story_item: { type: 'text', sub_type: 'foo', content: { value: 'foo' } }
                },
                format: :json
 
@@ -131,7 +131,7 @@ module SupplejackApi
                params: {
                  story_id: story.id.to_s,
                  api_key: api_key,
-                 user_key: api_key, item: { type: 'text', sub_type: 'heading' }
+                 user_key: api_key, story_item: { type: 'text', sub_type: 'heading' }
                }
 
           expect(response).to be_a_bad_request
@@ -150,7 +150,7 @@ module SupplejackApi
                  story_id: story.id.to_s,
                  api_key: api_key,
                  user_key: api_key,
-                 item: block
+                 story_item: block
                },
                format: :json
 
@@ -197,7 +197,7 @@ module SupplejackApi
 
           patch(:update, params: { story_id: story.id.to_s,
                                    id: story.set_items.first.id.to_s,
-                                   api_key: api_key, user_key: api_key, item: item })
+                                   api_key: api_key, user_key: api_key, story_item: item })
         end
 
         it 'returns a 200 http code' do

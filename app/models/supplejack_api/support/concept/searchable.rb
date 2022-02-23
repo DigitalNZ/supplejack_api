@@ -17,7 +17,7 @@ module SupplejackApi
         included do
           include Sunspot::Mongoid
 
-          searchable do
+          searchable auto_index: false, auto_remove: false do
             build_sunspot_schema(self)
           end
         end

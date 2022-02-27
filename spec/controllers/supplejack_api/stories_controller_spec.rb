@@ -28,7 +28,7 @@ module SupplejackApi
 
         it 'returns valid stories' do
           UserSet.all.each do |story|
-            expect(response_body).to include(StorySerializer.new(story, scope: { slim: false }).as_json)
+            expect(response_body).to include(StorySerializer.new(story, scope: { slim: false }).as_json.deep_symbolize_keys)
           end
         end
       end

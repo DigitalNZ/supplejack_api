@@ -48,7 +48,7 @@ module SupplejackApi
 
       it 'should rescue from a RSolr::Error::Http' do
         allow(Record).to receive_message_chain(:unscoped, :active, :where, :first).and_return(@record)
-        allow(@record).to receive(:find_next_and_previous_records).and_raise(RSolr::Error::Http.new({}, {}))
+        allow(@record).to receive(:find_next_and_previous_records).and_raise(RSolr::Error::Http.new({}, nil))
         Record.custom_find(@record.record_id, nil, { text: 'dogs' })
       end
 

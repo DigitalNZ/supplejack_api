@@ -29,12 +29,12 @@ Gem::Specification.new do |s|
   s.add_dependency 'kaminari-mongoid'
   s.add_dependency 'lazy_high_charts'
   s.add_dependency 'mimemagic'
-  s.add_dependency 'mongoid', '~> 7.3.0'
+  s.add_dependency 'mongoid', '~> 7.3.4'
   s.add_dependency 'mongoid_auto_increment'
   s.add_dependency 'paperclip'
   s.add_dependency 'progressbar'
   s.add_dependency 'pundit', '~> 2.1'
-  s.add_dependency 'rails', '6.1.4.6'
+  s.add_dependency 'rails', '7.0.2.2'
   s.add_dependency 'responders'
   s.add_dependency 'rest-client'
   s.add_dependency 'sidekiq'
@@ -42,6 +42,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'thin'
   s.add_dependency 'unicode_utils'
   s.add_dependency 'voight_kampff'
+  s.add_dependency 'sprockets-rails'
 
   # # Adding sunspot_solr so app has access to sunspot:solr rake tasks
   s.add_dependency 'activeresource'

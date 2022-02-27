@@ -109,7 +109,7 @@ module SupplejackApi
           let(:suppressed_source) { build(:source)  }
 
           it 'searches the sources if params source is defined' do
-            expect(Source).to receive(:where).with('status' => 'suppressed')
+            expect(Source).to receive(:where).with({ 'status' => 'suppressed' })
             get :index, params: { source: { status: 'suppressed' }, api_key: harvester.api_key }
           end
         end

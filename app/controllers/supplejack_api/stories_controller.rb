@@ -2,7 +2,7 @@
 
 module SupplejackApi
   class StoriesController < SupplejackApplicationController
-    include Pundit
+    include Pundit::Authorization
     include Concerns::IgnoreMetrics
 
     rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized

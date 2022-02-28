@@ -3,7 +3,7 @@
 module SupplejackApi
   module Harvester
     class BaseController < SupplejackApplicationController
-      include Pundit
+      include Pundit::Authorization
       rescue_from Pundit::NotAuthorizedError, with: :user_requires_harvest_privileges
 
       respond_to :json

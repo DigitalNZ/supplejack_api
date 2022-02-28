@@ -3,7 +3,7 @@
 module SupplejackApi
   module Stories
     class ModerationsController < SupplejackApplicationController
-      include Pundit
+      include Pundit::Authorization
 
       rescue_from Pundit::NotAuthorizedError, with: :user_requires_admin_privileges
       respond_to :json

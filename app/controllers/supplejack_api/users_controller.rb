@@ -2,7 +2,7 @@
 
 module SupplejackApi
   class UsersController < SupplejackApplicationController
-    include Pundit
+    include Pundit::Authorization
 
     before_action :find_and_authorize_user, only: %i[show update destroy]
     rescue_from Pundit::NotAuthorizedError, with: :user_requires_admin_privileges

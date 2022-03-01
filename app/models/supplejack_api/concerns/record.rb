@@ -133,9 +133,7 @@ module SupplejackApi::Concerns::Record
         :cover_thumbnail.in => [large_thumbnail_url, thumbnail_url].compact
       ).each do |user_set| # rubocop:disable Rails/FindEach. Mongoid::Criteria handles batching internally (not via find_each)
         active_set_item_records =
-          SupplejackApi
-          .config
-          .record_class
+          SupplejackApi::Record
           .active
           .where(:record_id.in => user_set.set_items.map(&:record_id))
         active_record_map = active_set_item_records.index_by(&:record_id)

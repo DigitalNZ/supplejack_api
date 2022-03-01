@@ -51,12 +51,12 @@ module SupplejackApi
         end
 
         it 'rescues from a bad request error' do
-          allow(@sunspot_builder).to receive(:execute).and_raise(RSolr::Error::Http.new({}, {}))
+          allow(@sunspot_builder).to receive(:execute).and_raise(RSolr::Error::Http.new({}, nil))
           @search.execute_solr_search
         end
 
         it 'adds a error message for a Solr request error' do
-          allow(@sunspot_builder).to receive(:execute).and_raise(RSolr::Error::Http.new({}, {}))
+          allow(@sunspot_builder).to receive(:execute).and_raise(RSolr::Error::Http.new({}, nil))
           allow(@search).to receive(:solr_error_message) { 'Problem!' }
           @search.execute_solr_search
 

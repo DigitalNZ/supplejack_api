@@ -57,7 +57,7 @@ module SupplejackApi
       end
 
       it 'renders a the solr error when the query is invalid' do
-        allow(SearchSerializer).to receive(:new).and_raise(RSolr::Error::Http.new({}, {}))
+        allow(SearchSerializer).to receive(:new).and_raise(RSolr::Error::Http.new({}, nil))
         get :index, params: { api_key: 'apikey' }, format: 'json'
         expect(response.body).to include 'RSolr::Error::Http'
       end

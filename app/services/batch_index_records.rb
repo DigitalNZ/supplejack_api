@@ -10,38 +10,41 @@ class BatchIndexRecords
   end
 
   def call
-    return if records.empty?
+    Sunspot.index(records) if records.any?
 
-    records.each(&:reload)
-    Sunspot.index(records)
-
-    # update_all skips the callbacks.
-    SupplejackApi::Record.where(:record_id.in => records.map(&:record_id))
-                         .update_all(index_updated: true, index_updated_at: Time.current)
+    update_unless_changed(records)
   rescue StandardError
     retry_index_records(records)
   end
 
   private
 
+  # rubocop:disable Rails/Output
   # Call Sunspot index in the array provided, if failure,
   # retry each record individually to be indexed and log errors
   def retry_index_records(records)
-    Rails.logger.info 'BatchIndexRecords - INDEXING batch has raised an exception - retrying individual records'
+    p 'BatchIndexRecords - INDEXING batch has raised an exception - retrying individual records'
+
     records.each { |record| index_individual_record(record) }
   end
 
   def index_individual_record(record)
-    record.reload
-
-    Rails.logger.info "BatchIndexRecords - INDEXING: #{record}"
+    p "BatchIndexRecords - INDEXING: #{record.record_id}"
 
     Sunspot.index record
-    record.set(index_updated: true, index_updated_at: Time.current)
+
+    update_unless_changed([record])
   rescue StandardError => e
-    Rails.logger.error(
-      "BatchIndexRecords - Failed to index Record #{record.record_id}: #{record.inspect} - #{e.message}"
-    )
-    record.set(index_updated: true, index_updated_at: Time.current)
+    p "BatchIndexRecords - Failed to index Record #{record.record_id}: #{record.inspect} - #{e.message}"
+
+    update_unless_changed([records])
+  end
+  # rubocop:enable Rails/Output
+
+  def update_unless_changed(records)
+    SupplejackApi::Record.where(
+      :record_id.in => records.map(&:record_id),
+      :updated_at.in => records.map(&:updated_at)
+    ).update_all(index_updated: true, index_updated_at: Time.current)
   end
 end

@@ -10,7 +10,10 @@ class BatchIndexRecords
   end
 
   def call
-    Sunspot.index(records) if records.any?
+    return if records.empty?
+
+    records.each(&:reload)
+    Sunspot.index(records)
 
     # update_all skips the callbacks.
     SupplejackApi::Record.where(:record_id.in => records.map(&:record_id))
@@ -29,7 +32,10 @@ class BatchIndexRecords
   end
 
   def index_individual_record(record)
+    record.reload
+
     Rails.logger.info "BatchIndexRecords - INDEXING: #{record}"
+
     Sunspot.index record
     record.set(index_updated: true, index_updated_at: Time.current)
   rescue StandardError => e

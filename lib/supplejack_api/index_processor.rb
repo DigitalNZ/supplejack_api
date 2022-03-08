@@ -10,18 +10,18 @@ module SupplejackApi
 
         records = SupplejackApi::Record.ready_for_indexing.where(status: 'active').limit(500).to_a
 
-        p "There are #{records.count} records to be indexed.." unless Rails.env.test?
+        p "[#{Time.current}] There are #{records.count} records to be indexed.." unless Rails.env.test?
 
         BatchIndexRecords.new(records).call
       end
 
-      p 'Looking for records to remove..' unless Rails.env.test?
+      p 'Looking for records to unindex..' unless Rails.env.test?
 
       while SupplejackApi::Record.ready_for_indexing.where(:status.ne => 'active').count.positive?
 
         records = SupplejackApi::Record.ready_for_indexing.where(:status.ne => 'active').limit(500).to_a
 
-        p "There are #{records.count} records to be removed from the index.." unless Rails.env.test?
+        p "[#{Time.current}] There are #{records.count} records to be removed from the index.." unless Rails.env.test?
 
         BatchRemoveRecordsFromIndex.new(records).call
       end

@@ -4,7 +4,6 @@ require 'spec_helper'
 
 module SupplejackApi
   describe IndexSourceWorker do
-    # rubocop:disable Style/HashSyntax
     describe '.perform' do
       let(:records) { [create(:record_with_fragment), create(:record_with_fragment)] }
 
@@ -14,12 +13,12 @@ module SupplejackApi
           r.save
         end
 
-        allow(Record).to receive(:where).with(hash_including(:'fragments.source_id' => 'source_id')).and_call_original
+        allow(Record).to receive(:where).with(hash_including('fragments.source_id': 'source_id')).and_call_original
       end
 
       it 'finds all active records and indexes them' do
-        # expect(Record).to receive(:where).with(:'fragments.source_id' => 'source_id').and_call_original
-        expect(BatchIndexRecords).to receive(:new).with(records).and_call_original
+        allow_any_instance_of(BatchIndexRecords).to receive(:call).and_return(true)
+        expect(Record).to receive(:where).with('fragments.source_id': 'source_id').and_call_original
 
         IndexSourceWorker.new.perform('source_id')
       end
@@ -27,7 +26,7 @@ module SupplejackApi
       it 'finds all deleted records and removes them from solr' do
         records.each { |r| r.update_attribute(:status, 'deleted') }
 
-        expect(Record).to receive(:where).with(:'fragments.source_id' => 'source_id').and_call_original
+        expect(Record).to receive(:where).with('fragments.source_id': 'source_id').and_call_original
         expect(BatchRemoveRecordsFromIndex).to receive(:new).with(records).and_call_original
         IndexSourceWorker.new.perform('source_id')
       end
@@ -36,11 +35,10 @@ module SupplejackApi
         date = Time.now.utc
         allow(Time).to receive(:parse) { date }
         expect(Record).to receive(:where)
-          .with(:'fragments.source_id' => 'source_id', :updated_at.gt => Time.parse(date.to_s).utc)
+          .with('fragments.source_id': 'source_id', :updated_at.gt => Time.parse(date.to_s).utc)
 
         IndexSourceWorker.new.perform('source_id', date.to_s)
       end
     end
-    # rubocop:enable Style/HashSyntax
   end
 end

@@ -51,7 +51,7 @@ module SupplejackApi
     # So if we query ready_for_indexing with a delay of 5 seconds we make sure that
     # both updates written in any second is captured
     def records_ready_5_secods_ago
-      SupplejackApi::Record.ready_for_indexing.where(status: 'active', :updated_at.gt => (Time.current - 5.seconds))
+      SupplejackApi::Record.ready_for_indexing.where(status: 'active', :updated_at.lte => (Time.current - 5.seconds))
     end
   end
 end

@@ -5,14 +5,15 @@ require 'spec_helper'
 RSpec.describe SupplejackApi::IndexProcessor do
   let(:active_records) { create_list(:record_with_fragment, 5, :ready_for_indexing) }
   let(:deleted_records) { create_list(:record_with_fragment, 5, :ready_for_indexing, :deleted) }
-  let(:index_processor) { SupplejackApi::IndexProcessor.new }
 
   describe '#call' do
     it 'indexes records in batches of the provided size' do
       expect(Sunspot).to receive(:index).with(active_records)
       expect(SupplejackApi::Record.ready_for_indexing.count).to eq 5
 
-      index_processor.call
+      sleep 5 # required as the index processor picks up records created 5 seconds ago
+
+      described_class.new.call
 
       expect(SupplejackApi::Record.ready_for_indexing.count).to eq 0
     end
@@ -21,7 +22,7 @@ RSpec.describe SupplejackApi::IndexProcessor do
       expect(Sunspot).to receive(:remove).with(deleted_records)
       expect(SupplejackApi::Record.ready_for_indexing.count).to eq 5
 
-      index_processor.call
+      described_class.new.call
 
       expect(SupplejackApi::Record.ready_for_indexing.count).to eq 0
     end

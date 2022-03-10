@@ -12,23 +12,38 @@ RSpec.describe BatchIndexRecords do
   end
 
   describe '#call' do
-    it 'calls Sunspot.index with the array of records passed via args' do
-      expect(Sunspot).to receive(:index).with(records)
+    context 'when sunspot does not raise exception on indexing in bulk' do
+      before { expect(Sunspot).to receive(:index).with(records) }
 
-      BatchIndexRecords.new(records).call
-      records.map(&:reload)
-      expect(records.map(&:index_updated)).to all(be(true))
-      expect(records.map(&:index_updated_at)).to all(be_a(Date))
+      it 'updates index_updated & index_updated_at on all records' do
+        BatchIndexRecords.new(records).call
+
+        records.map(&:reload)
+
+        expect(records.map(&:index_updated)).to all(be(true))
+        expect(records.map(&:index_updated_at)).to all(be_a(Date))
+      end
     end
 
-    it 'tries to index each individual record if any exception was raised' do
-      allow(Sunspot).to receive(:index).with(records).and_raise
+    context 'when sunspot raises exception on indexing in bulk' do
+      before { allow(Sunspot).to receive(:index).with(records).and_raise }
 
-      records.each do |record|
-        expect(Sunspot).to receive(:index).with(record)
+      it 'tries to index each individual record if any exception was raised' do
+        records.each { |record| expect(Sunspot).to receive(:index).with(record) }
+
+        BatchIndexRecords.new(records).call
       end
 
-      BatchIndexRecords.new(records).call
+      it 'updates index_updated & index_updated_at on all records' do
+        records.each { |record| allow(Sunspot).to receive(:index).with(record) }
+
+        BatchIndexRecords.new(records).call
+
+        records.map(&:reload)
+
+        expect(records.map(&:index_updated)).to all(be(true))
+        expect(records.map(&:index_updated_at)).to all(be_a(Date))
+      end
     end
   end
 end

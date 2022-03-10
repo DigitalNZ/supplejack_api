@@ -32,11 +32,9 @@ class BatchIndexRecords
     p "BatchIndexRecords - INDEXING: #{record.record_id}"
 
     Sunspot.index record
-
-    update_unless_changed([record])
   rescue StandardError => e
     p "BatchIndexRecords - Failed to index Record #{record.record_id}: #{record.inspect} - #{e.message}"
-
+  ensure
     update_unless_changed([record])
   end
   # rubocop:enable Rails/Output

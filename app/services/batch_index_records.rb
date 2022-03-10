@@ -37,7 +37,7 @@ class BatchIndexRecords
   rescue StandardError => e
     p "BatchIndexRecords - Failed to index Record #{record.record_id}: #{record.inspect} - #{e.message}"
 
-    update_unless_changed([records])
+    update_unless_changed([record])
   end
   # rubocop:enable Rails/Output
 

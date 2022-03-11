@@ -46,6 +46,7 @@ Gem::Specification.new do |s|
 
   # # Adding sunspot_solr so app has access to sunspot:solr rake tasks
   s.add_dependency 'activeresource'
+  s.add_dependency 'activeresource-response'
   s.add_dependency 'json-ld'
   s.add_dependency 'rufus-scheduler'
   s.add_dependency 'sunspot_rails'

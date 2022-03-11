@@ -18,6 +18,7 @@ PATH
       active_model_serializers
       activemodel-serializers-xml
       activeresource
+      activeresource-response
       dalli
       devise
       devise-token_authenticatable (>= 1.0.0)
@@ -115,6 +116,8 @@ GEM
       activemodel (>= 6.0)
       activemodel-serializers-xml (~> 1.0)
       activesupport (>= 6.0)
+    activeresource-response (1.4.0)
+      activeresource (>= 3, < 6.1)
     activestorage (7.0.2.3)
       actionpack (= 7.0.2.3)
       activejob (= 7.0.2.3)

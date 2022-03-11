@@ -18,6 +18,7 @@ module SupplejackApi
         records = available_records.limit(500).to_a
 
         p "[#{Time.current}] There are #{records.count} records to be indexed.." unless Rails.env.test?
+        p "[#{Time.current}] Index records #{records.map(&:record_id)}" unless Rails.env.test?
 
         BatchIndexRecords.new(records).call
 

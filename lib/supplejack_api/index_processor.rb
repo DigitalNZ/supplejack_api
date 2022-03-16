@@ -48,7 +48,10 @@ module SupplejackApi
     # 2. The record is not part of an active harvest/enrichment job
     def indexable_records
       source_ids = SupplejackApi::AbstractJob.active_job_source_ids
-      SupplejackApi::Record.ready_for_indexing.where(status: 'active', :source_id.nin => source_ids)
+
+      p "Active source ids #{source_ids}"
+
+      SupplejackApi::Record.ready_for_indexing.where(status: 'active', 'fragments.source_id'.nin => source_ids)
     end
   end
 end

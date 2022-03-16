@@ -41,7 +41,6 @@ module SupplejackApi
         available_records = SupplejackApi::Record.ready_for_indexing.where(:status.ne => 'active')
       end
     end
-    # rubocop:enable Rails/Output
 
     # There are 2 conditions for a record to be ready for indexing
     # 1. The records has been updated and flagged for indexing
@@ -51,7 +50,13 @@ module SupplejackApi
 
       p "Active source ids #{source_ids}"
 
-      SupplejackApi::Record.ready_for_indexing.where(status: 'active', 'fragments.source_id'.nin => source_ids)
+      SupplejackApi::Record
+        .ready_for_indexing
+        .where(
+          status: 'active',
+          'fragments.source_id' => { '$nin' => source_ids }
+        )
     end
+    # rubocop:enable Rails/Output
   end
 end

@@ -12,7 +12,7 @@ module SupplejackApi
     def index_available_records
       p 'Looking for records to index..' unless Rails.env.test?
 
-      available_records = records_ready_5_secods_ago
+      available_records = indexable_records
 
       while available_records.count.positive?
         records = available_records.limit(500).to_a
@@ -22,7 +22,7 @@ module SupplejackApi
 
         BatchIndexRecords.new(records).call
 
-        available_records = records_ready_5_secods_ago
+        available_records = indexable_records
       end
     end
 
@@ -43,16 +43,12 @@ module SupplejackApi
     end
     # rubocop:enable Rails/Output
 
-    # This query is made to counter a race condition.
-    # If a second can be broken down to 3 parts and if the following happens in those 3 parts sequentially.
-    # - Enrichment 1 updates record x
-    # - IndexProcessor pics up the record x
-    # - Enrichment 2 updates record x
-    # The second update wont be captured on indexing as the updated_at for both enrichments are at the same second.
-    # So if we query ready_for_indexing with a delay of 5 seconds we make sure that
-    # both updates written in any second is captured
-    def records_ready_5_secods_ago
-      SupplejackApi::Record.ready_for_indexing.where(status: 'active', :updated_at.lte => (Time.current - 5.seconds))
+    # There are 2 conditions for a record to be ready for indexing
+    # 1. The records has been updated and flagged for indexing
+    # 2. The record is not part of an active harvest/enrichment job
+    def indexable_records
+      source_ids = SupplejackApi::AbstractJob.active_job_source_ids
+      SupplejackApi::Record.ready_for_indexing.where(status: 'active', :source_id.nin => source_ids)
     end
   end
 end

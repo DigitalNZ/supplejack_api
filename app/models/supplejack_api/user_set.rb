@@ -27,6 +27,7 @@ module SupplejackApi
     field :cover_thumbnail,  type: String
     field :username,         type: String
     field :email,            type: String
+    field :state,            type: String
 
     validates :copyright, inclusion: { in: [0, 1, 2] }
 

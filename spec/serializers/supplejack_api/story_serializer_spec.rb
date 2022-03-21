@@ -61,6 +61,10 @@ module SupplejackApi
         expect(response[:creator]).to eq story.user.name
       end
 
+      it 'has state' do
+        expect(response[:state]).to eq story.state
+      end
+
       it 'has number_of_items' do
         expect(response[:number_of_items]).to eq story.set_items.reject { |item| item.type == 'text' }.count
       end

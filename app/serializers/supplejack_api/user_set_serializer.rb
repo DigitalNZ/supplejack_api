@@ -2,8 +2,8 @@
 
 module SupplejackApi
   class UserSetSerializer < ActiveModel::Serializer
-    attributes %i[id name count priority featured approved tags state
-                  created_at updated_at privacy subjects description]
+    attributes :id, :name, :count, :priority, :featured, :approved
+    attributes :created_at, :updated_at, :tags, :privacy, :subjects, :description
 
     has_one :record
     has_many :items_with_records, key: :records do |serializer|

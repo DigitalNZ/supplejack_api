@@ -52,6 +52,8 @@ RSpec.describe 'Stories Endpoints', type: :request do
                 'number_of_items' => story.set_items.reject { |item| item.type == 'text' }.count,
                 'creator' => story.user.name,
                 'category' => 'Other',
+                'state' => story.state,
+                'user_id' => story.user.id.to_s,
                 'record_ids' => story.set_items.sort_by(&:position).map do |item|
                                   { 'record_id' => item.record_id, 'story_item_id' => item._id.to_s }
                                 end }
@@ -85,6 +87,8 @@ RSpec.describe 'Stories Endpoints', type: :request do
                 'number_of_items' => story.set_items.reject { |item| item.type == 'text' }.count,
                 'creator' => story.user.name,
                 'category' => 'Other',
+                'state' => story.state,
+                'user_id' => story.user.id.to_s,
                 'contents' => story.set_items.map do |content|
                   { 'record_id' => content.record_id,
                     'id' => content.id.to_s,
@@ -127,6 +131,8 @@ RSpec.describe 'Stories Endpoints', type: :request do
             'number_of_items' => story.set_items.reject { |item| item.type == 'text' }.count,
             'creator' => story.user.name,
             'category' => 'Other',
+            'state' => story.state,
+            'user_id' => story.user.id.to_s,
             'contents' => story.set_items.sort_by(&:position).map do |item|
                             {
                               'record_id' => item.record_id,
@@ -182,6 +188,8 @@ RSpec.describe 'Stories Endpoints', type: :request do
               'number_of_items' => story.set_items.reject { |item| item.type == 'text' }.count,
               'creator' => story.user.name,
               'category' => 'Other',
+              'state' => story.state,
+              'user_id' => story.user.id.to_s,
               'contents' => story.set_items.sort_by(&:position).map do |item|
                               {
                                 'record_id' => item.record_id,
@@ -246,6 +254,8 @@ RSpec.describe 'Stories Endpoints', type: :request do
             'number_of_items' => story.set_items.reject { |item| item.type == 'text' }.count,
             'creator' => story.user.name,
             'category' => 'Other',
+            'state' => story.state,
+            'user_id' => story.user.id.to_s,
             'contents' => [] }
         )
       end
@@ -328,6 +338,8 @@ RSpec.describe 'Stories Endpoints', type: :request do
               'number_of_items' => story.set_items.reject { |item| item.type == 'text' }.count,
               'creator' => story.user.name,
               'category' => 'Other',
+              'state' => story.state,
+              'user_id' => story.user.id.to_s,
               'contents' => story.set_items.sort_by(&:position).map do |item|
                               {
                                 'record_id' => item.record_id,
@@ -378,6 +390,8 @@ RSpec.describe 'Stories Endpoints', type: :request do
               'number_of_items' => story.set_items.reject { |item| item.type == 'text' }.count,
               'creator' => story.user.name,
               'category' => 'Other',
+              'state' => story.state,
+              'user_id' => story.user.id.to_s,
               'contents' => story.set_items.sort_by(&:position).map do |item|
                 {
                   'record_id' => item.record_id,
@@ -522,6 +536,8 @@ RSpec.describe 'Stories Endpoints', type: :request do
                 'number_of_items' => story.set_items.reject { |item| item.type == 'text' }.count,
                 'creator' => story.user.name,
                 'category' => 'Other',
+                'state' => story.state,
+                'user_id' => story.user.id.to_s,
                 'record_ids' => story.set_items.sort_by(&:position).map do |item|
                                   { 'record_id' => item.record_id, 'story_item_id' => item._id.to_s }
                                 end }

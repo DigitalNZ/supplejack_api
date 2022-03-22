@@ -45,7 +45,9 @@ RSpec.describe 'Featured Endpoints', type: :request do
             'record_ids' => record_ids,
             'subjects' => story.subjects,
             'tags' => story.tags,
-            'updated_at' => JSON.parse(story.updated_at.to_json)
+            'updated_at' => JSON.parse(story.updated_at.to_json),
+            'state' => story.state,
+            'user_id' => story.user.id.to_s
           }]
         )
       end

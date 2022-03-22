@@ -12,6 +12,10 @@ module SupplejackApi
       object.user.name
     end
 
+    attribute :user_id do
+      object.user.id
+    end
+
     attribute :number_of_items do
       items.reject { |item| item.type == 'text' }.count
     end

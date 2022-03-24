@@ -2,14 +2,18 @@
 
 module SupplejackApi
   class StorySerializer < ActiveModel::Serializer
-    attributes :id, :name, :description, :privacy, :copyright,
-               :featured, :featured_at, :approved, :tags,
-               :subjects, :updated_at, :cover_thumbnail
+    attributes %i[id name description privacy copyright
+                  featured featured_at approved tags state
+                  subjects updated_at cover_thumbnail]
 
     has_many :contents, serializer: StoryItemSerializer, unless: -> { scope[:slim] }
 
     attribute :creator do
       object.user.name
+    end
+
+    attribute :user_id do
+      object.user.id
     end
 
     attribute :number_of_items do

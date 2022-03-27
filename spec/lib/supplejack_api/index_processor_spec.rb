@@ -6,6 +6,10 @@ RSpec.describe SupplejackApi::IndexProcessor do
   let(:active_records) { create_list(:record_with_fragment, 5, :ready_for_indexing) }
   let(:deleted_records) { create_list(:record_with_fragment, 5, :ready_for_indexing, :deleted) }
 
+  before do
+    allow(SupplejackApi::AbstractJob).to receive(:active_job_source_ids).and_return([])
+  end
+
   describe '#call' do
     it 'indexes records in batches of the provided size' do
       expect(Sunspot).to receive(:index).with(active_records)

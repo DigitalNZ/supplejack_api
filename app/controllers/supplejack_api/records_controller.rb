@@ -75,7 +75,9 @@ module SupplejackApi
         minimum_term_frequency(params[:frequency] || 1)
       end
 
-      respond_with mlt.results, each_serializer: self.class.mlt_serializer_class, root: 'records', adapter: :json
+      respond_with mlt.results, each_serializer: self.class.mlt_serializer_class,
+                                fields: available_fields, root: 'records',
+                                include: available_fields, adapter: :json, callback: params['jsonp']
     end
 
     # This options are merged with the serializer options. Which will allow the serializer

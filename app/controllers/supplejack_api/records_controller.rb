@@ -72,6 +72,7 @@ module SupplejackApi
 
       mlt = record.more_like_this do
         fields(*mlt_fields)
+        paginate(page: params[:page] || 1, per_page: params[:per_page] || 5)
         minimum_term_frequency(params[:frequency] || 1)
       end
 

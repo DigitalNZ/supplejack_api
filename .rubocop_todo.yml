@@ -34,6 +34,10 @@ Layout/LineLength:
   Exclude:
     - 'spec/requests/*'
 
+Metrics/ClassLength:
+  Exclude:
+    - 'app/controllers/supplejack_api/records_controller.rb'
+
 # Offense count: 64
 # Configuration parameters: IgnoredMethods, CountRepeatedAttributes.
 Metrics/AbcSize:

@@ -1,4 +1,4 @@
-![Supplejack Logo](https://raw.githubusercontent.com/DigitalNZ/supplejack_manager/master/app/javascript/images/logo.png)
+![Supplejack Logo](https://raw.githubusercontent.com/DigitalNZ/supplejack_manager/main/app/assets/images/logo.png)
 
 # Supplejack API
 

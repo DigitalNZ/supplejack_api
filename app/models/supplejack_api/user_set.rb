@@ -16,7 +16,7 @@ module SupplejackApi
 
     field :name,             type: String
     field :description,      type: String,   default: ''
-    field :copyright,        type: Integer,  default: 2
+    field :copyright,        type: Integer,  default: 0
     field :url,              type: String
     field :priority,         type: Integer,  default: 0
     field :count_updated_at, type: DateTime
@@ -34,7 +34,7 @@ module SupplejackApi
     after_initialize :set_default_copyright, if: -> { copyright.nil? }
 
     def set_default_copyright
-      self.copyright = 2
+      self.copyright = 0
     end
 
     # This field was created for sorting items to know that

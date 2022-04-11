@@ -242,7 +242,7 @@ RSpec.describe 'Stories Endpoints', type: :request do
           { 'name' => 'New Story Name',
             'description' => story.description,
             'privacy' => story.privacy,
-            'copyright' => 2,
+            'copyright' => 0,
             'featured' => story.featured,
             'featured_at' => story.featured_at,
             'approved' => story.approved,

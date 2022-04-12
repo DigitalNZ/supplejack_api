@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Stories Endpoints', type: :request do
   let(:admin)   { create(:admin_user) }
-  let(:story)   { create(:story) }
+  let(:story)   { create(:story, privacy: 'public') }
   let(:api_key) { admin.authentication_token }
 
   describe '#index' do

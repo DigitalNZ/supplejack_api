@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Featured Endpoints', type: :request do
   let(:admin) { create(:admin_user) }
-  let(:story) { create(:story_with_dnz_story_items) }
+  let(:story) { create(:story_with_dnz_story_items, privacy: 'public') }
 
   describe '#index' do
     context 'when featured stories dosent exist' do

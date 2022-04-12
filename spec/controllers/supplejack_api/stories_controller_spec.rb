@@ -122,7 +122,7 @@ module SupplejackApi
         let(:story_id)      { story.id.to_s }
 
         before do
-          2.times { create(:story, user: user) }
+          2.times { create(:story, privacy: 'public', user: user) }
 
           get :show, params: { api_key: api_key, id: story_id }
         end

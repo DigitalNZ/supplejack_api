@@ -207,7 +207,7 @@ module SupplejackApi
     end
 
     def set_default_privacy
-      self.privacy = 'public' if self[:privacy].blank?
+      self.privacy = 'private' if self[:privacy].blank?
     end
 
     def record_status

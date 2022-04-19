@@ -216,9 +216,8 @@ module SupplejackApi
         @search.options[:without] = { email: 'jd@example.com, johnd@test.com', name: 'James Cook' }
         @search.execute_solr_search
         expect(@session).to have_search_params(:without, proc do
-          without(:email, 'jd@example.com')
-          without(:email, 'johnd@test.com')
-          without(:name, 'James Cook')
+          without(:email, ['jd@example.com', 'johnd@test.com'])
+          without(:name, ['James Cook'])
         end)
       end
 
@@ -397,7 +396,7 @@ module SupplejackApi
       it 'removes blacklisted collections from results' do
         create(:source, source_id: 'DNZ', status: 'suppressed')
         @search.execute_solr_search
-        expect(@session).to have_search_params(:without, :source_id, 'DNZ')
+        expect(@session).to have_search_params(:without, :source_id, ['DNZ'])
       end
 
       it 'defaults to exclude_filters_from_facets == false' do

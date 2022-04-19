@@ -55,6 +55,7 @@ module SupplejackApi
     end
 
     def facet_pivot_list
+      return '' if options[:facet_pivots].blank?
       return @facet_pivot_list if @facet_pivot_list
 
       @facet_pivot_list =
@@ -103,7 +104,7 @@ module SupplejackApi
         query_field_list = options[:query_fields].map(&:to_sym)
       end
 
-      return nil if query_field_list.try(:empty?)
+      return nil if query_field_list&.empty?
 
       query_field_list
     end
@@ -175,12 +176,16 @@ module SupplejackApi
     # If not, spec it
     def execute_solr_search
       search = search_builder
+      search = QueryBuilder::Keywords.new(search, text, query_fields).call
 
-      search.build do
-        keywords text, fields: query_fields
-      end
-
-      execute_solr_search_and_handle_errors(search)
+      self.errors ||= []
+      sunspot = search.execute
+    rescue RSolr::Error::Http => e
+      self.errors << e
+      Rails.logger.info self.errors
+      sunspot = {}
+    ensure
+      sunspot
     end
 
     INTEGER_ATTRIBUTES ||= %i[page per_page facets_per_page facets_page record_type].freeze
@@ -204,7 +209,7 @@ module SupplejackApi
       restrictions = []
 
       if scope
-        role = scope.role.try(:to_sym)
+        role = scope.role&.to_sym
         restrictions = schema_class.roles[role].record_restrictions if schema_class.roles[role].record_restrictions
       end
 
@@ -213,140 +218,51 @@ module SupplejackApi
 
     # rubocop:disable Metrics/MethodLength
     # rubocop:disable Metrics/AbcSize
-    # rubocop:disable Metrics/CyclomaticComplexity
-    # rubocop:disable Metrics/PerceivedComplexity
     # FIXME: Make this method smaller, it's triple the max method length
     def search_builder
       search_model = self
 
-      @search_builder ||= Sunspot.new_search(SupplejackApi::Record) do
-        with(:record_type, record_type) unless options[:record_type] == 'all'
+      @search_builder ||= Sunspot.new_search(SupplejackApi::Record)
 
-        search_model.facet_list.each do |facet_name|
-          facet(facet_name, limit: facets_per_page, offset: facets_offset)
-        end
+      @search_builder = QueryBuilder::ExcludeFiltersFromFacets.new(
+        @search_builder, options[:exclude_filters_from_facets], options[:and],
+        options[:or], facet_list, facets_per_page, facets_offset
+      ).call
+      @search_builder = QueryBuilder::Defaults.new(@search_builder).call
+      @search_builder = QueryBuilder::RecordType.new(@search_builder, options[:record_type]).call
+      @search_builder = QueryBuilder::Facets.new(@search_builder, facet_list, facets_per_page, facets_offset).call
+      @search_builder = QueryBuilder::Spellcheck.new(@search_builder, options[:suggest]).call
+      @search_builder = QueryBuilder::Without.new(@search_builder, without_params).call
+      @search_builder = QueryBuilder::WithBoudingBox.new(
+        @search_builder, options[:geo_bbox]&.split(',')&.map(&:to_f)
+      ).call
+      @search_builder = QueryBuilder::FacetPivot.new(@search_builder, facet_pivot_list).call
 
-        spellcheck collate: true, only_more_popular: true if options[:suggest]
+      surpressed_source_ids = SupplejackApi::Source.suppressed.all.pluck(:source_id)
+      @search_builder = QueryBuilder::Without.new(@search_builder, source_id: surpressed_source_ids).call
 
-        options[:without].each do |name, values|
-          values = values.split(',')
-          values.each do |value|
-            without(name, to_proper_value(name, value))
-          end
-        end
+      restrictions = search_model.class.role_collection_restrictions(search_model.scope)
+      @search_builder = QueryBuilder::Without.new(@search_builder, restrictions).call
 
-        if options[:geo_bbox]
-          coords = options[:geo_bbox].split(',').map(&:to_f)
-          with(:lat_lng).in_bounding_box([coords[2], coords[1]], [coords[0], coords[3]])
-        end
-
-        adjust_solr_params do |params|
-          if options[:solr_query].present?
-            params[:q] ||= ''
-            params['q.alt'] = options[:solr_query]
-            params[:defType] = 'dismax'
-          end
-
-          if options[:facet_pivots].present?
-            params['facet.pivot'] = facet_pivot_list
-            params['facet'] = 'on'
-          end
-
-          params['q.op'] = 'AND'
-          params['df'] = 'text'
-          params['sow'] = 'true'
-          params['facet.threads'] = ENV['SOLR_FACET_THREADS']&.to_i || 4
-        end
-
-        # Facet Queries
-        #
-        # The facet query parameter should have the following format:
-        #
-        #   facet_query: {images: {"creator" => "all"}, headings: {"record_type" => 1}}
-        #
-        # - Each key in the top level hash will be the name of each facet row returned.
-        # - Each value in the top level hash is a hash similar with all the restrictions
-        #
-
-        if options[:facet_query].any?
-          facet(:counts) do
-            options[:facet_query].each_pair do |row_name, filters_hash|
-              row(row_name.to_s) do
-                filters_hash.each_pair do |filter, value|
-                  if value == 'all'
-                    without(filter.to_sym, nil)
-                  elsif filter =~ /-(.+)/
-                    without(Regexp.last_match(1).to_sym, to_proper_value(filter, value))
-                  elsif value.is_a?(Array)
-                    with(filter.to_sym).all_of(value)
-                  else
-                    with(filter.to_sym, to_proper_value(filter, value))
-                  end
-                end
-              end
-            end
-          end
-        end
-
-        order_by(sort, direction) if options[:sort].present?
-
-        search_model.class.role_collection_restrictions(search_model.scope).each do |field, values|
-          without(field.to_sym, values)
-        end
-
-        SupplejackApi::Source.suppressed.each do |source|
-          without(:source_id, source.source_id)
-        end
-
-        if options[:exclude_filters_from_facets] == 'true'
-          or_and_options = {}.merge(options[:and]).merge(options[:or]).symbolize_keys
-
-          # This is to clean up any valid integer or date facets that have been requested
-          # Through the filter options, so that they are treated as strings.
-          str_facets = %i[integer datetime]
-          converted_string_facets = or_and_options.each_with_object([]) do |(facet_name, _facet_value), array|
-            array.push(facet_name) if str_facets.include?(RecordSchema.fields[facet_name.to_sym]&.type)
-          end
-
-          converted_string_facets.each do |facet|
-            or_and_options["#{facet}_str".to_sym] = or_and_options.delete(facet)
-          end
-
-          or_and_options.slice(*facet_list).each do |facet_name, value|
-            name = facet_name.to_sym
-
-            facet(
-              name,
-              exclude: with_query_for_facet_exclusion(self, name, value),
-              limit: facets_per_page,
-              offset: facets_offset
-            )
-          end
-        end
-
-        paginate page: page, per_page: per_page
-      end
+      @search_builder = QueryBuilder::FacetRow.new(@search_builder, options[:facet_query]).call
+      @search_builder = QueryBuilder::Ordering.new(
+        @search_builder, SupplejackApi::Record, options[:sort], options[:direction]
+      ).call
+      @search_builder = QueryBuilder::Paginate.new(@search_builder, options[:page], options[:per_page]).call
+      @search_builder = QueryBuilder::SolrQuery.new(@search_builder, options[:solr_query]).call
 
       @search_builder.build(&build_conditions)
       @search_builder
     end
     # rubocop:enable Metrics/AbcSize
     # rubocop:enable Metrics/MethodLength
-    # rubocop:enable Metrics/CyclomaticComplexity
-    # rubocop:enable Metrics/PerceivedComplexity
 
-    def with_query_for_facet_exclusion(search_context, facet_name, value)
-      # Necessary to pass search_context in order to generate `with` queries
-      wildcard_search_term_regex = /(.+)\*$/ # search term ends in *
+    def without_params
+      return nil if options[:without].blank?
 
-      if value =~ wildcard_search_term_regex
-        search_context.with(facet_name).starting_with(Regexp.last_match(1))
-      elsif value.is_a?(Hash) && value.key?(:or)
-        search_context.with(facet_name, value[:or])
-      else
-        # Value is a non-wildcarded string, or an array
-        search_context.with(facet_name, value)
-      end
+      options[:without].map do |name, values|
+        [name, values.split(',').map { |value| to_proper_value(name, value) }.compact]
+      end.to_h
     end
 
     # Returns the facets part of the search results converted to a hash
@@ -392,40 +308,10 @@ module SupplejackApi
       end
     end
 
-    def sort
-      value = @options[:sort].to_sym
-
-      begin
-        Sunspot::Setup.for(self.class.model_class).field(value)
-        value
-      rescue Sunspot::UnrecognizedFieldError
-        'score'
-      end
-    end
-
-    def direction
-      if %w[asc desc].include?(@options[:direction])
-        @options[:direction].to_sym
-      else
-        :desc
-      end
-    end
-
     def method_missing(symbol, *args)
       return nil unless solr_search_object.respond_to?(:hits)
 
       solr_search_object.send(symbol, *args)
-    end
-
-    def execute_solr_search_and_handle_errors(search)
-      self.errors ||= []
-      sunspot = search.execute
-    rescue RSolr::Error::Http => e
-      self.errors << e
-      Rails.logger.info self.errors
-      sunspot = {}
-    ensure
-      sunspot
     end
 
     private

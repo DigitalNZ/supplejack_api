@@ -3,6 +3,7 @@
 module SupplejackApi
   class Concept
     include Support::Concept::Storable
+    include Support::Searchable
     include Support::Concept::Searchable
 
     index({ concept_id: 1 }, background: true)

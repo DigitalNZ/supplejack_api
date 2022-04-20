@@ -12,12 +12,12 @@ module QueryBuilder
   class Facets < Base
     attr_reader :facet_list, :facets_per_page, :facets_offset
 
-    def initialize(search, facet_list, facets_per_page, facets_offset)
+    def initialize(search, params)
       super(search)
 
-      @facet_list = facet_list
-      @facets_per_page = facets_per_page
-      @facets_offset = facets_offset
+      @facet_list = params.facets
+      @facets_per_page = params.facets_per_page
+      @facets_offset = params.facets_offset
     end
 
     def call

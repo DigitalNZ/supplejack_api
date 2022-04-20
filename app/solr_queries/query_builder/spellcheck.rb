@@ -12,7 +12,7 @@ module QueryBuilder
 
     def call
       super
-      return search if spellcheck.blank?
+      return search unless spellcheck
 
       search.build do
         spellcheck collate: true, only_more_popular: true

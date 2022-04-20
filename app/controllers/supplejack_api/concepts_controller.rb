@@ -9,7 +9,7 @@ module SupplejackApi
     respond_to :json, :xml, :rss
 
     def index
-      @search = ConceptSearch.new(params)
+      @search = ConceptSearch.new(params.to_unsafe_h)
       @search.request_url = request.original_url
       @search.scope = current_user
 

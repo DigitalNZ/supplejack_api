@@ -3,50 +3,20 @@
 module SupplejackApi
   class ConceptSearch < Search
     def initialize(options = {})
-      super
-      @options = options.dup
-      @options.reverse_merge!(
-        and: {},
-        or: {},
-        without: {},
-        page: 1,
-        per_page: 20,
-        sort: nil,
-        direction: 'desc',
-        fields: ConceptSchema.model_fields.keys.join(','),
-        debug: nil
-      )
+      super(options.merge(fields: ConceptSchema.model_fields.keys.join(',')))
     end
 
-    # FIXME: make me smaller!
     def search_builder
-      @search_builder ||= Sunspot.new_search(SupplejackApi::Concept) do
-        spellcheck collate: true, only_more_popular: true if options[:suggest]
+      return @search_builder if @search_builder.present?
 
-        options[:without].each do |name, values|
-          values = values.split(',')
-          values.each do |value|
-            without(name, to_proper_value(name, value))
-          end
-        end
-
-        if options[:geo_bbox]
-          coords = options[:geo_bbox].split(',').map(&:to_f)
-          with(:lat_lng).in_bounding_box([coords[2], coords[1]], [coords[0], coords[3]])
-        end
-
-        adjust_solr_params do |params|
-          if options[:solr_query].present?
-            params[:q] ||= ''
-            params['q.alt'] = options[:solr_query]
-            params[:defType] = 'dismax'
-          end
-        end
-
-        order_by(sort, direction) if options[:sort].present?
-
-        paginate page: page, per_page: per_page
-      end
+      @search_builder = Sunspot.new_search(SupplejackApi::Concept)
+      @search_builder = QueryBuilder::Spellcheck.new(@search_builder, options.suggest).call
+      @search_builder = QueryBuilder::Without.new(@search_builder, options.without).call
+      @search_builder = QueryBuilder::WithBoudingBox.new(@search_builder, options.geo_bbox).call
+      @search_builder = QueryBuilder::Ordering.new(
+        @search_builder, SupplejackApi::Concept, options.sort, options.direction
+      ).call
+      @search_builder = QueryBuilder::Paginate.new(@search_builder, options.page, options.per_page).call
 
       @search_builder.build(&build_conditions)
       @search_builder

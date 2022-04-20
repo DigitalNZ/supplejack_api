@@ -12,9 +12,20 @@ module SupplejackApi
       ActiveModelSerializers::SerializableResource.new(object.results, options)
     end
 
-    attributes :per_page, :page, :request_url
+    attribute :page do
+      object.options.page
+    end
+
+    attribute :per_page do
+      object.options.per_page
+    end
+
+    attributes :request_url
+
     attribute :solr_request_params, if: -> { object.solr_request_params }
+
     attribute :warnings, if: -> { object.warnings.present? }
+
     attribute :facets do
       if xml?
         xml_facets

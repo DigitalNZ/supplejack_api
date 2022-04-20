@@ -5,7 +5,7 @@ require 'spec_helper'
 module SupplejackApi
   describe Search do
     before do
-      @search = Search.new
+      @search = RecordSearch.new
       Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session)
       @session = Sunspot.session
 
@@ -14,204 +14,123 @@ module SupplejackApi
 
     describe '#initialize' do
       it 'sets the options' do
-        expect(@search).to respond_to :options
+        expect(RecordSearch.new).to respond_to :options
       end
 
       it 'reverse_merges default options without replacing requested options' do
-        expect(Search.new(fields: 'title').options[:fields]).to eq 'title'
+        expect(RecordSearch.new(fields: 'title').options.fields).to eq [:title]
       end
 
       it 'uses sensible defaults when no options are provided' do
-        default_options = {
-          facets: '',
-          facet_pivots: '',
-          and: {},
-          or: {},
-          without: {},
-          page: 1,
-          per_page: 20,
-          record_type: 0,
-          facets_per_page: 10,
-          facets_page: 1,
-          sort: nil,
-          direction: 'desc',
-          exclude_filters_from_facets: false,
-          fields: 'default',
-          facet_query: {},
-          debug: nil
-        }
-
-        expect(Search.new.options).to eq default_options
+        search = RecordSearch.new
+        expect(search.options.facets).to eq []
+        expect(search.options.facet_pivots).to eq []
+        expect(search.options.and_condition).to eq({})
+        expect(search.options.or_condition).to eq({})
+        expect(search.options.without).to eq({})
+        expect(search.options.page).to eq 1
+        expect(search.options.per_page).to eq 20
+        expect(search.options.record_type).to eq 0
+        expect(search.options.facets_per_page).to eq 10
+        expect(search.options.facets_page).to eq 1
+        expect(search.options.sort).to eq nil
+        expect(search.options.direction).to eq 'desc'
+        expect(search.options.exclude_filters_from_facets).to eq false
+        expect(search.options.fields).to eq []
+        expect(search.options.group_list).to eq [:default]
+        expect(search.options.facet_query).to eq({})
+        expect(search.options.debug).to eq false
       end
     end
 
     describe '#facet_list' do
-      before do
-        # Record Search is used here rather than Search
-        # this method uses a RecordSearchSchema within `Search#schema_class`
-        # Essentially, without RecordSearch the test breaks
-        @search = RecordSearch.new
-        allow(@search).to receive(:model_class) { Record }
-      end
-
-      it 'should return a array of facets' do
-        @search.options[:facets] = 'name, address'
-        expect(@search.facet_list).to eq %i[name address]
+      it 'should return an array of facets' do
+        expect(RecordSearch.new(facets: 'name, address').options.facets).to eq %i[name address]
       end
 
       it 'should discard any fields not configured as facets' do
-        @search.options[:facets] = 'name, address, other_facet'
-        expect(@search.facet_list).to eq %i[name address]
+        expect(RecordSearch.new(facets: 'name, address, other_facet').options.facets).to eq %i[name address]
       end
 
       it 'should return string versions of integer facets' do
-        @search.options[:facets] = 'age'
-        expect(@search.facet_list).to eq [:age_str]
+        expect(RecordSearch.new(facets: 'age').options.facets).to eq [:age_str]
       end
 
       it 'should return string versions of date facets' do
-        @search.options[:facets] = 'birth_date'
-        expect(@search.facet_list).to eq [:birth_date_str]
+        expect(RecordSearch.new(facets: 'birth_date').options.facets).to eq [:birth_date_str]
       end
     end
 
     describe '#facet_pivot_list' do
-      before do
-        @search = RecordSearch.new
-        allow(@search).to receive(:model_class) { Record }
-      end
-
       it 'should return an empty string when an empty string is provided' do
-        @search.options[:facet_pivots] = ''
-        expect(@search.facet_pivot_list).to eq ''
+        expect(RecordSearch.new(facet_pivots: '').options.facet_pivots).to eq []
       end
 
       it 'should return a array of facets' do
-        @search.options[:facet_pivots] = 'category,description'
-        expect(@search.facet_pivot_list).to eq 'category_sm,description_s'
+        search = RecordSearch.new(facet_pivots: 'category,description')
+        expect(search.options.facet_pivots).to eq 'category_sm,description_s'
       end
 
       it 'should discard any fields not configured as facets' do
-        @search.options[:facet_pivots] = 'postcode,description'
-        expect(@search.facet_pivot_list).to eq 'description_s'
+        expect(RecordSearch.new(facet_pivots: 'postcode,description').options.facet_pivots).to eq 'description_s'
       end
     end
 
     describe '#field_list' do
-      before do
-        # Record Search is used here rather than Search
-        # this method uses a RecordSearchSchema within `Search#schema_class`
-        # Essentially, without RecordSearch the test breaks
-        @search = RecordSearch.new
-        allow(@search).to receive(:schema_class) { RecordSchema }
-      end
-
       it 'should return a array of fields' do
-        @search.options[:fields] = 'name, address'
-        expect(@search.field_list).to eq %i[name address]
+        expect(RecordSearch.new(fields: 'name, address').options.fields).to eq %i[name address]
       end
 
       it 'should only return valid fields' do
-        @search.options[:fields] = 'name, something_else'
-        expect(@search.field_list).to eq [:name]
+        expect(RecordSearch.new(fields: 'name, something_else').options.fields).to eq [:name]
       end
     end
 
     describe '#group_list' do
-      before do
-        # Record Search is used here rather than Search
-        # this method uses a RecordSearchSchema within `Search#schema_class`
-        # Essentially, without RecordSearch the test breaks
-        @search = RecordSearch.new
-        allow(@search).to receive(:model_class) { Record }
-      end
-
       it 'gets the groups from the fields list' do
-        @search.options[:fields] = 'content_partner, core'
-        expect(@search.group_list).to eq [:core]
+        expect(RecordSearch.new(fields: 'content_partner, core').options.group_list).to eq [:core]
       end
     end
 
     describe '#query_fields' do
       it 'returns nil when no query fields were specified' do
-        @search = Search.new
-        expect(@search.query_fields).to be_nil
+        expect(RecordSearch.new.options.query_fields).to eq []
       end
 
       it 'returns the query fields from the params' do
-        @search = Search.new(query_fields: [:collection])
-        expect(@search.query_fields).to eq([:collection])
+        search = RecordSearch.new(query_fields: [:display_collection])
+        expect(search.options.query_fields).to eq([:display_collection])
       end
 
       it 'supports the query_fields as comma separated string' do
-        @search = Search.new(query_fields: 'collection, creator, publisher')
-        expect(@search.query_fields).to eq(%i[collection creator publisher])
+        search = RecordSearch.new(query_fields: 'display_collection, creator, nz_citizen')
+        expect(search.options.query_fields).to eq(%i[display_collection creator nz_citizen])
       end
 
       it 'converts an array of strings to symbols' do
-        @search = Search.new(query_fields: %w[collection creator])
-        expect(@search.query_fields).to eq(%i[collection creator])
+        search = RecordSearch.new(query_fields: %w[display_collection creator])
+        expect(search.options.query_fields).to eq(%i[display_collection creator])
       end
 
-      it 'returns nil when query_fields is an empty string' do
-        @search = Search.new(query_fields: '')
-        expect(@search.query_fields).to be_nil
+      it 'returns an empty array when query_fields is an empty string' do
+        search = RecordSearch.new(query_fields: '')
+        expect(search.options.query_fields).to eq []
       end
 
-      it 'returns nil when query_fields is an empty array' do
-        @search = Search.new(query_fields: [])
-        expect(@search.query_fields).to be_nil
-      end
-    end
-
-    describe '#extract_range' do
-      it 'extracts the dates from [1900 TO 2000] and return a range' do
-        expect(@search.extract_range('[1900 TO 2000]')).to eq(1900..2000)
-      end
-
-      it 'doesn\'t match non numbers' do
-        expect(@search.extract_range('[asdasd TO asdads]')).to eq '[asdasd TO asdads]'
-      end
-
-      it 'returns the current value if is not a range and converts it to int' do
-        expect(@search.extract_range('1900')).to eq 1900
-      end
-    end
-
-    describe '#to_proper_value' do
-      it 'returns false for "false" string' do
-        expect(@search.to_proper_value('active?', 'false')).to be_falsey
-      end
-
-      it 'returns true for "true" string' do
-        expect(@search.to_proper_value('active?', 'true')).to be_truthy
-      end
-
-      it 'returns nil if is a "nil" string' do
-        expect(@search.to_proper_value('active?', 'nil')).to be_nil
-      end
-
-      it 'returns nil if is a "null" string' do
-        expect(@search.to_proper_value('active?', 'null')).to be_nil
-      end
-
-      it 'returns the value unchanged' do
-        expect(@search.to_proper_value('label', 'Black')).to eq('Black')
-      end
-
-      it 'should strip any white space' do
-        expect(@search.to_proper_value('label', ' Black Label ')).to eq('Black Label')
+      it 'returns an empty array when query_fields is an empty array' do
+        search = RecordSearch.new(query_fields: [])
+        expect(search.options.query_fields).to eq []
       end
     end
 
     describe '#text' do
       it 'downcases the text string' do
-        expect(Search.new(text: 'McDowall').text).to eq 'mcdowall'
+        expect(RecordSearch.new(text: 'McDowall').options.text).to eq 'mcdowall'
       end
 
       %w[AND OR NOT].each do |operator|
         it "downcases everything except the #{operator} operators" do
-          expect(Search.new(text: "McDowall #{operator} Dogs").text).to eq "mcdowall #{operator} dogs"
+          expect(RecordSearch.new(text: "McDowall #{operator} Dogs").options.text).to eq "mcdowall #{operator} dogs"
         end
       end
     end
@@ -235,31 +154,31 @@ module SupplejackApi
       end
 
       it 'sets warning if page vale is greater than 10000' do
-        @search.options[:page] = 100_001
-        @search.valid?
+        search = RecordSearch.new(page: 100_001)
+        search.valid?
 
-        expect(@search.errors).to include 'The page parameter can not exceed 100000'
+        expect(search.errors).to include 'The page parameter can not exceed 100000'
       end
 
       it 'sets warning if per_page vale is greater than 100' do
-        @search.options[:per_page] = 101
-        @search.valid?
+        search = RecordSearch.new(per_page: 101)
+        search.valid?
 
-        expect(@search.errors).to include 'The per_page parameter can not exceed 100'
+        expect(search.errors).to include 'The per_page parameter can not exceed 100'
       end
 
       it 'sets warning if facets_per_page vale is greater than 350' do
-        @search.options[:facets_per_page] = 351
-        @search.valid?
+        search = RecordSearch.new(facets_per_page: 351)
+        search.valid?
 
-        expect(@search.errors).to include 'The facets_per_page parameter can not exceed 350'
+        expect(search.errors).to include 'The facets_per_page parameter can not exceed 350'
       end
 
       it 'sets warning if facets_page vale is greater than 5000' do
-        @search.options[:facets_page] = 5001
-        @search.valid?
+        search = RecordSearch.new(facets_page: 5001)
+        search.valid?
 
-        expect(@search.errors).to include 'The facets_page parameter can not exceed 5000'
+        expect(search.errors).to include 'The facets_page parameter can not exceed 5000'
       end
     end
 
@@ -272,13 +191,13 @@ module SupplejackApi
       end
 
       it 'sets the solr request parameters when debug=true' do
-        @search.options[:debug] = 'true'
-        allow(@search).to receive(:execute_solr_search) {
+        search = RecordSearch.new(debug: 'true')
+        allow(search).to receive(:execute_solr_search) {
           double(:solr_request, query: double(:query, to_params: { param1: 1 }))
         }
 
-        @search.solr_search_object
-        expect(@search.solr_request_params).to eq({ param1: 1 })
+        search.solr_search_object
+        expect(search.solr_request_params).to eq({ param1: 1 })
       end
 
       it "doesn't set the solr request parameters" do
@@ -291,9 +210,9 @@ module SupplejackApi
       end
 
       it 'returns a empty hash when solr request fails' do
-        @search.options[:debug] = 'true'
-        allow(@search).to receive(:execute_solr_search) { {} }
-        expect(@search.solr_search_object).to eq({})
+        search = RecordSearch.new(debug: 'true')
+        allow(search).to receive(:execute_solr_search) { {} }
+        expect(search.solr_search_object).to eq({})
       end
     end
 

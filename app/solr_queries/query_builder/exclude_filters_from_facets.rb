@@ -4,37 +4,29 @@ module QueryBuilder
   class ExcludeFiltersFromFacets < Base
     attr_reader(
       :exclude_filters_from_facets,
-      :and_conditions,
-      :or_conditions,
+      :and_condition,
+      :or_condition,
       :facet_list,
       :facets_per_page,
       :facets_offset
     )
 
-    def initialize(
-      search,
-      exclude_filters_from_facets,
-      and_conditions,
-      or_conditions,
-      facet_list,
-      facets_per_page,
-      facets_offset
-    )
+    def initialize(search, params)
       super(search)
 
-      @exclude_filters_from_facets = exclude_filters_from_facets
-      @and_conditions = and_conditions
-      @or_conditions = or_conditions
-      @facet_list = facet_list
-      @facets_per_page = facets_per_page
-      @facets_offset = facets_offset
+      @exclude_filters_from_facets = params.exclude_filters_from_facets
+      @and_condition = params.and_condition
+      @or_condition = params.or_condition
+      @facet_list = params.facets
+      @facets_per_page = params.facets_per_page
+      @facets_offset = params.facets_offset
     end
 
     def call
       super
-      return search if exclude_filters_from_facets != 'true'
+      return search unless exclude_filters_from_facets
 
-      or_and_options = {}.merge(and_conditions).merge(or_conditions).symbolize_keys
+      or_and_options = {}.merge(and_condition).merge(or_condition).symbolize_keys
 
       # This is to clean up any valid integer or date facets that have been requested
       # Through the filter options, so that they are treated as strings.

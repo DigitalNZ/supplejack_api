@@ -247,21 +247,19 @@ module SupplejackApi
     end
 
     describe '#default_serializer_options' do
-      before(:each) do
+      it 'should return a hash with info for serialization' do
         @search = RecordSearch.new
         allow(RecordSearch).to receive(:new) { @search }
-      end
 
-      it 'should return a hash with info for serialization' do
         controller.default_serializer_options
         expect(assigns(:search)).to eq(@search)
       end
 
       it 'should merge in the search fields' do
-        allow(@search).to receive(:field_list).and_return(%i[title description])
-        allow(@search).to receive(:group_list).and_return([:verbose])
+        @search = RecordSearch.new(fields: 'title,description,verbose')
+        allow(RecordSearch).to receive(:new) { @search }
 
-        expect(controller.default_serializer_options).to eq(fields: %i[title description], groups: [:verbose])
+        expect(controller.default_serializer_options).to eq(fields: %i[title description], groups: %i[verbose])
       end
     end
 

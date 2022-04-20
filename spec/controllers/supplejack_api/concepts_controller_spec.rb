@@ -35,7 +35,6 @@ module SupplejackApi
       before do
         @search = ConceptSearch.new
         allow(@search).to receive(:valid?) { false }
-        allow(@search).to receive(:new) { @search }
       end
 
       it 'initializes a new search instance' do

@@ -86,8 +86,8 @@ module SupplejackApi
     def default_serializer_options
       default_options = {}
       @search ||= SupplejackApi::RecordSearch.new(all_params)
-      default_options[:fields] = @search.field_list if @search.field_list.present?
-      default_options[:groups] = @search.group_list if @search.group_list.present?
+      default_options[:fields] = @search.options.fields if @search.options.fields.present?
+      default_options[:groups] = @search.options.group_list if @search.options.group_list.present?
       default_options
     end
 

@@ -218,9 +218,7 @@ module SupplejackApi
       before(:each) do
         @record = create(:record)
         allow(controller).to receive(:current_user) { @user }
-        allow(RecordSchema).to receive(:roles) { { developer: developer_restriction } }
-        allow(Record).to receive(:custom_find).with(@record.id).and_return(@record)
-        allow(@record).to receive(:more_like_this).and_return(double(:mlt, results: [@record]))
+        allow_any_instance_of(Query::MoreLikeThis).to receive(:results).and_return([@record])
       end
 
       context 'json' do

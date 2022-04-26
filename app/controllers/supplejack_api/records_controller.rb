@@ -70,15 +70,11 @@ module SupplejackApi
     def more_like_this
       record = SupplejackApi::Record.custom_find(params[:record_id])
 
-      mlt = record.more_like_this do
-        fields(*mlt_fields)
-        paginate(page: params[:page] || 1, per_page: params[:per_page] || 5)
-        minimum_term_frequency(params[:frequency] || 1)
-      end
+      search = Query::MoreLikeThis.new(record, all_params, current_user&.role)
 
-      respond_with mlt.results, each_serializer: self.class.mlt_serializer_class,
-                                fields: available_fields, root: 'records',
-                                include: available_fields, adapter: :json, callback: params['jsonp']
+      respond_with search.results, each_serializer: self.class.mlt_serializer_class,
+                                   fields: available_fields, root: 'records',
+                                   include: available_fields, adapter: :json, callback: params['jsonp']
     end
 
     # This options are merged with the serializer options. Which will allow the serializer
@@ -104,12 +100,6 @@ module SupplejackApi
     end
 
     private
-
-    def mlt_fields
-      return [] unless params[:mlt_fields]
-
-      params[:mlt_fields].split(',').map { |field| field.strip.to_sym }
-    end
 
     def set_concept_param
       if params[:concept_id].present?

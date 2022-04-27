@@ -87,29 +87,29 @@ module SupplejackApi
 
       @search_builder ||= Sunspot.new_search(SupplejackApi::Record)
 
-      @search_builder = QueryBuilder::ExcludeFiltersFromFacets.new(@search_builder, options).call
-      @search_builder = QueryBuilder::Defaults.new(@search_builder).call
       @search_builder = QueryBuilder::RecordType.new(@search_builder, options.record_type).call
       @search_builder = QueryBuilder::Facets.new(@search_builder, options).call
       @search_builder = QueryBuilder::Spellcheck.new(@search_builder, options.suggest).call
       @search_builder = QueryBuilder::Without.new(@search_builder, options.without).call
       @search_builder = QueryBuilder::WithBoudingBox.new(@search_builder, options.geo_bbox).call
+      @search_builder = QueryBuilder::SolrQuery.new(@search_builder, options.solr_query).call
       @search_builder = QueryBuilder::FacetPivot.new(@search_builder, options.facet_pivots).call
-
-      surpressed_source_ids = SupplejackApi::Source.suppressed.all.pluck(:source_id)
-      @search_builder = QueryBuilder::Without.new(@search_builder, source_id: surpressed_source_ids).call
-
-      restrictions = self.class.role_collection_restrictions(scope)
-      @search_builder = QueryBuilder::Without.new(@search_builder, restrictions).call
-
+      @search_builder = QueryBuilder::Defaults.new(@search_builder).call
       @search_builder = QueryBuilder::FacetRow.new(@search_builder, options.facet_query).call
       @search_builder = QueryBuilder::Ordering.new(
         @search_builder, SupplejackApi::Record, options.sort, options.direction
       ).call
+
+      restrictions = self.class.role_collection_restrictions(scope)
+      @search_builder = QueryBuilder::Without.new(@search_builder, restrictions).call
+
+      surpressed_source_ids = SupplejackApi::Source.suppressed.all.pluck(:source_id)
+      @search_builder = QueryBuilder::Without.new(@search_builder, source_id: surpressed_source_ids).call
+
+      @search_builder = QueryBuilder::ExcludeFiltersFromFacets.new(@search_builder, options).call
       @search_builder = QueryBuilder::Paginate.new(@search_builder, options.page, options.per_page).call
-      @search_builder = QueryBuilder::SolrQuery.new(@search_builder, options.solr_query).call
-      @search_builder = QueryBuilder::Keywords.new(@search_builder, options.text, options.query_fields).call
       @search_builder.build(&build_conditions)
+      @search_builder = QueryBuilder::Keywords.new(@search_builder, options.text, options.query_fields).call
 
       @search_builder
     end

@@ -26,19 +26,6 @@ module QueryBuilder
       super
       return search unless exclude_filters_from_facets
 
-      or_and_options = {}.merge(and_condition).merge(or_condition).symbolize_keys
-
-      # This is to clean up any valid integer or date facets that have been requested
-      # Through the filter options, so that they are treated as strings.
-      str_facets = %i[integer datetime]
-      converted_string_facets = or_and_options.each_with_object([]) do |(facet_name, _facet_value), array|
-        array.push(facet_name) if str_facets.include?(RecordSchema.fields[facet_name.to_sym]&.type)
-      end
-
-      converted_string_facets.each do |facet|
-        or_and_options["#{facet}_str".to_sym] = or_and_options.delete(facet)
-      end
-
       search.build do
         or_and_options.slice(*facet_list).each do |facet_name, value|
           facet(
@@ -52,6 +39,23 @@ module QueryBuilder
     end
 
     private
+
+    def or_and_options
+      or_and_options = {}.merge(and_condition).merge(or_condition).symbolize_keys
+
+      # This is to clean up any valid integer or date facets that have been requested
+      # Through the filter options, so that they are treated as strings.
+      str_facets = %i[integer datetime]
+      converted_string_facets = or_and_options.each_with_object([]) do |(facet_name, _facet_value), array|
+        array.push(facet_name) if str_facets.include?(RecordSchema.fields[facet_name.to_sym]&.type)
+      end
+
+      converted_string_facets.each do |facet|
+        or_and_options["#{facet}_str".to_sym] = or_and_options.delete(facet)
+      end
+
+      or_and_options
+    end
 
     def with_query_for_facet_exclusion(search_context, facet_name, value)
       # Necessary to pass search_context in order to generate `with` queries

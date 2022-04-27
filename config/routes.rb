@@ -1,5 +1,4 @@
 require 'sidekiq/web'
-Sidekiq::Web.set :session_secret, Rails.application.secrets[:secret_key_base]
 
 SupplejackApi::Engine.routes.draw do
   root to: 'records#index', defaults: {format: 'json'}

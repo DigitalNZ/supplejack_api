@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
 class BatchIndexRecords
-  attr_reader :records
+  attr_reader :records, :failed_records
 
   def initialize(records)
     Sunspot.session = Sunspot::Rails.build_session
 
     @records = records
+    @failed_records = []
   end
 
   def call
@@ -34,6 +35,7 @@ class BatchIndexRecords
     Sunspot.index record
   rescue StandardError => e
     p "BatchIndexRecords - Failed to index Record #{record.record_id}: #{record.inspect} - #{e.message}"
+    @failed_records << record.record_id
   ensure
     update_unless_changed([record])
   end

@@ -55,12 +55,12 @@ module SupplejackApi
         expect(user_set.subjects).to eq ['cat and mouse', 'dogs']
       end
 
-      it 'sets the privacy to private if not set' do
+      it 'sets the privacy to public if not set' do
         user_set.privacy = ''
         user_set.save
         user_set.reload
 
-        expect(user_set.privacy).to eq 'private'
+        expect(user_set.privacy).to eq 'public'
       end
 
       it 'sets the subjects field to [] if it is nil' do
@@ -327,8 +327,8 @@ module SupplejackApi
       let!(:user_set1) { create(:user_set_with_set_item, name: 'Name 1', updated_at: Date.parse('2019-1-1')) }
       let!(:user_set2) { create(:user_set, name: 'Name 2', updated_at: Date.parse('2011-1-1')) }
       let!(:user_set3) { create(:user_set, name: 'Name 4', updated_at: Date.parse('2012-1-1')) }
-      let!(:user_set4) { create(:user_set, name: 'Name 3', updated_at: Date.parse('2010-1-1'), privacy: 'public') }
-      let!(:user_set5) { create(:user_set, name: 'Name 5', updated_at: Date.parse('2009-1-1'), privacy: 'public') }
+      let!(:user_set4) { create(:user_set, name: 'Name 3', updated_at: Date.parse('2010-1-1')) }
+      let!(:user_set5) { create(:user_set, name: 'abcdef', updated_at: Date.parse('2009-1-1')) }
 
       it 'calls where, paginate and order' do
         expect(UserSet).to receive(:where).and_call_original
@@ -345,30 +345,30 @@ module SupplejackApi
       end
 
       context 'when search term is story name' do
-        it 'returns the 2 public sets with "Name" in name' do
+        it 'returns the 4 sets with "Name" in name' do
           sets = UserSet.moderation_search(page: 1,
                                            per_page: 10,
                                            orderby: :updated_at,
                                            direction: :desc,
                                            search: 'Name').to_a
 
-          expect(sets).to eq([user_set4, user_set5])
+          expect(sets).to eq([user_set1, user_set3, user_set2, user_set4])
         end
 
-        it 'returns the 2 public sets with "Name" in name as search is case insensitive' do
+        it 'returns the 4 public sets with "Name" in name as search is case insensitive' do
           sets = UserSet.moderation_search(page: 1,
                                            per_page: 10,
                                            orderby: :updated_at,
                                            direction: :desc,
                                            search: 'name').to_a
 
-          expect(sets).to eq([user_set4, user_set5])
+          expect(sets).to eq([user_set1, user_set3, user_set2, user_set4])
         end
       end
 
       context 'when search term is username' do
         it 'returns the set with username' do
-          user_set = [user_set4, user_set5].sample
+          user_set = [user_set1, user_set2, user_set3, user_set4, user_set5].sample
           sets = UserSet.moderation_search(page: 1,
                                            per_page: 10,
                                            orderby: :updated_at,
@@ -403,10 +403,10 @@ module SupplejackApi
         end
       end
 
-      it 'returns 2 sets if per_page=3' do
+      it 'returns 3 sets if per_page=3' do
         sets = UserSet.moderation_search(page: 1, per_page: 3, order_by: :updated_at, direction: :desc).to_a
 
-        expect(sets).to eq([user_set4, user_set5])
+        expect(sets).to eq([user_set1, user_set3, user_set2])
       end
     end
 

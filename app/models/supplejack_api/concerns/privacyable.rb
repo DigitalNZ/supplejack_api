@@ -8,7 +8,7 @@ module SupplejackApi
       extend ActiveSupport::Concern
 
       included do
-        field :privacy, type: String,   default: 'private'
+        field :privacy, type: String,   default: 'public'
 
         validates :privacy, inclusion: { in: %w[public hidden private] }
         before_validation :set_default_privacy

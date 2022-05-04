@@ -11,10 +11,10 @@ module SupplejackApi
         let(:user) { create(:admin_user) }
 
         describe '#index' do
-          let!(:user_set1) { create(:user_set, name: 'Name 1', updated_at: Date.parse('2019-1-1'), privacy: 'public') }
-          let!(:user_set2) { create(:user_set, name: 'Name 2', updated_at: Date.parse('2011-1-1'), privacy: 'public') }
-          let!(:user_set3) { create(:user_set, name: 'Name 4', updated_at: Date.parse('2012-1-1'), privacy: 'public') }
-          let!(:user_set4) { create(:user_set, name: 'Name 3', updated_at: Date.parse('2009-1-1'), privacy: 'public') }
+          let!(:user_set1) { create(:user_set, name: 'Name 1', updated_at: Date.parse('2019-1-1')) }
+          let!(:user_set2) { create(:user_set, name: 'Name 2', updated_at: Date.parse('2011-1-1')) }
+          let!(:user_set3) { create(:user_set, name: 'Name 4', updated_at: Date.parse('2012-1-1')) }
+          let!(:user_set4) { create(:user_set, name: 'Name 3', updated_at: Date.parse('2009-1-1')) }
 
           it 'finds all public sets' do
             expect(UserSet).to receive(:moderation_search) { [] }

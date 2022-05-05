@@ -3,10 +3,11 @@
 class BatchIndexRecords
   attr_reader :records, :failed_records
 
-  def initialize(records)
-    Sunspot.session = Sunspot::Rails.build_session
+  def initialize(records, build_session: true, commit: false)
+    Sunspot.session = Sunspot::Rails.build_session if build_session
 
     @records = records
+    @commit = commit
     @failed_records = []
   end
 
@@ -16,6 +17,8 @@ class BatchIndexRecords
     update_unless_changed(records)
   rescue StandardError
     retry_index_records(records)
+  ensure
+    Sunspot.commit if @commit
   end
 
   private

@@ -15,7 +15,6 @@ module SupplejackApi
 
     def index
       @search = SupplejackApi::RecordSearch.new(all_params)
-      @search.request_url = request.original_url
       @search.scope = current_user
 
       if @search.valid?
@@ -23,11 +22,13 @@ module SupplejackApi
           format.json do
             render_json_with json: @search, serializer: self.class.search_serializer_class,
                              record_fields: available_fields, record_includes: available_fields,
-                             root: 'search', adapter: :json, callback: params['jsonp']
+                             record_url: request.original_url, root: 'search', adapter: :json, callback: params['jsonp']
           end
           format.xml do
-            options = { serializer: self.class.search_serializer_class, record_includes: available_fields,
-                        record_fields: available_fields, request_format: 'xml', root: 'search' }
+            options = {
+              serializer: self.class.search_serializer_class, record_includes: available_fields,
+              record_url: request.original_url, record_fields: available_fields, request_format: 'xml', root: 'search'
+            }
 
             render_xml_with(@search, options, 'search')
           end
@@ -69,12 +70,18 @@ module SupplejackApi
 
     def more_like_this
       record = SupplejackApi::Record.custom_find(params[:record_id])
+      search = SupplejackApi::MoreLikeThisSearch.new(record, current_user&.role, all_params)
 
-      search = Query::MoreLikeThis.new(record, all_params, current_user&.role)
-
-      respond_with search.results, each_serializer: self.class.mlt_serializer_class,
-                                   fields: available_fields, root: 'records',
-                                   include: available_fields, adapter: :json, callback: params['jsonp']
+      render(
+        json: search,
+        serializer: self.class.mlt_serializer_class,
+        record_fields: available_fields,
+        record_url: request.original_url,
+        record_includes: available_fields,
+        root: 'more_like_this',
+        adapter: :json,
+        callback: params['jsonp']
+      )
     end
 
     # This options are merged with the serializer options. Which will allow the serializer

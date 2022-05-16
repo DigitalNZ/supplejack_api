@@ -24,6 +24,10 @@ module SupplejackApi
         # - the corresponding max value if it is exceeding it
         # - the value otherwise
         def integer_param(param, value)
+          if self.class.max_values[param] < value
+            errors << "The #{param} parameter can not exceed #{self.class.max_values[param]}"
+          end
+
           value = value.to_i
           value = [value, self.class.max_values[param]].min if self.class.max_values[param]
           value

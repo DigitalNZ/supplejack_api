@@ -25,6 +25,21 @@ class RecordSchema
   string   :creator,               multi_value: true, search_as: [:filter, :fulltext],       namespace: :dc
   string   :contributing_partner,  multi_value: true, search_as: [:fulltext],                namespace: :dc
   string   :subject,               multi_value: true, search_as: [:filter, :fulltext, :mlt], namespace: :dc
+
+  latlon(:lat_lng) do
+    search_as [:filter]
+    multi_value true
+    search_value do |record|
+      record.locations.keep_if do |l|
+        if l.lat.present? && l.lng.present
+          Sunspot::Util::Coordinates.new(l.lat, l.lng)
+        else
+          Sunspot::Util::Coordinates.new(0, 0)
+        end
+      end
+    end
+  end
+
   # facets
   string    :category,             multi_value: true, search_as: [:filter]
   string    :copyright,            multi_value: true, search_as: [:filter]

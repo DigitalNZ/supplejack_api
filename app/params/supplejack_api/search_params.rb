@@ -1,15 +1,7 @@
 # frozen_string_literal: true
 
 module SupplejackApi
-  class SearchParams
-    include SupplejackApi::Concerns::ModelSchemaParams
-    include SupplejackApi::Concerns::PaginationParams
-    include SupplejackApi::Concerns::FacetsPaginationParams
-    include SupplejackApi::Concerns::OrderingParams
-    include SupplejackApi::Concerns::FieldsParams
-    include SupplejackApi::Concerns::FacetsParams
-    include SupplejackApi::Concerns::HelpersParams
-
+  class SearchParams < BaseParams
     attr_accessor(
       :schema_class,
       :model_class,
@@ -35,56 +27,33 @@ module SupplejackApi
     }
 
     def initialize(**kwargs)
-      kwargs = kwargs.reverse_merge!(defaults).symbolize_keys
+      super(**kwargs)
 
-      init_model_schema_params(**kwargs)
-      init_pagination(**kwargs)
-      init_facets_pagination(**kwargs)
-      init_ordering(**kwargs)
-      init_fields(**kwargs)
-      init_facets(**kwargs)
+      init_model_schema_params(**@params)
+      init_pagination(**@params)
+      init_facets_pagination(**@params)
+      init_ordering(**@params)
+      init_fields(**@params)
+      init_facets(**@params)
+      init_geo_bbox(**@params)
+      init_without(**@params)
+      init_text(**@params)
 
-      @suggest = kwargs[:suggest] == 'true'
-      @geo_bbox = geo_param(kwargs[:geo_bbox])
-      @text = text_param(kwargs[:text])
-      @and_condition = kwargs[:and]
-      @or_condition = kwargs[:or]
-      @without = without_param(kwargs[:without])
-      @record_type = kwargs[:record_type]
+      @suggest = @params[:suggest] == 'true'
+      @and_condition = @params[:and]
+      @or_condition = @params[:or]
+      @record_type = @params[:record_type]
 
-      @solr_query = kwargs[:solr_query]
-      @debug = kwargs[:debug] == 'true'
+      @solr_query = @params[:solr_query]
+      @debug = @params[:debug] == 'true'
     end
 
     private
 
-    def without_param(without_param)
-      without_param.map do |name, values|
-        values = values.split(',') if values.instance_of?(String)
-        [name, values.map { |value| self.class.cast_param(name, value) }.compact]
-      end.to_h
-    end
-
-    # Downcase all queries before sending to SOLR, except queries
-    # which have specific lucene syntax.
-    #
-    def text_param(text)
-      return text.downcase.gsub(/ and | or | not /, &:upcase) unless text.match(/:"/)
-
-      text
-    end
-
-    def geo_param(param)
-      param.split(',').map(&:to_f)
-    end
-
     def defaults
       {
-        geo_bbox: '',
-        text: '',
         and: {},
         or: {},
-        without: {},
         record_type: 0,
         suggest: 'false',
         solr_query: ''

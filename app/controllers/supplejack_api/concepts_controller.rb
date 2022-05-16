@@ -10,12 +10,12 @@ module SupplejackApi
 
     def index
       @search = ConceptSearch.new(params.to_unsafe_h)
-      @search.request_url = request.original_url
       @search.scope = current_user
 
       begin
         if @search.valid?
-          respond_with @search, serializer: SearchSerializer, root: 'concept_search', adapter: :json
+          respond_with @search, serializer: SearchSerializer, record_url: request.original_url, root: 'concept_search',
+                                adapter: :json
         else
           render request.format.to_sym => { errors: @search.errors }, status: :bad_request
         end

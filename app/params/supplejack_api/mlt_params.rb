@@ -1,15 +1,16 @@
 # frozen_string_literal: true
 
 module SupplejackApi
-  class MltParams
-    include SupplejackApi::Concerns::ModelSchemaParams
-    include SupplejackApi::Concerns::PaginationParams
-    include SupplejackApi::Concerns::FieldsParams
-    include SupplejackApi::Concerns::HelpersParams
-
+  class MltParams < BaseParams
     attr_reader(
+      :exclude_filters_from_facets,
+      :facets,
       :frequency,
-      :mlt_fields
+      :mlt_fields,
+      :and_condition,
+      :or_condition,
+      :record_type,
+      :debug
     )
 
     class_attribute :max_values
@@ -20,29 +21,46 @@ module SupplejackApi
     }
 
     def initialize(**kwargs)
-      kwargs = kwargs.reverse_merge!(defaults).symbolize_keys
+      super(**kwargs)
 
-      init_model_schema_params(**kwargs)
-      init_pagination(**kwargs)
-      init_fields(**kwargs)
+      init_model_schema_params(**@params)
+      init_pagination(**@params)
+      init_ordering(**@params)
+      init_fields(**@params)
+      init_geo_bbox(**@params)
+      init_without(**@params)
 
-      @frequency = kwargs[:frequency]
-      @mlt_fields = mlt_fields_param(kwargs[:mlt_fields])
+      @frequency = @params[:frequency]
+      @mlt_fields = mlt_fields_param(@params[:mlt_fields])
+      @and_condition = @params[:and]
+      @or_condition = @params[:or]
+      @record_type = @params[:record_type]
+
+      @debug = kwargs[:debug] == 'true'
+    end
+
+    def valid?
+      errors.empty?
     end
 
     private
 
-    # this should also exclude fields with no mlt setup on the schema
+    # transform the string into array and selects only the fields which can
+    # be searched as mlt
     def mlt_fields_param(mlt_fields_str)
       return [] if mlt_fields_str.blank?
 
-      mlt_fields_str.split(',').map { |field| field.strip.to_sym }
+      fields = mlt_fields_str.split(',').map { |field| field.strip.to_sym }
+      fields.select { |field| RecordSchema.fields[field]&.search_as&.include?(:mlt) }
     end
 
     def defaults
       {
         frequency: 1,
-        per_page: 5
+        per_page: 5,
+        and: {},
+        or: {},
+        record_type: 0
       }
     end
   end

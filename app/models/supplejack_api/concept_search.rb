@@ -7,19 +7,15 @@ module SupplejackApi
     end
 
     def search_builder
-      return @search_builder if @search_builder.present?
-
-      @search_builder = Sunspot.new_search(SupplejackApi::Concept)
-      @search_builder = QueryBuilder::Spellcheck.new(@search_builder, options.suggest).call
-      @search_builder = QueryBuilder::Without.new(@search_builder, options.without).call
-      @search_builder = QueryBuilder::WithBoudingBox.new(@search_builder, options.geo_bbox).call
-      @search_builder = QueryBuilder::Ordering.new(
-        @search_builder, ConceptSchema, SupplejackApi::Concept, options.sort, options.direction
-      ).call
-      @search_builder = QueryBuilder::Paginate.new(@search_builder, options.page, options.per_page).call
-
-      @search_builder.build(&build_conditions)
-      @search_builder
+      @search_builder ||= begin
+        search = Sunspot.new_search(SupplejackApi::Concept)
+        search = QueryBuilder::Spellcheck.new(search, options.suggest).call
+        search = QueryBuilder::Without.new(search, options.without).call
+        search = QueryBuilder::WithBoudingBox.new(search, options.geo_bbox).call
+        search = QueryBuilder::Ordering.new(search, options).call
+        search = QueryBuilder::Paginate.new(search, options.page, options.per_page).call
+        QueryBuilder::AndOrFilters.new(search, options).call
+      end
     end
 
     def query_fields

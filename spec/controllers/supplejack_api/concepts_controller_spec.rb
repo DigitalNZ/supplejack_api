@@ -43,12 +43,6 @@ module SupplejackApi
         expect(assigns(:search)).to eq(@search)
       end
 
-      it 'sets the request url on search object' do
-        allow_any_instance_of(ConceptSearch).to receive(:valid?) { false }
-        get :index, params: { api_key: 'apikey' }, format: 'json'
-        expect(assigns(:search).request_url).to eq 'http://test.host/concepts?api_key=apikey'
-      end
-
       it 'should set the current_user on the search' do
         allow_any_instance_of(ConceptSearch).to receive(:valid?) { false }
         get :index, params: { api_key: 'apikey' }, format: 'json'

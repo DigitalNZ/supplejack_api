@@ -28,12 +28,12 @@ module SupplejackApi
       end
 
       it 'should set the request url on search object' do
-        allow_any_instance_of(RecordSearch).to receive(:valid?) { false }
+        allow_any_instance_of(RecordSearch).to receive(:valid?) { true }
         allow_any_instance_of(RecordSearch).to receive(:errors) { [] }
 
         get :index, params: { api_key: 'apikey', text: '123' }, format: :json
 
-        expect(assigns[:search].request_url).to eq 'http://test.host/records?api_key=apikey&text=123'
+        expect(JSON.parse(response.body)['search']['request_url']).to eq 'http://test.host/records?api_key=apikey&text=123'
       end
 
       it 'should set the current_user on the search' do
@@ -218,7 +218,7 @@ module SupplejackApi
       before(:each) do
         @record = create(:record)
         allow(controller).to receive(:current_user) { @user }
-        allow_any_instance_of(Query::MoreLikeThis).to receive(:results).and_return([@record])
+        allow_any_instance_of(SupplejackApi::MoreLikeThisSearch).to receive(:results).and_return([@record])
       end
 
       context 'json' do
@@ -239,7 +239,7 @@ module SupplejackApi
         it 'returns records that are more like this' do
           result = JSON.parse(response.body)
 
-          expect(result['records'].count).to eq 1
+          expect(result['more_like_this']['results'].count).to eq 1
         end
       end
     end

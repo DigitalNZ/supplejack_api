@@ -110,6 +110,7 @@ RSpec.describe 'Records Endpoints', type: :request do
                         'id' => record.id.to_s,
                         'internal_identifier' => record.internal_identifier,
                         'landing_url' => record.landing_url,
+                        'lat_lng' => [],
                         'large_thumbnail_url' => record.large_thumbnail_url,
                         'name' => record.name,
                         'nz_citizen' => record.nz_citizen,
@@ -140,11 +141,19 @@ RSpec.describe 'Records Endpoints', type: :request do
       response_attributes = JSON.parse(response.body)
 
       expect(response_attributes).to eq(
-        'records' => [{ 'address' => record.address,
-                        'created_at' => record.created_at.as_json,
-                        'email' => record.email,
-                        'name' => record.name,
-                        'updated_at' => record.updated_at.as_json }]
+        'more_like_this' => {
+          'page' => 1,
+          'per_page' => 5,
+          'request_url' => "http://www.example.com/v3/records/#{record.record_id}/more_like_this.json?api_key=#{user.authentication_token}",
+          'result_count' => 0,
+          'results' => [{
+            'address' => record.address,
+            'created_at' => record.created_at.strftime('%y/%d/%m'),
+            'email' => record.email,
+            'name' => record.name,
+            'updated_at' => record.updated_at.as_json
+          }]
+        }
       )
     end
   end

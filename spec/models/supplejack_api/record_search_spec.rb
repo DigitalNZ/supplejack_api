@@ -75,7 +75,6 @@ module SupplejackApi
       end
 
       it 'downcases the user entered text' do
-        RecordSearch.new(text: 'Dog')
         RecordSearch.new(text: 'Dog').execute_solr_search
         expect(@session).to have_search_params(:keywords, 'dog')
       end
@@ -94,6 +93,11 @@ module SupplejackApi
         RecordSearch.new(text: 'name_sm:"John Doe"').execute_solr_search
 
         expect(@session).to have_search_params(:keywords, 'name_sm:"John Doe"')
+      end
+
+      it 'should call WithBoudingBox' do
+        RecordSearch.new(geo_bbox: '1,2,3,4').execute_solr_search
+        expect(search_fq).to include('lat_lng_llm:[3.0,2.0 TO 1.0,4.0]')
       end
 
       it 'sets the record_type' do

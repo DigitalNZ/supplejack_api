@@ -4,13 +4,13 @@ module QueryBuilder
   class Ordering < Base
     attr_reader :model_class, :order_by, :order_direction
 
-    def initialize(search, schema_class, model_class, order_by, order_direction)
+    def initialize(search, params)
       super(search)
 
-      @order_by = order_by
-      @model_class = model_class
-      @schema_class = schema_class
-      @order_direction = order_direction
+      @order_by = params.sort
+      @model_class = params.model_class
+      @schema_class = params.schema_class
+      @order_direction = params.direction
     end
 
     def call

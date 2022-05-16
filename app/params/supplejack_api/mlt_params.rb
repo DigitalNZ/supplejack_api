@@ -16,7 +16,7 @@ module SupplejackApi
 
     self.max_values = {
       page: 100_000,
-      per_page: 20
+      per_page: 100
     }
 
     def initialize(**kwargs)

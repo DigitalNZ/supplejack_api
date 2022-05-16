@@ -12,7 +12,7 @@ module Query
     # from the search results
     #
     def role_collection_restrictions(role)
-      options.schema_class.roles[role]&.record_restrictions
+      options.schema_class.roles[role.to_sym]&.record_restrictions
     end
 
     def results

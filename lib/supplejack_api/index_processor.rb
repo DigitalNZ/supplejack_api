@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Rails/Output
 module SupplejackApi
   class IndexProcessor
     def call
@@ -8,37 +9,29 @@ module SupplejackApi
       unindex_available_records
     end
 
-    # rubocop:disable Rails/Output
     def index_available_records
       p 'Looking for records to index..' unless Rails.env.test?
 
-      available_records = indexable_records
-
-      while available_records.count.positive?
-        records = available_records.limit(500).to_a
-
-        p "[#{Time.current}] There are #{records.count} records to be indexed.." unless Rails.env.test?
-        p "[#{Time.current}] Index records #{records.map(&:record_id)}" unless Rails.env.test?
+      records = indexable_records
+      while records.count.positive?
+        p "[#{Time.current}] #{records.count} to be indexed: #{records.map(&:record_id)}" unless Rails.env.test?
 
         BatchIndexRecords.new(records).call
 
-        available_records = indexable_records
+        records = indexable_records
       end
     end
 
     def unindex_available_records
       p 'Looking for records to unindex..' unless Rails.env.test?
 
-      available_records = SupplejackApi::Record.ready_for_indexing.where(:status.ne => 'active')
-
-      while available_records.count.positive?
-        records = available_records.limit(500).to_a
-
+      records = SupplejackApi::Record.ready_for_indexing.where(:status.ne => 'active').limit(500).to_a
+      while records.count.positive?
         p "[#{Time.current}] There are #{records.count} records to be removed from the index.." unless Rails.env.test?
 
         BatchRemoveRecordsFromIndex.new(records).call
 
-        available_records = SupplejackApi::Record.ready_for_indexing.where(:status.ne => 'active')
+        records = SupplejackApi::Record.ready_for_indexing.where(:status.ne => 'active').limit(500.to_a)
       end
     end
 
@@ -55,8 +48,8 @@ module SupplejackApi
         .where(
           status: 'active',
           'fragments.source_id' => { '$nin' => source_ids }
-        )
+        ).limit(500).to_a
     end
-    # rubocop:enable Rails/Output
   end
 end
+# rubocop:enable Rails/Output

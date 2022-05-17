@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Rails/Output
 class BatchIndexRecords
   attr_reader :records, :failed_records
 
@@ -23,7 +24,6 @@ class BatchIndexRecords
 
   private
 
-  # rubocop:disable Rails/Output
   # Call Sunspot index in the array provided, if failure,
   # retry each record individually to be indexed and log errors
   def retry_index_records(records)
@@ -42,7 +42,6 @@ class BatchIndexRecords
   ensure
     update_unless_changed([record])
   end
-  # rubocop:enable Rails/Output
 
   def update_unless_changed(records)
     SupplejackApi::Record.where(
@@ -51,3 +50,4 @@ class BatchIndexRecords
     ).update_all(index_updated: true, index_updated_at: Time.current)
   end
 end
+# rubocop:enable Rails/Output

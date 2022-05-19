@@ -129,100 +129,98 @@ module SupplejackApi
     end
 
     describe '#find_next_and_previous_records' do
-      pending 'Implement record search'
-      # before(:each) do
-      #   @record = create(:record, :record_id => 123)
-      #   @search = Search.new
-      #   @search.stub(:total).and_return(3)
-      #   Search.stub(:new).and_return(@search)
-      #   @user = build(:user)
-      # end
+      before(:each) do
+        @record = create(:record, record_id: 123)
+        @search = RecordSearch.new
+        allow(@search).to receive(:total).and_return(3)
+        allow(RecordSearch).to receive(:new).and_return(@search)
+        @user = build(:user)
+      end
 
-      # it 'should not do anything when options are empty' do
-      #   Search.should_not_receive(:new)
-      #   record.find_next_and_previous_records(@user, {})
-      # end
+      it 'should not do anything when options are empty' do
+        Search.should_not_receive(:new)
+        record.find_next_and_previous_records(@user, {})
+      end
 
-      # it 'should not do anything when options is null' do
-      #   Search.should_not_receive(:new)
-      #   record.find_next_and_previous_records(@user, nil)
-      # end
+      it 'should not do anything when options is null' do
+        Search.should_not_receive(:new)
+        record.find_next_and_previous_records(@user, nil)
+      end
 
-      # it 'should not do anything when the solr request fails' do
-      #   @search.stub(:valid?) { false }
-      #   @search.should_not_receive(:hits)
-      #   record.find_next_and_previous_records(@user, {text: 'dogs'})
-      # end
+      it 'should not do anything when the solr request fails' do
+        allow(@search).to receive(:valid?) { false }
+        @search.should_not_receive(:hits)
+        record.find_next_and_previous_records(@user, { text: 'dogs' })
+      end
 
-      # it 'should set the scope in the search' do
-      #   Search.stub(:new) { @search }
-      #   @search.should_receive('scope=').with(@user)
-      #   record.find_next_and_previous_records(@user, {text: 'dogs'})
-      # end
+      it 'should set the scope in the search' do
+        Search.stub(:new) { @search }
+        @search.should_receive('scope=').with(@user)
+        record.find_next_and_previous_records(@user, { text: 'dogs' })
+      end
 
-      # context 'records within the current page' do
-      #   before do
-      #     Record.stub(:find).with('12345') {mock_model(Record, :record_id => 654)}
-      #     Record.stub(:find).with('98765') {mock_model(Record, :record_id => 987)}
-      #   end
+      context 'records within the current page' do
+        before do
+          allow(Record).to receive(:find).with('12345') { mock_model(Record, record_id: 654) }
+          allow(Record).to receive(:find).with('98765') { mock_model(Record, record_id: 987) }
+        end
 
-      #   it 'should set the previous record' do
-      #     @search.stub(:hits) { mock_hits(['12345', @record.id, '98765']) }
-      #     Record.should_receive(:find).with('12345').and_return(mock_model(Record, :record_id => 654))
-      #     @record.find_next_and_previous_records(@user, text: 'dogs')
-      #     @record.previous_record).to eq(654)
-      #   end
+        it 'should set the previous record' do
+          allow(@search).to receive(:hits) { mock_hits(['12345', @record.id, '98765']) }
+          Record.should_receive(:find).with('12345').and_return(mock_model(Record, record_id: 654))
+          @record.find_next_and_previous_records(@user, text: 'dogs')
+          expect(@record.previous_record).to eq(654)
+        end
 
-      #   it 'should set the next record' do
-      #     @search.stub(:hits).and_return(mock_hits([nil, @record.id, '98765']))
-      #     Record.should_receive(:find).with('98765').and_return(mock_model(Record, :record_id => 987))
-      #     @record.find_next_and_previous_records(@user, {text: 'dogs'})
-      #     @record.next_record).to eq(987)
-      #   end
-      # end
+        it 'should set the next record' do
+          allow(@search).to receive(:hits).and_return(mock_hits([nil, @record.id, '98765']))
+          Record.should_receive(:find).with('98765').and_return(mock_model(Record, record_id: 987))
+          @record.find_next_and_previous_records(@user, { text: 'dogs' })
+          expect(@record.next_record).to eq(987)
+        end
+      end
 
-      # context 'first record in the results' do
-      #   before(:each) do
-      #     @search.stub(:hits).and_return(mock_hits([@record.id, '12345', '98765']))
-      #   end
+      context 'first record in the results' do
+        before(:each) do
+          allow(@search).to receive(:hits).and_return(mock_hits([@record.id, '12345', '98765']))
+        end
 
-      #   it 'should perform a new search for the previous page' do
-      #     @search.stub(:page).and_return(2)
-      #     Search.should_receive(:new).with(anything)
-      #     Search.should_receive(:new).with(hash_including(page: 1))
-      #     @record.find_next_and_previous_records(@user, {text: 'dogs'})
-      #     @record.previous_page).to eq(1)
-      #   end
+        it 'should perform a new search for the previous page' do
+          allow(@search).to receive(:page).and_return(2)
+          allow(RecordSearch).to receive(:new).with(anything) { @search }
+          allow(RecordSearch).to receive(:new).with(hash_including(page: 1)) { @search }
+          @record.find_next_and_previous_records(@user, { text: 'dogs' })
+          expect(@record.previous_page).to eq(1)
+        end
 
-      #   it 'should not perform a new search when in the first page' do
-      #     @search.stub(:hits).and_return(mock_hits([@record.id, '12345', '98765']))
-      #     Search.should_receive(:new).once
-      #     @record.find_next_and_previous_records(@user, {text: 'dogs'})
-      #     @record.previous_record).to be_nil
-      #   end
-      # end
+        it 'should not perform a new search when in the first page' do
+          allow(@search).to receive(:hits).and_return(mock_hits([@record.id, '12345', '98765']))
+          allow(RecordSearch).to receive(:new) { @search }
+          @record.find_next_and_previous_records(@user, { text: 'dogs' })
+          expect(@record.previous_record).to be_nil
+        end
+      end
 
-      # context 'last record in the results' do
-      #   before(:each) do
-      #     @search.stub(:hits).and_return(mock_hits(['12345', '98765', @record.id]))
-      #     @search.stub(:per_page).and_return(3)
-      #   end
+      context 'last record in the results' do
+        before(:each) do
+          hits = Array.new(21)
+          hits[-1] =  @record.id
+          allow(@search).to receive(:hits).and_return(mock_hits(hits))
+        end
 
-      #   it 'should perform a new search for the next page' do
-      #     @search.stub(:total).and_return(6)
-      #     Search.should_receive(:new).with(anything)
-      #     Search.should_receive(:new).with(hash_including(page: 2))
-      #     @record.find_next_and_previous_records(@user, {text: 'dogs'})
-      #     @record.next_page).to eq(2)
-      #   end
+        it 'should perform a new search for the next page' do
+          allow(@search).to receive(:total).and_return(21)
+          @record.find_next_and_previous_records(@user, { text: 'dogs' })
+          expect(@record.next_page).to eq(2)
+        end
 
-      #   it 'should not perform a new search when in the last page' do
-      #     @search.stub(:total).and_return(3)
-      #     Search.should_receive(:new).once
-      #     @record.find_next_and_previous_records(@user, {text: 'dogs'})
-      #     @record.next_record).to be_nil
-      #   end
-      # end
+        it 'should not perform a new search when in the last page' do
+          allow(@search).to receive(:total).and_return(3)
+          allow(RecordSearch).to receive(:new) { @search }
+          @record.find_next_and_previous_records(@user, { text: 'dogs' })
+          expect(@record.next_record).to be_nil
+        end
+      end
     end
 
     def mock_hits(primary_keys = [])

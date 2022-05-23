@@ -112,13 +112,17 @@ module SupplejackApi
     def self.moderation_search(options = {})
       options.reverse_merge!(page: 1, per_page: 10, order_by: :updated_at,
                              direction: :asc, search: nil)
-      where(
-        :name.ne => 'Favourites',
-        '$or' => moderation_search_attributes(options[:search])
-      ).public_or_hidden
+
+      excluded_from_moderation
+        .where('$or': moderation_search_attributes(options[:search]))
+        .public_or_hidden
         .order(options[:order_by] => options[:direction])
         .page(options[:page])
         .per(options[:per_page])
+    end
+
+    def self.excluded_from_moderation
+      where(:name.ne => 'Favourites')
     end
 
     def self.moderation_search_attributes(search_term)

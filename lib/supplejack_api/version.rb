@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 module SupplejackApi
-  VERSION = '0.1'
+  VERSION = 'v3.16.7'
 end

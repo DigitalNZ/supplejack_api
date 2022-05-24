@@ -135,6 +135,13 @@ module SupplejackApi
       end
     end
 
+    describe 'sort by date' do
+      it 'should be successful' do
+        search = RecordSearch.new(sort: 'date')
+        expect { search.results }.to_not raise_error(ArgumentError)
+      end
+    end
+
     describe '#valid?' do
       before { allow(@search).to receive(:solr_search_object).and_return(true) }
 

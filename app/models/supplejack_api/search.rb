@@ -97,7 +97,7 @@ module SupplejackApi
       @search_builder = QueryBuilder::Defaults.new(@search_builder).call
       @search_builder = QueryBuilder::FacetRow.new(@search_builder, options.facet_query).call
       @search_builder = QueryBuilder::Ordering.new(
-        @search_builder, SupplejackApi::Record, options.sort, options.direction
+        @search_builder, RecordSchema, SupplejackApi::Record, options.sort, options.direction
       ).call
 
       restrictions = self.class.role_collection_restrictions(scope)

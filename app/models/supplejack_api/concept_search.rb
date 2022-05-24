@@ -14,7 +14,7 @@ module SupplejackApi
       @search_builder = QueryBuilder::Without.new(@search_builder, options.without).call
       @search_builder = QueryBuilder::WithBoudingBox.new(@search_builder, options.geo_bbox).call
       @search_builder = QueryBuilder::Ordering.new(
-        @search_builder, SupplejackApi::Concept, options.sort, options.direction
+        @search_builder, ConceptSchema, SupplejackApi::Concept, options.sort, options.direction
       ).call
       @search_builder = QueryBuilder::Paginate.new(@search_builder, options.page, options.per_page).call
 

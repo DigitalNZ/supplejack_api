@@ -37,6 +37,10 @@ module SupplejackApi
       @session.searches.last.last.instance_variable_get(:@query).to_params[:qf]
     end
 
+    def search_fq
+      @session.searches.last.last.instance_variable_get(:@query).to_params[:fq]
+    end
+
     describe '#execute_solr_search' do
       let(:names)     { %w[John James] }
       let(:addresses) { ['Te Aro', 'Brooklyn'] }
@@ -90,6 +94,16 @@ module SupplejackApi
         RecordSearch.new(text: 'name_sm:"John Doe"').execute_solr_search
 
         expect(@session).to have_search_params(:keywords, 'name_sm:"John Doe"')
+      end
+
+      it 'sets the record_type' do
+        RecordSearch.new(text: 'Dog', record_type: 1).execute_solr_search
+        expect(search_fq).to include('record_type_i:1')
+      end
+
+      it 'does not set record_type if set to all' do
+        RecordSearch.new(record_type: 'all').execute_solr_search
+        expect(search_fq).to_not include('record_type_i:1')
       end
 
       it 'restricts the query fields to name' do

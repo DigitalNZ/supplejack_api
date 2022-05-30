@@ -14,7 +14,7 @@ module QueryBuilder
       super
 
       search.build do
-        with(:record_type, record_type) unless record_type == 'all'
+        with(:record_type, record_type.to_i) unless record_type == 'all'
       end
     end
   end

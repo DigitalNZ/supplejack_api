@@ -50,7 +50,7 @@ module SupplejackApi
       @and_condition = kwargs[:and]
       @or_condition = kwargs[:or]
       @without = without_param(kwargs[:without])
-      @record_type = kwargs[:record_type].to_i
+      @record_type = kwargs[:record_type]
 
       @solr_query = kwargs[:solr_query]
       @debug = kwargs[:debug] == 'true'

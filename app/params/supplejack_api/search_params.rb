@@ -60,7 +60,8 @@ module SupplejackApi
 
     def without_param(without_param)
       without_param.map do |name, values|
-        [name, values.split(',').map { |value| self.class.cast_param(name, value) }.compact]
+        values = values.split(',') if values.instance_of?(String)
+        [name, values.map { |value| self.class.cast_param(name, value) }.compact]
       end.to_h
     end
 

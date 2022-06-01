@@ -189,8 +189,18 @@ module SupplejackApi
         end)
       end
 
-      it 'should not return results matching the facet values' do
+      it 'should not return results matching the facet values with comma separated fields' do
         RecordSearch.new(without: { email: 'jd@example.com, johnd@test.com', name: 'James Cook' }).execute_solr_search
+        expect(@session).to have_search_params(:without, proc do
+          without(:email, ['jd@example.com', 'johnd@test.com'])
+          without(:name, ['James Cook'])
+        end)
+      end
+
+      it 'should not return results matching the facet values with fields given in array' do
+        RecordSearch.new(
+          without: { email: ['jd@example.com', 'johnd@test.com'], name: 'James Cook' }
+        ).execute_solr_search
         expect(@session).to have_search_params(:without, proc do
           without(:email, ['jd@example.com', 'johnd@test.com'])
           without(:name, ['James Cook'])

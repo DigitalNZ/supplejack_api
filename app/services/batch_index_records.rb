@@ -45,8 +45,7 @@ class BatchIndexRecords
 
   def update_unless_changed(records)
     SupplejackApi::Record.where(
-      :record_id.in => records.map(&:record_id),
-      :updated_at.in => records.map(&:updated_at)
+      :record_id.in => records.map(&:record_id)
     ).update_all(index_updated: true, index_updated_at: Time.current)
   end
 end

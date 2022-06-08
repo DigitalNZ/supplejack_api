@@ -19,8 +19,8 @@ module SupplejackApi
 
       indexable_records.batch_size(@batch_size).each_slice(@batch_size) do |records|
         p "[#{Time.current}] #{records.count} to be indexed: #{records.map(&:record_id)}" unless Rails.env.test?
-        p "[#{Time.current}] #{records.count} to be indexed: #{records.map(&:updated_at)}" unless Rails.env.test?
 
+        p "[#{Time.current}] debug: #{records.map { |r| "#{r.record_id}/#{r.updated_at.strftime('%H:%M:%S.%L')}" }.join(', ')}"
         BatchIndexRecords.new(records).call
       end
     end

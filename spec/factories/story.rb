@@ -12,7 +12,7 @@ FactoryBot.define do
     name            { 'Story name' }
     description     { 'Story description' }
     featured        { false }
-    approved        { false }
+    approved        { true }
     tags            { %w[story tags] }
     copyright       { 0 }
     cover_thumbnail { 'https://thumbnail_url' }

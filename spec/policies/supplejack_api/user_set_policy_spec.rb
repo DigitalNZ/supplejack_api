@@ -35,11 +35,21 @@ RSpec.describe SupplejackApi::UserSetPolicy, type: :policy do
     end
 
     context 'when the story is public' do
-      let(:story) { create(:story, privacy: 'public') }
+      let(:story) { create(:story, privacy: 'public', approved: true) }
 
       context 'when user is not and admin or owner of story' do
         it 'grants access' do
           expect(policy).to permit(user, story)
+        end
+      end
+    end
+
+    context 'when the story is not approved' do
+      let(:story) { create(:story, privacy: 'hidden', approved: false) }
+
+      context 'when user is not and admin or owner of story' do
+        it 'grants access' do
+          expect(policy).not_to permit(user, story)
         end
       end
     end

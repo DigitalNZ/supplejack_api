@@ -18,9 +18,9 @@ module SupplejackApi
     end
 
     def show?
-      return true unless @story.private?
+      return true if admin_or_owner?
 
-      @story.user == @user || @user&.admin?
+      @story.approved? && !@story.private?
     end
 
     alias index?        admin?

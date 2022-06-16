@@ -141,13 +141,13 @@ module SupplejackApi
 
         it 'finds the record and asigns it' do
           expect(Record).to receive(:custom_find).with('123', nil, { status: :all }) { record }
-          put :update, params: { id: 123, record: { status: 'supressed' }, api_key: harvester.api_key }, format: :json
+          put :update, params: { id: 123, record: { status: 'suppressed' }, api_key: harvester.api_key }, format: :json
           expect(assigns(:record)).to eq(record)
         end
 
         it 'updates the status of the record and marks it for indexing' do
-          expect(record).to receive(:update).with(status: 'supressed')
-          put :update, params: { id: 123, record: { status: 'supressed' }, api_key: harvester.api_key }, format: :json
+          expect(record).to receive(:update).with(status: 'suppressed')
+          put :update, params: { id: 123, record: { status: 'suppressed' }, api_key: harvester.api_key }, format: :json
         end
       end
 
@@ -248,7 +248,7 @@ module SupplejackApi
 
       describe 'PUT update' do
         it 'returns unauthorized' do
-          put :update, params: { id: 'abc123', record: { status: 'supressed' }, api_key: user.api_key }, format: :json
+          put :update, params: { id: 'abc123', record: { status: 'suppressed' }, api_key: user.api_key }, format: :json
 
           expect(response).to be_unauthorized
         end

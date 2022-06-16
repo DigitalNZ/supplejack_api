@@ -39,9 +39,9 @@ module SupplejackApi
         create(:record, status: 'active', fragments: fragments)
       end
 
-      let!(:supressed_record) do
+      let!(:suppressed_record) do
         fragments = build_list(:record_fragment, 1, priority: 0, job_id: old_job_id, source_id: source_id)
-        create(:record, status: 'supressed', fragments: fragments)
+        create(:record, status: 'suppressed', fragments: fragments)
       end
 
       let!(:deleted_record) do
@@ -59,7 +59,7 @@ module SupplejackApi
         create(:record, status: 'active', fragments: fragments)
       end
 
-      it 'should delete all active/supressed records that were not harvest by a specific job' do
+      it 'should delete all active/suppressed records that were not harvest by a specific job' do
         FlushOldRecordsWorker.new.flush_records(source_id, current_job_id)
         expect(SupplejackApi::Record.deleted.count).to eq 3
       end

@@ -26,10 +26,10 @@ module SupplejackApi
     end
 
     def unindex_available_records
-      p 'Looking for records to unindex..' unless Rails.env.test?
+      p 'Looking for records to unindex...' unless Rails.env.test?
 
       unindexable_records.batch_size(@batch_size).each_slice(@batch_size) do |records|
-        p "[#{Time.current}] There are #{records.count} records to be removed from the index..." unless Rails.env.test?
+        p "[#{Time.current}] #{records.count} to be unindexed: #{records.map(&:record_id)}" unless Rails.env.test?
 
         BatchRemoveRecordsFromIndex.new(records).call
       end
@@ -40,7 +40,6 @@ module SupplejackApi
     # 2. The record is not part of an active harvest/enrichment job
     def indexable_records
       source_ids = SupplejackApi::AbstractJob.active_job_source_ids
-
       p "Active source ids #{source_ids}"
 
       SupplejackApi::Record
@@ -52,7 +51,15 @@ module SupplejackApi
     end
 
     def unindexable_records
-      SupplejackApi::Record.ready_for_indexing.where(:status.ne => 'active')
+      source_ids = SupplejackApi::AbstractJob.active_job_source_ids
+      p "Active source ids #{source_ids}"
+
+      SupplejackApi::Record
+        .ready_for_indexing
+        .where(
+          :status.ne => 'active',
+          'fragments.source_id' => { '$nin' => source_ids }
+        )
     end
   end
 end

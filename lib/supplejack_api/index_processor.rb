@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Rails/Output
 module SupplejackApi
   class IndexProcessor
     def initialize(batch_size = 500)
@@ -8,6 +7,7 @@ module SupplejackApi
     end
 
     def call
+      log('Looking for records...', false)
       index_available_records
       unindex_available_records
     end
@@ -15,21 +15,16 @@ module SupplejackApi
     private
 
     def index_available_records
-      p 'Looking for records to index...' unless Rails.env.test?
-
       indexable_records.batch_size(@batch_size).each_slice(@batch_size) do |records|
-        p "[#{Time.current}] #{records.count} to be indexed: #{records.map(&:record_id)}" unless Rails.env.test?
+        log("#{records.count} to be indexed: #{records.map(&:record_id)}", true)
 
-        p "[#{Time.current}] debug: #{records.map { |r| "#{r.record_id}/#{r.updated_at.strftime('%H:%M:%S.%L')}" }.join(', ')}"
         BatchIndexRecords.new(records).call
       end
     end
 
     def unindex_available_records
-      p 'Looking for records to unindex...' unless Rails.env.test?
-
       unindexable_records.batch_size(@batch_size).each_slice(@batch_size) do |records|
-        p "[#{Time.current}] #{records.count} to be unindexed: #{records.map(&:record_id)}" unless Rails.env.test?
+        log("#{records.count} to be unindexed: #{records.map(&:record_id)}", true)
 
         BatchRemoveRecordsFromIndex.new(records).call
       end
@@ -40,7 +35,7 @@ module SupplejackApi
     # 2. The record is not part of an active harvest/enrichment job
     def indexable_records
       source_ids = SupplejackApi::AbstractJob.active_job_source_ids
-      p "Active source ids #{source_ids}"
+      log "Active source ids #{source_ids}"
 
       SupplejackApi::Record
         .ready_for_indexing
@@ -52,7 +47,7 @@ module SupplejackApi
 
     def unindexable_records
       source_ids = SupplejackApi::AbstractJob.active_job_source_ids
-      p "Active source ids #{source_ids}"
+      log "Active source ids #{source_ids}"
 
       SupplejackApi::Record
         .ready_for_indexing
@@ -61,6 +56,14 @@ module SupplejackApi
           'fragments.source_id' => { '$nin' => source_ids }
         )
     end
+
+    # rubocop:disable Rails/Output
+    def log(str, prefix = '')
+      return if Rails.env.test?
+
+      prefix = "[#{Time.current}] [#{Process.pid}/#{Process.ppid}] " if prefix
+      p "#{prefix}#{str}"
+    end
+    # rubocop:enable Rails/Output
   end
 end
-# rubocop:enable Rails/Output

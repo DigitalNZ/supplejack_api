@@ -7,7 +7,7 @@ module SupplejackApi
     end
 
     def call
-      log('Looking for records...', false)
+      log('Looking for records...')
       index_available_records
       unindex_available_records
     end
@@ -61,7 +61,7 @@ module SupplejackApi
     def log(str, prefix = '')
       return if Rails.env.test?
 
-      prefix = "[#{Time.current}] [#{Process.pid}/#{Process.ppid}] " if prefix
+      prefix = "[#{Time.current}] [#{Process.pid}/#{Process.ppid}] " if prefix.present?
       p "#{prefix}#{str}"
     end
     # rubocop:enable Rails/Output

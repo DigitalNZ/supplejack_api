@@ -38,7 +38,7 @@ module SupplejackApi
       SupplejackApi::Record.where(
         :'fragments.source_id' => source_id,
         :'fragments.job_id'.ne => job_id,
-        :status.in => %w[active supressed],
+        :status.in => %w[active suppressed],
         'fragments.priority': 0
       ).update_all(status: 'deleted', updated_at: Time.now.utc)
     end

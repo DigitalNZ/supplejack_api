@@ -41,13 +41,13 @@ module SupplejackApi
 
     #   it 'finds the record and assigns it' do
     #     expect(Concept).to receive(:custom_find).with('123', nil, {status: :all}) { concept }
-    #     put :update, id: 123, concept: { status: 'supressed' }, format: :json
+    #     put :update, id: 123, concept: { status: 'suppressed' }, format: :json
     #     expect(assigns(:concept)).to eq(concept)
     #   end
 
     #   it "updates the status of the record" do
-    #     expect(concept).to receive(:update_attribute).with(:status, 'supressed')
-    #     put :update, id: 123, concept: { status: 'supressed' }, format: :json
+    #     expect(concept).to receive(:update_attribute).with(:status, 'suppressed')
+    #     put :update, id: 123, concept: { status: 'suppressed' }, format: :json
     #   end
     # end
   end

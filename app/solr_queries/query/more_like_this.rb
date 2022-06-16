@@ -23,8 +23,8 @@ module Query
       search = QueryBuilder::MinimumTermFrequency.new(search, options.frequency).call
       search = QueryBuilder::Without.new(search, role_collection_restrictions(role)).call
 
-      surpressed_source_ids = SupplejackApi::Source.suppressed.all.pluck(:source_id)
-      QueryBuilder::Without.new(search, source_id: surpressed_source_ids).call
+      suppressed_source_ids = SupplejackApi::Source.suppressed.all.pluck(:source_id)
+      QueryBuilder::Without.new(search, source_id: suppressed_source_ids).call
     end
   end
 end

@@ -103,8 +103,8 @@ module SupplejackApi
       restrictions = self.class.role_collection_restrictions(scope)
       @search_builder = QueryBuilder::Without.new(@search_builder, restrictions).call
 
-      surpressed_source_ids = SupplejackApi::Source.suppressed.all.pluck(:source_id)
-      @search_builder = QueryBuilder::Without.new(@search_builder, source_id: surpressed_source_ids).call
+      suppressed_source_ids = SupplejackApi::Source.suppressed.all.pluck(:source_id)
+      @search_builder = QueryBuilder::Without.new(@search_builder, source_id: suppressed_source_ids).call
 
       @search_builder = QueryBuilder::ExcludeFiltersFromFacets.new(@search_builder, options).call
       @search_builder = QueryBuilder::Paginate.new(@search_builder, options.page, options.per_page).call

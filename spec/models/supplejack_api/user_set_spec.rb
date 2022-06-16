@@ -638,7 +638,7 @@ module SupplejackApi
         context 'record status' do
           let(:user_set) { build(:user_set) }
 
-          it 'should default the status to supressed' do
+          it 'should default the status to suppressed' do
             user_set.privacy = 'private'
 
             user_set.update_record

@@ -54,7 +54,7 @@ module SupplejackApi
     before_create :set_user
     before_save :strip_html_tags!, :strip_empty_subjects!, :update_record
     before_destroy :delete_record
-    after_save :reindex_items, :reindex_if_changed
+    after_save :reindex_if_changed
     after_create :create_record_representation
 
     # we originally had this method named `#create_method`
@@ -298,12 +298,6 @@ module SupplejackApi
       end
 
       items_with_records.reject { |i| i.record.nil? }.sort_by(&:position)
-    end
-
-    def reindex_items
-      set_items.each do |i|
-        SupplejackApi::Record.custom_find(i.record_id).index rescue nil
-      end
     end
 
     class WrongRecordsFormat < RuntimeError; end

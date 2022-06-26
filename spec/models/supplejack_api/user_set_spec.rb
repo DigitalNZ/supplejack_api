@@ -8,7 +8,6 @@ module SupplejackApi
 
     before do
       allow(user_set).to receive(:update_record)
-      allow(user_set).to receive(:reindex_items)
     end
 
     context 'validations' do
@@ -139,12 +138,6 @@ module SupplejackApi
         expect(user_set).to receive(:delete_record)
 
         user_set.destroy
-      end
-
-      it 'calls reindex_items after save' do
-        expect(user_set).to receive(:reindex_items)
-
-        user_set.save
       end
 
       describe '#reindex_if_changed' do
@@ -803,23 +796,6 @@ module SupplejackApi
         user_set.set_items.build(record_id: record.record_id, position: 1)
         expect(user_set).to receive(:records).with(1) { [record] }
         expect(user_set.items_with_records(1).size).to eq 1
-      end
-    end
-
-    describe 'reindex_items' do
-      let(:record5) { double(:record) }
-      let(:record6) { double(:record) }
-
-      before { allow(user_set).to receive(:reindex_items).and_call_original }
-
-      it 'finds each record can calls index' do
-        user_set.set_items.build(record_id: 5, position: 1)
-        user_set.set_items.build(record_id: 6, position: 2)
-        expect(SupplejackApi::Record).to receive(:custom_find).with(5) { record5 }
-        expect(SupplejackApi::Record).to receive(:custom_find).with(6) { record6 }
-        expect(record5).to receive(:index)
-        expect(record6).to receive(:index)
-        user_set.reindex_items
       end
     end
 

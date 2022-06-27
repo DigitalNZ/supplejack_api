@@ -10,6 +10,9 @@ module SupplejackApi
       log('Looking for records...')
       index_available_records
       unindex_available_records
+    rescue StandardError => e
+      log('Failed run:')
+      log(e)
     end
 
     private

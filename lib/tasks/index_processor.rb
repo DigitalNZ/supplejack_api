@@ -7,7 +7,12 @@ namespace :index_processor do
     batch_size = args.fetch(:batch_size, 500).to_i
 
     loop do
-      SupplejackApi::IndexProcessor.new(batch_size).call
+      fork do
+        SupplejackApi::IndexProcessor.new(batch_size).call
+      rescue StandardError => e
+        Rails.logger.error(e)
+      end
+      Process.wait
       sleep 30
     end
   end

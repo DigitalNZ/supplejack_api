@@ -12,7 +12,7 @@ namespace :index_processor do
       rescue StandardError => e
         Rails.logger.error(e)
       end
-      Process.wait
+      Rails.logger.info "Finished forks #{Process.waitall}"
       sleep 30
     end
   end

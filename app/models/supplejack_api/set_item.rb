@@ -91,7 +91,7 @@ module SupplejackApi
       if self[:content][:value]
         self[:content][:value] = Rails::Html::SafeListSanitizer.new.sanitize(
           self[:content][:value],
-          tags: %w[p strong em u ul li ol a h1 h2 h3]
+          tags: %w[p strong em u ul li ol a h1 h2 h3 blockquote]
         )
       end
 

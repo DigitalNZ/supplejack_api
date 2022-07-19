@@ -4,6 +4,10 @@ require 'rake'
 
 namespace :index_processor do
   task :run, [:batch_size] => [:environment] do |_, args|
+    Signal.trap('TERM') do
+      Rails.logger.info "Graceful shutdown PID=#{Process.pid}"
+      exit 0
+    end
     batch_size = args.fetch(:batch_size, 500).to_i
 
     loop do

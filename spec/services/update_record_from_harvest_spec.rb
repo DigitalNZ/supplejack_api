@@ -37,6 +37,15 @@ RSpec.describe UpdateRecordFromHarvest do
         expect(record.internal_identifier).to eq 'end-to-end_exemplar_TEST_record-20190306T1140'
       end
 
+      it 'sets the record_type if given' do
+        record = UpdateRecordFromHarvest.new(payload.merge('record_type' => 1)).call
+        expect(record.record_type).to eq 1
+      end
+
+      it 'leaves the default record_type if not given' do
+        expect(record.record_type).to eq 0
+      end
+
       it 'sets single value fields on the primary_fragment' do
         expect(record.display_collection).to eq 'DNZ end to end test display_collection'
         expect(record.title).to eq 'DNZ end to end test title'

@@ -12,31 +12,35 @@ class UpdateRecordFromHarvest
   end
 
   def call
-    internal_identifier = as_single_value(payload['internal_identifier'])
-
-    @record = if mongo_id.present?
-                klass.find(mongo_id)
-              else
-                @record = klass.find_or_initialize_by(internal_identifier: internal_identifier)
-              end
-
-    # TODO: probably a meaningless field..
-    @record[:source_url] = nil
+    @record = init_record
+    customize_record(@record)
 
     target_fragment = select_fragment(@record)
-
     target_fragment.update(new_fragment_attributes(target_fragment))
 
     @record.set_status(required_fragments)
-
     @record.save!
-
     @record.unset_null_fields
 
     @record
   end
 
   private
+
+  def init_record
+    if mongo_id.present?
+      klass.find(mongo_id)
+    else
+      klass.find_or_initialize_by(internal_identifier: as_single_value(payload['internal_identifier']))
+    end
+  end
+
+  def customize_record(record)
+    # TODO: probably a meaningless field..
+    record[:source_url] = nil
+
+    record.record_type = as_single_value(payload['record_type']) if payload['record_type']
+  end
 
   # Values from the parser will always come as arrays but they aren't always arrays on the schema.
   def as_single_value(value)

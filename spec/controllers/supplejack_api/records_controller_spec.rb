@@ -128,7 +128,7 @@ module SupplejackApi
       end
 
       it 'should find the record and assign it' do
-        expect(Record).to receive(:custom_find).with('123', @user, nil).and_return(@record)
+        expect(Record).to receive(:custom_find).with('123', @user, {}).and_return(@record)
         get :show, params: { id: 123, search: {}, api_key: 'apikey' }, format: 'json'
         expect(assigns(:record)).to eq(@record)
       end

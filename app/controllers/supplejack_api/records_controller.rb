@@ -128,7 +128,7 @@ module SupplejackApi
     end
 
     def next_previous_search_params
-      params.require(:search).permit([:page, :per_page, :record_type, :text, { and: {} }, { or: {} }]).to_unsafe_h
+      params.fetch(:search, {}).permit([:page, :per_page, :record_type, :text, { and: {} }, { or: {} }]).to_unsafe_h
     end
 
     def all_params

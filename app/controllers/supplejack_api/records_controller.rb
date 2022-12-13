@@ -44,7 +44,7 @@ module SupplejackApi
     end
 
     def show
-      @record = SupplejackApi::Record.custom_find(params[:id], current_user, search_params)
+      @record = SupplejackApi::Record.custom_find(params[:id], current_user, next_previous_search_params)
 
       respond_to do |format|
         format.json do
@@ -125,6 +125,10 @@ module SupplejackApi
       # params which would otherwise not be nested).  It's easiest to convert them all to an unsafe
       # hash and work with them that way.
       params[:search]&.to_unsafe_h
+    end
+
+    def next_previous_search_params
+      params.require(:search).permit([:page, :per_page, :record_type, :text, { and: {} }, { or: {} }]).to_unsafe_h
     end
 
     def all_params

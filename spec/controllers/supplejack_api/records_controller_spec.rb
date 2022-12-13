@@ -150,6 +150,18 @@ module SupplejackApi
         get :show, params: { id: 123, search: { and: { category: 'Books' } }, api_key: 'apikey' }, format: 'json'
       end
 
+      it 'ignores facets params' do
+        expect(Record).to receive(:custom_find).with('123', @user, { 'and' => { 'category' => 'Books' } })
+                                               .and_return(@record)
+
+        get :show, params: { id: 123, search: {
+          and: { category: 'Books' },
+          exclude_filters_from_facets: false,
+          facets: %s(category,atl_free_download,atl_purchasable_download,is_catalog_record,year,decade,century),
+          facets_per_page: 100
+        }, api_key: 'apikey' }, format: 'json'
+      end
+
       context 'json' do
         before do
           get :show, params: { id: record.id, api_key: user.authentication_token }, format: :json

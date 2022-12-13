@@ -140,17 +140,17 @@ RSpec.describe SupplejackApi::CollectionMetric do
 
         yesterday_record_metrics = record_metrics_yesterday + yesterday_other_record_metrics
 
-        expect(all_metrics.searches).to eq (yesterday_record_metrics).sum(&:appeared_in_searches)
-        expect(all_metrics.record_page_views).to eq (yesterday_record_metrics).sum(&:page_views)
-        expect(all_metrics.user_set_views).to eq (yesterday_record_metrics).sum(&:user_set_views)
-        expect(all_metrics.user_story_views).to eq (yesterday_record_metrics).sum(&:user_story_views)
-        expect(all_metrics.records_added_to_user_sets).to eq (yesterday_record_metrics).sum(&:added_to_user_sets)
-        expect(all_metrics.records_added_to_user_stories).to eq (yesterday_record_metrics).sum(&:added_to_user_stories)
+        expect(all_metrics.searches).to eq yesterday_record_metrics.sum(&:appeared_in_searches)
+        expect(all_metrics.record_page_views).to eq yesterday_record_metrics.sum(&:page_views)
+        expect(all_metrics.user_set_views).to eq yesterday_record_metrics.sum(&:user_set_views)
+        expect(all_metrics.user_story_views).to eq yesterday_record_metrics.sum(&:user_story_views)
+        expect(all_metrics.records_added_to_user_sets).to eq yesterday_record_metrics.sum(&:added_to_user_sets)
+        expect(all_metrics.records_added_to_user_stories).to eq yesterday_record_metrics.sum(&:added_to_user_stories)
 
-        total_views = (yesterday_record_metrics).sum(&:page_views) +
-                      (yesterday_record_metrics).sum(&:appeared_in_searches) +
-                      (yesterday_record_metrics).sum(&:user_set_views) +
-                      (yesterday_record_metrics).sum(&:user_story_views)
+        total_views = yesterday_record_metrics.sum(&:page_views) +
+                      yesterday_record_metrics.sum(&:appeared_in_searches) +
+                      yesterday_record_metrics.sum(&:user_set_views) +
+                      yesterday_record_metrics.sum(&:user_story_views)
 
         expect(all_metrics.total_views).to eq total_views
       end
@@ -276,13 +276,13 @@ RSpec.describe SupplejackApi::CollectionMetric do
 
         tomorrow_record_metrics = other_record_metrics_tomorrow + record_metrics_tomorrow
 
-        expect(all_metrics.searches).to eq (tomorrow_record_metrics).sum(&:appeared_in_searches)
-        expect(all_metrics.record_page_views).to eq (tomorrow_record_metrics).sum(&:page_views)
-        expect(all_metrics.user_set_views).to eq (tomorrow_record_metrics).sum(&:user_set_views)
-        expect(all_metrics.user_story_views).to eq (tomorrow_record_metrics).sum(&:user_story_views)
-        expect(all_metrics.records_added_to_user_sets).to eq (tomorrow_record_metrics).sum(&:added_to_user_sets)
-        expect(all_metrics.records_added_to_user_stories).to eq (tomorrow_record_metrics).sum(&:added_to_user_stories)
-        expect(all_metrics.total_views).to eq (tomorrow_record_metrics).sum(&:page_views) + (tomorrow_record_metrics).sum(&:appeared_in_searches) + (tomorrow_record_metrics).sum(&:user_set_views) + (tomorrow_record_metrics).sum(&:user_story_views)
+        expect(all_metrics.searches).to eq tomorrow_record_metrics.sum(&:appeared_in_searches)
+        expect(all_metrics.record_page_views).to eq tomorrow_record_metrics.sum(&:page_views)
+        expect(all_metrics.user_set_views).to eq tomorrow_record_metrics.sum(&:user_set_views)
+        expect(all_metrics.user_story_views).to eq tomorrow_record_metrics.sum(&:user_story_views)
+        expect(all_metrics.records_added_to_user_sets).to eq tomorrow_record_metrics.sum(&:added_to_user_sets)
+        expect(all_metrics.records_added_to_user_stories).to eq tomorrow_record_metrics.sum(&:added_to_user_stories)
+        expect(all_metrics.total_views).to eq tomorrow_record_metrics.sum(&:page_views) + tomorrow_record_metrics.sum(&:appeared_in_searches) + tomorrow_record_metrics.sum(&:user_set_views) + tomorrow_record_metrics.sum(&:user_story_views)
       end
 
       it 'updates CollectionMetric models if they already exist' do

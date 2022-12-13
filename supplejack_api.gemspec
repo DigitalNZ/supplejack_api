@@ -34,7 +34,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'paperclip'
   s.add_dependency 'progressbar'
   s.add_dependency 'pundit', '~> 2.1'
-  s.add_dependency 'rails', '7.0.3.1'
+  s.add_dependency 'rails', '7.0.4'
   s.add_dependency 'responders'
   s.add_dependency 'rest-client'
   s.add_dependency 'sidekiq'

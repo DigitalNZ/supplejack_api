@@ -128,7 +128,7 @@ module SupplejackApi
       end
 
       it 'should find the record and assign it' do
-        expect(Record).to receive(:custom_find).with('123', @user, nil).and_return(@record)
+        expect(Record).to receive(:custom_find).with('123', @user, {}).and_return(@record)
         get :show, params: { id: 123, search: {}, api_key: 'apikey' }, format: 'json'
         expect(assigns(:record)).to eq(@record)
       end
@@ -148,6 +148,18 @@ module SupplejackApi
                                                .and_return(@record)
 
         get :show, params: { id: 123, search: { and: { category: 'Books' } }, api_key: 'apikey' }, format: 'json'
+      end
+
+      it 'ignores facets params' do
+        expect(Record).to receive(:custom_find).with('123', @user, { 'and' => { 'category' => 'Books' } })
+                                               .and_return(@record)
+
+        get :show, params: { id: 123, search: {
+          and: { category: 'Books' },
+          exclude_filters_from_facets: false,
+          facets: %s(category,atl_free_download,atl_purchasable_download,is_catalog_record,year,decade,century),
+          facets_per_page: 100
+        }, api_key: 'apikey' }, format: 'json'
       end
 
       context 'json' do

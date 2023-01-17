@@ -221,15 +221,17 @@ module SupplejackApi
     # Remove HTML tags from the name, description and tags
     #
     def strip_html_tags!
+      fields_to_sanitize = changed_attributes.symbolize_keys.keys
+
       %i[name description].each do |attr|
-        send("#{attr}=", strip_tags(self[attr])) if self[attr].present?
+        send("#{attr}=", strip_tags(self[attr])) if self[attr].present? && fields_to_sanitize.include?(attr)
       end
 
       self[:subjects] = [] unless self[:subjects]
-      self.subjects = self[:subjects].map { |subject| strip_tags(subject) }
+      self.subjects = self[:subjects].map { |subject| strip_tags(subject) } if fields_to_sanitize.include?(:subjects)
 
       self[:tags] = [] unless self[:tags]
-      self.tags = self[:tags].map { |tag| strip_tags(tag) }
+      self.tags = self[:tags].map { |tag| strip_tags(tag) } if fields_to_sanitize.include?(:tags)
     end
 
     def strip_empty_subjects!

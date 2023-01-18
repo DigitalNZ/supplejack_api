@@ -126,6 +126,14 @@ module SupplejackApi
 
           expect(user_set.tags).to eq %w[Dogs Cats]
         end
+
+        it 'only strips html tags from fields that have changed' do
+          user_set.update(name: '<3 the 90s!')
+          expect(user_set.name).to eq '&amp;lt;3 the 90s!'
+
+          user_set.update(description: 'hello!')
+          expect(user_set.name).to eq '&amp;lt;3 the 90s!'
+        end
       end
 
       it 'calls update_record before saving' do

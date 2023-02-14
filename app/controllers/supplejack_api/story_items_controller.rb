@@ -40,6 +40,8 @@ module SupplejackApi
           @story.update_attribute(:cover_thumbnail, nil)
         end
 
+        @story.remoderate! if @story.respond_to?(:may_remoderate?) && @story.may_remoderate?
+
         render_json_with json: @item, serializer: StoryItemSerializer
       else
         render_error_with('Failed to update', :bad_request)

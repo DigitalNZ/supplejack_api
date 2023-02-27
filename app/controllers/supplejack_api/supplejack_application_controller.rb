@@ -76,8 +76,6 @@ module SupplejackApi
       end
     end
 
-
-
     def render_error_with(message, code)
       render(json: { errors: message }, status: code)
     end

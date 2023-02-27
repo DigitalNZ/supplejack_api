@@ -25,7 +25,6 @@ module SupplejackApi
       expect(user.authentication_token).to_not be_nil
     end
 
-
     describe '#name' do
       it 'returns the users name' do
         expect(User.new(name: 'John').name).to eq 'John'

@@ -22,7 +22,6 @@ module SupplejackApi::Concerns::Record
     # Callbacks
     before_save :merge_fragments
     before_save :mark_for_indexing
-    after_save :replace_stories_cover
 
     # Scopes
     scope :active,          -> { where(status: 'active') }
@@ -122,31 +121,6 @@ module SupplejackApi::Concerns::Record
     def mark_for_indexing
       self.index_updated = false
       self.index_updated_at = nil
-    end
-
-    def replace_stories_cover
-      return unless RecordSchema.fields.include?(:thumbnail_url) && RecordSchema.fields.include?(:large_thumbnail_url)
-      return if active?
-
-      SupplejackApi::UserSet.where(
-        'set_items.record_id': record_id,
-        :cover_thumbnail.in => [large_thumbnail_url, thumbnail_url].compact
-      ).each do |user_set| # rubocop:disable Rails/FindEach. Mongoid::Criteria handles batching internally (not via find_each)
-        active_set_item_records =
-          SupplejackApi::Record
-          .active
-          .where(:record_id.in => user_set.set_items.map(&:record_id))
-        active_record_map = active_set_item_records.index_by(&:record_id)
-
-        user_set.set_items.order([:position]).each do |set_item|
-          record = active_record_map[set_item.record_id]
-
-          next if record.nil?
-
-          user_set.update!(cover_thumbnail: record.large_thumbnail_url)
-          break # Prevent updating multiple times
-        end
-      end
     end
   end
 end

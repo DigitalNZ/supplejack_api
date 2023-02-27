@@ -11,13 +11,9 @@ module SupplejackApi
 
     store_in collection: 'users'
 
-    # Include default devise modules. Others available are:
-    # :token_authenticatable, :encryptable, :confirmable, :lockable, :timeoutable and :omniauthable
     devise :trackable, :database_authenticatable, :token_authenticatable
 
     # Database authenticatable
-    # field :email,              type: String, null: false
-    # field :encrypted_password, type: String, null: false
     field :email,               type: String
     field :encrypted_password,  type: String
     field :name,                type: String
@@ -51,33 +47,7 @@ module SupplejackApi
     alias api_key authentication_token
 
     validates :authentication_token, uniqueness: true
-
     before_save :ensure_authentication_token
-    after_save :update_user_sets
-
-    has_many :user_sets, dependent: :destroy, autosave: true, class_name: 'SupplejackApi::UserSet' do
-      def custom_find(id)
-        user_set = if BSON::ObjectId.legal?(id.to_s)
-                     find(id) rescue nil
-                   else
-                     where(url: id).first
-                   end
-      end
-    end
-
-    def update_user_sets
-      return unless username_changed? || email_changed?
-
-      user_sets.update_all(username: username, email: email)
-    end
-
-    def sets=(attrs_array)
-      if attrs_array.try(:any?)
-        attrs_array.each { |attrs| user_sets.build(attrs) }
-      else
-        false
-      end
-    end
 
     def name
       name = self[:name]
@@ -205,10 +175,6 @@ module SupplejackApi
 
     def admin?
       RecordSchema.roles[role.to_sym].try(:admin)
-    end
-
-    def can_change_featured_sets?
-      admin?
     end
   end
 end

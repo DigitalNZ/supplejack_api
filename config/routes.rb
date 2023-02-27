@@ -5,6 +5,7 @@ SupplejackApi::Engine.routes.draw do
 
   scope '(/:version)', version: /v3/, defaults: { version: nil, format: 'json' } do
     # User level authentication
+    resources :users, only: [:show, :create, :update, :destroy]
 
 
     # Concepts

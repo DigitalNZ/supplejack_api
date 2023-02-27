@@ -76,17 +76,7 @@ module SupplejackApi
       end
     end
 
-    def find_user_set
-      id = params[:user_set_id] || params[:id]
 
-      @user_set = if RecordSchema.roles[current_user.role.to_sym].try(:admin)
-                    UserSet.custom_find(id)
-                  else
-                    current_user.user_sets.custom_find(id)
-                  end
-
-      render(json: { errors: I18n.t('errors.user_set_not_found', id: id) }, status: :not_found) unless @user_set
-    end
 
     def render_error_with(message, code)
       render(json: { errors: message }, status: code)

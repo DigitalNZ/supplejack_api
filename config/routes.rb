@@ -18,18 +18,6 @@ SupplejackApi::Engine.routes.draw do
       get :multiple, on: :collection
       get :more_like_this
     end
-
-
-    # # Stories
-    # namespace 'stories' do
-    #   resources :featured, only: [:index]
-    # end
-
-    # resources :stories, except: [:new, :edit] do
-    #   post :reposition_items
-
-    #   resources :items, controller: :story_items, except: [:new, :edit]
-    # end
   end
 
   scope '/:version/metrics', version: /v3/, defaults: {format: 'json'} do

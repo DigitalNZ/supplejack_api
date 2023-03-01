@@ -17,7 +17,7 @@ module SupplejackApi
         field :record_type,                 type: Integer,      default: 0
 
         index({ status: 1 }, background: true)
-        index({ internal_identifier: 1 }, unique: true, drop_dups: true, background: true)
+        index({ internal_identifier: 1 }, unique: true, background: true)
         index({ record_type: 1 }, background: true)
         index({ record_id: 1 }, unique: true, background: true)
 

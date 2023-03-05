@@ -25,35 +25,6 @@ module SupplejackApi
       expect(user.authentication_token).to_not be_nil
     end
 
-    describe 'user_sets' do
-      describe 'custom_find' do
-        it 'should lookup the UserSet by Mongo ID' do
-          expect(user.user_sets).to receive(:find).with('503a95b112575773920005f4')
-          user.user_sets.custom_find('503a95b112575773920005f4')
-        end
-
-        it 'should lookup the UserSet by URL if param not an ID' do
-          expect(user.user_sets).to receive(:where).with(url: 'http://google.com') { [] }
-          user.user_sets.custom_find('http://google.com')
-        end
-      end
-    end
-
-    describe '#sets=' do
-      it 'creates a new set for the user' do
-        user.sets = [{ name: 'Favourites', privacy: 'hidden', priority: 0 }]
-        expect(user.user_sets.size).to eq 1
-        expect(user.user_sets.first.name).to eq 'Favourites'
-        expect(user.user_sets.first.privacy).to eq 'hidden'
-        expect(user.user_sets.first.priority).to eq 0
-      end
-
-      it 'doesnt create a new set when the sets are nil' do
-        user.sets = nil
-        expect(user.user_sets.size).to eq 0
-      end
-    end
-
     describe '#name' do
       it 'returns the users name' do
         expect(User.new(name: 'John').name).to eq 'John'
@@ -334,59 +305,12 @@ module SupplejackApi
       end
     end
 
-    describe 'can_change_featured_sets?' do
-      context 'admin user' do
-        before { user.role = 'admin' }
-
-        it 'should return true' do
-          expect(user.can_change_featured_sets?).to be_truthy
-        end
-      end
-
-      context 'user' do
-        it 'should return false' do
-          expect(user.can_change_featured_sets?).to be_falsey
-        end
-      end
-    end
-
     describe '#authentication_token' do
       let!(:user)    { create(:user, authentication_token: 'token') }
       let(:user_two) { build(:user, authentication_token: 'token')  }
       it 'enforces uniqueness on the authentication_token' do
         user_two.valid?
         expect(user_two.errors['authentication_token']).to include 'is already taken'
-      end
-    end
-
-    describe '#update_user_sets' do
-      let(:user_set) { build(:user_set) }
-      let(:user) { user_set.user }
-
-      context 'when username of the user updated' do
-        it 'updates the username of the user set' do
-          user.username = 'newusername'
-          user.save!
-          expect(user_set.username).to eq 'newusername'
-        end
-      end
-
-      context 'when email of the user updated' do
-        it 'updates the email of the user set' do
-          user.email = 'newemail'
-          user.save!
-          expect(user_set.email).to eq 'newemail'
-        end
-      end
-
-      context 'when email and username of the user updated' do
-        it 'updates the email and the username of the user set' do
-          user.email = 'newemail'
-          user.username = 'newusername'
-          user.save!
-          expect(user_set.email).to eq 'newemail'
-          expect(user_set.username).to eq 'newusername'
-        end
       end
     end
   end

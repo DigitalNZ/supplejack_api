@@ -13,7 +13,7 @@ module SupplejackApi
       string :title, search_boost: 10, search_as: [:fulltext], namespace: :dc, namespace_field: :creator
       string :display_collection
       string :primary_collection,     multi_value: true,  search_as: [:filter]
-      boolean :is_natlib_record,                          search_as: [:filter]
+      boolean :is_natlib_record,                          search_as: [:filter], facet_method: 'enum'
       integer :year do
         multi_value true
         store false
@@ -122,6 +122,7 @@ module SupplejackApi
       it 'describes is_natlib_record' do
         expect(ExampleSchema.fields[:is_natlib_record].name).to eq :is_natlib_record
         expect(ExampleSchema.fields[:is_natlib_record].type).to eq :boolean
+        expect(ExampleSchema.fields[:is_natlib_record].facet_method).to eq 'enum'
       end
 
       it 'describes year' do

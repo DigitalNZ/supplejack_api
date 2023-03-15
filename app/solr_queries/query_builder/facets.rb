@@ -32,9 +32,9 @@ module QueryBuilder
             field_definition = RecordSchema.fields[facet_name]
 
             next unless field_definition.facet_method.present?
-            indexed_name = params[:'facet.field'].find { |facet| facet.include? facet_name.to_s }
+            indexed_name = params[:'facet.field'].find { |facet| facet.include?(facet_name.to_s) }
          
-            params[:"f.#{indexed_name}.method"] = field_definition.facet_method
+            params[:"f.#{indexed_name}.facet.method"] = field_definition.facet_method
           end
         end
       end

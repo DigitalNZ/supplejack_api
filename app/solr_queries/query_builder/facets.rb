@@ -29,11 +29,9 @@ module QueryBuilder
           facet(facet_name, limit: facets_per_page, offset: facets_offset)
 
           adjust_solr_params do |params|
-            facet_field_name = facet_field_name = params[:"facet.field"].last
             field_definition = RecordSchema.fields[facet_name]
 
             next unless field_definition.facet_method.present?
-
             indexed_name = params[:'facet.field'].find { |facet| facet.include? facet_name.to_s }
          
             params[:"f.#{indexed_name}.method"] = field_definition.facet_method

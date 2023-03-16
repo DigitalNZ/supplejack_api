@@ -31,9 +31,10 @@ module QueryBuilder
           adjust_solr_params do |params|
             field_definition = RecordSchema.fields[facet_name]
 
-            next unless field_definition.facet_method.present?
+            next if field_definition&.facet_method.blank?
+
             indexed_name = params[:'facet.field'].find { |facet| facet.include?(facet_name.to_s) }
-         
+
             params[:"f.#{indexed_name}.facet.method"] = field_definition.facet_method
           end
         end

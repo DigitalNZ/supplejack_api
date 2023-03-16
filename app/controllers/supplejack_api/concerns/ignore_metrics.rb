@@ -7,7 +7,7 @@ module SupplejackApi
 
       included do
         def log_request_for_metrics?
-          # (!params.key? :ignore_metrics) && request.human?
+          (!params.key? :ignore_metrics) && request.human?
         end
       end
     end

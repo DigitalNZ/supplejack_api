@@ -6,7 +6,7 @@ module SupplejackApi
 
     SCHEMA_METHODS = %i[string integer datetime boolean latlon text].freeze
     ALLOWED_ATTRIBUTES = {
-      field: %i[type search_value search_boost multi_value search_as store
+      field: %i[type search_value search_boost multi_value facet_method search_as store
                 solr_name namespace namespace_field default_value date_format],
       group: %i[fields includes],
       role: %i[default field_restrictions record_restrictions admin harvester anonymous],

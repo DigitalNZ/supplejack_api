@@ -24,6 +24,7 @@ module QueryBuilder
 
     def call
       super
+
       return search unless exclude_filters_from_facets
 
       search.build do
@@ -61,10 +62,18 @@ module QueryBuilder
       # Necessary to pass search_context in order to generate `with` queries
       wildcard_search_term_regex = /(.+)\*$/ # search term ends in *
 
+      downcased_value = value.downcase
+
       if value =~ wildcard_search_term_regex
         search_context.with(facet_name).starting_with(Regexp.last_match(1))
       elsif value.is_a?(Hash) && value.key?(:or)
         search_context.with(facet_name, value[:or])
+      elsif downcased_value == 'true' || downcased_value == 'false'
+        # If Solr receives the string value 'false', 
+        # it will convert it into the Boolean true, giving the opposite result
+        boolean_value = (downcased_value == 'true')
+
+        search_context.with(facet_name, boolean_value)        
       else
         # Value is a non-wildcarded string, or an array
         search_context.with(facet_name, value)

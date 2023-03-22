@@ -68,12 +68,12 @@ module QueryBuilder
         search_context.with(facet_name).starting_with(Regexp.last_match(1))
       elsif value.is_a?(Hash) && value.key?(:or)
         search_context.with(facet_name, value[:or])
-      elsif downcased_value == 'true' || downcased_value == 'false'
-        # If Solr receives the string value 'false', 
+      elsif %w[true false].include?(downcased_value)
+        # If Solr receives the string value 'false',
         # it will convert it into the Boolean true, giving the opposite result
         boolean_value = (downcased_value == 'true')
 
-        search_context.with(facet_name, boolean_value)        
+        search_context.with(facet_name, boolean_value)
       else
         # Value is a non-wildcarded string, or an array
         search_context.with(facet_name, value)

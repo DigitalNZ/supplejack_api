@@ -511,7 +511,7 @@ module SupplejackApi
             facets: 'nz_citizen',
             exclude_filters_from_facets: 'true'
           ).execute_solr_search
-          
+
           expect(@session).to have_search_params(:with, proc do
             all_of do
               with(:nz_citizen, false)
@@ -530,7 +530,6 @@ module SupplejackApi
             category_filter = with(:category, %w[Images])
             facet(:category, exclude: category_filter)
           }
-          
         end
 
         it 'applies filters that are given which are not facets' do

@@ -429,7 +429,6 @@ module SupplejackApi
             facets: 'name, address',
             exclude_filters_from_facets: 'true'
           ).execute_solr_search
-
           expect(@session).to have_search_params(:facet) {
             name_filter = with(:name, names)
             facet(:name, exclude: name_filter)
@@ -504,6 +503,20 @@ module SupplejackApi
             age_filter = with(:age_str, ['10'])
             facet(:age_str, exclude: age_filter)
           }
+        end
+
+        it 'handles Boolean facets correctly' do
+          RecordSearch.new(
+            and: { nz_citizen: 'false' },
+            facets: 'nz_citizen',
+            exclude_filters_from_facets: 'true'
+          ).execute_solr_search
+
+          expect(@session).to have_search_params(:with, proc do
+            all_of do
+              with(:nz_citizen, false)
+            end
+          end)
         end
 
         it 'applies filters that are given as strings via the URL correctly' do

@@ -45,7 +45,7 @@ PATH
       sunspot_solr
       thin
       unicode_utils
-      voight_kampff
+      voight_kampff (~> 1.0)
 
 GEM
   remote: https://rubygems.org/

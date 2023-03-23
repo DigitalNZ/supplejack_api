@@ -42,7 +42,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'state_machine'
   s.add_dependency 'thin'
   s.add_dependency 'unicode_utils'
-  s.add_dependency 'voight_kampff'
+  s.add_dependency 'voight_kampff', '~> 1.0'
 
   # # Adding sunspot_solr so app has access to sunspot:solr rake tasks
   s.add_dependency 'activeresource'

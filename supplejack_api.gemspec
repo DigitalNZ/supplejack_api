@@ -31,7 +31,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'mimemagic'
   s.add_dependency 'mongoid', '~> 7.4.0'
   s.add_dependency 'mongoid_auto_increment'
-  s.add_dependency 'paperclip'
   s.add_dependency 'progressbar'
   s.add_dependency 'pundit', '~> 2.1'
   s.add_dependency 'rails', '~> 7.0.4'

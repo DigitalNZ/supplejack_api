@@ -4,7 +4,7 @@ module SupplejackApi
   module Harvester
     class FragmentsController < BaseController
       def create
-        @record = UpdateRecordFromHarvest.new(fragment_params, params[:preview], params[:record_id]).call
+        @record = UpdateRecordFromHarvest.new(fragment_params, params[:preview], params[:record_id], params[:required_fragments]).call
 
         render json: { status: :success, record_id: @record.record_id }
       rescue StandardError => e

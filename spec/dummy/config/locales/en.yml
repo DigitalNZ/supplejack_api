@@ -6,6 +6,7 @@
 en:
   users:
     reached_limit: You have reached your maximum number of api requests today
+    anonymous_reached_limit: The anonymous key has reached the maximum number of API requests for today
     invalid_token: Invalid API Key
     blank_token: Please provide a API Key
     title: Users

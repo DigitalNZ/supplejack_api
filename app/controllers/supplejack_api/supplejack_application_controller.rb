@@ -27,7 +27,11 @@ module SupplejackApi
 
       if current_user
         if current_user.over_limit?
-          error_message = I18n.t('users.reached_limit')
+          error_message = if RecordSchema.roles[current_user.role.to_sym].try(:anonymous)
+                            I18n.t('users.anonymous_reached_limit')
+                          else
+                            I18n.t('users.reached_limit')
+                          end
         else
           current_user.update_tracked_fields(request)
           current_user.update_daily_activity(request)

@@ -62,7 +62,7 @@ module SupplejackApi
             post :create_batch, params: {
               records: [
                 {
-                  fields: { internal_identifier: '1234' },
+                  fields: { internal_identifier: '1234' }
                 },
                 {
                   fields: { internal_identifier: '5678' },
@@ -104,7 +104,7 @@ module SupplejackApi
           post :create_batch, params: {
             records: [
               {
-                fields: { internal_identifier: '1234' },
+                fields: { internal_identifier: '1234' }
               },
               {
                 fields: { internal_identifier: '5678' },
@@ -113,7 +113,7 @@ module SupplejackApi
               {
                 fields: { internal_identifier: '9101112' },
                 required_fragments: []
-              },
+              }
             ],
             api_key: harvester.api_key
           }
@@ -134,7 +134,7 @@ module SupplejackApi
           post :create_batch, params: {
             records: [
               {
-                fields: { internal_identifier: '1234' },
+                fields: { internal_identifier: '1234' }
               },
               {
                 fields: { internal_identifier: '5678' },

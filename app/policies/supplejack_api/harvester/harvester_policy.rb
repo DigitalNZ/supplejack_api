@@ -23,6 +23,7 @@ module SupplejackApi
       # custom harvester actions
       alias flush?              harvester?
       alias reindex?            harvester?
+      alias create_batch?       harvester?
       alias link_check_records? harvester?
     end
   end

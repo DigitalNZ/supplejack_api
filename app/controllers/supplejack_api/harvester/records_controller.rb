@@ -16,6 +16,24 @@ module SupplejackApi
         }
       end
 
+      def create_batch
+        records = []
+
+        params[:records].each do |record|
+          r = UpdateRecordFromHarvest.new(record['fields'].to_unsafe_h, false, nil, record['required_fragments']).call
+          records.push({ status: 'success', record_id: r.record_id })
+
+        rescue StandardError => e
+          records.push({
+            status: 'failed', exception_class: e.class.to_s,
+            message: e.message, backtrace: e.backtrace,
+            raw_data: r&.attributes, record_id: r&.record_id
+          })
+        end
+
+        render json: records
+      end
+
       def flush
         FlushOldRecordsWorker.perform_async(params[:source_id], params[:job_id])
         head :no_content

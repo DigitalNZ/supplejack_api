@@ -33,6 +33,7 @@ SupplejackApi::Engine.routes.draw do
       collection do
         post :flush
         put :delete
+        post :create_batch
       end
       resources :fragments, only: [:create]
     end

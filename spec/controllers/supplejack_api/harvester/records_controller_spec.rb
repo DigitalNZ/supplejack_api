@@ -56,6 +56,111 @@ module SupplejackApi
         end
       end
 
+      describe 'POST create_batch' do
+        it 'creates multiple records at a time' do
+          expect do
+            post :create_batch, params: {
+              records: [
+                {
+                  fields: { internal_identifier: '1234' }
+                },
+                {
+                  fields: { internal_identifier: '5678' },
+                  required_fragments: []
+                },
+                {
+                  fields: { internal_identifier: '9101112' },
+                  required_fragments: []
+                }
+              ],
+              api_key: harvester.api_key
+            }
+          end.to change { Record.count }.by(3)
+        end
+
+        it 'creates partial records when the records have required_fragments' do
+          post :create_batch, params: {
+            records: [
+              {
+                fields: { internal_identifier: '1234' },
+                required_fragments: ['ndha_rights']
+              },
+              {
+                fields: { internal_identifier: '5678' },
+                required_fragments: []
+              },
+              {
+                fields: { internal_identifier: '9101112' },
+                required_fragments: []
+              }
+            ],
+            api_key: harvester.api_key
+          }
+
+          expect(SupplejackApi::Record.first.status).to eq 'partial'
+        end
+
+        it 'returns information about the records that have been saved' do
+          post :create_batch, params: {
+            records: [
+              {
+                fields: { internal_identifier: '1234' }
+              },
+              {
+                fields: { internal_identifier: '5678' },
+                required_fragments: []
+              },
+              {
+                fields: { internal_identifier: '9101112' },
+                required_fragments: []
+              }
+            ],
+            api_key: harvester.api_key
+          }
+
+          data = JSON.parse(response.body)
+
+          expect(response).to be_successful
+
+          data.each do |record|
+            expect(record['status']).to eq 'success'
+            expect(record['record_id']).to_not be(nil)
+          end
+        end
+
+        it 'returns error information if a record has failed to be saved' do
+          allow_any_instance_of(SupplejackApi::Record).to receive(:save).and_raise(StandardError)
+
+          post :create_batch, params: {
+            records: [
+              {
+                fields: { internal_identifier: '1234' }
+              },
+              {
+                fields: { internal_identifier: '5678' },
+                required_fragments: []
+              },
+              {
+                fields: { internal_identifier: '9101112' },
+                required_fragments: []
+              }
+            ],
+            api_key: harvester.api_key
+          }
+
+          data = JSON.parse(response.body)
+
+          expect(response).to be_successful
+
+          data.each do |record|
+            expect(record['status']).to eq 'failed'
+            expect(record['exception_class']).to eq 'StandardError'
+            expect(record['exception_class']).to eq 'StandardError'
+            expect(record['backtrace']).not_to be(nil)
+          end
+        end
+      end
+
       describe 'PUT delete' do
         it 'should find the record by internal_identifier' do
           expect(Record).to receive(:where).with({ internal_identifier: 'abc123' }) { [record] }

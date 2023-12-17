@@ -142,6 +142,14 @@ module SupplejackApi
       end
     end
 
+    describe 'sort by random' do
+      it 'should include the correct search sort' do
+        search = RecordSearch.new(sort: 'random')
+
+        expect(search.search_builder.inspect.include?(':sort=>"random desc"')).to eq true
+      end
+    end
+
     describe '#valid?' do
       before { allow(@search).to receive(:solr_search_object).and_return(true) }
 

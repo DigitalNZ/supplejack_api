@@ -39,6 +39,20 @@ module SupplejackApi
       end
     end
 
+    def random
+      @search = SupplejackApi::RecordSearch.new(
+        text: '*:*',
+        per_page: params['per_page'] || 1,
+        sort: 'random',
+        debug: params['debug'] || 'false'
+      )
+      @search.scope = current_user
+
+      render_json_with json: @search, serializer: self.class.search_serializer_class,
+                       record_fields: available_fields, record_includes: available_fields,
+                       record_url: request.original_url, root: 'search', adapter: :json
+    end
+
     def status
       render nothing: true
     end

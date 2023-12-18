@@ -118,6 +118,27 @@ module SupplejackApi
       end
     end
 
+    describe 'GET random' do
+      before do
+        @search = RecordSearch.new
+        allow(@search).to receive(:valid?) { true }
+        allow(RecordSearch).to receive(:new) { @search }
+      end
+
+      it 'has a successful response code' do
+        get :random, params: { api_key: user.authentication_token }
+
+        expect(response).to be_successful
+      end
+
+      it 'initializes a new random search' do
+        expect(RecordSearch).to receive(:new).with(hash_including(text: '*:*', per_page: 1, sort: 'random',
+                                                                  debug: 'false'))
+
+        get :random, params: { api_key: user.authentication_token }
+      end
+    end
+
     describe 'GET show' do
       let(:developer_restriction) { double(:developer_restriction).as_null_object }
 

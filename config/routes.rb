@@ -18,9 +18,6 @@ SupplejackApi::Engine.routes.draw do
       get :multiple, on: :collection
       get :more_like_this
 
-      collection do
-        get :random
-      end
     end
   end
 

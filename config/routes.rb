@@ -17,7 +17,6 @@ SupplejackApi::Engine.routes.draw do
     resources :records, only: [:index, :show], defaults: {format: 'json'} do
       get :multiple, on: :collection
       get :more_like_this
-
     end
   end
 

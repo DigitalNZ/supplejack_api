@@ -24,6 +24,7 @@ SupplejackApi::Engine.routes.draw do
     get '/', to: 'metrics_api#root'
     get '/facets', to: 'metrics_api#facets'
     get '/global', to: 'metrics_api#global'
+    get '/top',    to: 'metrics_api#top'
   end
 
   # Harvester

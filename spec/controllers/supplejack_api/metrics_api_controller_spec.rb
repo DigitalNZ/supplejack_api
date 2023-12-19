@@ -97,7 +97,7 @@ module SupplejackApi
       it 'returns the top 10 records for a given metric' do
         get :top, params: { version: 'v3', metric: 'page_views', start_date: 6.days.ago }
 
-        data = JSON.parse(response.body)
+        data = JSON.parse(response.body)['results']
 
         expect(data.count).to eq 10
       end
@@ -105,7 +105,7 @@ module SupplejackApi
       it 'aggregates records with the same record IDs together across multiple days' do
         get :top, params: { version: 'v3', metric: 'page_views', start_date: 6.days.ago }
 
-        data = JSON.parse(response.body)
+        data = JSON.parse(response.body)['results']
 
         expect(data.first['count']).to eq 195
       end
@@ -113,7 +113,7 @@ module SupplejackApi
       it 'appends unique record_ids into the top metric' do
         get :top, params: { version: 'v3', metric: 'page_views', start_date: 6.days.ago }
 
-        data = JSON.parse(response.body)
+        data = JSON.parse(response.body)['results']
 
         data.map! { |record| record['record_id'] }
 
@@ -125,7 +125,7 @@ module SupplejackApi
 
         data = JSON.parse(response.body)
 
-        expect(data.count).to eq 10
+        expect(data['metric']).to eq 'page_views'
       end
     end
   end

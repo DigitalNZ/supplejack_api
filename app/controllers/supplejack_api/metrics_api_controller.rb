@@ -40,7 +40,10 @@ module SupplejackApi
       sorted_metrics = combined_metrics(metrics).sort_by(&:last).reverse.take(10)
       sorted_metrics.map! { |record_id, count| { record_id: record_id.to_i, count: count } }
 
-      render json: sorted_metrics
+      render json: {
+        metric: metric,
+        results: sorted_metrics
+      }
     end
 
     private

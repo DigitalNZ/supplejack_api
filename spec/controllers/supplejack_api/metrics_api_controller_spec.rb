@@ -82,7 +82,7 @@ module SupplejackApi
             :top_metric,
             date: Time.now.utc.to_date - n.days,
             metric: 'page_views',
-            results: { "111145"=>39, "111148"=>17, "111208"=>16, "111010"=>12, "110800"=>8, "111205"=>1 }
+            results: { '111145' => 39, '111148' => 17, '111208' => 16, '111010' => 12, '110800' => 8, '111205' => 1 }
           )
         end
 
@@ -90,12 +90,12 @@ module SupplejackApi
           :top_metric,
           date: Time.now.utc.to_date - 6.days,
           metric: 'page_views',
-          results: { "22231"=>39, "44111"=>17, "12311"=>16, "67612"=>12, "45213"=>8, "76512"=>1 }
+          results: { '22231' => 39, '44111' => 17, '12311' => 16, '67612' => 12, '45213' => 8, '76512' => 1 }
         )
       end
 
       it 'returns the top 10 records for a given metric' do
-        get :top, params: { version: 'v3', metric: 'page_views', start_date: 6.days.ago }
+        get :top, params: { version: 'v3', metric: 'page_views', start_date: 8.days.ago }
 
         data = JSON.parse(response.body)['results']
 
@@ -103,7 +103,7 @@ module SupplejackApi
       end
 
       it 'aggregates records with the same record IDs together across multiple days' do
-        get :top, params: { version: 'v3', metric: 'page_views', start_date: 6.days.ago }
+        get :top, params: { version: 'v3', metric: 'page_views', start_date: 8.days.ago }
 
         data = JSON.parse(response.body)['results']
 
@@ -111,7 +111,7 @@ module SupplejackApi
       end
 
       it 'appends unique record_ids into the top metric' do
-        get :top, params: { version: 'v3', metric: 'page_views', start_date: 6.days.ago }
+        get :top, params: { version: 'v3', metric: 'page_views', start_date: 8.days.ago }
 
         data = JSON.parse(response.body)['results']
 
@@ -120,8 +120,8 @@ module SupplejackApi
         expect(data).to include(22_231)
       end
 
-      it 'defaults unrecognized metrics to page_views' do
-        get :top, params: { version: 'v3', metric: 'test', start_date: 6.days.ago }
+      it 'defaults unrecognized metric parameter to page_views' do
+        get :top, params: { version: 'v3', metric: 'test', start_date: 8.days.ago }
 
         data = JSON.parse(response.body)
 

@@ -19,7 +19,11 @@ module QueryBuilder
 
       this = self
       search.build do
-        order_by(this.order_by_attribute, this.direction)
+        if this.order_by == 'random'
+          order_by(:random, direction: :desc)
+        else
+          order_by(this.order_by_attribute, this.direction)
+        end
       end
     end
 

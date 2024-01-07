@@ -12,6 +12,7 @@ module SupplejackApi
   # app/models/supplejack_api/top_metric.rb
   class TopMetric
     include Mongoid::Document
+    include SupplejackApi::Concerns::QueryableByDate
 
     METRICS = %i[
       page_views

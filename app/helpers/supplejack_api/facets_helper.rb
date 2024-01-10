@@ -18,7 +18,7 @@ module SupplejackApi
         facets = s.facets_hash.transform_keys { |k| mappings[k] || k }[facet_key.to_sym]
 
         # Gone past last page of facets
-        break if facets.length.zero?
+        break if facets.empty?
 
         facets_list << facets.keys
         facets_page += 1

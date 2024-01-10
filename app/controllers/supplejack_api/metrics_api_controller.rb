@@ -79,7 +79,7 @@ module SupplejackApi
 
     def sort_record_metrics(record_metrics)
       metrics = record_metrics.sort_by(&:last).reverse.take(10)
-      metrics.map! { |record_id, count| { record_id: record_id.to_i, count: count } }
+      metrics.map! { |record_id, count| { record_id: record_id.to_i, count: } }
     end
 
     def metric

@@ -10,7 +10,7 @@ module SupplejackApi
       developer = double(:role, name: :developer)
       admin = double(:admin, admin: true)
       allow(RecordSchema).to receive(:default_role) { developer }
-      allow(RecordSchema).to receive(:roles) { { admin: admin, developer: developer } }
+      allow(RecordSchema).to receive(:roles) { { admin:, developer: } }
     end
 
     describe '#role' do

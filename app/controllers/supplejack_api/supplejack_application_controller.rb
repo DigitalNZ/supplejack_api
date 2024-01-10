@@ -94,7 +94,7 @@ module SupplejackApi
       end
 
       # The double as_json is required to render the inner json object as json as well as the exterior object
-      render xml: serializable_resource.as_json.to_xml(root: root)
+      render xml: serializable_resource.as_json.to_xml(root:)
     end
   end
 end

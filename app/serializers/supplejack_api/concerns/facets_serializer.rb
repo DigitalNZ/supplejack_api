@@ -36,7 +36,7 @@ module SupplejackApi
               { name: row.value, count: row.count }
             end
 
-            facets << { name: facet.name.to_s.gsub('_str', ''), values: values }
+            facets << { name: facet.name.to_s.gsub('_str', ''), values: }
           end
         end
 
@@ -70,7 +70,7 @@ module SupplejackApi
           response.each_with_object({}) do |_facet, _facets|
             response.keys.map do |key|
               values = response[key].map { |row| { name: row['value'], count: row['count'] } }
-              facet_pivots << { name: key, values: values }
+              facet_pivots << { name: key, values: }
             end
           end
 

@@ -31,7 +31,8 @@ module QueryBuilder
         or_and_options.slice(*facet_list).each do |facet_name, value|
           facet(
             facet_name.to_sym,
-            exclude: QueryBuilder::ExcludeFiltersFromFacets.with_query_for_facet_exclusion(self, facet_name.to_sym, value),
+            exclude: QueryBuilder::ExcludeFiltersFromFacets.with_query_for_facet_exclusion(self, facet_name.to_sym,
+                                                                                           value),
             limit: facets_per_page,
             offset: facets_offset
           )

@@ -36,17 +36,17 @@ FactoryBot.define do
       type     { 'embed' }
       sub_type { 'record' }
       content do
-        { id: id,
+        { id:,
           record: {
-            title: title,
-            display_collection: display_collection,
-            category: category,
-            image_url: image_url,
-            tags: tags
+            title:,
+            display_collection:,
+            category:,
+            image_url:,
+            tags:
           } }
       end
 
-      meta { { alignment: alignment, caption: caption } }
+      meta { { alignment:, caption: } }
     end
   end
 end

@@ -4,7 +4,7 @@ $LOAD_PATH.push File.expand_path('lib', __dir__)
 
 # Describe your gem and declare its dependencies:
 Gem::Specification.new do |s|
-  s.required_ruby_version = '>= 3.0.2'
+  s.required_ruby_version = '>= 3.2.2'
 
   s.name        = 'supplejack_api'
   s.version     = '1'

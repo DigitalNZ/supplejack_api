@@ -49,7 +49,7 @@ module SupplejackApi
       return if record_id.nil? || display_collection.nil?
 
       collection.update_one(
-        { record_id: record_id, date: date.to_date, display_collection: display_collection },
+        { record_id:, date: date.to_date, display_collection: },
         { '$inc' => metrics },
         upsert: true
       )

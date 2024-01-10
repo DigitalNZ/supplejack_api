@@ -29,7 +29,7 @@ module SupplejackApi
         next if field.store == false
 
         type = field.multi_value.presence ? Array : MONGOID_TYPE_NAMES[field.type]
-        self.field name, type: type
+        self.field name, type:
       end
 
       return if schema_class.mongo_indexes.blank?

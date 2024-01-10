@@ -90,7 +90,7 @@ module SupplejackApi
                  each_serializer: self.class.record_serializer_class,
                  include: self.class.record_serializer_includes,
                  root: 'records',
-                 meta: { page: page, total_pages: @records.total_pages }
+                 meta: { page:, total_pages: @records.total_pages }
         else
           head :no_content
         end

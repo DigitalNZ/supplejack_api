@@ -89,7 +89,7 @@ module SupplejackApi
       end
 
       def find_fragment(source_id)
-        fragments.where(source_id: source_id).first
+        fragments.where(source_id:).first
       end
     end
   end

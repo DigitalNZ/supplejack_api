@@ -23,7 +23,7 @@ module SupplejackApi
     def self.spawn(records, metric, date = Time.now.utc.beginning_of_day)
       return unless SupplejackApi.config.log_metrics == true
 
-      create(records: records, metric: metric, date: date)
+      create(records:, metric:, date:)
     end
 
     # rubocop:disable Metrics/MethodLength

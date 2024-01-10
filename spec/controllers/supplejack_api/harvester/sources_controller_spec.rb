@@ -76,7 +76,7 @@ module SupplejackApi
         context 'limit and order sources' do
           before do
             status_updated_at = Faker::Date.between(from: 2.days.ago.utc.to_date, to: Time.now.utc.to_date)
-            create_list(:source, 11, status: 'active', status_updated_at: status_updated_at)
+            create_list(:source, 11, status: 'active', status_updated_at:)
             create_list(:source, 5, status: 'suppressed')
           end
 
@@ -150,7 +150,7 @@ module SupplejackApi
         it 'enqueues the job with the source_id and date if given' do
           date = Time.now.utc
           expect(IndexSourceWorker).to receive(:perform_async).with(source.source_id, date.to_s)
-          get :reindex, params: { id: source.id, date: date, api_key: harvester.api_key }
+          get :reindex, params: { id: source.id, date:, api_key: harvester.api_key }
         end
       end
 

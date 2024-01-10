@@ -62,7 +62,7 @@ module SupplejackApi
     def self.display_collections(date)
       Rails.logger.info("TOP COLLECTION METRIC: Finding all display collections on #{date}")
       SupplejackApi::RecordMetric.where(
-        date: date,
+        date:,
         :processed_by_top_collection_metrics.in => [nil, '', false]
       ).map(&:display_collection).uniq
     end
@@ -76,7 +76,7 @@ module SupplejackApi
 
     def self.update_top_collection_metric(top_collection_metric, results)
       if top_collection_metric.results.blank?
-        top_collection_metric.update(results: results)
+        top_collection_metric.update(results:)
       else
         merged_results = top_collection_metric.results.merge(results) { |_key, a, b| a + b }
         merged_results = merged_results.sort_by { |_k, v| -v }.first(200).to_h
@@ -89,9 +89,9 @@ module SupplejackApi
 
     def self.find_or_create_top_collection_metric(date, metric, display_collection)
       find_or_create_by(
-        date: date,
-        metric: metric,
-        display_collection: display_collection
+        date:,
+        metric:,
+        display_collection:
       )
     end
 
@@ -99,15 +99,15 @@ module SupplejackApi
       Rails.logger.info("TOP COLLECTION METRIC: Gathering top 200 records to be
                         processed #{date}, #{metric}, #{display_collection}")
       SupplejackApi::RecordMetric.where(
-        date: date,
+        date:,
         metric.ne => 0,
-        display_collection: display_collection,
+        display_collection:,
         :processed_by_top_collection_metrics.in => [nil, '', false]
       ).order_by(metric => 'desc').limit(200)
     end
 
     def self.stamp_record_metrics(date)
-      SupplejackApi::RecordMetric.where(date: date).update_all(processed_by_top_collection_metrics: true)
+      SupplejackApi::RecordMetric.where(date:).update_all(processed_by_top_collection_metrics: true)
     end
   end
 end

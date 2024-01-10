@@ -16,7 +16,7 @@ module SupplejackApi
 
       it 'calls BatchRemoveRecordsFromIndex service for all deleted records for a given source_id' do
         fragments = build_list(:record_fragment, 1, priority: 0, job_id: '999', source_id: 'source')
-        create_list(:record, 10, status: 'active', fragments: fragments)
+        create_list(:record, 10, status: 'active', fragments:)
 
         mongo_criteria = SupplejackApi::Record.deleted.where('fragments.source_id': 'source').limit(500).skip(0)
 
@@ -35,28 +35,28 @@ module SupplejackApi
         fragments = build_list(:record_fragment, 1,
                                priority: 0,
                                job_id: old_job_id,
-                               source_id: source_id)
-        create(:record, status: 'active', fragments: fragments)
+                               source_id:)
+        create(:record, status: 'active', fragments:)
       end
 
       let!(:suppressed_record) do
-        fragments = build_list(:record_fragment, 1, priority: 0, job_id: old_job_id, source_id: source_id)
-        create(:record, status: 'suppressed', fragments: fragments)
+        fragments = build_list(:record_fragment, 1, priority: 0, job_id: old_job_id, source_id:)
+        create(:record, status: 'suppressed', fragments:)
       end
 
       let!(:deleted_record) do
-        fragments = build_list(:record_fragment, 1, priority: 0, job_id: old_job_id, source_id: source_id)
-        create(:record, status: 'deleted', fragments: fragments)
+        fragments = build_list(:record_fragment, 1, priority: 0, job_id: old_job_id, source_id:)
+        create(:record, status: 'deleted', fragments:)
       end
 
       let!(:active_record_other_job) do
         fragments = build_list(:record_fragment, 1,
                                priority: 0,
                                job_id: current_job_id,
-                               source_id: source_id,
+                               source_id:,
                                title: 'other')
 
-        create(:record, status: 'active', fragments: fragments)
+        create(:record, status: 'active', fragments:)
       end
 
       it 'should delete all active/suppressed records that were not harvest by a specific job' do

@@ -19,10 +19,10 @@ module SupplejackApi
       factory :record_with_fragment do
         fragments do
           [FactoryBot.build(:record_fragment,
-                            display_collection: display_collection,
-                            copyright: copyright,
-                            category: category,
-                            tag: tag)]
+                            display_collection:,
+                            copyright:,
+                            category:,
+                            tag:)]
         end
 
         # rubocop:disable Style/SymbolProc
@@ -43,10 +43,10 @@ module SupplejackApi
       factory :record_with_no_large_thumb do
         fragments do
           [FactoryBot.build(:record_fragment,
-                            display_collection: display_collection,
-                            copyright: copyright,
-                            category: category,
-                            tag: tag,
+                            display_collection:,
+                            copyright:,
+                            category:,
+                            tag:,
                             large_thumbnail_url: nil)]
         end
       end

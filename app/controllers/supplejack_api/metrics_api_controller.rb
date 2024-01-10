@@ -37,18 +37,14 @@ module SupplejackApi
       end_date = MetricsHelper.end_date_with(params[:end_date])
 
       if type == 'collection'
-        metrics = SupplejackApi::TopCollectionMetric.created_between(start_date, end_date).where(metric: metric)
+        metrics = SupplejackApi::TopCollectionMetric.created_between(start_date, end_date).where(metric:)
         sorted_metrics = combined_collection_metrics(metrics).sort_by { |metric| metric[:count] }.reverse.take(10)
       else
-        metrics = SupplejackApi::TopMetric.created_between(start_date, end_date).where(metric: metric)
+        metrics = SupplejackApi::TopMetric.created_between(start_date, end_date).where(metric:)
         sorted_metrics = sort_record_metrics(combined_record_metrics(metrics))
       end
 
-      render json: {
-        type: type,
-        metric: metric,
-        results: sorted_metrics
-      }
+      render json: { type:, metric:, results: sorted_metrics }
     end
 
     private

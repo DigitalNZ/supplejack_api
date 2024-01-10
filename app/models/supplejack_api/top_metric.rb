@@ -50,12 +50,12 @@ module SupplejackApi
           next if results.empty?
 
           metric = find_or_create_by(
-            date: date,
-            metric: metric
+            date:,
+            metric:
           )
 
           if metric.results.blank?
-            metric.update(results: results)
+            metric.update(results:)
           else
             merged_results = metric.results.merge(results) { |_key, a, b| a + b }
             merged_results = merged_results.sort_by { |_k, v| -v }.first(200).to_h
@@ -64,14 +64,14 @@ module SupplejackApi
           end
         end
         Rails.logger.info("TOP METRIC: Stampping all records on: #{date}")
-        SupplejackApi::RecordMetric.where(date: date).update_all(processed_by_top_metrics: true)
+        SupplejackApi::RecordMetric.where(date:).update_all(processed_by_top_metrics: true)
       end
     end
 
     def self.record_metrics_to_be_processed(date, metric)
       Rails.logger.info("TOP METRIC: Gathering records to be processed: #{date} #{metric}")
       SupplejackApi::RecordMetric.where(
-        date: date,
+        date:,
         metric.ne => 0,
         :processed_by_top_metrics.in => [nil, '', false]
       ).order_by(metric => 'desc').limit(200)

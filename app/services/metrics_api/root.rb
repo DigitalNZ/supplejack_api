@@ -62,7 +62,7 @@ module MetricsApi
       model = METRICS_TO_MODEL[metric]
       models_in_range = model.created_between(start_date, end_date).to_a
 
-      { metric: metric, models: models_in_range.flatten }
+      { metric:, models: models_in_range.flatten }
     end
 
     def filter_model_bundle(model_bundle)
@@ -73,14 +73,14 @@ module MetricsApi
         facets.include? model.send(key)
       end
 
-      { metric: metric, models: models_to_keep }
+      { metric:, models: models_to_keep }
     end
 
     def group_models_in_bundle_by_date(model_bundle)
       metric = model_bundle[:metric]
       models = model_bundle[:models]
 
-      { metric: metric, models: models.group_by { |m| m.date.to_date } }
+      { metric:, models: models.group_by { |m| m.date.to_date } }
     end
 
     # Converts csv formatted parameter to an array

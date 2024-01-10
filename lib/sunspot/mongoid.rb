@@ -34,7 +34,7 @@ module Sunspot
 
     class DataAccessor < Sunspot::Adapters::DataAccessor
       def load(id)
-        @clazz.where(id: id).first
+        @clazz.where(id:).first
       end
 
       def load_all(ids)

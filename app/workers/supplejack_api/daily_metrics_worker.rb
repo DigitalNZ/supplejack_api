@@ -84,7 +84,7 @@ module SupplejackApi
         name: 'all',
         date: Time.now.utc.to_date,
         total_active_records: total_records,
-        total_new_records: total_new_records,
+        total_new_records:,
         copyright_counts: total_copyright_counts,
         category_counts: total_category_counts
       )

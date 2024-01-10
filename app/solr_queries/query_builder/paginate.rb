@@ -15,7 +15,7 @@ module QueryBuilder
       super
 
       search.build do
-        paginate page: page, per_page: per_page
+        paginate page:, per_page:
       end
     end
   end

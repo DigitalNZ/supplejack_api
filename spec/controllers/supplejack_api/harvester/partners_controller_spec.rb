@@ -61,7 +61,7 @@ module SupplejackApi
                        create(:partner, name: 'Down to the wire')]
           get :index, params: { api_key: harvester.api_key }
 
-          expect(response.body).to eq({ partners: partners }.to_json)
+          expect(response.body).to eq({ partners: }.to_json)
         end
       end
 

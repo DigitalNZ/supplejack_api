@@ -15,7 +15,7 @@ module MetricsApi
 
       def to_json(*_args)
         (start_date..end_date).map do |date|
-          base = { date: date }
+          base = { date: }
 
           todays_metrics = metrics.map do |metric|
             relevant_models = metric[:models].select { |key| key == date }.values.first

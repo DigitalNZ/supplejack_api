@@ -11,7 +11,7 @@ module SupplejackApi
       facets_page = 1
 
       loop do
-        s = RecordSearch.new(facets: facet_key, facets_per_page: 150, facets_page: facets_page)
+        s = RecordSearch.new(facets: facet_key, facets_per_page: 150, facets_page:)
         # HACK: We override SearchSerializable#facets_list in the api_app to
         # replace :display_collection with :primary_collection, this transparently fixes it
         mappings = { primary_collection: :display_collection }

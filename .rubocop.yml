@@ -40,6 +40,9 @@ Layout/LineLength:
 Metrics/MethodLength:
   Max: 25
 
+Rails/FindEach:
+  Enabled: false
+
 Rails/SkipsModelValidations:
   Enabled: false
 

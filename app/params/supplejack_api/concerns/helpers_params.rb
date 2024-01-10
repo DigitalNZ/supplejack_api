@@ -16,8 +16,6 @@ module SupplejackApi
         end
       end
 
-      private
-
       included do
         # Returns:
         # - the default value if no value is provided

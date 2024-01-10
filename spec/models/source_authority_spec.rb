@@ -18,7 +18,7 @@ module SupplejackApi
       end
 
       context '.schema fields' do
-        ConceptSchema.fields.each do |name, _field|
+        ConceptSchema.fields.each_key do |name|
           it "sets the #{name} field from the schema" do
             expect(source_authority.respond_to?(name)).to be_truthy
           end

@@ -157,17 +157,19 @@ module SupplejackApi
               :top_collection_metric,
               date: Time.now.utc.to_date - n.days,
               metric: 'page_views',
-              results: { '111145' => 390, '111148' => 170, '111208' => 160, '111010' => 120, '110800' => 80, '111205' => 10 },
+              results: { '111145' => 390, '111148' => 170, '111208' => 160, '111010' => 120, '110800' => 80,
+                         '111205' => 10 },
               display_collection: 'Air Force Museum of New Zealand'
             )
           end
-          
+
           10.times do |n|
             create(
               :top_collection_metric,
               date: Time.now.utc.to_date - n.days,
               metric: 'page_views',
-              results: { '211145' => 395, '211148' => 178, '211208' => 164, '211010' => 123, '210800' => 81, '211205' => 19 },
+              results: { '211145' => 395, '211148' => 178, '211208' => 164, '211010' => 123, '210800' => 81,
+                         '211205' => 19 },
               display_collection: 'Archives Central'
             )
           end
@@ -177,7 +179,8 @@ module SupplejackApi
               :top_collection_metric,
               date: Time.now.utc.to_date - n.days,
               metric: 'page_views',
-              results: { '311145' => 391, '311148' => 173, '311208' => 166, '311010' => 123, '310800' => 84, '311205' => 12 },
+              results: { '311145' => 391, '311148' => 173, '311208' => 166, '311010' => 123, '310800' => 84,
+                         '311205' => 12 },
               display_collection: 'Audio Foundation'
             )
           end
@@ -187,7 +190,8 @@ module SupplejackApi
               :top_collection_metric,
               date: Time.now.utc.to_date - n.days,
               metric: 'page_views',
-              results: { '411145' => 395, '411148' => 175, '411208' => 163, '411010' => 124, '410800' => 82, '411205' => 11 },
+              results: { '411145' => 395, '411148' => 175, '411208' => 163, '411010' => 124, '410800' => 82,
+                         '411205' => 11 },
               display_collection: 'Charlotte Museum'
             )
           end
@@ -197,7 +201,8 @@ module SupplejackApi
               :top_collection_metric,
               date: Time.now.utc.to_date - n.days,
               metric: 'page_views',
-              results: { '511145' => 392, '511148' => 172, '511208' => 163, '511010' => 126, '510800' => 84, '511205' => 12 },
+              results: { '511145' => 392, '511148' => 172, '511208' => 163, '511010' => 126, '510800' => 84,
+                         '511205' => 12 },
               display_collection: 'CORE Education'
             )
           end
@@ -207,7 +212,8 @@ module SupplejackApi
               :top_collection_metric,
               date: Time.now.utc.to_date - n.days,
               metric: 'page_views',
-              results: { '611145' => 450, '611148' => 173, '611208' => 163, '611010' => 143, '610800' => 82, '611205' => 15 },
+              results: { '611145' => 450, '611148' => 173, '611208' => 163, '611010' => 143, '610800' => 82,
+                         '611205' => 15 },
               display_collection: 'DigitalNZ'
             )
           end
@@ -217,7 +223,8 @@ module SupplejackApi
               :top_collection_metric,
               date: Time.now.utc.to_date - n.days,
               metric: 'page_views',
-              results: { '711145' => 393, '711148' => 174, '711208' => 162, '711010' => 126, '710800' => 82, '711205' => 11 },
+              results: { '711145' => 393, '711148' => 174, '711208' => 162, '711010' => 126, '710800' => 82,
+                         '711205' => 11 },
               display_collection: 'Dunedin City Council Archives'
             )
           end

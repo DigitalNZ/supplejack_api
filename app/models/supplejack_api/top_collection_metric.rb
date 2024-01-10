@@ -26,7 +26,7 @@ module SupplejackApi
     validates :metric, presence: true
     validates :metric, uniqueness: { scope: %i[date display_collection] }
 
-    def self.spawn(date_range = (Time.zone.at(0).utc..Time.now))
+    def self.spawn(date_range = (Time.zone.at(0).utc..Time.now.yesterday.utc.beginning_of_day))
       return unless SupplejackApi.config.log_metrics == true
 
       metrics = []

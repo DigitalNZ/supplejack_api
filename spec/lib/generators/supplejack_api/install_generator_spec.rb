@@ -61,7 +61,7 @@ module SupplejackApi
           assert_file "#{destination_path}/config/initializers/sidekiq.rb"
         end
         it 'creates state_machine.rb' do
-          assert_file "#{destination_path}/config/initializers/state_machine.rb"
+          assert_file "#{destination_path}/config/initializers/state_machines.rb"
         end
         it 'creates sunspot.rb' do
           assert_file "#{destination_path}/config/initializers/sunspot.rb"

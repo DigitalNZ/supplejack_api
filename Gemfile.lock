@@ -23,7 +23,6 @@ PATH
       devise
       devise-token_authenticatable (>= 1.0.0)
       dimensions
-      figaro
       json-ld
       kaminari
       kaminari-mongoid
@@ -39,12 +38,12 @@ PATH
       rufus-scheduler
       sidekiq
       sprockets-rails
-      state_machine
+      state_machines
       sunspot_rails
       sunspot_solr
       thin
       unicode_utils
-      voight_kampff (~> 1.0)
+      voight_kampff (~> 2.0)
 
 GEM
   remote: https://rubygems.org/
@@ -184,8 +183,6 @@ GEM
       faraday-net_http (>= 2.0, < 3.1)
       ruby2_keywords (>= 0.0.4)
     faraday-net_http (3.0.2)
-    figaro (1.2.0)
-      thor (>= 0.14.0, < 2)
     fugit (1.8.0)
       et-orbi (~> 1, >= 1.2.7)
       raabro (~> 1.4)
@@ -253,7 +250,6 @@ GEM
       nokogiri (~> 1)
       rake
     mini_mime (1.1.5)
-    mini_portile2 (2.8.5)
     minitest (5.20.0)
     mongo (2.18.2)
       bson (>= 4.14.1, < 5.0.0)
@@ -275,8 +271,7 @@ GEM
       net-protocol
     netrc (0.11.0)
     nio4r (2.7.0)
-    nokogiri (1.15.5)
-      mini_portile2 (~> 2.8.2)
+    nokogiri (1.15.5-x86_64-linux)
       racc (~> 1.4)
     orm_adapter (0.5.0)
     parallel (1.22.1)
@@ -408,7 +403,7 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
-    state_machine (1.2.0)
+    state_machines (0.6.0)
     sunspot_matchers (2.2.5.0)
     sunspot_test (0.4.2)
       sunspot_rails (>= 2.1.1)
@@ -427,8 +422,8 @@ GEM
     unf_ext (0.0.8.2)
     unicode-display_width (2.3.0)
     unicode_utils (1.4.0)
-    voight_kampff (1.1.4)
-      rack (>= 1.4, < 3.0)
+    voight_kampff (2.0.0)
+      rack (>= 1.4)
     warden (1.2.9)
       rack (>= 2.0.9)
     web-console (4.2.0)
@@ -445,7 +440,7 @@ GEM
     zeitwerk (2.6.12)
 
 PLATFORMS
-  ruby
+  x86_64-linux
 
 DEPENDENCIES
   better_errors
@@ -474,4 +469,4 @@ DEPENDENCIES
   yard
 
 BUNDLED WITH
-   2.4.9
+   2.5.4

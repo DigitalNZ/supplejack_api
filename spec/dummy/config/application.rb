@@ -13,6 +13,12 @@ require 'rails/test_unit/railtie'
 Bundler.require
 require 'supplejack_api'
 
+begin
+  ENV.update YAML.load_file('spec/dummy/config/application.yml', aliases: true)[Rails.env]
+rescue StandardError
+  {}
+end
+
 module Dummy
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.

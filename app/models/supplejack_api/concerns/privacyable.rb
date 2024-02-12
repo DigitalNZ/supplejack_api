@@ -11,7 +11,6 @@ module SupplejackApi
         field :privacy, type: String,   default: 'public'
 
         validates :privacy, inclusion: { in: %w[public hidden private] }
-        before_validation :set_default_privacy
 
         # can't add this scope without breaking the model
         # it must be an existing method in Mongoid

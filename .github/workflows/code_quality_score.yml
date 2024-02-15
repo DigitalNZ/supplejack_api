@@ -1,0 +1,9 @@
+name: Code quality score
+
+on:
+  - pull_request
+
+jobs:
+  code_quality_score:
+    name: Code quality
+    uses: DigitalNZ/code_quality_score/.github/workflows/calculate-code-quality-score.yml@main

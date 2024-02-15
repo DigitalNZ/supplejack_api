@@ -1,0 +1,2 @@
+main_branch_name: main # defaults to main
+threshold_to_run_on_all_files: 8  # when you reach a certain number of files changed, it becomes faster to analyze all files rather than analyze them one by one.

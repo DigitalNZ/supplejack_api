@@ -1,4 +1,16 @@
 GIT
+  remote: https://github.com/boost/codeclimate_diff.git
+  revision: 3af7ab88e4ceb8c03a98a9910eb3ad4bbd1b84e9
+  tag: v0.1.10
+  specs:
+    codeclimate_diff (0.1.10)
+      colorize
+      json
+      optparse
+      pry-byebug
+      rest-client
+
+GIT
   remote: https://github.com/sunspot/sunspot.git
   revision: 1ca686173b9f2df1983c573d54e990d49776058d
   tag: v2.4.0
@@ -146,6 +158,7 @@ GEM
     case_transform (0.2)
       activesupport
     coderay (1.1.3)
+    colorize (1.1.0)
     concurrent-ruby (1.2.2)
     connection_pool (2.4.1)
     crass (1.0.6)
@@ -274,8 +287,11 @@ GEM
       net-protocol
     netrc (0.11.0)
     nio4r (2.7.0)
-    nokogiri (1.16.0-x86_64-linux)
+    nokogiri (1.16.2-arm64-darwin)
       racc (~> 1.4)
+    nokogiri (1.16.2-x86_64-linux)
+      racc (~> 1.4)
+    optparse (0.4.0)
     orm_adapter (0.5.0)
     parallel (1.24.0)
     parser (3.3.0.2)
@@ -444,11 +460,13 @@ GEM
     zeitwerk (2.6.12)
 
 PLATFORMS
+  arm64-darwin-22
   x86_64-linux
 
 DEPENDENCIES
   better_errors
   binding_of_caller
+  codeclimate_diff!
   database_cleaner-mongoid
   factory_bot_rails
   faker
@@ -473,4 +491,4 @@ DEPENDENCIES
   yard
 
 BUNDLED WITH
-   2.5.4
+   2.4.21

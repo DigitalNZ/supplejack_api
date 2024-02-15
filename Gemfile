@@ -8,6 +8,7 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'sunspot', github: 'sunspot/sunspot', tag: 'v2.4.0'
+gem 'codeclimate_diff', github: 'boost/codeclimate_diff', tag: 'v0.1.10'
 
 group :test do
   gem 'faker'

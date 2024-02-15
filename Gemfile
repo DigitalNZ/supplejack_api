@@ -7,8 +7,8 @@ source 'https://rubygems.org'
 # development dependencies will be added by default to the :development group.
 gemspec
 
-gem 'sunspot', github: 'sunspot/sunspot', tag: 'v2.4.0'
 gem 'codeclimate_diff', github: 'boost/codeclimate_diff', tag: 'v0.1.10'
+gem 'sunspot', github: 'sunspot/sunspot', tag: 'v2.4.0'
 
 group :test do
   gem 'faker'

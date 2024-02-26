@@ -1,0 +1,30 @@
+---
+version: "2"
+plugins:
+  rubocop:
+    enabled: true
+    channel: rubocop-1-36-0
+  reek:
+    enabled: true
+
+exclude_patterns:
+  - config/
+  - db/
+  - dist/
+  - features/
+  - public/
+  - "**/node_modules/"
+  - script/
+  - "**/spec/"
+  - "**/test/"
+  - "**/tests/"
+  - Tests/
+  - "**/vendor/"
+  - "**/*_test.go"
+  - "**/*.d.ts"
+  - "**/*.min.js"
+  - "**/*.min.css"
+  - "**/__tests__/"
+  - "**/__mocks__/"
+  - "/.gitlab/"
+  - coverage/ . # simple cov

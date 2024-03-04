@@ -65,7 +65,7 @@ RSpec.describe SupplejackApi::CollectionMetric do
     end
 
     it 'cannot have two of the same facets on one day' do
-      expect(collection_metric_three.errors.messages[:display_collection]).to include 'is already taken'
+      expect(collection_metric_three.errors.messages[:display_collection]).to include 'has already been taken'
     end
   end
 

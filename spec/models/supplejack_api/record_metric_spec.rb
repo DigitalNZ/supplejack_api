@@ -65,7 +65,7 @@ RSpec.describe SupplejackApi::RecordMetric do
 
     it 'does not create a record metric when one already exists for given id and date' do
       record_metric_two.valid?
-      expect(record_metric_two.errors[:record_id]).to include 'is already taken'
+      expect(record_metric_two.errors[:record_id]).to include 'has already been taken'
     end
 
     it 'allows record metrics with the same record id on different days' do

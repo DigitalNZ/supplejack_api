@@ -310,7 +310,7 @@ module SupplejackApi
       let(:user_two) { build(:user, authentication_token: 'token')  }
       it 'enforces uniqueness on the authentication_token' do
         user_two.valid?
-        expect(user_two.errors['authentication_token']).to include 'is already taken'
+        expect(user_two.errors['authentication_token']).to include 'has already been taken'
       end
     end
   end

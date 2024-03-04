@@ -34,7 +34,6 @@ module SupplejackApi
     # 1. The records has been updated and flagged for indexing
     # 2. The record is not part of an active harvest/enrichment job
     def indexable_records
-      source_ids = SupplejackApi::AbstractJob.active_job_source_ids
       log "Active source ids #{source_ids}"
 
       SupplejackApi::Record
@@ -46,7 +45,6 @@ module SupplejackApi
     end
 
     def unindexable_records
-      source_ids = SupplejackApi::AbstractJob.active_job_source_ids
       log "Active source ids #{source_ids}"
 
       SupplejackApi::Record
@@ -55,6 +53,12 @@ module SupplejackApi
           :status.ne => 'active',
           'fragments.source_id' => { '$nin' => source_ids }
         )
+    end
+
+    def source_ids
+      return SupplejackApi::AbstractJob.active_job_source_ids if ENV['WORKER_HOST'].present?
+
+      []
     end
 
     # rubocop:disable Rails/Output

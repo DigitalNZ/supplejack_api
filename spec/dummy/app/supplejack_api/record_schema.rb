@@ -25,6 +25,8 @@ class RecordSchema
   string   :creator,               multi_value: true, search_as: [:filter, :fulltext],       namespace: :dc
   string   :contributing_partner,  multi_value: true, search_as: [:fulltext],                namespace: :dc
   string   :subject,               multi_value: true, search_as: [:filter, :fulltext, :mlt], namespace: :dc
+  string   :empowering_provisions, multi_value: true, search_as: [:filter], merge_as_single_value: true
+  string   :multi_value_merge, multi_value: true, search_as: [:filter], merge_as_single_value: false
 
   latlon(:lat_lng) do
     search_as [:filter]

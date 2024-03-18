@@ -141,6 +141,41 @@ module SupplejackApi
               record.save
               expect(record.merged_fragment.email).to eq ['johndoe@example.com']
             end
+
+            context 'merge_as_single_value: true' do
+              before(:each) do
+                official_fragment = build(:record_fragment,
+                                 empowering_provisions: ['a', 'b', 'c'],
+                                 multi_value_merge: ['1', '2', '3'],
+                                 source_id: 'official',
+                                 priority: -999)
+                
+                source_fragment = build(:record_fragment,
+                                 empowering_provisions: ['d', 'e', 'f'],
+                                 multi_value_merge: ['4', '5', '6'],
+                                 source_id: 'source',
+                                 priority: -998)
+
+                record.fragments << official_fragment
+                record.fragments << source_fragment
+                record.reload.save!
+              end
+              
+              it 'should only display the highest priority multi value field when merge_as_single_value: true' do
+                expect(record.merged_fragment.empowering_provisions).to eq ['a', 'b', 'c']
+              end
+
+              it 'falls back to the second highest priority if the highest priority does not have a value' do
+                record.fragments.find_by(source_id: 'official').empowering_provisions = nil
+                record.save
+
+                expect(record.merged_fragment.empowering_provisions).to eq ['d', 'e', 'f']
+              end
+
+              it 'does not merge array fields as single values when they are not specified to do so in the RecordSchema' do
+                expect(record.merged_fragment.multi_value_merge).to eq ['1', '2', '3', '4', '5', '6']
+              end
+            end
           end
         end
       end

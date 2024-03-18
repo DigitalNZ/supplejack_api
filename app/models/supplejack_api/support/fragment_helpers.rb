@@ -44,7 +44,7 @@ module SupplejackApi
 
         # rubocop:disable Layout/LineLength
         new_fragment_attributes = fragment_class.mutable_fields.each_with_object({}) do |(field_name, field_type), attributes|
-          if field_type == Array
+          if field_type == Array && RecordSchema.fields[field_name.to_sym]&.merge_as_single_value.blank?
             attributes[field_name] = []
 
             sorted_fragments.each do |fragment|

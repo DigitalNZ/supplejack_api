@@ -119,6 +119,8 @@ RSpec.describe 'Records Endpoints', type: :request do
                         'rights' => record.rights,
                         'status' => record.status,
                         'subject' => record.subject,
+                        'empowering_provisions' => [],
+                        'multi_value_merge' => [],
                         'sort_date' => nil,
                         'sort_date_str' => nil,
                         'tag' => record.tag,

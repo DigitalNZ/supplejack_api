@@ -16,6 +16,7 @@ module SupplejackApi::Concerns::Record
     store_in collection: 'records'
     index({ concept_ids: 1 }, background: true)
     index({ record_id: 1 }, unique: true, background: true)
+    index({ status: 1, index_updated: 1, 'fragments.source)_id' => 1 }, background: true)
 
     auto_increment :record_id, client: 'strong'
 

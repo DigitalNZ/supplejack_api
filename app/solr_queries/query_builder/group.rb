@@ -4,7 +4,7 @@ module QueryBuilder
   class Group < Base
     attr_reader :group_by, :group_order_by
 
-    VALID_SORTING_OPTIONS = ['asc', 'desc'].freeze
+    VALID_SORTING_OPTIONS = %w[asc desc].freeze
 
     def initialize(search, group_by, group_order_by, group_sort = 'desc')
       super(search)
@@ -17,8 +17,8 @@ module QueryBuilder
     def call
       super
 
-    return search if group_by.blank?
-      
+      return search if group_by.blank?
+
       search.build do
         group(group_by) do
           order_by(group_order_by, group_sort)

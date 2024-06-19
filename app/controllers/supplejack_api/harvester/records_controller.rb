@@ -21,8 +21,7 @@ module SupplejackApi
           r = UpdateRecordFromHarvest.new(record['fields'].to_unsafe_h, false, nil, record['required_fragments']).call
           array.push({ status: 'success', record_id: r.record_id })
         rescue StandardError => e
-          array.push({ status: 'failed', exception_class: e.class.to_s,
-                       message: e.message, backtrace: e.backtrace,
+          array.push({ status: 'failed', exception_class: e.class.to_s, message: e.message, backtrace: e.backtrace,
                        raw_data: r&.attributes, record_id: r&.record_id })
           next
         end

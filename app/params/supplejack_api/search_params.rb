@@ -14,7 +14,10 @@ module SupplejackApi
       :suggest,
       :text,
       :solr_query,
-      :debug
+      :debug,
+      :group_by,
+      :group_order_by,
+      :group_sort
     )
 
     class_attribute :max_values
@@ -38,6 +41,7 @@ module SupplejackApi
       init_geo_bbox(**@params)
       init_without(**@params)
       init_text(**@params)
+      init_group(**@params)
 
       @suggest = @params[:suggest] == 'true'
       @and_condition = @params[:and]

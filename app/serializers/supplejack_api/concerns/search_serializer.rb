@@ -15,7 +15,11 @@ module SupplejackApi
         end
 
         attribute :result_count do
-          object.total
+          if object.options.group_by.present?
+            object.group(object.options.group_by).total
+          else
+            object.total
+          end
         end
 
         attribute :request_url do
@@ -33,7 +37,14 @@ module SupplejackApi
             include: instance_options[:record_includes],
             root: 'results'
           }
-          ActiveModelSerializers::SerializableResource.new(object.results, options)
+
+          if object.options.group_by.present?
+            ActiveModelSerializers::SerializableResource.new(
+              object.group(object.options.group_by).groups.flat_map(&:results), options
+            )
+          else
+            ActiveModelSerializers::SerializableResource.new(object.results, options)
+          end
         end
       end
     end

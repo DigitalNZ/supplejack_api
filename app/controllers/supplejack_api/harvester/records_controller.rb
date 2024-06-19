@@ -24,6 +24,7 @@ module SupplejackApi
           array.push({ status: 'failed', exception_class: e.class.to_s,
                        message: e.message, backtrace: e.backtrace,
                        raw_data: r&.attributes, record_id: r&.record_id })
+          next
         end
 
         render json: records

@@ -95,6 +95,7 @@ module SupplejackApi
         search = QueryBuilder::Without.new(search, source_id: suppressed_source_ids).call
         search = QueryBuilder::ExcludeFiltersFromFacets.new(search, options).call
         search = QueryBuilder::Paginate.new(search, options.page, options.per_page).call
+        search = QueryBuilder::Group.new(search, options.group_by, options.group_order_by, options.group_sort).call
         search = QueryBuilder::AndOrFilters.new(search, options).call
         QueryBuilder::Keywords.new(search, options.text, options.query_fields).call
       end

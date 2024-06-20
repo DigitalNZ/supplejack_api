@@ -23,6 +23,11 @@ module QueryBuilder
         group(group_by) do
           order_by(group_order_by, group_sort)
         end
+        
+        # this flag means that the facet counts reflect the groupings, rather than the number of records in a group
+        adjust_solr_params do |params|
+          params['group.facet'] = true
+        end
       end
     end
 

@@ -17,7 +17,7 @@ module QueryBuilder
     def call
       super
 
-      return search if group_by.blank?
+      return search if group_by.blank? && group_order_by.blank?
 
       search.build do
         group(group_by) do

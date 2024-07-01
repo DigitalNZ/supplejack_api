@@ -92,6 +92,16 @@ module SupplejackApi
       end
     end
 
+    describe 'group_params' do
+      it 'groups records by the provided parameters' do
+        search = RecordSearch.new(group_by: 'group_index', group_order_by: 'version_index', group_sort: 'asc')
+
+        expect(search.options.group_by).to eq 'group_index'
+        expect(search.options.group_order_by).to eq 'version_index'
+        expect(search.options.group_sort).to eq 'asc'
+      end
+    end
+
     describe '#query_fields' do
       it 'returns nil when no query fields were specified' do
         expect(RecordSearch.new.options.query_fields).to eq []

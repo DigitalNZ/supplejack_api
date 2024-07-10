@@ -38,7 +38,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'sidekiq'
   s.add_dependency 'sprockets-rails'
   s.add_dependency 'state_machines'
-  s.add_dependency 'thin'
   s.add_dependency 'unicode_utils'
   s.add_dependency 'voight_kampff', '~> 2.0'
 

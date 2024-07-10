@@ -8,6 +8,7 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'codeclimate_diff', github: 'boost/codeclimate_diff', tag: 'v0.1.10'
+gem 'rsolr', '< 2.6.0' # sunspot 2.4.0 has a bug on rsolr 2.6.0
 gem 'sunspot', github: 'sunspot/sunspot', tag: 'v2.4.0'
 
 group :test do

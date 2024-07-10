@@ -12,11 +12,11 @@ RSpec.describe SupplejackApi::RequestMetric do
 
     it 'has records' do
       expect(request_metric.records).to eq [
-        { record_id: 1001, display_collection: 'TAPHUI' },
-        { record_id: 289, display_collection: 'Papers Past' },
-        { record_id: 289, display_collection: 'Papers Past' },
-        { record_id: 30, display_collection: 'TAPHUI' },
-        { record_id: 411, display_collection: 'National Library of New Zealand' }
+        { 'record_id' => 1001, 'display_collection' => 'TAPHUI' },
+        { 'record_id' => 289, 'display_collection' => 'Papers Past' },
+        { 'record_id' => 289, 'display_collection' => 'Papers Past' },
+        { 'record_id' => 30, 'display_collection' => 'TAPHUI' },
+        { 'record_id' => 411, 'display_collection' => 'National Library of New Zealand' }
       ]
     end
 

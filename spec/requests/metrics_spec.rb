@@ -221,11 +221,11 @@ RSpec.describe 'Metrics Endpoints', type: :request do
       it 'returns metrics for top_records' do
         response_attributes = JSON.parse(response.body)
 
-        expect(response_attributes.first.deep_symbolize_keys).to eq(
+        expect(response_attributes.first).to eq(
           {
             'date' => Time.zone.yesterday.to_date.strftime,
-            'top_records' => { top_record.m.to_sym => top_record.r }
-          }.symbolize_keys
+            'top_records' => { top_record.m => top_record.r }
+          }
         )
       end
     end

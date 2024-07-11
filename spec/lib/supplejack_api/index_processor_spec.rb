@@ -30,5 +30,19 @@ RSpec.describe SupplejackApi::IndexProcessor do
 
       expect(SupplejackApi::Record.ready_for_indexing.count).to eq 0
     end
+
+    it 'does not index records related to harvesting source_id' do
+      create(:record, fragments: [build(:record_fragment, source_id: 'hello')])
+      create(:source, source_id: 'hello', harvesting: true)
+
+      expect(Sunspot).to receive(:index).with(active_records)
+      expect(SupplejackApi::Record.ready_for_indexing.count).to eq 6
+
+      sleep 5 # required as the index processor picks up records created 5 seconds ago
+
+      described_class.new.call
+
+      expect(SupplejackApi::Record.ready_for_indexing.count).to eq 1
+    end
   end
 end

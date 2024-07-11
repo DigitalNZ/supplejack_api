@@ -3,17 +3,6 @@
 module SupplejackApi
   module Harvester
     class SourcesController < BaseController
-      def create
-        if source_params[:_id].present?
-          @source = Source.find_or_initialize_by(_id: source_params[:_id])
-          @source.update(source_params)
-        else
-          @source = Source.create(source_params)
-        end
-
-        render json: @source
-      end
-
       def index
         @sources = params[:source].blank? ? Source.all : Source.where(source_params)
         @sources = @sources.order_by(params[:order_by] => 'desc') if params[:order_by].present?
@@ -24,6 +13,17 @@ module SupplejackApi
 
       def show
         @source = Source.find(params[:id])
+        render json: @source
+      end
+
+      def create
+        if source_params[:_id].present?
+          @source = Source.find_or_initialize_by(_id: source_params[:_id])
+          @source.update(source_params)
+        else
+          @source = Source.create(source_params)
+        end
+
         render json: @source
       end
 
@@ -52,7 +52,9 @@ module SupplejackApi
 
       def source_params
         @source_params ||= begin
-          source_params = params.require(:source).permit(:name, :_id, :id, :source_id, :status, :status_updated_by).to_h
+          source_params = params.require(:source).permit(
+            :name, :_id, :id, :source_id, :status, :harvesting, :status_updated_by
+          ).to_h
           partner_params = params.permit(:partner_id).to_h
           source_params.merge(partner_params)
         end

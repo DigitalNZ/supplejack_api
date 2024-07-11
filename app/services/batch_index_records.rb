@@ -27,13 +27,13 @@ class BatchIndexRecords
   # Call Sunspot index in the array provided, if failure,
   # retry each record individually to be indexed and log errors
   def retry_index_records(records)
-    p 'BatchIndexRecords - INDEXING batch has raised an exception - retrying individual records'
+    puts 'BatchIndexRecords - INDEXING batch has raised an exception - retrying individual records'
 
     records.each { |record| index_individual_record(record) }
   end
 
   def index_individual_record(record)
-    p "BatchIndexRecords - INDEXING: #{record.record_id}"
+    puts "BatchIndexRecords - INDEXING: #{record.record_id}"
 
     Sunspot.index record
   rescue StandardError => e

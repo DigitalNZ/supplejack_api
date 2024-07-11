@@ -10,6 +10,7 @@ module SupplejackApi
     store_in collection: 'sources', client: 'strong'
 
     field :source_id,            type: String
+    field :harvesting,           type: Boolean, default: false
     field :status,               type: String, default: 'active'
     field :status_updated_by,    type: String
     field :status_updated_at,    type: DateTime

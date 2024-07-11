@@ -65,13 +65,11 @@ module SupplejackApi
       (api_source_ids.map(&:source_id) + worker_source_ids).uniq
     end
 
-    # rubocop:disable Rails/Output
     def log(str, prefix = '')
       return if Rails.env.test?
 
       prefix = "[#{Time.current}] [#{Process.pid}/#{Process.ppid}] " if prefix.present?
-      p "#{prefix}#{str}"
+      puts "#{prefix}#{str}"
     end
-    # rubocop:enable Rails/Output
   end
 end

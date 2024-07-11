@@ -54,6 +54,11 @@ Metrics/ModuleLength:
   Exclude:
     - 'spec/**/*'
 
+Rails/Output:
+  Exclude:
+    # that's only used in a rake task
+    - lib/supplejack_api/index_processor.rb
+
 # Currently broken due to a bug when autocorrecting
 # https://github.com/bbatsov/rubocop/issues/3510
 Style/SafeNavigation:

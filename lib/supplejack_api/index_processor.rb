@@ -56,9 +56,13 @@ module SupplejackApi
     end
 
     def source_ids
-      return SupplejackApi::AbstractJob.active_job_source_ids if ENV['WORKER_HOST'].present?
+      # coming from the worker
+      worker_source_ids = []
+      worker_source_ids = AbstractJob.active_job_source_ids if ENV['WORKER_HOST'].present?
+      # coming from the harvester
+      api_source_ids = Source.where(harvesting: true)
 
-      []
+      (api_source_ids.map(&:source_id) + worker_source_ids).uniq
     end
 
     # rubocop:disable Rails/Output

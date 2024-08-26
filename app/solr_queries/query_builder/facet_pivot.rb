@@ -14,9 +14,11 @@ module QueryBuilder
       super
       return search if facet_pivot_list.blank?
 
-      adjust_solr_params do |params|
-        params['facet.pivot'] = facet_pivot_list
-        params['facet'] = 'on'
+      search.build do
+        adjust_solr_params do |params|
+          params['facet.pivot'] = facet_pivot_list
+          params['facet'] = 'on'
+        end
       end
     end
   end

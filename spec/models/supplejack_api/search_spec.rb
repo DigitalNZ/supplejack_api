@@ -9,7 +9,7 @@ module SupplejackApi
       Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session)
       @session = Sunspot.session
 
-      allow(Search).to receive(:role_collection_allowlist) { [] }
+      allow(Search).to receive(:role_collection_inclusions) { [] }
     end
 
     describe '#initialize' do

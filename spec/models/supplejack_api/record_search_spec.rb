@@ -10,26 +10,26 @@ module SupplejackApi
       @session = Sunspot.session
     end
 
-    describe '.role_collection_restrictions' do
+    describe '.role_collection_exclusions' do
       let(:developer)             { double(:scope, role: 'developer') }
       let(:admin)                 { double(:scope, role: 'admin') }
-      let(:developer_restriction) { double(:developer_restriction, record_restrictions: { is_restricted: true }, record_inclusions: { is_allowed: true }) }
-      let(:no_restriction)        { double(:no_restriction, record_restrictions: nil) }
+      let(:developer_restriction) { double(:developer_restriction, record_exclusions: { is_restricted: true }, record_inclusions: { is_allowed: true }) }
+      let(:no_restriction)        { double(:no_restriction, record_exclusions: nil) }
 
       before(:each) do
         allow(RecordSchema).to receive(:roles) { { admin: no_restriction, developer: developer_restriction } }
       end
 
       it 'should handle nil scope' do
-        expect(RecordSearch.role_collection_restrictions(nil)).to eq []
+        expect(RecordSearch.role_collection_exclusions(nil)).to eq []
       end
 
       it 'should return nil when no role restrictions are defined in the Schema' do
-        expect(RecordSearch.role_collection_restrictions(admin)).to eq []
+        expect(RecordSearch.role_collection_exclusions(admin)).to eq []
       end
 
       it 'should return nil when no role restrictions are defined in the Schema' do
-        expect(RecordSearch.role_collection_restrictions(developer)).to eq({ is_restricted: true })
+        expect(RecordSearch.role_collection_exclusions(developer)).to eq({ is_restricted: true })
       end
     end
 
@@ -46,7 +46,7 @@ module SupplejackApi
       let(:addresses) { ['Te Aro', 'Brooklyn'] }
 
       before do
-        allow(RecordSearch).to receive(:role_collection_restrictions) { [] }
+        allow(RecordSearch).to receive(:role_collection_exclusions) { [] }
       end
 
       context 'solr errors' do
@@ -251,7 +251,7 @@ module SupplejackApi
       end
 
       it 'removes records from the search based on role restrictions' do
-        allow(RecordSearch).to receive(:role_collection_restrictions) { { nz_citizen: true } }
+        allow(RecordSearch).to receive(:role_collection_exclusions) { { nz_citizen: true } }
 
         @search.execute_solr_search
         expect(@session).to have_search_params(:without, :nz_citizen, true)
@@ -259,7 +259,7 @@ module SupplejackApi
 
       it 'removes records from the search based on multiple restrictions per role' do
         allow(RecordSearch)
-          .to receive(:role_collection_restrictions) { { email: ['jd@example.com', 'johnd@test.com'] } }
+          .to receive(:role_collection_exclusions) { { email: ['jd@example.com', 'johnd@test.com'] } }
 
         @search.execute_solr_search
 

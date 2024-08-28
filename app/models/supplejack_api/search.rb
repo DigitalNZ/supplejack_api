@@ -66,12 +66,11 @@ module SupplejackApi
 
     # The records that match the criteria within each role will be removed
     # from the search results
-    #
-    def self.role_collection_restrictions(scope)
+    def self.role_collection_exclusions(scope)
       role = scope&.role&.to_sym
-      return [] if scope.blank? || schema_class.roles[role].record_restrictions.blank?
+      return [] if scope.blank? || schema_class.roles[role].record_exclusions.blank?
 
-      schema_class.roles[role].record_restrictions
+      schema_class.roles[role].record_exclusions
     end
 
     # The records that match the criteria within each role will be 
@@ -86,7 +85,7 @@ module SupplejackApi
     # rubocop:disable Metrics/AbcSize
     def search_builder
       @search_builder ||= begin
-        restrictions = self.class.role_collection_restrictions(scope)
+        restrictions = self.class.role_collection_exclusions(scope)
         suppressed_source_ids = SupplejackApi::Source.suppressed.all.pluck(:source_id)
 
         search = Sunspot.new_search(SupplejackApi::Record)

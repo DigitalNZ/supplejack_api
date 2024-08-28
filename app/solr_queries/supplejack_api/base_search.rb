@@ -32,6 +32,12 @@ module SupplejackApi
       options.schema_class.roles[role.to_sym]&.record_restrictions
     end
 
+    # The records that match the criteria within each role are the only
+    # records that will be included in the search results
+    def role_collection_allowlist(role)
+      options.schema_class.roles[role.to_sym]&.record_allowlist 
+    end
+
     def query
       raise NotImplementedError, 'implement this in children classes'
     end

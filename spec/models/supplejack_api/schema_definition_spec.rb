@@ -76,6 +76,11 @@ module SupplejackApi
             is_catalog_record: true
           }
         )
+        record_allowlist(
+          {
+            is_catalog_record: false
+          }
+        )
       end
 
       model_field :name,
@@ -212,6 +217,18 @@ module SupplejackApi
 
         it 'should not create a restriction if none are set' do
           expect(ExampleSchema.roles[:admin].record_restrictions).to be_nil
+        end
+      end
+
+      context 'record_allowlist' do
+        let(:restrictions) { ExampleSchema.roles[:developer].record_allowlist }
+
+        it 'should only show records where is_catalog_record is false' do
+          expect(restrictions[:is_catalog_record]).to be_falsey
+        end
+
+        it 'should not create a restriction if none are set' do
+          expect(ExampleSchema.roles[:admin].record_allowlist).to be_nil
         end
       end
 

@@ -92,6 +92,7 @@ module SupplejackApi
         search = QueryBuilder::FacetRow.new(search, options.facet_query).call
         search = QueryBuilder::Ordering.new(search, options).call
         search = QueryBuilder::Without.new(search, restrictions).call
+        search = QueryBuilder::With.new(search, inclusions).call
         search = QueryBuilder::Without.new(search, source_id: suppressed_source_ids).call
         search = QueryBuilder::ExcludeFiltersFromFacets.new(search, options).call
         search = QueryBuilder::Paginate.new(search, options.page, options.per_page).call

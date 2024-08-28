@@ -2,7 +2,7 @@
 
 module QueryBuilder
   class With < Base
-    attr_reader :without_hash
+    attr_reader :included_hash
 
     def initialize(search, included_hash)
       super(search)

@@ -74,6 +74,15 @@ module SupplejackApi
       schema_class.roles[role].record_restrictions
     end
 
+    # The records that match the criteria within each role will be 
+    # the only records returned in the search results
+    def self.role_collection_inclusions(scope)
+      role = scope&.role&.to_sym
+      return [] if scope.blank? || schema_class.roles[role].record_inclusions.blank?
+
+      schema_class.roles[role].record_inclusions
+    end
+
     # rubocop:disable Metrics/AbcSize
     def search_builder
       @search_builder ||= begin

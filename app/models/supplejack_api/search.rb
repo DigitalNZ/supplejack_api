@@ -73,7 +73,7 @@ module SupplejackApi
       schema_class.roles[role].record_exclusions
     end
 
-    # The records that match the criteria within each role will be 
+    # The records that match the criteria within each role will be
     # the only records returned in the search results
     def self.role_collection_inclusions(scope)
       role = scope&.role&.to_sym
@@ -86,6 +86,7 @@ module SupplejackApi
     def search_builder
       @search_builder ||= begin
         restrictions = self.class.role_collection_exclusions(scope)
+        inclusions = self.class.role_collection_inclusions(scope)
         suppressed_source_ids = SupplejackApi::Source.suppressed.all.pluck(:source_id)
 
         search = Sunspot.new_search(SupplejackApi::Record)

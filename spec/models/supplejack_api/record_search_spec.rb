@@ -13,7 +13,10 @@ module SupplejackApi
     describe '.role_collection_exclusions' do
       let(:developer)             { double(:scope, role: 'developer') }
       let(:admin)                 { double(:scope, role: 'admin') }
-      let(:developer_restriction) { double(:developer_restriction, record_exclusions: { is_restricted: true }, record_inclusions: { is_allowed: true }) }
+      let(:developer_restriction) do
+        double(:developer_restriction, record_exclusions: { is_restricted: true },
+                                       record_inclusions: { is_allowed: true })
+      end
       let(:no_restriction)        { double(:no_restriction, record_exclusions: nil) }
 
       before(:each) do

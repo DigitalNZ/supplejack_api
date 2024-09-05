@@ -4,6 +4,8 @@ module QueryBuilder
   class AndOrFilters < Base
     attr_reader :and_condition, :or_condition, :exclude_filters_from_facets, :facets
 
+    FULLTEXT_REGEXP = /_textv?$/
+
     def initialize(search, params)
       super(search)
 
@@ -32,13 +34,13 @@ module QueryBuilder
       proc do
         case key.to_sym
         when :and
-          all_of do
+          all do
             conditions.each do |filter, value|
               Utils.call_block(self, &recurse_conditions(filter, value, :and))
             end
           end
         when :or
-          any_of do
+          any do
             conditions.each do |filter, value|
               Utils.call_block(self, &recurse_conditions(filter, value, :or))
             end
@@ -65,22 +67,33 @@ module QueryBuilder
           values = conditions
         end
 
+        fulltext_key = fulltext_attr(key)
+
         case values
         when Array
           case operator.to_sym
           when :or
-            with(key).any_of(values)
+            fulltext?(key) ? fulltext(values, fields: fulltext_key) : with(key).any(values)
           when :and
-            with(key).all_of(values)
+            fulltext?(key) ? fulltext(values, fields: fulltext_key) : with(key).all(values)
           else
             raise StandardError, 'Expected operator (:and, :or)'
           end
         when /(.+)\*$/
-          with(key).starting_with(Regexp.last_match(1))
+          fulltext?(key) ? fulltext(values, fields: fulltext_key) : with(key).starting_with(Regexp.last_match(1))
         else
-          with(key, SupplejackApi::SearchParams.cast_param(key, values))
+          casted_value = SupplejackApi::SearchParams.cast_param(key, values)
+          fulltext?(key) ? fulltext(casted_value, fields: fulltext_key) : with(key, casted_value)
         end
       end
+    end
+
+    def fulltext?(key)
+      key.match?(FULLTEXT_REGEXP)
+    end
+
+    def fulltext_attr(key)
+      key.gsub(FULLTEXT_REGEXP, '')
     end
   end
 end

@@ -87,7 +87,8 @@ module SupplejackApi
           render json: @records,
                  adapter: :json,
                  each_serializer: self.class.record_serializer_class,
-                 include: self.class.record_serializer_includes,
+                 fields: params[:fields],
+                 include: record_includes,
                  root: 'records',
                  meta: { page:, total_pages: @records.total_pages }
         else
@@ -101,6 +102,12 @@ module SupplejackApi
 
       def self.record_serializer_includes
         [:fragments]
+      end
+
+      def record_includes
+        return params[:record_includes] if params[:record_includes].present?
+          
+        self.class.record_serializer_includes
       end
 
       private

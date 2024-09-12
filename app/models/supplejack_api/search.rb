@@ -68,18 +68,22 @@ module SupplejackApi
     # from the search results
     def self.role_collection_exclusions(scope)
       role = scope&.role&.to_sym
-      return [] if scope.blank? || schema_class.roles[role].record_exclusions.blank?
+      record_exclusions = schema_class.roles[role].record_exclusions
 
-      schema_class.roles[role].record_exclusions
+      return [] if scope.blank? || record_exclusions.blank?
+
+      record_exclusions
     end
 
     # The records that match the criteria within each role will be
     # the only records returned in the search results
     def self.role_collection_inclusions(scope)
       role = scope&.role&.to_sym
-      return [] if scope.blank? || schema_class.roles[role].record_inclusions.blank?
+      record_inclusions = schema_class.roles[role].record_inclusions
 
-      schema_class.roles[role].record_inclusions
+      return [] if scope.blank? || record_inclusions.blank?
+
+      record_inclusions
     end
 
     # rubocop:disable Metrics/AbcSize

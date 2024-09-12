@@ -368,8 +368,8 @@ module SupplejackApi
           body = JSON.parse(response.body)
           record = body['records'][0]
 
-          RecordSchema.fields.each do |name, definition|
-            expect(record.has_key?(name.to_s)).to eq true
+          RecordSchema.fields.each_key do |name|
+            expect(record.key?(name.to_s)).to eq true
           end
         end
 
@@ -378,12 +378,12 @@ module SupplejackApi
             search: { 'fragments.job_id': records.first.job_id },
             search_options: { page: 1 },
             api_key: harvester.api_key,
-            fields: ['id'],
-          } 
+            fields: ['id']
+          }
 
           body = JSON.parse(response.body)
 
-          expect(body['records'][0].has_key?('internal_identifier')).to eq false
+          expect(body['records'][0].key?('internal_identifier')).to eq false
         end
 
         it 'returns the all of the record includes by default' do
@@ -393,12 +393,12 @@ module SupplejackApi
             api_key: harvester.api_key,
             fields: ['id'],
             record_includes: []
-          }  
+          }
 
           body = JSON.parse(response.body)
 
           body['records'].each do |record|
-            expect(record.has_key?('fragments')).to eq true
+            expect(record.key?('fragments')).to eq true
           end
         end
 
@@ -414,7 +414,7 @@ module SupplejackApi
           body = JSON.parse(response.body)
 
           body['records'].each do |record|
-            expect(record.has_key?('fragments')).to eq false
+            expect(record.key?('fragments')).to eq false
           end
         end
       end

@@ -357,6 +357,66 @@ module SupplejackApi
             api_key: harvester.api_key
           }
         end
+
+        it 'returns all fields when the fields parameter is missing' do
+          get :index, params: {
+            search: { 'fragments.job_id': records.first.job_id },
+            search_options: { page: 1 },
+            api_key: harvester.api_key
+          }
+
+          body = JSON.parse(response.body)
+          record = body['records'][0]
+
+          RecordSchema.fields.each_key do |name|
+            expect(record.key?(name.to_s)).to eq true
+          end
+        end
+
+        it 'returns fields that have been asked for' do
+          get :index, params: {
+            search: { 'fragments.job_id': records.first.job_id },
+            search_options: { page: 1 },
+            api_key: harvester.api_key,
+            fields: ['id']
+          }
+
+          body = JSON.parse(response.body)
+
+          expect(body['records'][0].key?('internal_identifier')).to eq false
+        end
+
+        it 'returns the all of the record includes by default' do
+          get :index, params: {
+            search: { 'fragments.job_id': records.first.job_id },
+            search_options: { page: 1 },
+            api_key: harvester.api_key,
+            fields: ['id'],
+            record_includes: []
+          }
+
+          body = JSON.parse(response.body)
+
+          body['records'].each do |record|
+            expect(record.key?('fragments')).to eq true
+          end
+        end
+
+        it 'only returns requested includes when provided' do
+          get :index, params: {
+            search: { 'fragments.job_id': records.first.job_id },
+            search_options: { page: 1 },
+            api_key: harvester.api_key,
+            fields: ['id'],
+            record_includes: ['nothing']
+          }
+
+          body = JSON.parse(response.body)
+
+          body['records'].each do |record|
+            expect(record.key?('fragments')).to eq false
+          end
+        end
       end
     end
 

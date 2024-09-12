@@ -45,10 +45,8 @@ module SupplejackApi
 
         render json: {
           status: :failed,
-          exception_class: e.class.to_s,
-          message: e.message,
-          backtrace: e.backtrace,
-          raw_data: @record.try(:to_json),
+          exception_class: e.class.to_s, message: e.message,
+          backtrace: e.backtrace, raw_data: @record.try(:to_json),
           record_id: params[:id]
         }
       end
@@ -85,11 +83,9 @@ module SupplejackApi
 
         if @records.present?
           render json: @records,
-                 adapter: :json,
-                 each_serializer: self.class.record_serializer_class,
-                 include: self.class.record_serializer_includes,
-                 root: 'records',
-                 meta: { page:, total_pages: @records.total_pages }
+                 adapter: :json, each_serializer: self.class.record_serializer_class,
+                 fields: params[:fields], include: record_includes,
+                 root: 'records', meta: { page:, total_pages: @records.total_pages }
         else
           head :no_content
         end
@@ -101,6 +97,12 @@ module SupplejackApi
 
       def self.record_serializer_includes
         [:fragments]
+      end
+
+      def record_includes
+        return params[:record_includes] if params[:record_includes].present?
+
+        self.class.record_serializer_includes
       end
 
       private

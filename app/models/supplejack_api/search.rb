@@ -89,8 +89,9 @@ module SupplejackApi
     # rubocop:disable Metrics/AbcSize
     def search_builder
       @search_builder ||= begin
-        restrictions = self.class.role_collection_exclusions(scope)
-        inclusions = self.class.role_collection_inclusions(scope)
+        search = self.class
+        restrictions = search.role_collection_exclusions(scope)
+        inclusions = search.role_collection_inclusions(scope)
         suppressed_source_ids = SupplejackApi::Source.suppressed.all.pluck(:source_id)
 
         search = Sunspot.new_search(SupplejackApi::Record)

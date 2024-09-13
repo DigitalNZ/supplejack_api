@@ -20,7 +20,6 @@ module SupplejackApi
         index({ internal_identifier: 1 }, unique: true, background: true)
         index({ record_type: 1 }, background: true)
         index({ record_id: 1 }, unique: true, background: true)
-        index({ created_at: 1 }, unique: true, background: true)
         index({ "fragments.source_id": 1, status: 1 }, unique: true, background: true)
         index({ index_updated: 1, "fragments.source_id": 1, status: 1 }, unique: true, background: true)
 

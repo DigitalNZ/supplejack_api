@@ -259,11 +259,9 @@ module SupplejackApi
       describe 'GET index' do
         let!(:records) { create_list(:record_with_fragment, 25) }
         let(:where_params) { ActionController::Parameters.new('fragments.job_id': records.first.job_id).permit! }
-        let(:order_by) { double(:order_by) }
 
         it 'returns object with records based on search params' do
-          expect(SupplejackApi::Record).to receive(:order_by).and_return(order_by)
-          expect(order_by).to receive(:where).with(where_params).and_return(SupplejackApi::Record)
+          expect(Record).to receive(:where).with(where_params).and_call_original
 
           get :index, params: {
             search: { 'fragments.job_id': records.first.job_id },
@@ -347,17 +345,6 @@ module SupplejackApi
             api_key: harvester.api_key
           }
         end
-
-        it 'order results by created_at ascending' do
-          expect(SupplejackApi::Record).to receive(:order_by).with(%i[created_at asc]).and_call_original
-
-          get :index, params: {
-            search: { 'fragments.job_id': records.first.job_id },
-            search_options: { page: 1 },
-            api_key: harvester.api_key
-          }
-        end
-
         it 'returns all fields when the fields parameter is missing' do
           get :index, params: {
             search: { 'fragments.job_id': records.first.job_id },

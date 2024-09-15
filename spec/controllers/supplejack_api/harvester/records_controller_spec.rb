@@ -380,7 +380,7 @@ module SupplejackApi
             api_key: harvester.api_key,
             fields: ['internal_identifier']
           }
-          
+
           body = JSON.parse(response.body)
 
           expect(body['records'][0].key?('id')).to eq true

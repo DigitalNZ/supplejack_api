@@ -10,8 +10,7 @@ module SupplejackApi
       rescue StandardError => e
         Rails.logger.error "Fail to process record #{@record&.record_id}: #{e.inspect}"
         render json: {
-          status: :failed, exception_class: e.class.to_s,
-          message: e.message, backtrace: e.backtrace,
+          status: :failed, exception_class: e.class.to_s, message: e.message, backtrace: e.backtrace,
           raw_data: @record&.attributes, record_id: @record&.record_id
         }
       end
@@ -44,10 +43,8 @@ module SupplejackApi
         Rails.logger.error "Fail to set deleted status to record #{@record}: #{e.inspect}"
 
         render json: {
-          status: :failed,
-          exception_class: e.class.to_s, message: e.message,
-          backtrace: e.backtrace, raw_data: @record.try(:to_json),
-          record_id: params[:id]
+          status: :failed, exception_class: e.class.to_s, message: e.message,
+          backtrace: e.backtrace, raw_data: @record.try(:to_json), record_id: params[:id]
         }
       end
 
@@ -92,7 +89,7 @@ module SupplejackApi
       end
 
       def fields
-        params[:fields] << "id"
+        params[:fields] << 'id'
       end
 
       def self.record_serializer_class

@@ -373,6 +373,20 @@ module SupplejackApi
           expect(body['records'][0].key?('internal_identifier')).to eq false
         end
 
+        it 'always includes the id field, even when it hasnt been asked for' do
+          get :index, params: {
+            search: { 'fragments.job_id': records.first.job_id },
+            search_options: { page: 1 },
+            api_key: harvester.api_key,
+            fields: ['internal_identifier']
+          }
+          
+          body = JSON.parse(response.body)
+
+          expect(body['records'][0].key?('id')).to eq true
+          expect(body['records'][0].key?('internal_identifier')).to eq true
+        end
+
         it 'returns the all of the record includes by default' do
           get :index, params: {
             search: { 'fragments.job_id': records.first.job_id },

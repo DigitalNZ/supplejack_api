@@ -10,8 +10,7 @@ module SupplejackApi
       rescue StandardError => e
         Rails.logger.error "Fail to process record #{@record&.record_id}: #{e.inspect}"
         render json: {
-          status: :failed, exception_class: e.class.to_s,
-          message: e.message, backtrace: e.backtrace,
+          status: :failed, exception_class: e.class.to_s, message: e.message, backtrace: e.backtrace,
           raw_data: @record&.attributes, record_id: @record&.record_id
         }
       end
@@ -44,10 +43,8 @@ module SupplejackApi
         Rails.logger.error "Fail to set deleted status to record #{@record}: #{e.inspect}"
 
         render json: {
-          status: :failed,
-          exception_class: e.class.to_s, message: e.message,
-          backtrace: e.backtrace, raw_data: @record.try(:to_json),
-          record_id: params[:id]
+          status: :failed, exception_class: e.class.to_s, message: e.message,
+          backtrace: e.backtrace, raw_data: @record.try(:to_json), record_id: params[:id]
         }
       end
 
@@ -63,8 +60,7 @@ module SupplejackApi
         @record = SupplejackApi::Record.where(record_id: params[:id]).first
 
         if @record.present?
-          render json: @record,
-                 serializer: self.class.record_serializer_class
+          render json: @record, serializer: self.class.record_serializer_class
         else
           head :no_content
         end
@@ -84,11 +80,17 @@ module SupplejackApi
         if @records.present?
           render json: @records,
                  adapter: :json, each_serializer: self.class.record_serializer_class,
-                 fields: params[:fields], include: record_includes,
+                 fields:, include: record_includes,
                  root: 'records', meta: { page:, total_pages: @records.total_pages }
         else
           head :no_content
         end
+      end
+
+      def fields
+        return nil if params[:fields].blank?
+
+        params[:fields] << 'id'
       end
 
       def self.record_serializer_class

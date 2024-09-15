@@ -66,16 +66,17 @@ module SupplejackApi
 
     # The records that match the criteria within each role will be either be removed
     # or included in the search results
-    def self.role_collection_filter(scope, type)
+    def self.role_collection_filter(scope, record_filter_type)
       return [] if scope.blank?
   
       role = scope&.role&.to_sym
+      schema_roles = schema_class.roles[role]
       record_filters = []
 
       if type === 'exclude'
-        record_filters = schema_class.roles[role].record_exclusions
+        record_filters = schema_roles.record_exclusions
       else 
-        record_filters = schema_class.roles[role].record_inclusions
+        record_filters = schema_roles.record_inclusions
       end
 
       return [] if record_filter.blank?

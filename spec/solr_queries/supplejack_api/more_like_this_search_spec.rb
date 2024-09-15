@@ -9,7 +9,6 @@ module SupplejackApi
     before do
       Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session)
       @session = Sunspot.session
-
     end
 
     describe '#initialize' do

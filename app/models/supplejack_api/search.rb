@@ -64,34 +64,31 @@ module SupplejackApi
       sunspot
     end
 
-    # The records that match the criteria within each role will be removed
-    # from the search results
-    def self.role_collection_exclusions(scope)
+    # The records that match the criteria within each role will be either be removed
+    # or included in the search results
+    def self.role_collection_filter(scope, type)
+      return [] if scope.blank?
+  
       role = scope&.role&.to_sym
-      record_exclusions = schema_class.roles[role].record_exclusions
+      record_filters = []
 
-      return [] if scope.blank? || record_exclusions.blank?
+      if type === 'exclude'
+        record_filters = schema_class.roles[role].record_exclusions
+      else 
+        record_filters = schema_class.roles[role].record_inclusions
+      end
 
-      record_exclusions
-    end
+      return [] if record_filter.blank?
 
-    # The records that match the criteria within each role will be
-    # the only records returned in the search results
-    def self.role_collection_inclusions(scope)
-      role = scope&.role&.to_sym
-      record_inclusions = schema_class.roles[role].record_inclusions
-
-      return [] if scope.blank? || record_inclusions.blank?
-
-      record_inclusions
+      record_filters
     end
 
     # rubocop:disable Metrics/AbcSize
     def search_builder
       @search_builder ||= begin
         search = self.class
-        restrictions = search.role_collection_exclusions(scope)
-        inclusions = search.role_collection_inclusions(scope)
+        exclusions = search.role_collection_filter(scope, 'exclude')
+        inclusions = search.role_collection_filter(scope, 'include')
         suppressed_source_ids = SupplejackApi::Source.suppressed.all.pluck(:source_id)
 
         search = Sunspot.new_search(SupplejackApi::Record)
@@ -105,7 +102,7 @@ module SupplejackApi
         search = QueryBuilder::Defaults.new(search).call
         search = QueryBuilder::FacetRow.new(search, options.facet_query).call
         search = QueryBuilder::Ordering.new(search, options).call
-        search = QueryBuilder::Without.new(search, restrictions).call
+        search = QueryBuilder::Without.new(search, exclusions).call
         search = QueryBuilder::With.new(search, inclusions).call
         search = QueryBuilder::Without.new(search, source_id: suppressed_source_ids).call
         search = QueryBuilder::ExcludeFiltersFromFacets.new(search, options).call

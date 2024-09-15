@@ -60,8 +60,7 @@ module SupplejackApi
         @record = SupplejackApi::Record.where(record_id: params[:id]).first
 
         if @record.present?
-          render json: @record,
-                 serializer: self.class.record_serializer_class
+          render json: @record, serializer: self.class.record_serializer_class
         else
           head :no_content
         end
@@ -89,6 +88,8 @@ module SupplejackApi
       end
 
       def fields
+        return nil if params[:fields].blank?
+
         params[:fields] << 'id'
       end
 

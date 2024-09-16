@@ -73,7 +73,7 @@ module SupplejackApi
       schema_roles = schema_class.roles[role]
       record_filters = []
 
-      if type === 'exclude'
+      if record_filter_type === 'exclude'
         record_filters = schema_roles.record_exclusions
       else 
         record_filters = schema_roles.record_inclusions

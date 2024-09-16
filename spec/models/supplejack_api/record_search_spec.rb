@@ -49,7 +49,7 @@ module SupplejackApi
       let(:addresses) { ['Te Aro', 'Brooklyn'] }
 
       before do
-        allow(RecordSearch).to receive(:role_collection_exclusions) { [] }
+        allow(RecordSearch).to receive(:role_collection_filter) { [] }
       end
 
       context 'solr errors' do
@@ -254,7 +254,7 @@ module SupplejackApi
       end
 
       it 'removes records from the search based on role restrictions' do
-        allow(RecordSearch).to receive(:role_collection_exclusions) { { nz_citizen: true } }
+        allow(RecordSearch).to receive(:role_collection_filter) { { nz_citizen: true } }
 
         @search.execute_solr_search
         expect(@session).to have_search_params(:without, :nz_citizen, true)
@@ -262,7 +262,7 @@ module SupplejackApi
 
       it 'removes records from the search based on multiple restrictions per role' do
         allow(RecordSearch)
-          .to receive(:role_collection_exclusions) { { email: ['jd@example.com', 'johnd@test.com'] } }
+          .to receive(:role_collection_filter) { { email: ['jd@example.com', 'johnd@test.com'] } }
 
         @search.execute_solr_search
 

@@ -67,14 +67,14 @@ module SupplejackApi
     # The records that match the criteria within each role will be either be removed
     # or included in the search results
     def self.role_collection_filter(scope, record_filter_type)
-      return [] if scope.blank?
+      return [] if scope&.role&.to_sym.nil?
 
       role = scope&.role&.to_sym
       schema_roles = schema_class.roles[role]
-
-      record_filters = if record_filter_type === 'exclude'
+      binding.pry
+      record_filters = if record_filter_type == :exclude
                          schema_roles.record_exclusions
-                       else
+                       elsif record_filter_type == :include
                          schema_roles.record_inclusions
                        end
 
@@ -87,8 +87,8 @@ module SupplejackApi
     def search_builder
       @search_builder ||= begin
         search = self.class
-        exclusions = search.role_collection_filter(scope, 'exclude')
-        inclusions = search.role_collection_filter(scope, 'include')
+        exclusions = search.role_collection_filter(scope, :exclude)
+        inclusions = search.role_collection_filter(scope, :include)
         suppressed_source_ids = SupplejackApi::Source.suppressed.all.pluck(:source_id)
 
         search = Sunspot.new_search(SupplejackApi::Record)

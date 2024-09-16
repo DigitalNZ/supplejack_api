@@ -10,7 +10,7 @@ module SupplejackApi
       @session = Sunspot.session
     end
 
-    describe '.role_collection_exclusions' do
+    describe '.role_collection_filter' do
       let(:developer)             { double(:scope, role: 'developer') }
       let(:admin)                 { double(:scope, role: 'admin') }
       let(:developer_restriction) do
@@ -24,15 +24,15 @@ module SupplejackApi
       end
 
       it 'should handle nil scope' do
-        expect(RecordSearch.role_collection_exclusions(nil)).to eq []
+        expect(RecordSearch.role_collection_filter(nil, nil)).to eq []
       end
 
       it 'should return nil when no role restrictions are defined in the Schema' do
-        expect(RecordSearch.role_collection_exclusions(admin)).to eq []
+        expect(RecordSearch.role_collection_filter(admin, nil)).to eq []
       end
 
-      it 'should return nil when no role restrictions are defined in the Schema' do
-        expect(RecordSearch.role_collection_exclusions(developer)).to eq({ is_restricted: true })
+      it 'should return records when role restrictions are defined in the Schema' do
+        expect(RecordSearch.role_collection_filter(developer, :exclude)).to eq({ is_restricted: true })
       end
     end
 

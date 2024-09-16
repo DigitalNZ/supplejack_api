@@ -71,7 +71,7 @@ module SupplejackApi
 
       role = scope&.role&.to_sym
       schema_roles = schema_class.roles[role]
-      binding.pry
+
       record_filters = if record_filter_type == :exclude
                          schema_roles.record_exclusions
                        elsif record_filter_type == :include

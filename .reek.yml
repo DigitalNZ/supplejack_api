@@ -5,9 +5,6 @@ detectors:
   NilCheck:
     enabled: false
 
-  DuplicateMethodCall:
-    enabled: false
-
   ManualDispatch:
     enabled: false
 

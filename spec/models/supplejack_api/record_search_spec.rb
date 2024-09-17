@@ -260,7 +260,9 @@ module SupplejackApi
       end
 
       it 'removes records from the search based on multiple restrictions per role' do
-        allow(RecordSearch).to receive(:role_collection_restrictions) { { email: ['jd@example.com', 'johnd@test.com'] } }
+        allow(RecordSearch).to receive(:role_collection_restrictions) {
+                                 { email: ['jd@example.com', 'johnd@test.com'] }
+                               }
 
         @search.execute_solr_search
 

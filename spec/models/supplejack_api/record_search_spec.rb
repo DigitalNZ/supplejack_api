@@ -10,7 +10,7 @@ module SupplejackApi
       @session = Sunspot.session
     end
 
-    describe '.role_collection_filter' do
+    describe '.role_collection_restrictions' do
       let(:developer)             { double(:scope, role: 'developer') }
       let(:admin)                 { double(:scope, role: 'admin') }
       let(:developer_restriction) do
@@ -23,15 +23,15 @@ module SupplejackApi
       end
 
       it 'should handle nil scope' do
-        expect(RecordSearch.role_collection_exclusions(nil)).to eq []
+        expect(RecordSearch.role_collection_restrictions(nil, :record_exclusions)).to eq []
       end
 
       it 'should return nil when no role restrictions are defined in the Schema' do
-        expect(RecordSearch.role_collection_exclusions(admin)).to eq nil
+        expect(RecordSearch.role_collection_restrictions(admin, :record_exclusions)).to eq nil
       end
 
       it 'should return records when role restrictions are defined in the Schema' do
-        expect(RecordSearch.role_collection_exclusions(developer)).to eq({ is_restricted: true })
+        expect(RecordSearch.role_collection_restrictions(developer, :record_exclusions)).to eq({ is_restricted: true })
       end
     end
 
@@ -48,7 +48,7 @@ module SupplejackApi
       let(:addresses) { ['Te Aro', 'Brooklyn'] }
 
       before do
-        allow(RecordSearch).to receive(:role_collection_inclusions) { [] }
+        allow(RecordSearch).to receive(:role_collection_restrictions) { [] }
       end
 
       context 'solr errors' do
@@ -253,15 +253,14 @@ module SupplejackApi
       end
 
       it 'removes records from the search based on role restrictions' do
-        allow(RecordSearch).to receive(:role_collection_exclusions) { { nz_citizen: true } }
+        allow(RecordSearch).to receive(:role_collection_restrictions) { { nz_citizen: true } }
 
         @search.execute_solr_search
         expect(@session).to have_search_params(:without, :nz_citizen, true)
       end
 
       it 'removes records from the search based on multiple restrictions per role' do
-        allow(RecordSearch)
-          .to receive(:role_collection_exclusions) { { email: ['jd@example.com', 'johnd@test.com'] } }
+        allow(RecordSearch).to receive(:role_collection_restrictions) { { email: ['jd@example.com', 'johnd@test.com'] } }
 
         @search.execute_solr_search
 

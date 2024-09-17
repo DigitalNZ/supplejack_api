@@ -14,8 +14,7 @@ module SupplejackApi
       let(:developer)             { double(:scope, role: 'developer') }
       let(:admin)                 { double(:scope, role: 'admin') }
       let(:developer_restriction) do
-        double(:developer_restriction, record_exclusions: { is_restricted: true },
-                                       record_inclusions: { is_allowed: true })
+        double(:developer_restriction, record_exclusions: { is_restricted: true })
       end
       let(:no_restriction)        { double(:no_restriction, record_exclusions: nil) }
 
@@ -32,7 +31,7 @@ module SupplejackApi
       end
 
       it 'should return records when role restrictions are defined in the Schema' do
-        expect(RecordSearch.role_collection_filter(developer, :exclude)).to eq({ is_restricted: true })
+        expect(RecordSearch.role_collection_exclusions(developer)).to eq({ is_restricted: true })
       end
     end
 
@@ -49,7 +48,7 @@ module SupplejackApi
       let(:addresses) { ['Te Aro', 'Brooklyn'] }
 
       before do
-        allow(RecordSearch).to receive(:role_collection_filter) { [] }
+        allow(RecordSearch).to receive(:role_collection_inclusions) { [] }
       end
 
       context 'solr errors' do

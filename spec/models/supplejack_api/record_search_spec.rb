@@ -27,7 +27,7 @@ module SupplejackApi
       end
 
       it 'should return nil when no role restrictions are defined in the Schema' do
-        expect(RecordSearch.role_collection_exclusions(admin)).to eq []
+        expect(RecordSearch.role_collection_exclusions(admin)).to eq nil
       end
 
       it 'should return records when role restrictions are defined in the Schema' do

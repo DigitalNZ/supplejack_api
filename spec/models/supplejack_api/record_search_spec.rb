@@ -23,7 +23,7 @@ module SupplejackApi
       end
 
       it 'should handle nil scope' do
-        expect(RecordSearch.role_collection_exclusions(nil)).to eq nil
+        expect(RecordSearch.role_collection_exclusions(nil)).to eq []
       end
 
       it 'should return nil when no role restrictions are defined in the Schema' do

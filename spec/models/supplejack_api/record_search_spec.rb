@@ -23,11 +23,11 @@ module SupplejackApi
       end
 
       it 'should handle nil scope' do
-        expect(RecordSearch.role_collection_filter(nil, nil)).to eq []
+        expect(RecordSearch.role_collection_exclusions(nil)).to eq nil
       end
 
       it 'should return nil when no role restrictions are defined in the Schema' do
-        expect(RecordSearch.role_collection_filter(admin, nil)).to eq []
+        expect(RecordSearch.role_collection_exclusions(admin)).to eq []
       end
 
       it 'should return records when role restrictions are defined in the Schema' do
@@ -253,7 +253,7 @@ module SupplejackApi
       end
 
       it 'removes records from the search based on role restrictions' do
-        allow(RecordSearch).to receive(:role_collection_filter) { { nz_citizen: true } }
+        allow(RecordSearch).to receive(:role_collection_exclusions) { { nz_citizen: true } }
 
         @search.execute_solr_search
         expect(@session).to have_search_params(:without, :nz_citizen, true)
@@ -261,7 +261,7 @@ module SupplejackApi
 
       it 'removes records from the search based on multiple restrictions per role' do
         allow(RecordSearch)
-          .to receive(:role_collection_filter) { { email: ['jd@example.com', 'johnd@test.com'] } }
+          .to receive(:role_collection_exclusions) { { email: ['jd@example.com', 'johnd@test.com'] } }
 
         @search.execute_solr_search
 

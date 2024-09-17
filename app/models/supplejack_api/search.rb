@@ -66,26 +66,22 @@ module SupplejackApi
 
     # The records that match the criteria within each role will be removed
     # from the search results
-    # reek:disable DuplicateMethodCall
     def self.role_collection_exclusions(scope)
       role = scope&.role&.to_sym
-      schema_class = schema_class.roles[role]
 
-      return [] if role.nil? || schema_class.record_exclusions.blank?
+      return [] if role.nil? || schema_class.roles.nil?
 
-      schema_class.record_exclusions
+      schema_class.roles[role].record_exclusions
     end
 
     # The records that match the criteria within each role will be
     # the only records returned in the search results
-    # reek:disable DuplicateMethodCall
     def self.role_collection_inclusions(scope)
       role = scope&.role&.to_sym
-      schema_class = schema_class.roles[role]
 
-      return [] if role.nil? || schema_class.record_inclusions.blank?
+      return [] if role.nil? || schema_class.roles.nil?
 
-      schema_class.record_inclusions
+      schema_class.roles[role].record_inclusions
     end
 
     # rubocop:disable Metrics/AbcSize

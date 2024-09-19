@@ -4,8 +4,6 @@ module QueryBuilder
   class AndOrFilters < Base
     attr_reader :and_condition, :or_condition, :exclude_filters_from_facets, :facets
 
-    FULLTEXT_REGEXP = /_textv?$/
-
     def initialize(search, params)
       super(search)
 

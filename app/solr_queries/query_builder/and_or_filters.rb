@@ -71,9 +71,9 @@ module QueryBuilder
         when Array
           case operator.to_sym
           when :or
-            fulltext?(key) ? fulltext(values, fields: fulltext_key) : with(key).any(values)
+            fulltext?(key) ? fulltext(values, fields: fulltext_key) : with(key).any_of(values)
           when :and
-            fulltext?(key) ? fulltext(values, fields: fulltext_key) : with(key).all(values)
+            fulltext?(key) ? fulltext(values, fields: fulltext_key) : with(key).all_of(values)
           else
             raise StandardError, 'Expected operator (:and, :or)'
           end

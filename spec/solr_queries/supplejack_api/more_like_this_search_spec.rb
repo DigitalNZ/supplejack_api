@@ -9,8 +9,6 @@ module SupplejackApi
     before do
       Sunspot.session = SunspotMatchers::SunspotSessionSpy.new(Sunspot.session)
       @session = Sunspot.session
-
-      # allow(MoreLikeThisSearch).to receive(:role_collection_restrictions) { [] }
     end
 
     describe '#initialize' do

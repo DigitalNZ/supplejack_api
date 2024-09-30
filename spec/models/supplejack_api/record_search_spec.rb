@@ -13,23 +13,25 @@ module SupplejackApi
     describe '.role_collection_restrictions' do
       let(:developer)             { double(:scope, role: 'developer') }
       let(:admin)                 { double(:scope, role: 'admin') }
-      let(:developer_restriction) { double(:developer_restriction, record_restrictions: { is_restricted: true }) }
-      let(:no_restriction)        { double(:no_restriction, record_restrictions: nil) }
+      let(:developer_restriction) do
+        double(:developer_restriction, record_exclusions: { is_restricted: true })
+      end
+      let(:no_restriction)        { double(:no_restriction, record_exclusions: nil) }
 
       before(:each) do
         allow(RecordSchema).to receive(:roles) { { admin: no_restriction, developer: developer_restriction } }
       end
 
       it 'should handle nil scope' do
-        expect(RecordSearch.role_collection_restrictions(nil)).to eq []
+        expect(RecordSearch.role_collection_restrictions(nil, :record_exclusions)).to eq []
       end
 
       it 'should return nil when no role restrictions are defined in the Schema' do
-        expect(RecordSearch.role_collection_restrictions(admin)).to eq []
+        expect(RecordSearch.role_collection_restrictions(admin, :record_exclusions)).to eq nil
       end
 
-      it 'should return nil when no role restrictions are defined in the Schema' do
-        expect(RecordSearch.role_collection_restrictions(developer)).to eq({ is_restricted: true })
+      it 'should return records when role restrictions are defined in the Schema' do
+        expect(RecordSearch.role_collection_restrictions(developer, :record_exclusions)).to eq({ is_restricted: true })
       end
     end
 
@@ -258,8 +260,9 @@ module SupplejackApi
       end
 
       it 'removes records from the search based on multiple restrictions per role' do
-        allow(RecordSearch)
-          .to receive(:role_collection_restrictions) { { email: ['jd@example.com', 'johnd@test.com'] } }
+        allow(RecordSearch).to receive(:role_collection_restrictions) {
+                                 { email: ['jd@example.com', 'johnd@test.com'] }
+                               }
 
         @search.execute_solr_search
 

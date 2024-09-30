@@ -64,20 +64,22 @@ module SupplejackApi
       sunspot
     end
 
-    # The records that match the criteria within each role will be removed
-    # from the search results
-    #
-    def self.role_collection_restrictions(scope)
+    def self.role_collection_restrictions(scope, restriction)
       role = scope&.role&.to_sym
-      return [] if scope.blank? || schema_class.roles[role].record_restrictions.blank?
+      schema_roles = schema_class.roles
 
-      schema_class.roles[role].record_restrictions
+      return [] if role.nil? || schema_roles.nil?
+
+      schema_role = schema_roles[role]
+      schema_role.send(restriction)
     end
 
     # rubocop:disable Metrics/AbcSize
     def search_builder
       @search_builder ||= begin
-        restrictions = self.class.role_collection_restrictions(scope)
+        search = self.class
+        exclusions = search.role_collection_restrictions(scope, :record_exclusions)
+        inclusions = search.role_collection_restrictions(scope, :record_inclusions)
         suppressed_source_ids = SupplejackApi::Source.suppressed.all.pluck(:source_id)
 
         search = Sunspot.new_search(SupplejackApi::Record)
@@ -91,7 +93,8 @@ module SupplejackApi
         search = QueryBuilder::Defaults.new(search).call
         search = QueryBuilder::FacetRow.new(search, options.facet_query).call
         search = QueryBuilder::Ordering.new(search, options).call
-        search = QueryBuilder::Without.new(search, restrictions).call
+        search = QueryBuilder::Without.new(search, exclusions).call
+        search = QueryBuilder::With.new(search, inclusions).call
         search = QueryBuilder::Without.new(search, source_id: suppressed_source_ids).call
         search = QueryBuilder::ExcludeFiltersFromFacets.new(search, options).call
         search = QueryBuilder::Paginate.new(search, options.page, options.per_page).call

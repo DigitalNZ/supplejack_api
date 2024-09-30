@@ -71,9 +71,14 @@ module SupplejackApi
             thumbnail_url: { %r{^http://secret} => ['thumbnail_url'] }
           }
         )
-        record_restrictions(
+        record_exclusions(
           {
             is_catalog_record: true
+          }
+        )
+        record_inclusions(
+          {
+            is_catalog_record: false
           }
         )
       end
@@ -203,15 +208,27 @@ module SupplejackApi
         end
       end
 
-      context 'record_restrictions' do
-        let(:restrictions) { ExampleSchema.roles[:developer].record_restrictions }
+      context 'record_exclusions' do
+        let(:restrictions) { ExampleSchema.roles[:developer].record_exclusions }
 
         it 'should create a restriction on records where is_catalog_record is true' do
           expect(restrictions[:is_catalog_record]).to be_truthy
         end
 
         it 'should not create a restriction if none are set' do
-          expect(ExampleSchema.roles[:admin].record_restrictions).to be_nil
+          expect(ExampleSchema.roles[:admin].record_exclusions).to be_nil
+        end
+      end
+
+      context 'record_inclusions' do
+        let(:restrictions) { ExampleSchema.roles[:developer].record_inclusions }
+
+        it 'should only show records where is_catalog_record is false' do
+          expect(restrictions[:is_catalog_record]).to be_falsey
+        end
+
+        it 'should not create a restriction if none are set' do
+          expect(ExampleSchema.roles[:admin].record_inclusions).to be_nil
         end
       end
 

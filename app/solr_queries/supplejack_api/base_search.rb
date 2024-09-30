@@ -28,8 +28,14 @@ module SupplejackApi
 
     # The records that match the criteria within each role will be removed
     # from the search results
-    def role_collection_restrictions(role)
-      options.schema_class.roles[role.to_sym]&.record_restrictions
+    def role_collection_exclusions(role)
+      options.schema_class.roles[role.to_sym]&.record_exclusions
+    end
+
+    # The records that match the criteria within each role are the only
+    # records that will be included in the search results
+    def role_collection_inclusions(role)
+      options.schema_class.roles[role.to_sym]&.record_inclusions
     end
 
     def query

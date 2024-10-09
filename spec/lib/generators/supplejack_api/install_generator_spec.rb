@@ -63,9 +63,6 @@ module SupplejackApi
         it 'creates state_machine.rb' do
           assert_file "#{destination_path}/config/initializers/state_machines.rb"
         end
-        it 'creates sunspot.rb' do
-          assert_file "#{destination_path}/config/initializers/sunspot.rb"
-        end
         it 'creates supplejack_api.rb' do
           assert_file "#{destination_path}/config/initializers/supplejack_api.rb"
         end

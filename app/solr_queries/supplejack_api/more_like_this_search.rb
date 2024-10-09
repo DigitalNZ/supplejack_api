@@ -29,8 +29,7 @@ module SupplejackApi
       search = QueryBuilder::Defaults.new(search).call
       search = QueryBuilder::Without.new(search, source_id: suppressed_source_ids).call
       search = QueryBuilder::Without.new(search, role_collection_exclusions(role)).call
-      search = QueryBuilder::Without.new(search, options.without).call
-      QueryBuilder::AndOrFilters.new(search, options).call
+      QueryBuilder::Without.new(search, options.without).call
     end
   end
 end

@@ -87,6 +87,7 @@ module SupplejackApi
         search = QueryBuilder::Facets.new(search, options).call
         search = QueryBuilder::Spellcheck.new(search, options.suggest).call
         search = QueryBuilder::Without.new(search, options.without).call
+        search = QueryBuilder::WithoutFulltext.new(search, options.without_fulltext).call
         search = QueryBuilder::WithBoudingBox.new(search, options.geo_bbox).call
         search = QueryBuilder::SolrQuery.new(search, options.solr_query).call
         search = QueryBuilder::FacetPivot.new(search, options.facet_pivots).call

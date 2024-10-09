@@ -18,9 +18,8 @@ module QueryBuilder
       super
 
       search.build do
-        { and: and_condition, or: or_condition }.each do |operator, value|
-          Utils.call_block(self, &recurse_conditions(operator, value))
-        end
+        Utils.call_block(self, &recurse_conditions(:and, and_condition)) if and_condition.present?
+        Utils.call_block(self, &recurse_conditions(:or, or_condition)) if or_condition.present?
       end
     end
 
@@ -32,13 +31,13 @@ module QueryBuilder
       proc do
         case key.to_sym
         when :and
-          all_of do
+          all do
             conditions.each do |filter, value|
               Utils.call_block(self, &recurse_conditions(filter, value, :and))
             end
           end
         when :or
-          any_of do
+          any do
             conditions.each do |filter, value|
               Utils.call_block(self, &recurse_conditions(filter, value, :or))
             end
@@ -65,22 +64,33 @@ module QueryBuilder
           values = conditions
         end
 
+        fulltext_key = fulltext_attr(key)
+
         case values
         when Array
           case operator.to_sym
           when :or
-            with(key).any_of(values)
+            fulltext?(key) ? fulltext(values, fields: fulltext_key) : with(key).any_of(values)
           when :and
-            with(key).all_of(values)
+            fulltext?(key) ? fulltext(values, fields: fulltext_key) : with(key).all_of(values)
           else
             raise StandardError, 'Expected operator (:and, :or)'
           end
         when /(.+)\*$/
-          with(key).starting_with(Regexp.last_match(1))
+          fulltext?(key) ? fulltext(values, fields: fulltext_key) : with(key).starting_with(Regexp.last_match(1))
         else
-          with(key, SupplejackApi::SearchParams.cast_param(key, values))
+          casted_value = SupplejackApi::SearchParams.cast_param(key, values)
+          fulltext?(key) ? fulltext(casted_value, fields: fulltext_key) : with(key, casted_value)
         end
       end
+    end
+
+    def fulltext?(key)
+      key.match?(FULLTEXT_REGEXP)
+    end
+
+    def fulltext_attr(key)
+      key.to_s.gsub(FULLTEXT_REGEXP, '')
     end
   end
 end

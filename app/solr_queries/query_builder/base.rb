@@ -2,6 +2,8 @@
 
 module QueryBuilder
   class Base
+    FULLTEXT_REGEXP = /_textv?$/
+
     attr_reader :search, :this
 
     def initialize(search)

@@ -202,7 +202,7 @@ module SupplejackApi
       it 'should return results matching any of the facet values' do
         RecordSearch.new(or: { email: ['jd@example.com', 'johnd@test.com'], name: 'James Cook' }).execute_solr_search
         expect(@session).to have_search_params(:with, proc do
-          any_of do
+          any do
             with(:email).any_of(['jd@example.com', 'johnd@test.com'])
             with(:name, 'James Cook')
           end
@@ -286,7 +286,7 @@ module SupplejackApi
         it 'joins two facets with OR but values within each filter with AND' do
           RecordSearch.new(or: { name: { and: names }, address: { and: addresses } }).execute_solr_search
           expect(@session).to have_search_params(:with, proc do
-            any_of do
+            any do
               with(:name).all_of(names)
               with(:address).all_of(addresses)
             end
@@ -301,9 +301,9 @@ module SupplejackApi
             }
           ).execute_solr_search
           expect(@session).to have_search_params(:with, proc do
-            any_of do
+            any do
               with(:name).all_of(names)
-              all_of do
+              all do
                 with(:address, 'Wellington')
                 with(:nz_citizen, 'true')
               end
@@ -320,11 +320,11 @@ module SupplejackApi
           ).execute_solr_search
 
           expect(@session).to have_search_params(:with, proc do
-            all_of do
+            all do
               with(:name, 'John')
-              any_of do
+              any do
                 with(:address, 'Wellington')
-                all_of do
+                all do
                   with(:nz_citizen, 'true')
                   with(:email, 'john@test.com')
                 end
@@ -339,8 +339,8 @@ module SupplejackApi
             or: { address: addresses }
           ).execute_solr_search
           expect(@session).to have_search_params(:with, proc do
-            all_of do
-              all_of do
+            all do
+              all do
                 with(:name).any_of(names)
                 with(:nz_citizen, 'true')
               end
@@ -358,7 +358,7 @@ module SupplejackApi
             }
           ).execute_solr_search
           expect(@session).to have_search_params(:with, proc do
-            all_of do
+            all do
               with(:name).any_of(names)
               with(:nz_citizen, 'true')
               with(:address).any_of(addresses)

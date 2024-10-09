@@ -18,9 +18,8 @@ module QueryBuilder
       super
 
       search.build do
-        { and: and_condition, or: or_condition }.each do |operator, value|
-          Utils.call_block(self, &recurse_conditions(operator, value))
-        end
+        Utils.call_block(self, &recurse_conditions(:and, and_condition)) if and_condition.present?
+        Utils.call_block(self, &recurse_conditions(:or, or_condition)) if or_condition.present?
       end
     end
 
@@ -33,15 +32,11 @@ module QueryBuilder
         case key.to_sym
         when :and
           all do
-            conditions.each do |filter, value|
-              Utils.call_block(self, &recurse_conditions(filter, value, :and))
-            end
+            conditions.each { |filter, value| Utils.call_block(self, &recurse_conditions(filter, value, :and)) }
           end
         when :or
           any do
-            conditions.each do |filter, value|
-              Utils.call_block(self, &recurse_conditions(filter, value, :or))
-            end
+            conditions.each { |filter, value| Utils.call_block(self, &recurse_conditions(filter, value, :or)) }
           end
         else
           if exclude_filters_from_facets
@@ -91,7 +86,7 @@ module QueryBuilder
     end
 
     def fulltext_attr(key)
-      key.gsub(FULLTEXT_REGEXP, '')
+      key.to_s.gsub(FULLTEXT_REGEXP, '')
     end
   end
 end

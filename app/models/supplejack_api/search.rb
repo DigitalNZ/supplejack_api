@@ -75,6 +75,7 @@ module SupplejackApi
     end
 
     # rubocop:disable Metrics/AbcSize
+    # rubocop:disable Metrics/MethodLength
     def search_builder
       @search_builder ||= begin
         search = self.class
@@ -105,6 +106,7 @@ module SupplejackApi
       end
     end
     # rubocop:enable Metrics/AbcSize
+    # rubocop:enable Metrics/MethodLength
 
     # Returns the facets part of the search results converted to a hash
     #

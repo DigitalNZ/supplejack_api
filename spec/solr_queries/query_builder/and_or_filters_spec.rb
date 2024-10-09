@@ -14,8 +14,8 @@ module QueryBuilder
         schema_class: RecordSchema,
         exclude_filters_from_facets: true,
         facets: 'test',
-        all: { title: 'keyword' },
-        any: { description: 'keyword' }
+        and: { title: 'keyword' },
+        or: { description: 'keyword' }
       )
     end
 
@@ -30,8 +30,8 @@ module QueryBuilder
       context 'with empty params' do
         subject { described_class.new(search, empty_params) }
 
-        it { is_expected.to have_attributes(conjunction_condition: {}) }
-        it { is_expected.to have_attributes(disjunction_condition: {}) }
+        it { is_expected.to have_attributes(and_condition: {}) }
+        it { is_expected.to have_attributes(or_condition: {}) }
         it { is_expected.to have_attributes(exclude_filters_from_facets: false) }
         it { is_expected.to have_attributes(facets: []) }
       end
@@ -39,8 +39,8 @@ module QueryBuilder
       context 'with given params' do
         subject { described_class.new(search, flat_params) }
 
-        it { is_expected.to have_attributes(conjunction_condition: { title: 'keyword' }) }
-        it { is_expected.to have_attributes(disjunction_condition: { description: 'keyword' }) }
+        it { is_expected.to have_attributes(and_condition: { title: 'keyword' }) }
+        it { is_expected.to have_attributes(or_condition: { description: 'keyword' }) }
         it { is_expected.to have_attributes(exclude_filters_from_facets: false) }
         it { is_expected.to have_attributes(facets: []) }
       end
@@ -50,11 +50,11 @@ module QueryBuilder
       subject! { described_class.new(search, flat_params).call }
 
       it 'applies the conjunction operator on fulltext' do
-        Sunspot.session.should have_search_params(:fulltext) {
+        expect(Sunspot.session).to have_search_params(:with, proc do
           all do
             fulltext 'keyword', fields: :title
           end
-        }
+        end)
       end
     end
   end

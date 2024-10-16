@@ -1,9 +1,8 @@
 GIT
   remote: https://github.com/boost/codeclimate_diff.git
-  revision: 3af7ab88e4ceb8c03a98a9910eb3ad4bbd1b84e9
-  tag: v0.1.10
+  revision: 8974e206e994dbd168a46de24faaabfea8503c8e
   specs:
-    codeclimate_diff (0.1.10)
+    codeclimate_diff (0.1.13)
       colorize
       json
       optparse
@@ -206,7 +205,7 @@ GEM
     hash-deep-merge (0.1.1)
     htmlentities (4.3.4)
     http-accept (1.7.0)
-    http-cookie (1.0.6)
+    http-cookie (1.0.7)
       domain_name (~> 0.5)
     i18n (1.14.5)
       concurrent-ruby (~> 1.0)
@@ -247,7 +246,7 @@ GEM
     lazy_high_charts (1.6.1)
       hash-deep-merge
     link_header (0.0.8)
-    logger (1.6.0)
+    logger (1.6.1)
     loofah (2.22.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
@@ -258,9 +257,10 @@ GEM
       net-smtp
     marcel (1.0.4)
     method_source (1.1.0)
-    mime-types (3.5.2)
+    mime-types (3.6.0)
+      logger
       mime-types-data (~> 3.2015)
-    mime-types-data (3.2024.0702)
+    mime-types-data (3.2024.1001)
     mimemagic (0.4.3)
       nokogiri (~> 1)
       rake
@@ -498,4 +498,4 @@ DEPENDENCIES
   yard
 
 BUNDLED WITH
-   2.5.18
+   2.5.20

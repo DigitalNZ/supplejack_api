@@ -7,7 +7,7 @@ source 'https://rubygems.org'
 # development dependencies will be added by default to the :development group.
 gemspec
 
-gem 'codeclimate_diff', github: 'boost/codeclimate_diff', tag: 'v0.1.10'
+gem 'codeclimate_diff', github: 'boost/codeclimate_diff'
 
 # we can't add a github repository to the gemspec
 # I'm waiting to know why we use the github version instead of the tag

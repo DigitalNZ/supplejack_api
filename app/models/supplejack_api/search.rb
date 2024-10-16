@@ -8,8 +8,9 @@ module SupplejackApi
 
     def initialize(options = {})
       @original_options = options.dup
+      klass = self.class
       @options = SearchParams.new(
-        **options.merge(model_class: self.class.model_class, schema_class: self.class.schema_class)
+        **options.merge(model_class: klass.model_class, schema_class: klass.schema_class)
       )
     end
 

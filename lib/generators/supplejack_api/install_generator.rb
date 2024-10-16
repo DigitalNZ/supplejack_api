@@ -69,24 +69,24 @@ module SupplejackApi
 
       def documentation
         if options.documentation?
-          string = []
-          string << 'Welcome to Supplejack API.'
-          string << "Installation process is complete.\n"
-          string << 'In order to have have a working API, follow the steps below:'
-          string << '1. Implement your data schema in app/supplejack_api/schema.rb. See comments for DSL documentation'
-          string << '2. Edit config/application.yml and set all the keys to the correct values for your environments'
-          string << "3. Start Solr via via `bundle exec rake sunspot:solr:start|stop`. Ensure it's working by going to http://localhost:8983/solr/, you should see the Solr dashboard"
-          string << "4. Start the rails console via `bundle exec rails console`. Perform the next commands in the rails console"
-          string << "5. Use a local Solr session so updates are immediate via `Sunspot.session = Sunspot::Rails.build_session`"
-          string << "6. Create a user via `user = SupplejackApi::User.create(email: 'test@example.com', name: 'Test User')`"
-          string << "7. Create a record via `record = SupplejackApi::Record.create(internal_identifier: 'abc123', status: 'active', source_url: 'http://boost.co.nz/')`"
-          string << "8. Add your custom data (from schema.rb) to the record's primary fragment via `record.primary_fragment.<field_name>=<value>`. Then `record.save!`"
-          string << "9. Start the rails server via `bundle exec rails server -p 3000`"
-          string << "10. Retrieve a specific record by going to http://localhost:3000/records/<record.record_id>.json?api_key=<user.api_key>"
-          string << "11. Perform a search by going to http://localhost:3000/records.json?api_key=<user.api_key>"
-          string << "12. You now have a working API!"
+          puts <<~HEREDOC
+            Welcome to Supplejack API.
+            Installation process is complete.
 
-          puts string.join("\n")
+            In order to have have a working API, follow the steps below:
+            1. Implement your data schema in app/supplejack_api/schema.rb. See comments for DSL documentation
+            2. Edit config/application.yml and set all the keys to the correct values for your environments
+            3. Start Solr via via `bundle exec rake sunspot:solr:start|stop`. Ensure it's working by going to http://localhost:8983/solr/, you should see the Solr dashboard
+            4. Start the rails console via `bundle exec rails console`. Perform the next commands in the rails console
+            5. Use a local Solr session so updates are immediate via `Sunspot.session = Sunspot::Rails.build_session`
+            6. Create a user via `user = SupplejackApi::User.create(email: 'test@example.com', name: 'Test User')`
+            7. Create a record via `record = SupplejackApi::Record.create(internal_identifier: 'abc123', status: 'active', source_url: 'http://boost.co.nz/')`
+            8. Add your custom data (from schema.rb) to the record's primary fragment via `record.primary_fragment.<field_name>=<value>`. Then `record.save!`
+            9. Start the rails server via `bundle exec rails server -p 3000`
+            10. Retrieve a specific record by going to http://localhost:3000/records/<record.record_id>.json?api_key=<user.api_key>
+            11. Perform a search by going to http://localhost:3000/records.json?api_key=<user.api_key>
+            12. You now have a working API!
+          HEREDOC
         end
       end
 

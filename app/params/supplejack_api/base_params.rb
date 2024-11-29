@@ -13,6 +13,7 @@ module SupplejackApi
     include SupplejackApi::Concerns::WithoutParams
     include SupplejackApi::Concerns::TextParams
     include SupplejackApi::Concerns::GroupParams
+    include SupplejackApi::Concerns::FacetRangeParams
 
     attr_reader :errors
 

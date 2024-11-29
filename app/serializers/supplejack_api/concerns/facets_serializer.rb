@@ -22,6 +22,12 @@ module SupplejackApi
           end
         end
 
+        attribute :facet_ranges, if: -> { facet_ranges? } do
+          if !xml?
+            json_facet_ranges
+          end
+        end
+
         def xml?
           instance_options[:request_format] == 'xml'
         end
@@ -63,6 +69,7 @@ module SupplejackApi
           object.facet_response['facet_pivot'].present?
         end
 
+
         def xml_facet_pivots
           facet_pivots = []
 
@@ -97,6 +104,23 @@ module SupplejackApi
           end
 
           facet_pivots
+        end
+
+        def facet_ranges?
+          # TODO: fix, this is due to Sunspot::Rails::StubSessionProxy::Search not supporting facet_response
+          return false if object.try(:facet_response).blank? && Rails.env.test?
+
+          return false if object&.facet_response.blank?
+
+          object.facet_response['facet_ranges'].present?
+        end
+
+        def json_facet_ranges
+          object.facet_response['facet_ranges'].each_with_object({}) do |(facet, values), facet_ranges|
+            values['counts'].each_slice(2) do |key, value|
+              facet_ranges[key] = value
+            end
+          end
         end
       end
     end

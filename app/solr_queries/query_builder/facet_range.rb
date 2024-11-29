@@ -17,15 +17,14 @@ module QueryBuilder
       return search if facet_range_params_missing?
 
       search.build do
-        # # facet @facet_range, :range => @facet_range_start..@facet_range_end, :range_interval => @facet_range_interval
-
-        # facet 'year_dr', range: 2004..2024, range_interval: 1
+        field_definition = RecordSchema.fields[facet_range.to_sym] 
+        return search if field_definition&.solr_name.blank?
         
         adjust_solr_params do |params|
-          params['facet.range'] = 'year_dr'
-          params['facet.range.start'] = '2006-01-01T00:00:00Z'
-          params['facet.range.end'] = '2024-01-01T00:00:00Z'
-          params['facet.range.gap'] = '+5YEAR'
+          params['facet.range'] = field_definition.solr_name
+          params['facet.range.start'] = SupplejackApi::DateHelper.solr_format(DateTime.new(facet_range_start.to_i))
+          params['facet.range.end'] = SupplejackApi::DateHelper.solr_format(DateTime.new(facet_range_end.to_i))
+          params['facet.range.gap'] = facet_range_interval
           params['facet.range.include'] = 'edge'
           params['facet'] = true
         end

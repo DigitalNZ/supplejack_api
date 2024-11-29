@@ -107,7 +107,6 @@ module SupplejackApi
         end
 
         def facet_ranges?
-          # TODO: fix, this is due to Sunspot::Rails::StubSessionProxy::Search not supporting facet_response
           return false if object.try(:facet_response).blank? && Rails.env.test?
 
           return false if object&.facet_response.blank?

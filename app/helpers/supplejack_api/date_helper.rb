@@ -12,6 +12,8 @@ module SupplejackApi
       # return single date if year, month, day are all provided
       solr_format(::Date.edtf(value))
     end
+
+    module_function :parse_as_solr_date_range
   
     # Solr wants datetimes in Z time "1851-01-01T00:00:00Z" (utc)
     # Ruby DateTime .iso8601 returns the date in local time +00:00 unless .utc is called
@@ -20,6 +22,8 @@ module SupplejackApi
   
       date.iso8601
     end
+
+    module_function :solr_format
   
     def parse_as_range(date_to_parse)
       intervals = ::Date.edtf(date_to_parse)
@@ -27,7 +31,6 @@ module SupplejackApi
   
       "[#{solr_format(intervals.first)} TO #{solr_format(intervals.last)}]"
     end
-
-    module_function :solr_format, :parse_as_range, :parse_as_solr_date_range
+    module_function :parse_as_range
   end
 end

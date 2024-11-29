@@ -33,6 +33,7 @@ PATH
       devise
       devise-token_authenticatable (>= 1.0.0)
       dimensions
+      edtf
       json-ld
       kaminari
       kaminari-mongoid
@@ -179,6 +180,8 @@ GEM
     diff-lcs (1.5.1)
     dimensions (1.3.0)
     domain_name (0.6.20240107)
+    edtf (3.2.0)
+      activesupport (>= 3.0, < 9.0)
     erubi (1.13.0)
     et-orbi (1.2.11)
       tzinfo

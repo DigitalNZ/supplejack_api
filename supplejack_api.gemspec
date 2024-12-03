@@ -33,7 +33,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'mongoid_auto_increment'
   s.add_dependency 'progressbar'
   s.add_dependency 'pundit', '~> 2.1'
-  s.add_dependency 'rails', '~> 7.0.6'
+  s.add_dependency 'rails', '~> 7.0.8'
   s.add_dependency 'responders'
   s.add_dependency 'rest-client'
   s.add_dependency 'sidekiq'

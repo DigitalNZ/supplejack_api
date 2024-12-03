@@ -23,9 +23,7 @@ module SupplejackApi
         end
 
         attribute :facet_ranges, if: -> { facet_ranges? } do
-          if !xml?
-            json_facet_ranges
-          end
+          json_facet_ranges unless xml?
         end
 
         def xml?
@@ -68,7 +66,6 @@ module SupplejackApi
 
           object.facet_response['facet_pivot'].present?
         end
-
 
         def xml_facet_pivots
           facet_pivots = []
@@ -115,7 +112,7 @@ module SupplejackApi
         end
 
         def json_facet_ranges
-          object.facet_response['facet_ranges'].each_with_object({}) do |(facet, values), facet_ranges|
+          object.facet_response['facet_ranges'].each_with_object({}) do |(_facet, values), facet_ranges|
             values['counts'].each_slice(2) do |key, value|
               facet_ranges[key] = value
             end

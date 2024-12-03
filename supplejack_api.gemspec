@@ -24,6 +24,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'devise'
   s.add_dependency 'devise-token_authenticatable', '>= 1.0.0'
   s.add_dependency 'dimensions'
+  s.add_dependency 'edtf'
   s.add_dependency 'kaminari'
   s.add_dependency 'kaminari-mongoid'
   s.add_dependency 'lazy_high_charts'
@@ -40,7 +41,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'state_machines'
   s.add_dependency 'unicode_utils'
   s.add_dependency 'voight_kampff', '~> 2.0'
-  s.add_dependency 'edtf'
 
   # Adding sunspot_solr so app has access to sunspot:solr rake tasks
   s.add_dependency 'activeresource'

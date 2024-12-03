@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module SupplejackApi
   module Concerns
     module FacetRangeParams
@@ -5,7 +7,8 @@ module SupplejackApi
 
       private
 
-      def init_facet_range(facet_range: nil, facet_range_start: nil, facet_range_end: nil, facet_range_interval: nil, **_)
+      def init_facet_range(facet_range: nil, facet_range_start: nil, facet_range_end: nil, facet_range_interval: nil,
+                           **_)
         @facet_range = facet_range
         @facet_range_start = facet_range_start
         @facet_range_end = facet_range_end

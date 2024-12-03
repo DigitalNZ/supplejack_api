@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module QueryBuilder
   class FacetRange < Base
     attr_reader :facet_range, :facet_range_end, :facet_range_start, :facet_range_interval
-    
+
     def initialize(search, facet_range, facet_range_start, facet_range_end, facet_range_interval)
       super(search)
 
@@ -17,9 +19,9 @@ module QueryBuilder
       return search if facet_range_params_missing?
 
       search.build do
-        field_definition = RecordSchema.fields[facet_range.to_sym] 
+        field_definition = RecordSchema.fields[facet_range.to_sym]
         return search if field_definition&.solr_name.blank?
-        
+
         adjust_solr_params do |params|
           params['facet.range'] = field_definition.solr_name
           params['facet.range.start'] = SupplejackApi::DateHelper.solr_format(DateTime.new(facet_range_start.to_i))

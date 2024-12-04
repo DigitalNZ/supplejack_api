@@ -21,7 +21,7 @@ module SupplejackApi
       :facet_range,
       :facet_range_start,
       :facet_range_end,
-      :facet_interval
+      :facet_range_interval
     )
 
     class_attribute :max_values

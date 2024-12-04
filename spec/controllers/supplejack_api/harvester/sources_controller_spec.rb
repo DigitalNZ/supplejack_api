@@ -128,7 +128,7 @@ module SupplejackApi
 
           expect(assigns(:source).status).to eq 'suppressed'
           expect(assigns(:source).status_updated_by).to eq 'A user name'
-          expect(assigns(:source).status_updated_at).to eq Time.now.utc
+          expect(assigns(:source).status_updated_at.utc).to eq Time.now.utc
         end
 
         it 'returns the source' do

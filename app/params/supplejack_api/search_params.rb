@@ -17,7 +17,11 @@ module SupplejackApi
       :debug,
       :group_by,
       :group_order_by,
-      :group_sort
+      :group_sort,
+      :facet_range,
+      :facet_range_start,
+      :facet_range_end,
+      :facet_range_interval
     )
 
     class_attribute :max_values
@@ -42,6 +46,7 @@ module SupplejackApi
       init_without(**@params)
       init_text(**@params)
       init_group(**@params)
+      init_facet_range(**@params)
 
       @suggest = @params[:suggest] == 'true'
       @and_condition = @params[:and]

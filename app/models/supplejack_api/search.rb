@@ -93,6 +93,8 @@ module SupplejackApi
         search = QueryBuilder::WithBoudingBox.new(search, options.geo_bbox).call
         search = QueryBuilder::SolrQuery.new(search, options.solr_query).call
         search = QueryBuilder::FacetPivot.new(search, options.facet_pivots).call
+        search = QueryBuilder::FacetRange.new(search, options.facet_range, options.facet_range_start,
+                                              options.facet_range_end, options.facet_range_interval).call
         search = QueryBuilder::Defaults.new(search).call
         search = QueryBuilder::FacetRow.new(search, options.facet_query).call
         search = QueryBuilder::Ordering.new(search, options).call

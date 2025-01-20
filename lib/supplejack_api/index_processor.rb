@@ -8,11 +8,19 @@ module SupplejackApi
 
     def call
       log('Looking for records...')
+
+      clear_query_cache
+
       index_available_records
       unindex_available_records
     end
 
     private
+
+    def clear_query_cache
+      Mongoid.default_client.close
+      Mongoid.default_client.reconnect
+    end
 
     def index_available_records
       indexable_records.batch_size(@batch_size).each_slice(@batch_size) do |records|

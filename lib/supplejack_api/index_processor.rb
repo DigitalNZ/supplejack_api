@@ -8,7 +8,7 @@ module SupplejackApi
 
     def call
       log('Looking for records...')
-      
+
       clear_query_cache
 
       index_available_records

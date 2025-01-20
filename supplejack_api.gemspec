@@ -43,7 +43,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'voight_kampff', '~> 2.0'
 
   # concurrent ruby has removed the dependency on Logger
-  # so ActiveSupport::Logger is uninitialized 
+  # so ActiveSupport::Logger is uninitialized
   # https://github.com/ruby-concurrency/concurrent-ruby/commit/d7ce956dacd0b772273d39b8ed31a30cff7ecf38
   # Hopefully this will be fixed soon and this can be removed
   s.add_dependency 'concurrent-ruby', '1.3.4'

@@ -10,7 +10,7 @@ module SupplejackApi
       log('Looking for records...')
 
       Mongoid::QueryCache.clear_cache
-      
+
       index_available_records
       unindex_available_records
     end

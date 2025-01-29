@@ -3,15 +3,16 @@
 module SupplejackApi
   module Concerns
     module FacetsParams
-      attr_reader :facets, :facet_pivots, :facet_query
+      attr_reader :facets, :facet_pivots, :facet_query, :facet_missing
 
       private
 
-      def init_facets(facets: '', facet_query: {}, facet_pivots: '', exclude_filters_from_facets: 'false', **_)
+      def init_facets(facets: '', facet_query: {}, facet_pivots: '', exclude_filters_from_facets: 'false', facet_missing: false, **_)
         @facets = facets_param(facets)
         @facet_query = facet_query
         @exclude_filters_from_facets = exclude_filters_from_facets == 'true'
         @facet_pivots = facet_pivots_param(facet_pivots)
+        @facet_missing = facet_missing
       end
 
       # Return an array of valid facets

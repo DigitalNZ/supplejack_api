@@ -522,6 +522,34 @@ module SupplejackApi
           end)
         end
 
+        it 'handles nil facets correctly' do
+          RecordSearch.new(
+            and: { email: 'nil' },
+            facets: 'email',
+            exclude_filters_from_facets: 'true'
+          ).execute_solr_search
+
+          expect(@session).to have_search_params(:with, proc do
+            all_of do
+              with(:email, nil)
+            end
+          end) 
+        end
+
+        it 'handles nul facets correctly' do
+          RecordSearch.new(
+            and: { email: 'null' },
+            facets: 'email',
+            exclude_filters_from_facets: 'true'
+          ).execute_solr_search
+
+          expect(@session).to have_search_params(:with, proc do
+            all_of do
+              with(:email, nil)
+            end
+          end) 
+        end
+
         it 'applies filters that are given as strings via the URL correctly' do
           RecordSearch.new(
             and: { category: %w[Images] },

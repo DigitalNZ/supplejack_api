@@ -46,6 +46,8 @@ module SupplejackApi
             data = class_scope.where(column => id.to_i).first
           when /^[0-9a-f]{24}$/i
             data = class_scope.find(id)
+          else
+            data = class_scope.where(internal_identifier: id).first
           end
 
           raise Mongoid::Errors::DocumentNotFound.new(self, [id], [id]) unless data

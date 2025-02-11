@@ -41,14 +41,14 @@ module SupplejackApi
           # .to_sym prevents Brakeman complaining about possible SQL injection
           column = "#{name.demodulize.downcase}_id".to_sym
 
-          case id.to_s
-          when /^\d+$/
-            data = class_scope.where(column => id.to_i).first
-          when /^[0-9a-f]{24}$/i
-            data = class_scope.find(id)
-          else
-            data = class_scope.where(internal_identifier: id).first
-          end
+          data = case id.to_s
+                 when /^\d+$/
+                   class_scope.where(column => id.to_i).first
+                 when /^[0-9a-f]{24}$/i
+                   class_scope.find(id)
+                 else
+                   class_scope.where(internal_identifier: id).first
+                 end
 
           raise Mongoid::Errors::DocumentNotFound.new(self, [id], [id]) unless data
 

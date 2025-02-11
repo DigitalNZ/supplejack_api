@@ -533,7 +533,7 @@ module SupplejackApi
             all_of do
               with(:email, nil)
             end
-          end) 
+          end)
         end
 
         it 'handles nul facets correctly' do
@@ -547,7 +547,7 @@ module SupplejackApi
             all_of do
               with(:email, nil)
             end
-          end) 
+          end)
         end
 
         it 'applies filters that are given as strings via the URL correctly' do

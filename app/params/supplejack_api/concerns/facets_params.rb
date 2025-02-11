@@ -7,7 +7,8 @@ module SupplejackApi
 
       private
 
-      def init_facets(facets: '', facet_query: {}, facet_pivots: '', exclude_filters_from_facets: 'false', facet_missing: false, **_)
+      def init_facets(facets: '', facet_query: {}, facet_pivots: '', exclude_filters_from_facets: 'false',
+                      facet_missing: false, **_)
         @facets = facets_param(facets)
         @facet_query = facet_query
         @exclude_filters_from_facets = exclude_filters_from_facets == 'true'

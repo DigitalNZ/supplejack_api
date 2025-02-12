@@ -10,7 +10,7 @@ module QueryBuilder
   # - Each key in the top level hash will be the name of each facet row returned.
   # - Each value in the top level hash is a hash similar with all the restrictions
   class Facets < Base
-    attr_reader :facet_list, :facets_per_page, :facets_offset
+    attr_reader :facet_list, :facets_per_page, :facets_offset, :facet_missing
 
     def initialize(search, params)
       super(search)
@@ -18,6 +18,7 @@ module QueryBuilder
       @facet_list = params.facets
       @facets_per_page = params.facets_per_page
       @facets_offset = params.facets_offset
+      @facet_missing = params.facet_missing
     end
 
     def call
@@ -37,6 +38,10 @@ module QueryBuilder
 
             params[:"f.#{indexed_name}.facet.method"] = field_definition.facet_method
           end
+        end
+
+        adjust_solr_params do |params|
+          params['facet.missing'] = facet_missing
         end
       end
     end

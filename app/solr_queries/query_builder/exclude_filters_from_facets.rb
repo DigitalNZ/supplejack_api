@@ -54,6 +54,8 @@ module QueryBuilder
         boolean_value = (value == 'true')
 
         search_context.with(facet_name, boolean_value)
+      elsif %w[nil null].include?(value)
+        search_context.with(facet_name, nil)
       else
         # Value is a non-wildcarded string, or an array
         search_context.with(facet_name, value)

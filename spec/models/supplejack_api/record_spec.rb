@@ -22,6 +22,10 @@ module SupplejackApi
         expect(Record.custom_find(@record.id)).to eq(@record)
       end
 
+      it 'should search for a record via its internal identifier' do
+        expect(Record.custom_find(@record.internal_identifier)).to eq(@record)
+      end
+
       it 'should raise a error when a record is not found' do
         expect { Record.custom_find(111) }.to raise_error(Mongoid::Errors::DocumentNotFound)
       end

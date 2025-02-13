@@ -7,6 +7,7 @@ module SupplejackApi
 
       private
 
+      # rubocop:disable Metrics/ParameterLists
       def init_facets(facets: '', facet_query: {}, facet_pivots: '', exclude_filters_from_facets: 'false',
                       facet_missing: false, **_)
         @facets = facets_param(facets)
@@ -15,6 +16,7 @@ module SupplejackApi
         @facet_pivots = facet_pivots_param(facet_pivots)
         @facet_missing = facet_missing
       end
+      # rubocop:enable Metrics/ParameterLists
 
       # Return an array of valid facets
       # It will remove any invalid facets in order to avoid Solr errors

@@ -425,37 +425,37 @@ module SupplejackApi
         end
 
         context 'when fragments.job_id is an array' do
-          let(:job_ids) { ['abc123', 'def456'] }
+          let(:job_ids) { %w[abc123 def456] }
           let(:expected_query) { { "fragments.job_id": { "$in": job_ids } } }
 
           it 'processes multiple job IDs with $in operator' do
             record = create(:record)
             expect(SupplejackApi::Record).to receive(:where).with(expected_query)
-                                          .and_return(SupplejackApi::Record.where(status: 'active'))
-            
-            get :index, params: { 
-              search: { "fragments.job_id" => job_ids },
+                                                            .and_return(SupplejackApi::Record.where(status: 'active'))
+
+            get :index, params: {
+              search: { 'fragments.job_id' => job_ids },
               search_options: { page: 1 }
             }
-            
+
             expect(response).to have_http_status(:success)
           end
         end
 
         context 'when fragments.job_id is a single value' do
           let(:job_id) { 'abc123' }
-          let(:search_params) { { "fragments.job_id" => job_id } }
+          let(:search_params) { { 'fragments.job_id' => job_id } }
 
           it 'uses the regular search params without modification' do
             record = create(:record)
             expect(SupplejackApi::Record).to receive(:where).with(search_params.to_hash)
-                                          .and_return(SupplejackApi::Record.where(status: 'active'))
-            
-            get :index, params: { 
+                                                            .and_return(SupplejackApi::Record.where(status: 'active'))
+
+            get :index, params: {
               search: search_params,
               search_options: { page: 1 }
             }
-            
+
             expect(response).to have_http_status(:success)
           end
         end
@@ -470,12 +470,12 @@ module SupplejackApi
         context 'when no records found' do
           it 'returns no_content status' do
             allow(SupplejackApi::Record).to receive_message_chain(:where, :page, :per, :hint).and_return([])
-            
-            get :index, params: { 
-              search: { "fragments.job_id" => 'non_existent' },
+
+            get :index, params: {
+              search: { 'fragments.job_id' => 'non_existent' },
               search_options: { page: 1 }
             }
-            
+
             expect(response).to have_http_status(:no_content)
           end
         end

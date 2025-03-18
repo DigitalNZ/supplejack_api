@@ -69,12 +69,19 @@ module SupplejackApi
       def index
         body = "Request must have a search params with one or more of those fields \
                 ['record_id', 'fragments.source_id', 'fragments.job_id']"
-        return render status: :bad_request, body: body if search_params.blank?
+        return render status: :bad_request,
+                      body: body if search_params.blank? && params['search']['fragments.job_id'].blank?
 
         page = search_options_params[:page].to_i
 
+        # Process multiple harvest job ids
+        # this happens when enrichment is comming from an Automation
+        if params['search']['fragments.job_id'].is_a?(Array)
+          range_job_ids = { "fragments.job_id": { "$in": params['search']['fragments.job_id'] } }
+        end
+
         @records = SupplejackApi::Record
-                   .where(search_params.to_hash)
+                   .where(range_job_ids || search_params.to_hash)
                    .page(page).per(20).hint(hints)
 
         if @records.present?

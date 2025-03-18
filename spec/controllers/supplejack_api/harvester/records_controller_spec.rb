@@ -429,7 +429,6 @@ module SupplejackApi
           let(:expected_query) { { "fragments.job_id": { "$in": job_ids } } }
 
           it 'processes multiple job IDs with $in operator' do
-            record = create(:record)
             expect(SupplejackApi::Record).to receive(:where).with(expected_query)
                                                             .and_return(SupplejackApi::Record.where(status: 'active'))
 
@@ -447,7 +446,6 @@ module SupplejackApi
           let(:search_params) { { 'fragments.job_id' => job_id } }
 
           it 'uses the regular search params without modification' do
-            record = create(:record)
             expect(SupplejackApi::Record).to receive(:where).with(search_params.to_hash)
                                                             .and_return(SupplejackApi::Record.where(status: 'active'))
 

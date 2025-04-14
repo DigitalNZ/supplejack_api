@@ -4,6 +4,7 @@ module SupplejackApi
   class IndexProcessor
     def initialize(batch_size = 500)
       @batch_size = batch_size
+      @records_changed = false
     end
 
     def call
@@ -13,6 +14,9 @@ module SupplejackApi
 
       index_available_records
       unindex_available_records
+
+      # Update the invalidation token if any records were indexed or unindexed
+      update_invalidation_token if @records_changed
     end
 
     private
@@ -26,7 +30,10 @@ module SupplejackApi
       indexable_records.batch_size(@batch_size).each_slice(@batch_size) do |records|
         log("#{records.count} to be indexed: #{records.map(&:record_id)}", true)
 
-        BatchIndexRecords.new(records).call
+        if records.any?
+          BatchIndexRecords.new(records).call
+          @records_changed = true
+        end
       end
     end
 
@@ -34,7 +41,10 @@ module SupplejackApi
       unindexable_records.batch_size(@batch_size).each_slice(@batch_size) do |records|
         log("#{records.count} to be unindexed: #{records.map(&:record_id)}", true)
 
-        BatchRemoveRecordsFromIndex.new(records).call
+        if records.any?
+          BatchRemoveRecordsFromIndex.new(records).call
+          @records_changed = true
+        end
       end
     end
 
@@ -71,6 +81,12 @@ module SupplejackApi
       api_source_ids = Source.where(harvesting: true)
 
       (api_source_ids.map(&:source_id) + worker_source_ids).uniq
+    end
+
+    def update_invalidation_token
+      SupplejackApi::IndexInvalidation.update_token
+    rescue StandardError => e
+      log("Failed to update invalidation token: #{e.message}")
     end
 
     def log(str, prefix = '')

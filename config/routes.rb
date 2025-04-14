@@ -18,6 +18,9 @@ SupplejackApi::Engine.routes.draw do
       get :multiple, on: :collection
       get :more_like_this
     end
+    
+    # Index invalidation token
+    get '/index_invalidation/token', to: 'index_invalidations#token'
   end
 
   scope '/:version/metrics', version: /v3/, defaults: {format: 'json'} do

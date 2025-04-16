@@ -44,5 +44,19 @@ RSpec.describe SupplejackApi::IndexProcessor do
 
       expect(SupplejackApi::Record.ready_for_indexing.count).to eq 1
     end
+
+    context 'when no records are changed' do
+      it 'does not update the invalidation token' do
+        expect(SupplejackApi::IndexInvalidation).not_to receive(:update_token)
+        described_class.new.call
+      end
+    end
+
+    context 'when no records are ready for indexing' do
+      it 'does not update the invalidation token' do
+        expect(SupplejackApi::IndexInvalidation).not_to receive(:update_token)
+        described_class.new.call
+      end
+    end
   end
 end

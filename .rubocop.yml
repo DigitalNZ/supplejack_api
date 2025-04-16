@@ -27,6 +27,9 @@ Rails/DynamicFindBy:
 Layout/ExtraSpacing:
   Enabled: false
 
+Metrics/ClassLength:
+  Max: 120
+
 Layout/LeadingCommentSpace:
   Exclude:
     - Rakefile

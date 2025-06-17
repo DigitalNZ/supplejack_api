@@ -156,7 +156,7 @@ module SupplejackApi
       it 'should include the correct search sort' do
         search = RecordSearch.new(sort: 'random')
 
-        expect(search.search_builder.inspect.include?(':sort=>"random desc"')).to eq true
+        expect(search.search_builder.inspect.include?('sort: "random desc"')).to eq true
       end
     end
 

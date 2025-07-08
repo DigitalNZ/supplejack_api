@@ -28,41 +28,61 @@ module SupplejackApi
 
     # rubocop:disable Metrics/MethodLength
     def self.summarize
-      return unless SupplejackApi.config.log_metrics == true
+      return unless SupplejackApi.config.log_metrics
 
-      records = all.to_a
-      summarized_metrics = records.group_by(&:date).each_with_object({}) do |(date, metrics), summary|
-        summary[date] = Hash.new do |hash, key|
-          hash[key] = {
-            'metrics' => {
-              'page_views' => 0,
-              'user_set_views' => 0,
-              'user_story_views' => 0,
-              'added_to_user_sets' => 0,
-              'source_clickthroughs' => 0,
-              'appeared_in_searches' => 0,
-              'added_to_user_stories' => 0
-            },
-            'display_collection' => 'none'
-          }
-        end
+      Rails.logger.info('Starting summarization of RequestMetrics')
+      current_date = nil
+      summary = {}
 
-        metrics.each do |metric|
-          metric.records.each do |record|
-            summary[date][record['record_id']]['metrics'][metric.metric] += 1
-            summary[date][record['record_id']]['display_collection'] = record['display_collection']
+      RequestMetric
+        .batch_size(1_000)
+        .order_by(date: 1, _id: 1)
+        .each do |metric|
+          Rails.logger.info("Processing metric for date: #{metric.date}, metric: #{metric.metric}")
+
+          # When we hit a new date, flush the last date’s summaries:
+          if current_date && metric.date != current_date
+            Rails.logger.info("\nFlushing summary for date: #{current_date}\n")
+            flush_summary_for(current_date, summary)
+            summary.clear
           end
-        end
-      end
 
-      summarized_metrics.each do |date, record|
-        record.each do |id, details|
-          RecordMetric.spawn(id, details['metrics'], details['display_collection'], date)
-        end
-      end
+          current_date = metric.date
 
-      records.map(&:destroy)
+          metric.records.each do |rec|
+            key = rec['record_id']
+            summary[key] ||= {
+              metrics: {
+                page_views: 0,
+                user_set_views: 0,
+                user_story_views: 0,
+                added_to_user_sets: 0,
+                source_clickthroughs: 0,
+                appeared_in_searches: 0,
+                added_to_user_stories: 0
+              },
+              display_collection: rec['display_collection']
+            }
+            summary[key][:metrics][metric.metric.to_sym] += 1
+          end
+
+          metric.destroy
+        end
+
+      # Flush the last date left in summary
+      flush_summary_for(current_date, summary) if current_date
     end
     # rubocop:enable Metrics/MethodLength
+
+    def self.flush_summary_for(date, summary)
+      summary.each do |record_id, details|
+        RecordMetric.spawn(
+          record_id,
+          details[:metrics].transform_keys(&:to_s),
+          details[:display_collection],
+          date
+        )
+      end
+    end
   end
 end

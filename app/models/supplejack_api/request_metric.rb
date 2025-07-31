@@ -13,6 +13,8 @@ module SupplejackApi
     validate :records_integrity
     validates :metric,  presence: true
 
+    index({ date: 1, _id: 1 }, background: true)
+
     def records_integrity
       return unless records.any? { |record| record[:record_id].nil? || record[:display_collection].nil? }
 
@@ -35,6 +37,7 @@ module SupplejackApi
       summary = {}
 
       RequestMetric
+        .no_timeout
         .batch_size(1_000)
         .order_by(date: 1, _id: 1)
         .each do |metric|

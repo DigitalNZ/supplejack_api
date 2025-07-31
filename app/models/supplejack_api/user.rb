@@ -31,10 +31,11 @@ module SupplejackApi
     # Token authenticatable
     field :authentication_token, type: String
 
-    field :daily_requests,    type: Integer,  default: 0
-    field :monthly_requests,  type: Integer,  default: 0
-    field :max_requests,      type: Integer,  default: 10_000
-    field :role,              type: String,   default: 'developer'
+    field :daily_requests,              type: Integer,  default: 0
+    field :monthly_requests,            type: Integer,  default: 0
+    field :max_requests,                type: Integer,  default: 10_000
+    field :anonymous_max_requests,      type: Integer,  default: 100
+    field :role,                        type: String,   default: 'developer'
 
     field :daily_activity,        type: Hash
     field :daily_activity_stored, type: Mongoid::Boolean, default: true
@@ -122,7 +123,11 @@ module SupplejackApi
       self.daily_activity_stored = true
     end
 
-    def over_limit?
+    def over_limit?(current_user = null)
+      if (current_user.present? && RecordSchema.roles[current_user.role.to_sym].try(:anonymous)) {
+        return updated_today? && daily_requests > anonymous_max_requests
+      }
+
       updated_today? && daily_requests > max_requests
     end
 

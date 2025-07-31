@@ -26,7 +26,7 @@ module SupplejackApi
       error_message = nil
 
       if current_user
-        if current_user.over_limit?
+        if current_user.over_limit?(current_user)
           error_message = if RecordSchema.roles[current_user.role.to_sym].try(:anonymous)
                             I18n.t('users.anonymous_reached_limit')
                           else

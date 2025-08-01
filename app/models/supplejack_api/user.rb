@@ -124,9 +124,9 @@ module SupplejackApi
     end
 
     def over_limit?(current_user = null)
-      if (current_user.present? && RecordSchema.roles[current_user.role.to_sym].try(:anonymous)) {
+      if current_user.present? && RecordSchema.roles[current_user.role.to_sym].try(:anonymous)
         return updated_today? && daily_requests > anonymous_max_requests
-      }
+      end
 
       updated_today? && daily_requests > max_requests
     end

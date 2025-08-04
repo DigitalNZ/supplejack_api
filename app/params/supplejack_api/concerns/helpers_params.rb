@@ -22,7 +22,7 @@ module SupplejackApi
         # - the corresponding max value if it is exceeding it
         # - the value otherwise
         def integer_param(param, value)
-          @user = User.find_by_auth_token(request.headers['Authentication-Token'] || params[:api_key])
+          @user = User.find_by_auth_token(params[:api_key])
 
           if self.class.max_values[param] < value
             if @user.nil? || @user&.role == 'anonymous'

@@ -55,7 +55,7 @@ module SupplejackApi
 
       @solr_query = @params[:solr_query]
       @debug = @params[:debug] == 'true'
-      @user = User.find_by_auth_token(@params[:api_key])
+      @user = User.find_by_auth_token(params[:api_key])
     end
 
     private

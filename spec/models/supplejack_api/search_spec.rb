@@ -178,11 +178,11 @@ module SupplejackApi
         expect(@search.valid?).to be false
       end
 
-      it 'sets warning if page vale is greater than 10000' do
-        search = RecordSearch.new(page: 100_001)
+      it 'sets warning if page vale is greater than 50000' do
+        search = RecordSearch.new(page: 50_001)
         search.valid?
 
-        expect(search.errors).to include 'The page parameter can not exceed 100000'
+        expect(search.errors).to include 'The page parameter can not exceed 50000'
       end
 
       it 'sets warning if per_page vale is greater than 100' do

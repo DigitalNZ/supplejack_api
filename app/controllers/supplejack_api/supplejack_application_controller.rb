@@ -26,6 +26,12 @@ module SupplejackApi
       error_message = nil
 
       if current_user
+        # limit for anonymous users is reduced to 100 pages
+        if RecordSchema.roles[current_user.role.to_sym].try(:anonymous)
+          SupplejackApi::SearchParams.max_values.page = 100
+          SupplejackApi::MltParams.max_values.page = 100
+        end
+
         if current_user.over_limit?
           error_message = if RecordSchema.roles[current_user.role.to_sym].try(:anonymous)
                             I18n.t('users.anonymous_reached_limit')

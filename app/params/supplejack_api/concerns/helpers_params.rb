@@ -26,7 +26,9 @@ module SupplejackApi
 
           if self.class.max_values[param] < value
             if @user.nil? || @user&.role == 'anonymous'
+              # rubocop:disable Layout/LineLength
               errors << "The #{param} parameter for anonymous users (without an API key) can not exceed #{self.class.max_values[param]}"
+              # rubocop:enable Layout/LineLength
             else
               errors << "The #{param} parameter can not exceed #{self.class.max_values[param]}"
             end

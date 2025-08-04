@@ -37,7 +37,7 @@ module SupplejackApi
       @record_type = @params[:record_type]
 
       @debug = kwargs[:debug] == 'true'
-      @user = User.find_by_auth_token(request.headers['Authentication-Token'] || params[:api_key])
+      @user = User.find_by_auth_token(@params[:api_key])
     end
 
     def valid?

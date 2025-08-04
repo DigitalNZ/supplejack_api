@@ -27,7 +27,7 @@ module SupplejackApi
     class_attribute :max_values
 
     self.max_values = {
-      page: @user.nil? || @user&.role == 'anonymous' ? 100 : 50_000,
+      page: 50_000,
       per_page: 100,
       facets_per_page: 350,
       facets_page: 5000
@@ -55,7 +55,6 @@ module SupplejackApi
 
       @solr_query = @params[:solr_query]
       @debug = @params[:debug] == 'true'
-      @user = User.find_by_auth_token(params[:api_key])
     end
 
     private

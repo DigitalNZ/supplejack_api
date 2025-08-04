@@ -24,14 +24,14 @@ module SupplejackApi
         def integer_param(param, value)
           @user = User.find_by_auth_token(params[:api_key])
 
-          if self.class.max_values[param] < value
-            if @user.nil? || @user&.role == 'anonymous'
+          if param == 'page' && (@user.nil? || @user&.role == 'anonymous') && 100 < value
               # rubocop:disable Layout/LineLength
               errors << "The #{param} parameter for anonymous users (without an API key) can not exceed #{self.class.max_values[param]}"
               # rubocop:enable Layout/LineLength
-            else
-              errors << "The #{param} parameter can not exceed #{self.class.max_values[param]}"
-            end
+          end
+
+          if self.class.max_values[param] < value
+            errors << "The #{param} parameter can not exceed #{self.class.max_values[param]}"
           end
 
           value = value.to_i

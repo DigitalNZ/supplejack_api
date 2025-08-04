@@ -16,7 +16,7 @@ module SupplejackApi
     class_attribute :max_values
 
     self.max_values = {
-      page: @user.nil? || @user&.role == 'anonymous' ? 100 : 50_000,
+      page: 50_000,
       per_page: 100
     }
 
@@ -37,7 +37,6 @@ module SupplejackApi
       @record_type = @params[:record_type]
 
       @debug = kwargs[:debug] == 'true'
-      @user = User.find_by_auth_token(params[:api_key])
     end
 
     def valid?

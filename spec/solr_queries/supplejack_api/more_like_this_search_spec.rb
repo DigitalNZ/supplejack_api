@@ -99,7 +99,9 @@ module SupplejackApi
 
       it 'sets error if page value is greater than 100' do
         search = MoreLikeThisSearch.new(record, :anonymous, page: 101)
+        # rubocop:disable Layout/LineLength
         expect(search.errors).to include 'The page parameter for anonymous users (without an API key) can not exceed 100'
+        # rubocop:enable Layout/LineLength
       end
 
       it 'sets warning if per_page vale is greater than 100' do

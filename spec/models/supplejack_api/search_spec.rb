@@ -178,7 +178,7 @@ module SupplejackApi
         expect(@search.valid?).to be false
       end
 
-      it 'sets warning if page vale is greater than 100' do
+      it 'sets warning if page value is greater than 100' do
         search = RecordSearch.new(page: 101)
         search.valid?
 
@@ -187,25 +187,32 @@ module SupplejackApi
         # rubocop:enable Layout/LineLength
       end
 
-      it 'sets warning if per_page vale is greater than 100' do
+      it 'sets warning if per_page value is greater than 100' do
         search = RecordSearch.new(per_page: 101)
         search.valid?
 
         expect(search.errors).to include 'The per_page parameter can not exceed 100'
       end
 
-      it 'sets warning if facets_per_page vale is greater than 350' do
+      it 'sets warning if facets_per_page value is greater than 350' do
         search = RecordSearch.new(facets_per_page: 351)
         search.valid?
 
         expect(search.errors).to include 'The facets_per_page parameter can not exceed 350'
       end
 
-      it 'sets warning if facets_page vale is greater than 5000' do
+      it 'sets warning if facets_page value is greater than 5000' do
         search = RecordSearch.new(facets_page: 5001)
         search.valid?
 
         expect(search.errors).to include 'The facets_page parameter can not exceed 5000'
+      end
+
+      it 'sets warning if page is greater than 50000 with api key' do
+        search = RecordSearch.new('page' => '50_001', 'api_key' => 'testapikey')
+        search.valid?
+
+        expect(search.errors).to include 'The page parameter can not exceed 50000'
       end
     end
 

@@ -104,9 +104,16 @@ module SupplejackApi
         # rubocop:enable Layout/LineLength
       end
 
-      it 'sets warning if per_page vale is greater than 100' do
+      it 'sets warning if per_page value is greater than 100' do
         search = MoreLikeThisSearch.new(record, :anonymous, per_page: 101)
         expect(search.errors).to include 'The per_page parameter can not exceed 100'
+      end
+
+      it 'sets warning if page is greater than 50000 with api key' do
+        search = MoreLikeThisSearch.new(record, :anonymous, { 'page' => 50_001, 'api_key' => 'testapikey' })
+        search.valid?
+
+        expect(search.errors).to include 'The page parameter can not exceed 50000'
       end
     end
   end

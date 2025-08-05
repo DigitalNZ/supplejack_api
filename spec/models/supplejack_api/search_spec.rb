@@ -182,7 +182,8 @@ module SupplejackApi
         search = RecordSearch.new(page: 101)
         search.valid?
 
-        expect(search.errors).to include 'The page parameter for anonymous users (without an API key) can not exceed 100'
+        expect(search.errors).to
+          include 'The page parameter for anonymous users (without an API key) can not exceed 100'
       end
 
       it 'sets warning if per_page vale is greater than 100' do

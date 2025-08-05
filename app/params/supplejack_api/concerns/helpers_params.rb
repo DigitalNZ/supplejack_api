@@ -26,9 +26,7 @@ module SupplejackApi
             # rubocop:disable Layout/LineLength
             errors << "The #{param} parameter for anonymous users (without an API key) can not exceed #{self.class.max_values[param]}"
             # rubocop:enable Layout/LineLength
-          end
-
-          if self.class.max_values[param] < value
+          elsif self.class.max_values[param] < value
             errors << "The #{param} parameter can not exceed #{self.class.max_values[param]}"
           end
 

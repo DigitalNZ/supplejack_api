@@ -10,14 +10,14 @@ module SupplejackApi
       @original_options = options.dup
       klass = self.class
 
-      @options = if options['api_key']
-                    SearchParams.new(
-                       **options.merge(model_class: klass.model_class, schema_class: klass.schema_class)
-                     )
-                  else
-                    AnonymousSearchParams.new(
-                      **options.merge(model_class: klass.model_class, schema_class: klass.schema_class)
-                    )
+      @options = if options.present? && options['api_key'].present?
+                   SearchParams.new(
+                     **options.merge(model_class: klass.model_class, schema_class: klass.schema_class)
+                   )
+                 else
+                   AnonymousSearchParams.new(
+                     **options.merge(model_class: klass.model_class, schema_class: klass.schema_class)
+                   )
                  end
     end
 

@@ -9,9 +9,17 @@ module SupplejackApi
     def initialize(options = {})
       @original_options = options.dup
       klass = self.class
-      @options = SearchParams.new(
-        **options.merge(model_class: klass.model_class, schema_class: klass.schema_class)
-      )
+
+      role = scope&.role&.to_sym
+      @options = if role.nil? || role == :anonymous
+                   AnonymousSearchParams.new(
+                     **options.merge(model_class: klass.model_class, schema_class: klass.schema_class)
+                   )
+                 else
+                   SearchParams.new(
+                     **options.merge(model_class: klass.model_class, schema_class: klass.schema_class)
+                   )
+                 end
     end
 
     def self.model_class

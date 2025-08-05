@@ -22,7 +22,7 @@ module SupplejackApi
         # - the corresponding max value if it is exceeding it
         # - the value otherwise
         def integer_param(param, value)
-          if param == 'page' && self.class.max_values[param] == 100 && self.class.max_values[param] < value
+          if param == :page && self.class.max_values[param] == 100 && self.class.max_values[param] < value
               # rubocop:disable Layout/LineLength
               errors << "The #{param} parameter for anonymous users (without an API key) can not exceed #{self.class.max_values[param]}"
               # rubocop:enable Layout/LineLength

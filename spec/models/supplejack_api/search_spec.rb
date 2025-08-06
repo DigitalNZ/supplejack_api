@@ -179,7 +179,7 @@ module SupplejackApi
       end
 
       it 'sets warning if page value is greater than 100' do
-        search = RecordSearch.new(page: 101)
+        search = RecordSearch.new(page: 101, role: 'anonymous')
         search.valid?
 
         # rubocop:disable Layout/LineLength

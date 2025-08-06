@@ -5,7 +5,7 @@ module SupplejackApi
     attr_reader :role, :record
 
     def initialize(record, role, params)
-      mlt_params = if role.present? && role.include?('anonymous')
+      mlt_params = if role.present? && role == :anonymous
                      SupplejackApi::AnonymousMltParams.new(
                        **params.merge(
                          schema_class: RecordSchema, model_class: SupplejackApi::Record

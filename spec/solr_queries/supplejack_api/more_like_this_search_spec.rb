@@ -110,7 +110,7 @@ module SupplejackApi
       end
 
       it 'sets warning if page is greater than 50000 with api key' do
-        search = MoreLikeThisSearch.new(record, :anonymous, { 'page' => 50_001, 'api_key' => 'testapikey' })
+        search = MoreLikeThisSearch.new(record, :admin, { 'page' => 50_001, 'api_key' => 'testapikey' })
         search.valid?
 
         expect(search.errors).to include 'The page parameter can not exceed 50000'

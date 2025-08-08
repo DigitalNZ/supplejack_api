@@ -16,7 +16,7 @@ module SupplejackApi
     class_attribute :max_values
 
     self.max_values = {
-      page: 100_000,
+      page: 50_000,
       per_page: 100
     }
 

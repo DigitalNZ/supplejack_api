@@ -5,11 +5,21 @@ module SupplejackApi
     attr_reader :role, :record
 
     def initialize(record, role, params)
-      super(SupplejackApi::MltParams.new(
-        **params.merge(
-          schema_class: RecordSchema, model_class: SupplejackApi::Record
-        )
-      ))
+      mlt_params = if role.present? && role == :anonymous
+                     SupplejackApi::AnonymousMltParams.new(
+                       **params.merge(
+                         schema_class: RecordSchema, model_class: SupplejackApi::Record
+                       )
+                     )
+                   else
+                     SupplejackApi::MltParams.new(
+                       **params.merge(
+                         schema_class: RecordSchema, model_class: SupplejackApi::Record
+                       )
+                     )
+                   end
+
+      super(mlt_params)
       @record = record
       @role = role
     end

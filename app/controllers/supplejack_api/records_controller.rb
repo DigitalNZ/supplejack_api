@@ -14,7 +14,9 @@ module SupplejackApi
     respond_to :json, :xml, :rss
 
     def index
-      @search = SupplejackApi::RecordSearch.new(all_params)
+      options = all_params.dup
+      options['role'] = current_user&.role
+      @search = SupplejackApi::RecordSearch.new(options)
       @search.scope = current_user
 
       if @search.valid?

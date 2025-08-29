@@ -350,6 +350,7 @@ module SupplejackApi
             api_key: harvester.api_key
           }
         end
+
         it 'returns all fields when the fields parameter is missing' do
           get :index, params: {
             search: { 'fragments.job_id': records.first.job_id },
@@ -475,6 +476,37 @@ module SupplejackApi
             }
 
             expect(response).to have_http_status(:no_content)
+          end
+        end
+
+        context "when the exclude_source_id parameter is set" do
+          let!(:record) { 
+            create(:record, 
+            fragments: [
+                build(:record_fragment, source_id: 'harvest_fragment'),
+                build(:record_fragment, source_id: 'enrichment_fragment')
+              ]
+            ) 
+          }
+
+          let!(:record2) { 
+            create(:record, 
+            fragments: [
+                build(:record_fragment, source_id: 'harvest_fragment')
+              ]
+            ) 
+          }
+
+          it "only returns records that do not contain the source id being harvested" do
+            get :index, params: {
+              search: { 'fragments.source_id' => 'harvest_fragment' },
+              exclude_source_id: 'enrichment_fragment',
+              search_options: { page: 1 }
+            } 
+
+            body = JSON.parse(response.body)
+
+            expect(body['records'].count).to eq 1
           end
         end
       end

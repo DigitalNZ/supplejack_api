@@ -34,19 +34,19 @@ module SupplejackApi
       end
 
       def delete
-        # FIXME: This removes record even if it's a preview
-        @record = SupplejackApi::Record.where(internal_identifier: params[:id]).first
+        id = params[:id]
+        @record = SupplejackApi::Record.where(internal_identifier: id).first
         @record.update_attribute(:status, 'deleted') if @record.present?
 
-        render json: { status: :success, record_id: params[:id] }
+        render json: { status: :success, record_id: id }
       rescue StandardError => e
         Rails.logger.error "Fail to set deleted status to record #{@record}: #{e.inspect}"
 
         render json: {
           status: :failed, exception_class: e.class.to_s, message: e.message,
-          backtrace: e.backtrace, raw_data: @record.try(:to_json), record_id: params[:id]
+          backtrace: e.backtrace, raw_data: @record.try(:to_json), record_id: id
         }
-      end
+      end 
 
       def update
         @record = SupplejackApi::Record.custom_find(params[:id], nil, status: :all)
@@ -74,15 +74,9 @@ module SupplejackApi
 
         page = search_options_params[:page].to_i
 
-        # Process multiple harvest job ids
-        # this happens when enrichment is comming from an Automation
-        if params['search']['fragments.job_id'].is_a?(Array)
-          range_job_ids = { "fragments.job_id": { "$in": params['search']['fragments.job_id'] } }
-        end
 
-        @records = SupplejackApi::Record
-                   .where(range_job_ids || search_params.to_hash)
-                   .page(page).per(20).hint(hints)
+
+        @records = query.page(page).per(20).hint(hints)
 
         if @records.present?
           render json: @records,
@@ -94,10 +88,28 @@ module SupplejackApi
         end
       end
 
-      def fields
-        return nil if params[:fields].blank?
+      def query
+        job_id = params['search']['fragments.job_id']
+        exclude_source_id = params['exclude_source_id']
 
-        params[:fields] << 'id'
+        if job_id.is_a?(Array)
+          range_job_ids = { "fragments.job_id": { "$in": job_id } }
+        end
+
+        query = SupplejackApi::Record.where(range_job_ids || search_params.to_hash)
+
+        if exclude_source_id.present?
+          query = query.where("fragments.source_id": { "$ne": exclude_source_id })
+        end
+
+        query
+      end
+
+      def fields
+        fields = params[:fields]
+        return nil if fields.blank?
+
+        fields << 'id'
       end
 
       def self.record_serializer_class
@@ -109,7 +121,8 @@ module SupplejackApi
       end
 
       def record_includes
-        return params[:record_includes] if params[:record_includes].present?
+        record_includes = params[:record_includes]
+        return record_includes if record_includes.present?
 
         self.class.record_serializer_includes
       end

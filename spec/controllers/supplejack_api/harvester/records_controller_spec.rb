@@ -479,30 +479,28 @@ module SupplejackApi
           end
         end
 
-        context "when the exclude_source_id parameter is set" do
-          let!(:record) { 
-            create(:record, 
-            fragments: [
-                build(:record_fragment, source_id: 'harvest_fragment'),
-                build(:record_fragment, source_id: 'enrichment_fragment')
-              ]
-            ) 
-          }
+        context 'when the exclude_source_id parameter is set' do
+          let!(:record) do
+            create(:record,
+                   fragments: [
+                       build(:record_fragment, source_id: 'harvest_fragment'),
+                       build(:record_fragment, source_id: 'enrichment_fragment')
+                     ])
+          end
 
-          let!(:record2) { 
-            create(:record, 
-            fragments: [
-                build(:record_fragment, source_id: 'harvest_fragment')
-              ]
-            ) 
-          }
+          let!(:record2) do
+            create(:record,
+                   fragments: [
+                       build(:record_fragment, source_id: 'harvest_fragment')
+                     ])
+          end
 
-          it "only returns records that do not contain the source id being harvested" do
+          it 'only returns records that do not contain the source id being harvested' do
             get :index, params: {
               search: { 'fragments.source_id' => 'harvest_fragment' },
               exclude_source_id: 'enrichment_fragment',
               search_options: { page: 1 }
-            } 
+            }
 
             body = JSON.parse(response.body)
 

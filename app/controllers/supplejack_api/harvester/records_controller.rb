@@ -46,7 +46,7 @@ module SupplejackApi
           status: :failed, exception_class: e.class.to_s, message: e.message,
           backtrace: e.backtrace, raw_data: @record.try(:to_json), record_id: id
         }
-      end 
+      end
 
       def update
         @record = SupplejackApi::Record.custom_find(params[:id], nil, status: :all)
@@ -74,8 +74,6 @@ module SupplejackApi
 
         page = search_options_params[:page].to_i
 
-
-
         @records = query.page(page).per(20).hint(hints)
 
         if @records.present?
@@ -92,15 +90,11 @@ module SupplejackApi
         job_id = params['search']['fragments.job_id']
         exclude_source_id = params['exclude_source_id']
 
-        if job_id.is_a?(Array)
-          range_job_ids = { "fragments.job_id": { "$in": job_id } }
-        end
+        range_job_ids = { "fragments.job_id": { "$in": job_id } } if job_id.is_a?(Array)
 
         query = SupplejackApi::Record.where(range_job_ids || search_params.to_hash)
 
-        if exclude_source_id.present?
-          query = query.where("fragments.source_id": { "$ne": exclude_source_id })
-        end
+        query = query.where("fragments.source_id": { "$ne": exclude_source_id }) if exclude_source_id.present?
 
         query
       end

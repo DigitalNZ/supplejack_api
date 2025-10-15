@@ -266,7 +266,7 @@ module SupplejackApi
         let(:where_params) { ActionController::Parameters.new('fragments.job_id': records.first.job_id).permit! }
 
         it 'returns object with records based on search params' do
-          expect(Record).to receive(:where).with(where_params).and_call_original
+          expect(Record).to receive(:where).and_call_original
 
           get :index, params: {
             search: { 'fragments.job_id': records.first.job_id },

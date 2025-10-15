@@ -20,6 +20,8 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'active_model_serializers'
   s.add_dependency 'activemodel-serializers-xml'
+  s.add_dependency 'activerecord', '~> 7.2.2.2'
+  s.add_dependency 'activesupport', '~> 7.2.2.2'
   s.add_dependency 'dalli'
   s.add_dependency 'devise'
   s.add_dependency 'devise-token_authenticatable', '>= 1.0.0'
@@ -32,7 +34,8 @@ Gem::Specification.new do |s|
   s.add_dependency 'mongoid_auto_increment'
   s.add_dependency 'progressbar'
   s.add_dependency 'pundit', '~> 2.1'
-  s.add_dependency 'rails', '~> 7.1.0'
+  s.add_dependency 'rack', '~> 2.2.4'
+  s.add_dependency 'rails', '~> 7.2.2.2'
   s.add_dependency 'responders'
   s.add_dependency 'rest-client'
   s.add_dependency 'sidekiq'

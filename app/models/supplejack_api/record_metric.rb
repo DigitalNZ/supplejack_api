@@ -24,13 +24,17 @@ module SupplejackApi
 
     index({ record_id: 1, display_collection: 1, date: 1 }, background: true)
 
-    index({ display_collection: 1, date: 1, processed_by_collection_metrics: 1 }, background: true)
-    index({ display_collection: 1, date: 1, processed_by_top_metrics: 1 }, background: true)
-    index({ display_collection: 1, date: 1, processed_by_top_collection_metrics: 1 }, background: true)
+    index({ date: 1, display_collection: 1, processed_by_collection_metrics: 1 }, background: true)
+    index({ date: 1, display_collection: 1, processed_by_top_metrics: 1 }, background: true)
+    index({ date: 1, display_collection: 1, processed_by_top_collection_metrics: 1 }, background: true)
 
     index({ display_collection: 1, date: 1 }, background: true)
 
     index({ date: 1 }, background: true)
+
+    index({ date: 1, processed_by_collection_metrics: 1 }, background: true)
+    index({ date: 1, processed_by_top_metrics: 1 }, background: true)
+    index({ date: 1, processed_by_top_collection_metrics: 1 }, background: true)
 
     index({ processed_by_collection_metrics: 1 }, background: true)
     index({ processed_by_top_metrics: 1 }, background: true)
@@ -41,6 +45,7 @@ module SupplejackApi
         processed_by_top_metrics: 1,
         processed_by_top_collection_metrics: 1
       },
+      name: 'all_metrics',
       background: true
     )
 
@@ -50,9 +55,34 @@ module SupplejackApi
 
       collection.update_one(
         { record_id:, date: date.to_date, display_collection: },
-        { '$inc' => metrics },
+        {
+          '$setOnInsert' => {
+            processed_by_collection_metrics: false,
+            processed_by_top_metrics: false,
+            processed_by_top_collection_metrics: false
+          },
+          '$inc' => metrics
+        },
         upsert: true
       )
+    end
+
+    # this method deletes processed metrics in batches to avoid memory issues
+    # and loads on the db
+    def self.delete_all_processed_metrics(batch_size = 5_000, sleep_time = 0.05)
+      scope = SupplejackApi::RecordMetric.where(
+        processed_by_collection_metrics: true,
+        processed_by_top_metrics: true,
+        processed_by_top_collection_metrics: true
+      )
+
+      loop do
+        ids = scope.only(:_id).limit(batch_size).pluck(:id)
+        break if ids.empty?
+
+        SupplejackApi::RecordMetric.where(:_id.in => ids).delete_all
+        sleep sleep_time
+      end
     end
   end
 end

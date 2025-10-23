@@ -13,6 +13,7 @@ module SupplejackApi
   class TopMetric
     include Mongoid::Document
     include SupplejackApi::Concerns::QueryableByDate
+    include SupplejackApi::Concerns::MetricHelpers
 
     METRICS = %i[
       page_views
@@ -37,10 +38,7 @@ module SupplejackApi
     def self.spawn(date_range = (Time.zone.at(0).utc..Time.now.yesterday.utc.beginning_of_day))
       return unless SupplejackApi.config.log_metrics == true
 
-      dates = SupplejackApi::RecordMetric.where(date: date_range).map(&:date).uniq
-      Rails.logger.info("TOP METRIC: processing dates: #{dates}")
-
-      dates.each do |date|
+      record_metrics_dates_between(date_range).each do |date|
         METRICS.each do |metric|
           record_metrics = record_metrics_to_be_processed(date, metric)
           results = record_metrics.each_with_object({}) do |record, hash|
@@ -49,32 +47,38 @@ module SupplejackApi
 
           next if results.empty?
 
-          metric = find_or_create_by(
-            date:,
-            metric:
-          )
+          top_metric = find_or_create_by(date:, metric:)
+          existing_results = top_metric.results
 
-          if metric.results.blank?
-            metric.update(results:)
+          if existing_results.blank?
+            top_metric.update(results:)
           else
-            merged_results = metric.results.merge(results) { |_key, a, b| a + b }
-            merged_results = merged_results.sort_by { |_k, v| -v }.first(200).to_h
+            merged_results = existing_results.merge(results) { |_key, existing, incoming| existing + incoming }
+            merged_results = merged_results.sort_by { |_k, value| -value }.first(200).to_h
 
-            metric.update(results: merged_results)
+            top_metric.update(results: merged_results)
           end
         end
-        Rails.logger.info("TOP METRIC: Stampping all records on: #{date}")
-        SupplejackApi::RecordMetric.where(date:).update_all(processed_by_top_metrics: true)
+
+        stamp_record_metrics(date)
       end
     end
 
     def self.record_metrics_to_be_processed(date, metric)
-      Rails.logger.info("TOP METRIC: Gathering records to be processed: #{date} #{metric}")
+      logger.info("TOP METRIC: Gathering records to be processed: #{date} #{metric}")
       SupplejackApi::RecordMetric.where(
         date:,
         metric.ne => 0,
-        :processed_by_top_metrics.in => [nil, '', false]
+        processed_by_top_metrics: false
       ).order_by(metric => 'desc').limit(200)
+    end
+
+    def self.record_metrics_dates_between(date_range)
+      record_metrics_dates_between_for(:processed_by_top_metrics, date_range)
+    end
+
+    def self.stamp_record_metrics(date)
+      stamp_record_metrics_for(:processed_by_top_metrics, date)
     end
   end
 end

@@ -6,6 +6,7 @@ module SupplejackApi
     include Mongoid::Document
     include Mongoid::Timestamps
     include SupplejackApi::Concerns::QueryableByDate
+    include SupplejackApi::Concerns::MetricHelpers
 
     field :d, as: :date,                               type: Date,    default: Time.now.utc
     field :dc, as: :display_collection,                type: String
@@ -31,49 +32,56 @@ module SupplejackApi
       )
     end
 
-    def self.spawn(date_range = (30.days.ago.utc..Time.zone.now.yesterday.beginning_of_day))
+    def self.spawn(date_range = (Time.zone.at(0).utc..Time.now.yesterday.utc.beginning_of_day))
       return unless SupplejackApi.config.log_metrics == true
 
-      dates = SupplejackApi::RecordMetric.where(date: date_range).map(&:date).uniq
-      dates.each do |date|
-        Rails.logger.info("COLLECTION METRICS: Processing date: #{date}")
-        collections = SupplejackApi::RecordMetric.where(date:).pluck(:display_collection).uniq
+      record_metrics_dates_between(date_range).each do |date|
+        logger.info("COLLECTION METRIC: Processing date: #{date}")
+        display_collections = SupplejackApi::RecordMetric
+                              .where(date:, processed_by_collection_metrics: false)
+                              .distinct(:display_collection)
 
-        collections.each do |collection|
-          Rails.logger.info("COLLECTION METRICS: Processing collection: #{collection}")
-          record_metrics = record_metrics_to_be_processed(date, collection)
-          collection_metrics = find_or_create_by(date:, display_collection: collection).inc(
-            searches: record_metrics.sum(:appeared_in_searches),
-            record_page_views: record_metrics.sum(:page_views),
-            user_set_views: record_metrics.sum(:user_set_views),
-            user_story_views: record_metrics.sum(:user_story_views),
-            records_added_to_user_sets: record_metrics.sum(:added_to_user_sets),
-            records_added_to_user_stories: record_metrics.sum(:added_to_user_stories),
-            total_source_clickthroughs: record_metrics.sum(:source_clickthroughs)
-          )
+        display_collections.each do |display_collection|
+          logger.info("COLLECTION METRIC: Processing collection: #{display_collection}")
+          record_metrics = record_metrics_to_be_processed(date, display_collection)
 
-          if collection_metrics.save
+          if update_collection_metrics(record_metrics, date, display_collection)
             record_metrics.update_all(processed_by_collection_metrics: true)
           else
-            Rails.logger.error "Unable to summarize record metrics from collection: #{collection} date: #{date}"
+            logger.error "Unable to summarize record metrics from collection: #{collection} date: #{date}"
           end
         end
         regenerate_all_collection_metrics!(date)
       end
     end
 
+    def self.update_collection_metrics(record_metrics, date, display_collection)
+      collection_metrics = find_or_create_by(date:, display_collection:).inc(
+        searches: record_metrics.sum(:appeared_in_searches),
+        record_page_views: record_metrics.sum(:page_views),
+        user_set_views: record_metrics.sum(:user_set_views),
+        user_story_views: record_metrics.sum(:user_story_views),
+        records_added_to_user_sets: record_metrics.sum(:added_to_user_sets),
+        records_added_to_user_stories: record_metrics.sum(:added_to_user_stories),
+        total_source_clickthroughs: record_metrics.sum(:source_clickthroughs)
+      )
+
+      collection_metrics.save
+    end
+
     def self.record_metrics_to_be_processed(date, display_collection)
-      Rails.logger.info("COLLECTION METRICS: Gathering records to be processed: #{date} #{display_collection}")
+      logger.info("COLLECTION METRIC: Gathering records to be processed: #{date} #{display_collection}")
       SupplejackApi::RecordMetric.where(
         date:,
         display_collection:,
-        :processed_by_collection_metrics.in => [nil, '', false]
+        processed_by_collection_metrics: false
       )
     end
 
     def self.regenerate_all_collection_metrics!(date)
-      Rails.logger.info("COLLECTION METRICS: Regenerate all collection metrics #{date}")
+      logger.info("COLLECTION METRIC: Regenerate all collection metrics #{date}")
       delete_all(date:, display_collection: 'all')
+      logger.info('COLLECTION METRIC: deleted_all')
       all_collections = new(date:, display_collection: 'all')
       where(date:, :display_collection.nin => ['all']).find_all do |collection|
         all_collections.inc(
@@ -86,6 +94,11 @@ module SupplejackApi
           total_source_clickthroughs: collection.total_source_clickthroughs
         ).save!
       end
+      logger.info('COLLECTION METRIC: saved')
+    end
+
+    def self.record_metrics_dates_between(date_range)
+      record_metrics_dates_between_for(:processed_by_collection_metrics, date_range)
     end
   end
 end

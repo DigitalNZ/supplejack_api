@@ -6,6 +6,7 @@ module SupplejackApi
     include Mongoid::Document
     include Mongoid::Timestamps
     include SupplejackApi::Concerns::QueryableByDate
+    include SupplejackApi::Concerns::MetricHelpers
 
     METRICS = %i[
       page_views
@@ -33,10 +34,7 @@ module SupplejackApi
 
       metrics = []
 
-      dates = SupplejackApi::RecordMetric.where(date: date_range).map(&:date).uniq
-      Rails.logger.info("TOP COLLECTION METRIC: processing dates: #{dates}")
-
-      dates.each do |date|
+      record_metrics_dates_between(date_range).each do |date|
         display_collections(date).each do |dc|
           METRICS.each do |metric|
             record_metrics = record_metrics_to_be_processed(date, metric, dc)
@@ -52,7 +50,7 @@ module SupplejackApi
             metrics.push(top_collection_metric)
           end
         end
-        Rails.logger.info("TOP COLLECTION METRIC: Stampping all records on #{date}")
+
         stamp_record_metrics(date)
       end
 
@@ -60,10 +58,10 @@ module SupplejackApi
     end
 
     def self.display_collections(date)
-      Rails.logger.info("TOP COLLECTION METRIC: Finding all display collections on #{date}")
+      logger.info("TOP COLLECTION METRIC: Finding all display collections on #{date}")
       SupplejackApi::RecordMetric.where(
         date:,
-        :processed_by_top_collection_metrics.in => [nil, '', false]
+        processed_by_top_collection_metrics: false
       ).map(&:display_collection).uniq
     end
 
@@ -75,11 +73,13 @@ module SupplejackApi
     end
 
     def self.update_top_collection_metric(top_collection_metric, results)
-      if top_collection_metric.results.blank?
+      existing_results = top_collection_metric.results
+
+      if existing_results.blank?
         top_collection_metric.update(results:)
       else
-        merged_results = top_collection_metric.results.merge(results) { |_key, a, b| a + b }
-        merged_results = merged_results.sort_by { |_k, v| -v }.first(200).to_h
+        merged_results = existing_results.merge(results) { |_key, existing, incoming| existing + incoming }
+        merged_results = merged_results.sort_by { |_k, value| -value }.first(200).to_h
 
         top_collection_metric.update(results: merged_results)
       end
@@ -96,18 +96,22 @@ module SupplejackApi
     end
 
     def self.record_metrics_to_be_processed(date, metric, display_collection)
-      Rails.logger.info("TOP COLLECTION METRIC: Gathering top 200 records to be
-                        processed #{date}, #{metric}, #{display_collection}")
+      logger.info('TOP COLLECTION METRIC: ' \
+        "Gathering top 200 records to be processed #{date}, #{metric}, #{display_collection}")
       SupplejackApi::RecordMetric.where(
         date:,
         metric.ne => 0,
         display_collection:,
-        :processed_by_top_collection_metrics.in => [nil, '', false]
+        processed_by_top_collection_metrics: false
       ).order_by(metric => 'desc').limit(200)
     end
 
+    def self.record_metrics_dates_between(date_range)
+      record_metrics_dates_between_for(:processed_by_top_collection_metrics, date_range)
+    end
+
     def self.stamp_record_metrics(date)
-      SupplejackApi::RecordMetric.where(date:).update_all(processed_by_top_collection_metrics: true)
+      stamp_record_metrics_for(:processed_by_top_collection_metrics, date)
     end
   end
 end

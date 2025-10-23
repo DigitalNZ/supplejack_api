@@ -49,8 +49,10 @@ module SupplejackApi
 
         metrics.each do |metric|
           metric.records.each do |record|
-            summary[date][record['record_id']]['metrics'][metric.metric] += 1
-            summary[date][record['record_id']]['display_collection'] = record['display_collection']
+            record_id = record['record_id']
+            entry = summary[date][record_id]
+            entry['metrics'][metric.metric] += 1
+            entry['display_collection'] = record['display_collection']
           end
         end
       end

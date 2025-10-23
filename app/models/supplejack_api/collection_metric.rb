@@ -34,15 +34,17 @@ module SupplejackApi
     def self.spawn(date_range = (30.days.ago.utc..Time.zone.now.yesterday.beginning_of_day))
       return unless SupplejackApi.config.log_metrics == true
 
-      dates = SupplejackApi::RecordMetric.where(date: date_range).map(&:date).uniq
-      dates.each do |date|
+      record_metrics_dates_between(date_range).each do |date|
         Rails.logger.info("COLLECTION METRICS: Processing date: #{date}")
-        collections = SupplejackApi::RecordMetric.where(date:).pluck(:display_collection).uniq
+        display_collections = SupplejackApi::RecordMetric
+                              .where(date:, processed_by_collection_metrics: { '$ne' => true })
+                              .distinct(:display_collection)
 
-        collections.each do |collection|
-          Rails.logger.info("COLLECTION METRICS: Processing collection: #{collection}")
-          record_metrics = record_metrics_to_be_processed(date, collection)
-          collection_metrics = find_or_create_by(date:, display_collection: collection).inc(
+        display_collections.each do |display_collection|
+          Rails.logger.info("COLLECTION METRICS: Processing collection: #{display_collection}")
+          record_metrics = record_metrics_to_be_processed(date, display_collection)
+
+          collection_metrics = find_or_create_by(date:, display_collection:).inc(
             searches: record_metrics.sum(:appeared_in_searches),
             record_page_views: record_metrics.sum(:page_views),
             user_set_views: record_metrics.sum(:user_set_views),
@@ -67,13 +69,14 @@ module SupplejackApi
       SupplejackApi::RecordMetric.where(
         date:,
         display_collection:,
-        :processed_by_collection_metrics.in => [nil, '', false]
+        processed_by_collection_metrics: { '$ne' => true }
       )
     end
 
     def self.regenerate_all_collection_metrics!(date)
       Rails.logger.info("COLLECTION METRICS: Regenerate all collection metrics #{date}")
       delete_all(date:, display_collection: 'all')
+      Rails.logger.info('COLLECTION METRICS: deleted_all')
       all_collections = new(date:, display_collection: 'all')
       where(date:, :display_collection.nin => ['all']).find_all do |collection|
         all_collections.inc(
@@ -86,6 +89,17 @@ module SupplejackApi
           total_source_clickthroughs: collection.total_source_clickthroughs
         ).save!
       end
+      Rails.logger.info('COLLECTION METRICS: saved')
+    end
+
+    def self.record_metrics_dates_between(date_range)
+      Rails.logger.info('COLLECTION METRIC: fetching dates')
+      dates = SupplejackApi::RecordMetric
+              .where(date: date_range, processed_by_collection_metrics: { '$ne' => true })
+              .distinct(:date)
+      Rails.logger.info("COLLECTION METRIC: processing dates: #{dates}")
+
+      dates
     end
   end
 end

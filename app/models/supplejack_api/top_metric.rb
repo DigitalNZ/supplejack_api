@@ -37,10 +37,7 @@ module SupplejackApi
     def self.spawn(date_range = (Time.zone.at(0).utc..Time.now.yesterday.utc.beginning_of_day))
       return unless SupplejackApi.config.log_metrics == true
 
-      dates = SupplejackApi::RecordMetric.where(date: date_range).map(&:date).uniq
-      Rails.logger.info("TOP METRIC: processing dates: #{dates}")
-
-      dates.each do |date|
+      record_metrics_dates_between(date_range).each do |date|
         METRICS.each do |metric|
           record_metrics = record_metrics_to_be_processed(date, metric)
           results = record_metrics.each_with_object({}) do |record, hash|
@@ -49,10 +46,7 @@ module SupplejackApi
 
           next if results.empty?
 
-          metric = find_or_create_by(
-            date:,
-            metric:
-          )
+          metric = find_or_create_by(date:, metric:)
 
           if metric.results.blank?
             metric.update(results:)
@@ -63,8 +57,8 @@ module SupplejackApi
             metric.update(results: merged_results)
           end
         end
-        Rails.logger.info("TOP METRIC: Stampping all records on: #{date}")
-        SupplejackApi::RecordMetric.where(date:).update_all(processed_by_top_metrics: true)
+
+        stamp_record_metrics(date)
       end
     end
 
@@ -73,8 +67,28 @@ module SupplejackApi
       SupplejackApi::RecordMetric.where(
         date:,
         metric.ne => 0,
-        :processed_by_top_metrics.in => [nil, '', false]
+        processed_by_top_metrics: { '$ne' => true }
       ).order_by(metric => 'desc').limit(200)
+    end
+
+    def self.record_metrics_dates_between(date_range)
+      Rails.logger.info('TOP METRIC: fetching dates')
+      dates = SupplejackApi::RecordMetric
+              .where(date: date_range, processed_by_top_metrics: { '$ne' => true })
+              .hint(date: 1)
+              .distinct(:date)
+      Rails.logger.info("TOP METRIC: processing dates: #{dates}")
+
+      dates
+    end
+
+    def self.stamp_record_metrics(date)
+      Rails.logger.info("TOP METRIC: Stampping all records on: #{date}")
+      SupplejackApi::RecordMetric
+        .where(date:, processed_by_top_metrics: { '$ne' => true })
+        .hint(date: 1)
+        .update_all(processed_by_top_metrics: true)
+      Rails.logger.info("TOP METRIC: Stamped all records on: #{date}")
     end
   end
 end

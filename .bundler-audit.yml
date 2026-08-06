@@ -1,0 +1,20 @@
+# Advisories that have been assessed as not applicable to this gem.
+#
+# Keep this list as short as possible: anything listed here is silently skipped by
+# `bundle audit check`, including in CI. Re-check each entry when devise is upgraded.
+ignore:
+  # devise 4.9.4 (CVE-2026-32700) - Confirmable "change email" race condition.
+  # Requires the :confirmable module with `reconfirmable` enabled. This gem enables only
+  # :trackable, :database_authenticatable and :token_authenticatable (see
+  # app/models/supplejack_api/user.rb), and config.reconfirmable is false.
+  - GHSA-57hq-95w6-v4fc
+
+  # devise 4.9.4 (CVE-2026-40295) - Open redirect via unvalidated request.referrer in the
+  # Timeoutable session timeout handler. Requires the :timeoutable module and a session based
+  # sign in reaching Devise::FailureApp. Timeoutable is not enabled, no devise_for routes are
+  # mounted, and authentication is handled by SupplejackApplicationController#authenticate_user!
+  # rather than by Warden.
+  - GHSA-jp94-3292-c3xv
+
+  # Both are fixed only in devise >= 5.0.4 with no 4.x backport, and devise cannot be upgraded
+  # while devise-token_authenticatable (latest release 1.1.0) requires devise < 5.0.0.

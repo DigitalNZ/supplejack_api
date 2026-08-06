@@ -20,8 +20,8 @@ Gem::Specification.new do |s|
 
   s.add_dependency 'active_model_serializers'
   s.add_dependency 'activemodel-serializers-xml'
-  s.add_dependency 'activerecord', '~> 7.2.2.2'
-  s.add_dependency 'activesupport', '~> 7.2.2.2'
+  s.add_dependency 'activerecord', '~> 7.2.3.2'
+  s.add_dependency 'activesupport', '~> 7.2.3.2'
   s.add_dependency 'dalli'
   s.add_dependency 'devise'
   s.add_dependency 'devise-token_authenticatable', '>= 1.0.0'
@@ -35,7 +35,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'progressbar'
   s.add_dependency 'pundit', '~> 2.1'
   s.add_dependency 'rack', '~> 2.2.4'
-  s.add_dependency 'rails', '~> 7.2.2.2'
+  s.add_dependency 'rails', '~> 7.2.3.2'
   s.add_dependency 'responders'
   s.add_dependency 'rest-client'
   s.add_dependency 'sidekiq'
@@ -43,12 +43,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'state_machines'
   s.add_dependency 'unicode_utils'
   s.add_dependency 'voight_kampff', '~> 2.0'
-
-  # concurrent ruby has removed the dependency on Logger
-  # so ActiveSupport::Logger is uninitialized
-  # https://github.com/ruby-concurrency/concurrent-ruby/commit/d7ce956dacd0b772273d39b8ed31a30cff7ecf38
-  # Hopefully this will be fixed soon and this can be removed
-  s.add_dependency 'concurrent-ruby', '1.3.4'
 
   # Adding sunspot_solr so app has access to sunspot:solr rake tasks
   s.add_dependency 'activeresource'

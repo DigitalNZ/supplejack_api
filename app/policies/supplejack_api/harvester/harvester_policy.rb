@@ -10,7 +10,12 @@ module SupplejackApi
       end
 
       def harvester?
-        RecordSchema.roles[@user.role.to_sym].try(:harvester)
+        role.try(:harvester)
+      end
+
+      # Read only access to the harvester API. Full harvester roles imply read access.
+      def harvester_read_only?
+        harvester? || role.try(:harvester_read_only)
       end
 
       alias index?   harvester?
@@ -25,6 +30,12 @@ module SupplejackApi
       alias reindex?            harvester?
       alias create_batch?       harvester?
       alias link_check_records? harvester?
+
+      private
+
+      def role
+        RecordSchema.roles[@user.role.to_sym]
+      end
     end
   end
 end

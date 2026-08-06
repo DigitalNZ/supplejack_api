@@ -19,6 +19,10 @@ module SupplejackApi
       factory :harvest_user do
         role { 'harvester' }
       end
+
+      factory :read_only_harvest_user do
+        role { 'harvester_read_only' }
+      end
     end
   end
 end

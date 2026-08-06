@@ -34,6 +34,13 @@ RSpec.describe SupplejackApi::Harvester::UsersController do
 
       expect(response).to be_unauthorized
     end
+
+    # This endpoint exposes API keys and authentication tokens, so read only harvester roles must not reach it
+    it 'is not readable by a harvester_read_only role' do
+      get :index, format: :json, params: { api_key: create(:read_only_harvest_user).api_key }
+
+      expect(response).to be_unauthorized
+    end
   end
 
   describe '#update' do

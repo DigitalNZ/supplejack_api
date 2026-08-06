@@ -3,6 +3,8 @@
 module SupplejackApi
   module Harvester
     class RecordsController < BaseController
+      read_only_actions :show, :index
+
       def create
         @record = UpdateRecordFromHarvest.new(record_params, params[:preview], nil, params[:required_fragments]).call
 

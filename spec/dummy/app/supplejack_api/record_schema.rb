@@ -103,8 +103,9 @@ class RecordSchema
    # Roles
   role :anonymous, anonymous: true
   role :developer, default: true
-  role :admin, admin: true
+  role :admin, admin: true, harvester_read_only: true
   role :harvester, harvester: true
+  role :harvester_read_only, harvester_read_only: true
 
   model_field :index_updated, field_options: { type: Mongoid::Boolean }
   model_field :index_updated_at, field_options: { type: DateTime }

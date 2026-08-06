@@ -505,6 +505,78 @@ module SupplejackApi
       end
     end
 
+    context 'with a api_key with a harvester_read_only role' do
+      let(:read_only) { create(:read_only_harvest_user) }
+      let!(:persisted_record) { create(:record_with_fragment, status: 'deleted') }
+
+      describe 'GET #show' do
+        it 'returns the record' do
+          get :show, params: { id: persisted_record.record_id, api_key: read_only.api_key }, format: :json
+
+          expect(response).to have_http_status(:ok)
+          expect(JSON.parse(response.body)['record_id']).to eq persisted_record.record_id
+        end
+      end
+
+      describe 'GET index' do
+        it 'returns the records' do
+          get :index, params: {
+            search: { 'fragments.source_id': persisted_record.fragments.first.source_id },
+            search_options: { page: 1 },
+            api_key: read_only.api_key
+          }
+
+          expect(response).to have_http_status(:ok)
+        end
+      end
+
+      describe 'write actions' do
+        it 'returns unauthorized for POST create' do
+          post :create, params: { record: { internal_identifier: '1234' }, api_key: read_only.api_key }
+
+          expect(response).to be_unauthorized
+        end
+
+        it 'returns unauthorized for PUT update' do
+          put :update, params: {
+            id: persisted_record.record_id, record: { status: 'active' }, api_key: read_only.api_key
+          }, format: :json
+
+          expect(response).to be_unauthorized
+        end
+
+        it 'returns unauthorized for PUT delete' do
+          put :delete, params: { id: 'abc123', api_key: read_only.api_key }
+
+          expect(response).to be_unauthorized
+        end
+
+        it 'returns unauthorized for POST flush' do
+          post :flush, params: { source_id: 'source_id', job_id: 'abc123', api_key: read_only.api_key }
+
+          expect(response).to be_unauthorized
+        end
+      end
+    end
+
+    context 'with an api_key with an admin role' do
+      let(:admin) { create(:admin_user) }
+      let!(:persisted_record) { create(:record_with_fragment, status: 'suppressed') }
+
+      it 'can read a suppressed record' do
+        get :show, params: { id: persisted_record.record_id, api_key: admin.api_key }, format: :json
+
+        expect(response).to have_http_status(:ok)
+        expect(JSON.parse(response.body)['status']).to eq 'suppressed'
+      end
+
+      it 'cannot write' do
+        post :create, params: { record: { internal_identifier: '1234' }, api_key: admin.api_key }
+
+        expect(response).to be_unauthorized
+      end
+    end
+
     context 'with api_key without harvester role' do
       let(:user) { create(:user) }
 

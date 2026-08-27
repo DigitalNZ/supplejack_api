@@ -9,6 +9,7 @@ gemspec
 
 gem 'codeclimate_diff', github: 'boost/codeclimate_diff'
 
+gem 'parallel'
 # we can't add a github repository to the gemspec
 # I'm waiting to know why we use the github version instead of the tag
 gem 'rsolr', '< 2.6.0' # sunspot 2.4.0 has a bug on rsolr 2.6.0

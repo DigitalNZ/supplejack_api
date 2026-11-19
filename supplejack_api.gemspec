@@ -44,8 +44,8 @@ Gem::Specification.new do |s|
   s.add_dependency 'unicode_utils'
   s.add_dependency 'voight_kampff', '~> 2.0'
 
-  # activesupport 7.2 calls ConnectionPool.new with a positional hash, which
-  # connection_pool 3.0 no longer accepts (keyword arguments only).
+  # sidekiq 7.3.0's scheduled poller calls ConnectionPool::TimedStack#pop with a
+  # positional timeout, which connection_pool 3.0 no longer accepts (keyword arguments only).
   s.add_dependency 'connection_pool', '~> 2.5'
 
   # Adding sunspot_solr so app has access to sunspot:solr rake tasks

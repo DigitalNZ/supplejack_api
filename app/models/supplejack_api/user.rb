@@ -11,7 +11,7 @@ module SupplejackApi
 
     store_in collection: 'users'
 
-    devise :trackable, :database_authenticatable, :token_authenticatable
+    devise :trackable, :database_authenticatable
 
     # Database authenticatable
     field :email,               type: String
@@ -48,6 +48,20 @@ module SupplejackApi
 
     validates :authentication_token, uniqueness: true
     before_save :ensure_authentication_token
+
+    # Generates an API key when none is stored. Existing tokens are never rewritten.
+    # Same generator the removed devise-token_authenticatable extension used.
+    def ensure_authentication_token
+      if authentication_token.blank?
+        token = nil
+        loop do
+          token = Devise.friendly_token
+          break unless self.class.where(authentication_token: token).exists?
+        end
+        self.authentication_token = token
+      end
+      authentication_token
+    end
 
     def name
       name = self[:name]

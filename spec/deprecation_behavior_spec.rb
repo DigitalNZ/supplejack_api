@@ -31,4 +31,12 @@ RSpec.describe DeprecationBehavior do
   it 'warns for a git-installed bundler gem frame' do
     expect(classify(rails_frame, git_frame, engine_frame)).to eq(:stderr)
   end
+
+  it 'works as an ActiveSupport::Deprecation behavior (Rails passes 4 arguments)' do
+    deprecator = ActiveSupport::Deprecation.new('9.9', 'SupplejackApi')
+    deprecator.behavior = described_class.method(:call)
+
+    expect { deprecator.warn('engine deprecation', caller_locations(0)) }
+      .to raise_error(ActiveSupport::DeprecationException, /engine deprecation/)
+  end
 end

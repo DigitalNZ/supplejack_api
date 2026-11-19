@@ -15,7 +15,7 @@ module DeprecationBehavior
     frame.start_with?(*gem_dirs) || !frame.start_with?(ENGINE_ROOT)
   end
 
-  def self.call(message, callstack, _deprecator = nil)
+  def self.call(message, callstack, *)
     origin = callstack.map(&:to_s).find { |frame| frame !~ RAILS_GEM }
 
     if gem_origin?(origin)

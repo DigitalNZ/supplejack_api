@@ -36,8 +36,23 @@ Dummy::Application.configure do
   config.action_mailer.delivery_method = :test
 
 
-  # Print deprecation notices to the stderr
-  config.active_support.deprecation = :stderr
+  # Deprecations raise when triggered by engine/app code, so removed Rails APIs are
+  # caught while still on a working version. Deprecations triggered from inside a
+  # third-party gem (first non-Rails frame is under a gem path) go to stderr instead.
+  config.after_initialize do
+    rails_gem = %r{/(rails|railties|action\w+|active\w+)-\d}
+    gem_paths = Gem.path.map { |dir| File.join(dir, 'gems', '') }
+
+    Rails.application.deprecators.behavior = lambda do |message, callstack, _deprecator|
+      origin = callstack.map(&:to_s).find { |frame| frame !~ rails_gem }
+
+      if origin && gem_paths.any? { |dir| origin.start_with?(dir) }
+        warn "DEPRECATION (gem): #{message}\n  from #{origin}"
+      else
+        raise ActiveSupport::DeprecationException, message
+      end
+    end
+  end
 
   # Run tests in order for rails upgrades (rails 5 does random)
   config.active_support.test_order = :sorted

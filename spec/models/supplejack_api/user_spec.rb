@@ -25,6 +25,33 @@ module SupplejackApi
       expect(user.authentication_token).to_not be_nil
     end
 
+    describe '#ensure_authentication_token' do
+      it 'generates a 20-char friendly token when blank' do
+        user = build(:user, authentication_token: nil)
+        user.save!
+        expect(user.authentication_token).to match(/\A[A-Za-z0-9_-]{20}\z/)
+      end
+
+      it 'generates a token when the token is an empty string' do
+        user = build(:user, authentication_token: '')
+        user.save!
+        expect(user.authentication_token).to be_present
+      end
+
+      it 'never changes an existing token on save' do
+        user = create(:user, authentication_token: 'legacyTokenAbc123xyz')
+        user.update!(name: 'changed')
+        expect(user.reload.authentication_token).to eq('legacyTokenAbc123xyz')
+      end
+
+      it 'retries until the token is unique' do
+        create(:user, authentication_token: 'dupdupdupdupdupdupdu')
+        allow(Devise).to receive(:friendly_token).and_return('dupdupdupdupdupdupdu', 'uniqueuniqueuniqueun')
+        user = create(:user, authentication_token: nil)
+        expect(user.authentication_token).to eq('uniqueuniqueuniqueun')
+      end
+    end
+
     describe '#name' do
       it 'returns the users name' do
         expect(User.new(name: 'John').name).to eq 'John'

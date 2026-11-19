@@ -34,8 +34,11 @@ module SupplejackApi
 
     private
 
-    def handle_timeout(&block)
-      time = Benchmark.ms(&block)
+    # :reek:DuplicateMethodCall - the clock is read before and after the block on purpose
+    def handle_timeout
+      started = Process.clock_gettime(Process::CLOCK_MONOTONIC, :float_millisecond)
+      yield
+      time = Process.clock_gettime(Process::CLOCK_MONOTONIC, :float_millisecond) - started
       Support::StatusLogger.logger.warn("/status request took #{time.round}ms to complete") if time > 5000
     end
 

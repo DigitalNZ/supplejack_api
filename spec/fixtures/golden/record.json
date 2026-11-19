@@ -1,0 +1,20 @@
+{
+  "record": {
+    "address": "Wellington",
+    "age": 30,
+    "birth_date": "1990-05-06T19:08:09.000+12:00",
+    "children": [
+      "Sally Doe",
+      "James Doe"
+    ],
+    "created_at": "26/02/01",
+    "email": [
+      "johndoe@example.com"
+    ],
+    "landing_url": "http://my-website",
+    "name": "Golden Record",
+    "nz_citizen": true,
+    "subject": [],
+    "updated_at": "2026-01-02T03:04:05.000+13:00"
+  }
+}

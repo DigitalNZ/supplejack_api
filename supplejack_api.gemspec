@@ -18,13 +18,12 @@ Gem::Specification.new do |s|
   s.files = Dir['{app,config,db,lib}/**/*'] + ['Rakefile', 'README.md']
   s.test_files = Dir['spec/**/*']
 
-  s.add_dependency 'active_model_serializers'
+  s.add_dependency 'active_model_serializers', '>= 0.10.16'
   s.add_dependency 'activemodel-serializers-xml'
-  s.add_dependency 'activerecord', '~> 7.2.3.2'
-  s.add_dependency 'activesupport', '~> 7.2.3.2'
+  s.add_dependency 'activerecord', '~> 8.1.4'
+  s.add_dependency 'activesupport', '~> 8.1.4'
   s.add_dependency 'dalli'
-  s.add_dependency 'devise'
-  s.add_dependency 'devise-token_authenticatable', '>= 1.0.0'
+  s.add_dependency 'devise', '~> 5.0'
   s.add_dependency 'dimensions'
   s.add_dependency 'edtf'
   s.add_dependency 'kaminari'
@@ -35,7 +34,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'progressbar'
   s.add_dependency 'pundit', '~> 2.1'
   s.add_dependency 'rack', '~> 2.2.4'
-  s.add_dependency 'rails', '~> 7.2.3.2'
+  s.add_dependency 'rails', '~> 8.1.4'
   s.add_dependency 'responders'
   s.add_dependency 'rest-client'
   s.add_dependency 'sidekiq'
@@ -44,8 +43,8 @@ Gem::Specification.new do |s|
   s.add_dependency 'unicode_utils'
   s.add_dependency 'voight_kampff', '~> 2.0'
 
-  # activesupport 7.2 calls ConnectionPool.new with a positional hash, which
-  # connection_pool 3.0 no longer accepts (keyword arguments only).
+  # sidekiq 7.3.0's scheduled poller calls ConnectionPool::TimedStack#pop with a
+  # positional timeout, which connection_pool 3.0 no longer accepts (keyword arguments only).
   s.add_dependency 'connection_pool', '~> 2.5'
 
   # Adding sunspot_solr so app has access to sunspot:solr rake tasks

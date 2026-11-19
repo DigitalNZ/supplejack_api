@@ -48,6 +48,12 @@ RSpec.describe 'Public output golden files', type: :request do
     end
   end
 
+  def expect_content_type(format)
+    media_type = format == 'xml' ? 'application/xml' : 'application/json'
+    expect(response.media_type).to eq(media_type)
+    expect(response.headers['Content-Type']).to eq("#{media_type}; charset=utf-8")
+  end
+
   before do
     allow_any_instance_of(SupplejackApi::RecordSearch).to receive(:results).and_return([record])
     allow_any_instance_of(SupplejackApi::RecordSearch).to receive(:total).and_return(1)
@@ -59,6 +65,7 @@ RSpec.describe 'Public output golden files', type: :request do
         get "/v3/records/#{record.record_id}.#{format}", params: { api_key:, fields: 'verbose' }
 
         expect(response.status).to eq(200)
+        expect_content_type(format)
         check_golden("record.#{format}", response.body)
       end
 
@@ -66,6 +73,7 @@ RSpec.describe 'Public output golden files', type: :request do
         get "/v3/records.#{format}", params: { api_key:, text: 'golden', fields: 'verbose' }
 
         expect(response.status).to eq(200)
+        expect_content_type(format)
         check_golden("search.#{format}", response.body)
       end
 
@@ -73,13 +81,14 @@ RSpec.describe 'Public output golden files', type: :request do
         get "/v3/records/#{record.record_id}.#{format}", params: { api_key: 'not-a-real-key' }
 
         expect(response.status).to eq(403)
+        expect_content_type(format)
         check_golden("forbidden.#{format}", response.body)
       end
 
       it "returns the #{format} media type" do
         get "/v3/records/#{record.record_id}.#{format}", params: { api_key: }
 
-        expect(response.media_type).to eq(format == 'xml' ? 'application/xml' : 'application/json')
+        expect_content_type(format)
       end
     end
   end

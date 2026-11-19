@@ -52,15 +52,15 @@ module SupplejackApi
     # Generates an API key when none is stored. Existing tokens are never rewritten.
     # Same generator the removed devise-token_authenticatable extension used.
     def ensure_authentication_token
-      if authentication_token.blank?
-        token = nil
-        loop do
-          token = Devise.friendly_token
-          break unless self.class.where(authentication_token: token).exists?
-        end
-        self.authentication_token = token
-      end
+      self.authentication_token = generate_authentication_token if authentication_token.blank?
       authentication_token
+    end
+
+    def generate_authentication_token
+      loop do
+        token = Devise.friendly_token
+        break token unless self.class.where(authentication_token: token).exists?
+      end
     end
 
     def name

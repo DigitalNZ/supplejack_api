@@ -34,6 +34,7 @@ module SupplejackApi
 
     private
 
+    # :reek:DuplicateMethodCall - the clock is read before and after the block on purpose
     def handle_timeout
       started = Process.clock_gettime(Process::CLOCK_MONOTONIC, :float_millisecond)
       yield

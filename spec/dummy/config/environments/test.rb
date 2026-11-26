@@ -36,8 +36,12 @@ Dummy::Application.configure do
   config.action_mailer.delivery_method = :test
 
 
-  # Print deprecation notices to the stderr
-  config.active_support.deprecation = :stderr
+  # Deprecations raise when triggered by engine code and warn on stderr when triggered
+  # from inside a third-party gem; see config/deprecation_behavior.rb.
+  require_relative '../deprecation_behavior'
+  config.after_initialize do
+    Rails.application.deprecators.behavior = DeprecationBehavior.method(:call)
+  end
 
   # Run tests in order for rails upgrades (rails 5 does random)
   config.active_support.test_order = :sorted

@@ -2,7 +2,6 @@
 
 require 'rails'
 require 'devise'
-require 'devise-token_authenticatable'
 require 'kaminari'
 require 'kaminari/mongoid'
 require 'state_machines'

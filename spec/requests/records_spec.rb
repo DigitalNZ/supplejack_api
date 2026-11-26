@@ -159,4 +159,20 @@ RSpec.describe 'Records Endpoints', type: :request do
       )
     end
   end
+
+  describe 'authenticate_user! when an anonymous key is over its limit' do
+    let(:anonymous) { create(:user, role: 'anonymous', daily_requests: 2, max_requests: 1) }
+
+    before { get "/v3/records/#{record.record_id}.xml", params: { api_key: anonymous.authentication_token } }
+
+    it 'is over its limit' do
+      expect(anonymous.reload.over_limit?).to be(true)
+    end
+
+    it 'returns 403 with the anonymous limit message as XML' do
+      expect(response.status).to eq(403)
+      expect(response.media_type).to eq('application/xml')
+      expect(response.body).to include(I18n.t('users.anonymous_reached_limit'))
+    end
+  end
 end
